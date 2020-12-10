@@ -1,3 +1,6 @@
+import com.sun.istack.NotNull;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,8 +12,25 @@ public class BasicGameEngine extends GameEngine {
    private List<Room> worldRooms;
    private Room currentRoom;
 
+   public BasicGameEngine() {
+      worldState = new HashMap<>();
+      designerActions = new HashMap<>();
+      worldRooms = new ArrayList<>();
+      currentRoom = null;
+   }
+
+   public BasicGameEngine(@NotNull List<Room> rooms, @NotNull  Room startRoom, @NotNull Map<Room, Map<ConcreteGameAction, GameDesignAction>> allowedActions) {
+      this.worldRooms = rooms;
+      this.currentRoom = startRoom;
+      this.designerActions = allowedActions;
+      this.worldRooms.forEach(x -> designerActions.put(x, new HashMap<ConcreteGameAction, GameDesignAction>()));
+      this.worldState = new HashMap<>();
+      // TODO: keep this in sync
+      this.worldState.put("room", startRoom.getName());
+   }
 
 
+   // Todo: might want empty constructor so we can pick from these
    @Override
    public List<ActionFormat> possibleActionFormats() {
       // very common
@@ -22,8 +42,8 @@ public class BasicGameEngine extends GameEngine {
       ActionFormat turn = new ActionFormat("turn", null);
       ActionFormat open = new ActionFormat("open", null);
       ActionFormat feel = new ActionFormat("feel", null);
-      ActionFormat putIn = new ActionFormat("put","put ([\\w\\s]+) in ([\\w\\s]+)$");
-      ActionFormat putOn = new ActionFormat("put","put ([\\w\\s]+) on ([\\w\\s]+)$");
+      ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
+      ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
       // you could also try
       ActionFormat eat = new ActionFormat("eat", null);
       ActionFormat climb = new ActionFormat("climb", null);
@@ -32,12 +52,12 @@ public class BasicGameEngine extends GameEngine {
       ActionFormat fill = new ActionFormat("fill", null);
       ActionFormat wear = new ActionFormat("wear", null);
       ActionFormat smell = new ActionFormat("smell", null);
-      ActionFormat listenTo = new ActionFormat("listen","listen to ([\\w\\s]+)$");
-      ActionFormat breakIt = new ActionFormat("break",null);
-      ActionFormat burn = new ActionFormat("burn",null);
-      ActionFormat enter = new ActionFormat("enter",null);
-      ActionFormat search = new ActionFormat("search",null);
-      ActionFormat unlockWith = new ActionFormat("unlock","unlock ([\\w\\s]+) with ([\\w\\s]+)$");
+      ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
+      ActionFormat breakIt = new ActionFormat("break", null);
+      ActionFormat burn = new ActionFormat("burn", null);
+      ActionFormat enter = new ActionFormat("enter", null);
+      ActionFormat search = new ActionFormat("search", null);
+      ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
 
       return List.of(examine, push, take, pull, drop, turn, open, feel, putIn,
           putOn, eat, climb, drink, wave, fill, wear, smell, listenTo, breakIt, burn, enter, search, unlockWith);
@@ -45,14 +65,16 @@ public class BasicGameEngine extends GameEngine {
 
    @Override
    public List<String> possibleItemNames() {
-      return null;
-      //return getCurrentRoom().getItems();
+      return this.currentRoom.getItems();
    }
-   private boolean validatePrecondition(ConcreteGameAction gameAction, Map<String, String> wantedGlobalState){
-      for(Map.Entry<String, String> entry : wantedGlobalState.entrySet()){
+
+   protected boolean validatePrecondition(Map<String, String> wantedGlobalState) {
+      for (Map.Entry<String, String> entry : wantedGlobalState.entrySet()) {
          String key = entry.getKey();
          String wantedValue = entry.getValue();
-         if(!worldState.containsKey(key) || !worldState.get(key).equals(wantedValue)){
+         if (!worldState.containsKey(key) || !worldState.get(key).equals(wantedValue)) {
+            System.err.println(key);
+            System.err.println(worldState.get(key));
             return false;
          }
       }
@@ -68,66 +90,69 @@ public class BasicGameEngine extends GameEngine {
    public String progressStory(ConcreteGameAction gameAction) {
 
       Room currentRoom = getCurrentRoom();
-      Map<String, String> wantedGlobalState = null;
-      String preconditionMessage = getPreconditionedState(gameAction, currentRoom, wantedGlobalState);
-      if(preconditionMessage != null){
-         return preconditionMessage;
+
+      GameDesignAction designAction = getGameDesignAction(gameAction, currentRoom);
+      if (designAction == null) {
+         return "You can't do that right now";
       }
-      boolean preCondSatisfied = validatePrecondition(gameAction, wantedGlobalState);
-      if(!preCondSatisfied) {
+      Map<String, String> wantedGlobalState = new HashMap<>();
+      wantedGlobalState.putAll(designAction.getPreconditions());
+
+      boolean preCondSatisfied = validatePrecondition(wantedGlobalState);
+      if (!preCondSatisfied) {
          return "You can't do that yet";
       }
-      updateWorldState(currentRoom, gameAction);
+      String message = designAction.getMessage();
 
-      String message = getActionMessage(currentRoom, gameAction);
+      updateWorldState(designAction);
+
       return message;
 
    }
 
-   private void updateWorldState(Room currentRoom, ConcreteGameAction gameAction) {
-      Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
-      Map<String, String> updateState = gameDesignActions.get(gameAction).getUpdateState();
-      // TODO: Consider more advanced post coonditions for enhanced engine
+   protected void updateWorldState(GameDesignAction gameDesignAction) {
+      Map<String, String> updateState = gameDesignAction.getUpdateState();
+      // TODO: Consider more advanced post conditions for enhanced engine
+      worldState.entrySet().forEach(System.out::println);
       worldState.putAll(updateState);
-      if(updateState.containsKey("room")){
+      worldState.entrySet().forEach(System.out::println);
+      if (updateState.containsKey("room")) {
          moveRoom(updateState.get("room"));
       }
    }
 
-   private void moveRoom(String roomName) {
+   protected void moveRoom(String roomName) {
       List<Room> matched = worldRooms.stream()
           .filter(room -> roomName.equals(room.getName()))
           .collect(Collectors.toList());
-      if(matched.size() == 1){
+      if (matched.size() == 1) {
          currentRoom = matched.get(0);
-      }
-      else{
+      } else {
          System.err.println("Invalid room. Contact system administrator.");
       }
 
    }
 
-   private String getActionMessage(Room currentRoom, ConcreteGameAction gameAction ) {
+   protected String getActionMessage(Room currentRoom, ConcreteGameAction gameAction) {
       Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
       return gameDesignActions.get(gameAction).getMessage();
    }
-   private Room getCurrentRoom() {
 
-
+   protected Room getCurrentRoom() {
       return this.currentRoom;
    }
 
-   private String getPreconditionedState(ConcreteGameAction gameAction, Room currentRoom, Map<String, String> globalStateCondition) {
-      if(designerActions.containsKey(currentRoom)) {
+   protected void getPreconditionedState(GameDesignAction designAction, Map<String, String> globalStateCondition) {
+      globalStateCondition.putAll(designAction.getPreconditions());
+   }
+
+   protected GameDesignAction getGameDesignAction(ConcreteGameAction gameAction, Room currentRoom) {
+      if (designerActions.containsKey(currentRoom)) {
          Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
-         if(gameDesignActions.containsKey(gameAction)){
-            globalStateCondition.putAll(gameDesignActions.get(gameAction).getPreconditions());
-            return null;
-         }
-         else{
-            return "You can't do that right now.";
+         if (gameDesignActions.containsKey(gameAction)) {
+            return gameDesignActions.get(gameAction);
          }
       }
-      return "You are in a faulty room. Consult the game developer.";
+      return null;
    }
 }
