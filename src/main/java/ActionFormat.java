@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class ActionFormat {
    private String verb;
    private String regExpr;
@@ -25,5 +27,23 @@ public class ActionFormat {
 
    public void setRegExpr(String regExpr) {
       this.regExpr = regExpr;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      ActionFormat that = (ActionFormat) o;
+      return getVerb().equals(that.getVerb()) &&
+          Objects.equals(getRegExpr(), that.getRegExpr());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(getVerb(), getRegExpr());
    }
 }

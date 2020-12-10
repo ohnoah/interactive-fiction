@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Objects;
 
 public class ConcreteGameAction {
    private ActionFormat abstractActionFormat;
@@ -26,5 +27,24 @@ public class ConcreteGameAction {
    public void setArguments(List<String> arguments) {
       this.arguments = arguments;
    }
-   // Some form of enum with different possibilities and showing the slots it needs
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      ConcreteGameAction that = (ConcreteGameAction) o;
+      return getAbstractActionFormat().equals(that.getAbstractActionFormat()) &&
+          getArguments().equals(that.getArguments());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(getAbstractActionFormat(), getArguments());
+   }
+
+// Some form of enum with different possibilities and showing the slots it needs
 }
