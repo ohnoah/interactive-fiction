@@ -1,15 +1,18 @@
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BasicGameEngine extends GameEngine {
-   Map<String, String> worldState;
-   //Map<String, Room> worldRooms;
-   //Entry<String, Room> currentRoomEntry;
+   private Map<String, String> worldState;
+   // room name maps
+   private Map<Room, Map<ConcreteGameAction, GameDesignAction>> designerActions;
+   private List<Room> worldRooms;
+   private Room currentRoom;
 
 
 
    @Override
-   public List<ActionFormat> possibleGameActions() {
+   public List<ActionFormat> possibleActionFormats() {
       // very common
       ActionFormat examine = new ActionFormat("examine", null);
       ActionFormat push = new ActionFormat("push", null);
@@ -43,11 +46,88 @@ public class BasicGameEngine extends GameEngine {
    @Override
    public List<String> possibleItemNames() {
       return null;
-      //return currentRoom().getItems();
+      //return getCurrentRoom().getItems();
    }
+   private boolean validatePrecondition(ConcreteGameAction gameAction, Map<String, String> wantedGlobalState){
+      for(Map.Entry<String, String> entry : wantedGlobalState.entrySet()){
+         String key = entry.getKey();
+         String wantedValue = entry.getValue();
+         if(!worldState.containsKey(key) || !worldState.get(key).equals(wantedValue)){
+            return false;
+         }
+      }
+      return true;
+   }
+
+   // set after effects
+
+   // move room
+
 
    @Override
    public String progressStory(ConcreteGameAction gameAction) {
-      return null;
+
+      Room currentRoom = getCurrentRoom();
+      Map<String, String> wantedGlobalState = null;
+      String preconditionMessage = getPreconditionedState(gameAction, currentRoom, wantedGlobalState);
+      if(preconditionMessage != null){
+         return preconditionMessage;
+      }
+      boolean preCondSatisfied = validatePrecondition(gameAction, wantedGlobalState);
+      if(!preCondSatisfied) {
+         return "You can't do that yet";
+      }
+      updateWorldState(currentRoom, gameAction);
+
+      String message = getActionMessage(currentRoom, gameAction);
+      return message;
+
+   }
+
+   private void updateWorldState(Room currentRoom, ConcreteGameAction gameAction) {
+      Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
+      Map<String, String> updateState = gameDesignActions.get(gameAction).getUpdateState();
+      // TODO: Consider more advanced post coonditions for enhanced engine
+      worldState.putAll(updateState);
+      if(updateState.containsKey("room")){
+         moveRoom(updateState.get("room"));
+      }
+   }
+
+   private void moveRoom(String roomName) {
+      List<Room> matched = worldRooms.stream()
+          .filter(room -> roomName.equals(room.getName()))
+          .collect(Collectors.toList());
+      if(matched.size() == 1){
+         currentRoom = matched.get(0);
+      }
+      else{
+         System.err.println("Invalid room. Contact system administrator.");
+      }
+
+   }
+
+   private String getActionMessage(Room currentRoom, ConcreteGameAction gameAction ) {
+      Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
+      return gameDesignActions.get(gameAction).getMessage();
+   }
+   private Room getCurrentRoom() {
+
+
+      return this.currentRoom;
+   }
+
+   private String getPreconditionedState(ConcreteGameAction gameAction, Room currentRoom, Map<String, String> globalStateCondition) {
+      if(designerActions.containsKey(currentRoom)) {
+         Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
+         if(gameDesignActions.containsKey(gameAction)){
+            globalStateCondition.putAll(gameDesignActions.get(gameAction).getPreconditions());
+            return null;
+         }
+         else{
+            return "You can't do that right now.";
+         }
+      }
+      return "You are in a faulty room. Consult the game developer.";
    }
 }

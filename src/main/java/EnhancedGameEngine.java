@@ -3,7 +3,7 @@ import java.util.List;
 public class EnhancedGameEngine extends GameEngine{
 
    @Override
-   public List<ActionFormat> possibleGameActions() {
+   public List<ActionFormat> possibleActionFormats() {
       // very common
       ActionFormat examine = new ActionFormat("examine", null);
       ActionFormat push = new ActionFormat("push", null);

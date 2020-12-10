@@ -2,7 +2,6 @@ import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import javax.swing.plaf.ActionMapUIResource;
 
 /**
@@ -76,7 +75,7 @@ public class CommandLine extends JFrame {
    public static String processCmd(String cmd) {
       NLPEngine nlpEngine = new BasicNLPEngine();
       GameEngine gameEngine = new BasicGameEngine();
-      List<ActionFormat> possibleGameActions = gameEngine.possibleGameActions();
+      List<ActionFormat> possibleGameActions = gameEngine.possibleActionFormats();
       List<String> possibleItemNames = gameEngine.possibleItemNames();
       ConcreteGameAction gameAction = null;
       try {
