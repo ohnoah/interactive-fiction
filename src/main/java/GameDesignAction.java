@@ -1,17 +1,16 @@
 import java.util.Map;
 
 public class GameDesignAction {
-   private ConcreteGameAction verbAndArgs;
    private Map<String, String> preconditions;
    private String message;
+   private Map<String, String> updateState;
 
-   public ConcreteGameAction getVerbAndArgs() {
-      return verbAndArgs;
+   public GameDesignAction(Map<String, String> preconditions, String message, Map<String, String> updateState) {
+      this.preconditions = preconditions;
+      this.message = message;
+      this.updateState = updateState;
    }
 
-   public void setVerbAndArgs(ConcreteGameAction verbAndArgs) {
-      this.verbAndArgs = verbAndArgs;
-   }
 
    public Map<String, String> getPreconditions() {
       return preconditions;
@@ -29,7 +28,6 @@ public class GameDesignAction {
       this.updateState = updateState;
    }
 
-   private Map<String, String> updateState;
 
    public String getMessage() {
       return message;

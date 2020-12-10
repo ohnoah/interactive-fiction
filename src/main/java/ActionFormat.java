@@ -4,6 +4,11 @@ public class ActionFormat {
    private String verb;
    private String regExpr;
 
+
+   public ActionFormat(String verb){
+      this.verb = verb;
+   }
+
    public ActionFormat(String verb, String regExpr){
       this.verb = verb;
       this.regExpr = regExpr;

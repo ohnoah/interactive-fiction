@@ -1,9 +1,29 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // Note: Names of rooms must be unique and need to verify this in user code
 
 public class Room {
    private String name;
+   // TODO: In enhanced maybe items are more sophisticated
+   private List<String> items;
+
+   public Room(String name, List<String> items) {
+      this.name = name;
+      this.items = new ArrayList<>();
+      this.items.addAll(items);
+   }
+
+   public List<String> getItems() {
+      List<String> al = new ArrayList<>();
+      al.addAll(items);
+      return al;
+   }
+
+   public void setItems(List<String> items) {
+      this.items = items;
+   }
 
    @Override
    public boolean equals(Object o) {
