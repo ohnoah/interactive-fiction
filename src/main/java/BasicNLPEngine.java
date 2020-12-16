@@ -1,9 +1,6 @@
-import edu.stanford.nlp.ling.*;
-import edu.stanford.nlp.pipeline.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.Action;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
@@ -17,7 +14,7 @@ import net.sf.extjwnl.data.POS;
 public class BasicNLPEngine extends NLPEngine {
 
    @Override
-   public ConcreteGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException {
+   public InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException {
       // TODO: Fail if more than one sentence or there is an and in the sentence
 
       // display tokens
@@ -35,7 +32,7 @@ public class BasicNLPEngine extends NLPEngine {
       } catch (JWNLException e) {
          e.printStackTrace();
       }
-      ConcreteGameAction command = new ConcreteGameAction(actionFormat, nouns);
+      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, nouns);
       // Use that to look for a VB and a NN and populate a Command
       // just look for the possible commands using WordNet otherwise return Error
       // enhanced engine can be more informative if a supplementary word happens
@@ -138,6 +135,6 @@ public class BasicNLPEngine extends NLPEngine {
 
 
 /*      BasicNLPEngine basicNLPEngine = new BasicNLPEngine();
-      ConcreteGameAction command = basicNLPEngine.parse("put it in the box",null);*/
+      InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
    }
 }

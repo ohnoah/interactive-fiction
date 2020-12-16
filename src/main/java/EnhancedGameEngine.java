@@ -40,7 +40,7 @@ public class EnhancedGameEngine extends GameEngine{
    }
 
    @Override
-   public String progressStory(ConcreteGameAction gameAction) {
+   public String progressStory(InstantiatedGameAction gameAction) {
       return null;
    }
 }

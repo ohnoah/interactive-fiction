@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class EnhancedNLPEngine extends NLPEngine {
 
    @Override
-   public ConcreteGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException {
+   public InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException {
 
 /*      Properties props = new Properties();
       props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse");
@@ -68,7 +68,7 @@ public class EnhancedNLPEngine extends NLPEngine {
       findMatchingGameItems(nouns, possibleItemNames);
 
 
-      ConcreteGameAction command = new ConcreteGameAction(actionFormat, nouns);
+      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, nouns);
       for (CoreLabel tok : document.tokens()) {
          System.out.println(String.format("%s\t%s", tok.word(), tok.tag()));
       }
@@ -234,7 +234,7 @@ public class EnhancedNLPEngine extends NLPEngine {
          }
       }
 /*      EnhancedNLPEngine enhancedNLPEngine = new EnhancedNLPEngine();
-      ConcreteGameAction command = enhancedNLPEngine.parse("put it in the box",null);*/
+      InstantiatedGameAction command = enhancedNLPEngine.parse("put it in the box",null);*/
    }
 
    public CoreDocument generateCoreDocumentFromString(String rawCommand, String annotatorsProperty) {
