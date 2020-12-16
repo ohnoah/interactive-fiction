@@ -8,8 +8,14 @@ import java.util.stream.Collectors;
 public class BasicGameEngine extends GameEngine {
    private Map<String, String> worldState;
    // room name maps
-   private Map<Room, Map<ConcreteGameAction, GameDesignAction>> designerActions;
+   private Map<Room, Map<InstantiatedGameAction, GameDesignAction>> designerActions;
    private List<Room> worldRooms;
+
+   public void setCurrentRoom(Room currentRoom) {
+      this.currentRoom = currentRoom;
+      this.worldState.put("room", currentRoom.getName());
+   }
+
    private Room currentRoom;
 
    public BasicGameEngine() {
@@ -19,18 +25,28 @@ public class BasicGameEngine extends GameEngine {
       currentRoom = null;
    }
 
-   public BasicGameEngine(@NotNull List<Room> rooms, @NotNull  Room startRoom, @NotNull Map<Room, Map<ConcreteGameAction, GameDesignAction>> allowedActions) {
+   public BasicGameEngine(@NotNull List<Room> rooms, @NotNull  Room startRoom, @NotNull Map<Room, Map<InstantiatedGameAction, GameDesignAction>> allowedActions) {
       this.worldRooms = rooms;
-      this.currentRoom = startRoom;
       this.designerActions = allowedActions;
-      this.worldRooms.forEach(x -> designerActions.put(x, new HashMap<ConcreteGameAction, GameDesignAction>()));
+      this.worldRooms.forEach(x -> designerActions.putIfAbsent(x, new HashMap<InstantiatedGameAction, GameDesignAction>()));
       this.worldState = new HashMap<>();
-      // TODO: keep this in sync
-      this.worldState.put("room", startRoom.getName());
+      setCurrentRoom(startRoom);
    }
 
+   // TODO: This should probably use exceptions
+   public void addRoom(@NotNull Room room){
+      if(!worldRooms.contains(room)){
+         worldRooms.add(room);
+         designerActions.putIfAbsent(room, new HashMap<>());
+      }
+   }
 
-   // Todo: might want empty constructor so we can pick from these
+   public void addAction(@NotNull Room roomForAction, @NotNull InstantiatedGameAction triggeringAction, @NotNull GameDesignAction effectAction) {
+      Map<InstantiatedGameAction, GameDesignAction> actionsInRoom = designerActions.getOrDefault(roomForAction, new HashMap<>());
+      actionsInRoom.put(triggeringAction, effectAction);
+   }
+
+      // Todo: might want empty constructor so we can pick from these
    @Override
    public List<ActionFormat> possibleActionFormats() {
       // very common
@@ -73,8 +89,6 @@ public class BasicGameEngine extends GameEngine {
          String key = entry.getKey();
          String wantedValue = entry.getValue();
          if (!worldState.containsKey(key) || !worldState.get(key).equals(wantedValue)) {
-            System.err.println(key);
-            System.err.println(worldState.get(key));
             return false;
          }
       }
@@ -87,7 +101,7 @@ public class BasicGameEngine extends GameEngine {
 
 
    @Override
-   public String progressStory(ConcreteGameAction gameAction) {
+   public String progressStory(InstantiatedGameAction gameAction) {
 
       Room currentRoom = getCurrentRoom();
 
@@ -113,9 +127,7 @@ public class BasicGameEngine extends GameEngine {
    protected void updateWorldState(GameDesignAction gameDesignAction) {
       Map<String, String> updateState = gameDesignAction.getUpdateState();
       // TODO: Consider more advanced post conditions for enhanced engine
-      worldState.entrySet().forEach(System.out::println);
       worldState.putAll(updateState);
-      worldState.entrySet().forEach(System.out::println);
       if (updateState.containsKey("room")) {
          moveRoom(updateState.get("room"));
       }
@@ -133,8 +145,8 @@ public class BasicGameEngine extends GameEngine {
 
    }
 
-   protected String getActionMessage(Room currentRoom, ConcreteGameAction gameAction) {
-      Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
+   protected String getActionMessage(Room currentRoom, InstantiatedGameAction gameAction) {
+      Map<InstantiatedGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
       return gameDesignActions.get(gameAction).getMessage();
    }
 
@@ -146,9 +158,9 @@ public class BasicGameEngine extends GameEngine {
       globalStateCondition.putAll(designAction.getPreconditions());
    }
 
-   protected GameDesignAction getGameDesignAction(ConcreteGameAction gameAction, Room currentRoom) {
+   protected GameDesignAction getGameDesignAction(InstantiatedGameAction gameAction, Room currentRoom) {
       if (designerActions.containsKey(currentRoom)) {
-         Map<ConcreteGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
+         Map<InstantiatedGameAction, GameDesignAction> gameDesignActions = designerActions.get(currentRoom);
          if (gameDesignActions.containsKey(gameAction)) {
             return gameDesignActions.get(gameAction);
          }

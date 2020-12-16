@@ -5,5 +5,5 @@ public abstract class GameEngine{
 
   public abstract List<String> possibleItemNames();
 
-  public abstract String progressStory(ConcreteGameAction gameAction);
+  public abstract String progressStory(InstantiatedGameAction gameAction);
 }

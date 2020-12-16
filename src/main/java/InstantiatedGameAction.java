@@ -1,14 +1,14 @@
 import java.util.List;
 import java.util.Objects;
 
-public class ConcreteGameAction {
+public class InstantiatedGameAction {
    private ActionFormat abstractActionFormat;
    private List<String> arguments;
-   public ConcreteGameAction(ActionFormat actionFormat, List<String> nouns) {
+   public InstantiatedGameAction(ActionFormat actionFormat, List<String> nouns) {
       abstractActionFormat = actionFormat;
       arguments = nouns;
    }
-   public ConcreteGameAction(ActionFormat actionFormat) {
+   public InstantiatedGameAction(ActionFormat actionFormat) {
       abstractActionFormat = actionFormat;
    }
 
@@ -36,7 +36,7 @@ public class ConcreteGameAction {
       if (o == null || getClass() != o.getClass()) {
          return false;
       }
-      ConcreteGameAction that = (ConcreteGameAction) o;
+      InstantiatedGameAction that = (InstantiatedGameAction) o;
       return getAbstractActionFormat().equals(that.getAbstractActionFormat()) &&
           getArguments().equals(that.getArguments());
    }

@@ -1,5 +1,6 @@
 import java.util.Map;
 
+// TODO: This is really a BasicGameDesignAction and need to allow for ANTLR stuff with enhanced game engine
 public class GameDesignAction {
    private Map<String, String> preconditions;
    private String message;

@@ -1,8 +1,7 @@
 import java.util.List;
-import net.sf.extjwnl.JWNLException;
 
 public abstract class NLPEngine {
-  public abstract ConcreteGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException;
+  public abstract InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException;
 }
 
 

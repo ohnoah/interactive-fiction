@@ -58,7 +58,7 @@ public class BasicNLPEngineTest{
     List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
     possibleActionFormats.add(new ActionFormat("ski", null));
     possibleActionFormats.add(new ActionFormat("fly", null));
-    ConcreteGameAction concreteGameAction = basicNLPEngine.parse(String.format("eat steak"), possibleActionFormats , null);
+    InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("eat steak"), possibleActionFormats , null);
 
   }
   // TODO: Check other exceptions here
@@ -71,8 +71,8 @@ public class BasicNLPEngineTest{
     String noun = "dog";
     possibleActionFormats.add(new ActionFormat(verb, null));
     possibleActionFormats.add(new ActionFormat("fly", null));
-    ConcreteGameAction concreteGameAction = basicNLPEngine.parse(String.format("%s %s", verb, noun), possibleActionFormats , null);
-    ActionFormat abstractAF = concreteGameAction.getAbstractActionFormat();
+    InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s %s", verb, noun), possibleActionFormats , null);
+    ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
     String outVerb = abstractAF.getVerb();
     assertEquals(verb,outVerb);
   }
@@ -86,9 +86,9 @@ public class BasicNLPEngineTest{
     String verb = "open";
     String noun = "door";
     possibleActionFormats.add(new ActionFormat(verb, null));
-    ConcreteGameAction concreteGameAction = basicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats , null);
+    InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats , null);
     List<String> wantedArr = List.of(noun);
-    List<String> outArguments = concreteGameAction.getArguments();
+    List<String> outArguments = instantiatedGameAction.getArguments();
     assertEquals(wantedArr, outArguments);
   }
   @Test
@@ -98,8 +98,8 @@ public class BasicNLPEngineTest{
     String verb = "destroy";
     String noun = "cave";
     possibleActionFormats.add(new ActionFormat(verb, null));
-    ConcreteGameAction concreteGameAction = basicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats , null);
-    ActionFormat abstractAF = concreteGameAction.getAbstractActionFormat();
+    InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats , null);
+    ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
     String outVerb = abstractAF.getVerb();
     assertEquals(verb,outVerb);
   }
@@ -110,9 +110,9 @@ public class BasicNLPEngineTest{
     String verb = "destroy";
     String noun = "cave";
     possibleActionFormats.add(new ActionFormat(verb, null));
-    ConcreteGameAction concreteGameAction = basicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats , null);
+    InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats , null);
     List<String> wantedArr = List.of(noun);
-    List<String> outArguments = concreteGameAction.getArguments();
+    List<String> outArguments = instantiatedGameAction.getArguments();
     assertEquals(wantedArr, outArguments);
   }
   // TODO: Add ternary test

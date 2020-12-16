@@ -13,6 +13,9 @@ import javax.swing.plaf.ActionMapUIResource;
  */
 public class CommandLine extends JFrame {
    private static final String progname = "Interactive Fiction Engine";
+   private boolean playingGame = true;
+   private NLPEngine nlpEngine = new BasicNLPEngine();
+   private GameEngine gameEngine = new BasicGameEngine();
 
    private JTextField input;
    private JTextArea history;
@@ -35,8 +38,15 @@ public class CommandLine extends JFrame {
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText();
             String sofar = history.getText();
-            history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
-            input.setText("");
+            // TODO: If game editing mode, process numbered CLI
+            // Maybe use a variable indicating initialized progress
+            if(playingGame) {
+               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
+               input.setText("");
+            }
+            else{
+               System.out.println("Hello world");
+            }
          }
       });
       actionMap.put("backspace", new AbstractAction() {
@@ -72,12 +82,11 @@ public class CommandLine extends JFrame {
       setLocation((screen.width - d.width) / 2, (screen.height - d.height) / 2);
    }
 
-   public static String processCmd(String cmd) {
-      NLPEngine nlpEngine = new BasicNLPEngine();
-      GameEngine gameEngine = new BasicGameEngine();
-      List<ActionFormat> possibleGameActions = gameEngine.possibleActionFormats();
+   public String processCmd(String cmd) {
+      return cmd;
+/*      List<ActionFormat> possibleGameActions = gameEngine.possibleActionFormats();
       List<String> possibleItemNames = gameEngine.possibleItemNames();
-      ConcreteGameAction gameAction = null;
+      InstantiatedGameAction gameAction = null;
       try {
          gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItemNames);
       } catch (FailedParseException e) {
@@ -85,8 +94,7 @@ public class CommandLine extends JFrame {
       }
       String gameMessage = gameEngine.progressStory(gameAction);
 
-
-      return cmd;
+      return gameMessage;*/
    }
 
    public static void main(final String[] args) {
