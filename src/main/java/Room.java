@@ -9,6 +9,10 @@ public class Room {
    // TODO: In enhanced maybe items are more sophisticated
    private List<String> items;
 
+   public Room(String name){
+      this.name = name;
+   }
+
    public Room(String name, List<String> items) {
       this.name = name;
       this.items = new ArrayList<>();
@@ -22,7 +26,8 @@ public class Room {
    }
 
    public void setItems(List<String> items) {
-      this.items = items;
+      this.items = new ArrayList<>();
+      this.items.addAll(items);
    }
 
    @Override

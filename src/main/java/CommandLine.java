@@ -1,4 +1,6 @@
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +28,7 @@ public class CommandLine extends JFrame {
    private Room roomForAction;
    private InstantiatedGameAction instantiatedGameAction;
    private GameEditState effectAction;
+   private List<ActionFormat> actionFormats;
 
 
    private JTextField input;
@@ -38,7 +41,9 @@ public class CommandLine extends JFrame {
       this.getContentPane().add(mainpanel);
 
       input = new JTextField(80);
+      // TODO: Need to make this not-writeable
       history = new JTextArea();
+      history.setEditable(false);
       history.setLineWrap(true);
       history.setWrapStyleWord(true);
 
@@ -61,11 +66,10 @@ public class CommandLine extends JFrame {
             String sofar = history.getText();
             // TODO: If game editing mode, process numbered CLI
             // Maybe use a variable indicating initialized progress
-            if(playingGame) {
+            if (playingGame) {
                writeToTerminal(cmd, sofar, processCmd(cmd));
 //               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
-            }
-            else{
+            } else {
                editGame(cmd, sofar);
             }
          }
@@ -95,39 +99,151 @@ public class CommandLine extends JFrame {
       setVisible(true);
    }
 
-   private void writeToTerminal(String cmd, String sofar, String result){
+   private void writeToTerminal(String cmd, String sofar, String result) {
       history.setText(sofar + cmd + "\n" + result + "\n> ");
       input.setText("");
    }
 
+   private void resetAdditions() {
+      roomToAdd = null;
+      instantiatedGameAction = null;
+      roomForAction = null;
+      effectAction = null;
+      actionFormats = null;
+   }
+
+   // TODO: The behaviour here will depend on the implementation of GameEngine
+   // TODO: Current idea just extend GameDesignAction and check instanceof in switch
    private void editGame(String cmd, String sofar) {
       cmd = cmd.trim();
 
       String output = null;
-      switch(cmd){
+      switch (cmd) {
          case "quit":
             output = "QUITTING";
+            System.exit(0);
             break;
          case "list":
-            output = gameEngine.possibleActionFormats().stream()
+            output = gameEngine.getPossibleActionFormats().stream()
                 .map(ActionFormat::getVerb).collect(Collectors.joining(","));
             break;
+         case "list items":
+            if (roomForAction != null) {
+               output = roomForAction.getItems().stream().collect(Collectors.joining(","));
+            } else {
+               output = "No room has been selected for adding an action to";
+            }
+            break;
+         case "stop":
+            output = "";
+            resetAdditions();
+            gameEditState = GameEditState.OPEN;
+            break;
          default:
-            switch(gameEditState) {
+            switch (gameEditState) {
                case OPEN:
-                  System.out.println("Low level");
+                  switch (cmd) {
+                     case "play":
+                        output = String.format("Starting your game in \"%s\".", gameEngine.getCurrentRoom().getName());
+                        playingGame = true;
+                        break;
+                     case "add room":
+                        output = "What should the room be called?";
+                        gameEditState = GameEditState.ROOM_NAME;
+                        break;
+                     case "add action":
+                        output = "In what room?";
+                        gameEditState = GameEditState.ACTION_ROOM;
+                        break;
+                  }
+                  break;
+               case ROOM_NAME:
+                  List<Room> matchingRooms = gameEngine.findRoom(cmd);
+                  if (matchingRooms.size() > 0) {
+                     output = "There is already a room by that name. Try again.";
+                     gameEditState = GameEditState.OPEN;
+                  } else {
+                     roomToAdd = new Room(cmd);
+                     output = String.format("Adding room %s. What items do you want to add? Enter this as a comma-separated list i.e. \"bear, bread, pizza\".", cmd);
+                     gameEditState = GameEditState.ROOM_ITEMS;
+                  }
                   break;
                case ROOM_ITEMS:
-                  System.out.println("Medium level");
+                  List<String> splitItems = Arrays.asList(cmd.split(","));
+                  roomToAdd.setItems(splitItems);
+                  gameEngine.addRoom(roomToAdd);
+                  output = String.format("Great. Added a room called \"%s\" with items \"%s\".", roomToAdd.getName(), splitItems.stream()
+                      .collect(Collectors.joining(",")));
+                  if (gameEngine.getNumRooms() == 1) {
+                     gameEngine.setCurrentRoom(roomToAdd);
+                     output += " I've set this as the starting room as well.";
+                  }
+                  resetAdditions();
+                  gameEditState = GameEditState.OPEN;
+                  break;
+               case ACTION_ROOM:
+                  List<Room> matchedRooms = gameEngine.findRoom(cmd);
+                  if (matchedRooms.size() < 1) {
+                     output = "Couldn't find a room with that name. Try again or add it using \"add room\" after writing \"stop\".";
+                  } else {
+                     roomForAction = matchedRooms.get(0);
+                     output = "With what trigger word? Enter this as a verb e.g. \"open\". To see a list of the possible trigger words type \"list\" ";
+                     gameEditState = GameEditState.ACTION_TRIGGER;
+                  }
                   break;
                case ACTION_TRIGGER:
-                  System.out.println("High level");
+                  actionFormats = gameEngine.findAction(cmd);
+                  if (actionFormats.size() > 1) {
+                     output = "There are multiple actions with that trigger word but different sentence structures. Enter the index of the one you meant.";
+                     output += "\n";
+                     for (int i = 0; i < actionFormats.size(); i++) {
+                        output += String.format("(%d) %s", i, actionFormats.get(i).getRegExpr());
+                     }
+                     gameEditState = GameEditState.ACTION_TRIGGER_CLARIFY;
+                  } else if (actionFormats.size() == 1) {
+                     ActionFormat actionFormat = actionFormats.get(0);
+                     instantiatedGameAction = new InstantiatedGameAction(actionFormat);
+                     output = "Enter the items that this action should act upon as a comma-separated list e.g. \"apple,banana,pear\".";
+                     actionFormats = null;
+                     gameEditState = GameEditState.ACTION_ARGS;
+                  } else {
+                     output = "Couldn't find a trigger word with that name. To see a list of the possible trigger words type \"list\"";
+                  }
                   break;
                case ACTION_TRIGGER_CLARIFY:
+                  try {
+                     int index = Integer.parseInt(cmd);
+                     if (index >= actionFormats.size() || index < 0) {
+                        output = "That index was not one of the ones displayed.";
+                     } else {
+                        ActionFormat actionFormat = actionFormats.get(index);
+                        instantiatedGameAction = new InstantiatedGameAction(actionFormat);
+                        output = "Enter the items that this action should act upon as a comma-separated list e.g. \"apple,banana,pear\".";
+                        actionFormats = null;
+                        gameEditState = GameEditState.ACTION_ARGS;
+                     }
+                  } catch (NumberFormatException e) {
+                     output = "Non-integer entered to choose among the above options.";
+                  }
                   break;
                case ACTION_ARGS:
+                  List<String> splitArgs = Arrays.asList(cmd.split(","));
+                  if (splitArgs.size() == 0) {
+                     output = "You need to enter at least one argument.";
+                  } else {
+                     instantiatedGameAction.setArguments(splitArgs);
+                     output = "Enter the preconditions on the global state for this action e.g. \"room=First room,player=yellow\".";
+                     gameEditState = GameEditState.ACTION_PRE;
+                  }
                   break;
                case ACTION_PRE:
+                  try {
+                     Map<String, String> splitPreconds = Arrays.asList(cmd.split(",")).stream()
+                         .map(s -> s.split("="))
+                         .collect(Collectors.toMap(split -> split[0], split -> split[1]));
+                  } catch (IndexOutOfBoundsException e) {
+                     output = "Malformed string. Remember to separate each key of the world state by a \",\" and the key and the value by a \"=\" with no excess spaces";
+                  }
                   break;
                case ACTION_POST:
                   break;
