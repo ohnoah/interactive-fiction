@@ -1,6 +1,8 @@
 public enum GameEditState {
    OPEN,
+   ROOM_NAME,
    ROOM_ITEMS,
+   ACTION_ROOM,
    ACTION_TRIGGER,
    ACTION_TRIGGER_CLARIFY,
    ACTION_ARGS,

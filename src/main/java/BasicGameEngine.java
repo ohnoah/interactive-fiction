@@ -1,4 +1,4 @@
-import com.sun.istack.NotNull;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +19,7 @@ public class BasicGameEngine extends GameEngine {
    private Room currentRoom;
 
    public BasicGameEngine() {
+      super();
       worldState = new HashMap<>();
       designerActions = new HashMap<>();
       worldRooms = new ArrayList<>();
@@ -26,6 +27,7 @@ public class BasicGameEngine extends GameEngine {
    }
 
    public BasicGameEngine(@NotNull List<Room> rooms, @NotNull  Room startRoom, @NotNull Map<Room, Map<InstantiatedGameAction, GameDesignAction>> allowedActions) {
+      super();
       this.worldRooms = rooms;
       this.designerActions = allowedActions;
       this.worldRooms.forEach(x -> designerActions.putIfAbsent(x, new HashMap<InstantiatedGameAction, GameDesignAction>()));
@@ -46,38 +48,18 @@ public class BasicGameEngine extends GameEngine {
       actionsInRoom.put(triggeringAction, effectAction);
    }
 
-      // Todo: might want empty constructor so we can pick from these
    @Override
-   public List<ActionFormat> possibleActionFormats() {
-      // very common
-      ActionFormat examine = new ActionFormat("examine", null);
-      ActionFormat push = new ActionFormat("push", null);
-      ActionFormat take = new ActionFormat("take", null);
-      ActionFormat pull = new ActionFormat("pull", null);
-      ActionFormat drop = new ActionFormat("drop", null);
-      ActionFormat turn = new ActionFormat("turn", null);
-      ActionFormat open = new ActionFormat("open", null);
-      ActionFormat feel = new ActionFormat("feel", null);
-      ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
-      ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
-      // you could also try
-      ActionFormat eat = new ActionFormat("eat", null);
-      ActionFormat climb = new ActionFormat("climb", null);
-      ActionFormat drink = new ActionFormat("drink", null);
-      ActionFormat wave = new ActionFormat("wave", null);
-      ActionFormat fill = new ActionFormat("fill", null);
-      ActionFormat wear = new ActionFormat("wear", null);
-      ActionFormat smell = new ActionFormat("smell", null);
-      ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
-      ActionFormat breakIt = new ActionFormat("break", null);
-      ActionFormat burn = new ActionFormat("burn", null);
-      ActionFormat enter = new ActionFormat("enter", null);
-      ActionFormat search = new ActionFormat("search", null);
-      ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
-
-      return List.of(examine, push, take, pull, drop, turn, open, feel, putIn,
-          putOn, eat, climb, drink, wave, fill, wear, smell, listenTo, breakIt, burn, enter, search, unlockWith);
+   public int getNumRooms() {
+      return worldRooms.size();
    }
+
+   @Override
+   public List<Room> findRoom(String roomName) {
+      return worldRooms.stream()
+          .filter(room -> roomName.equals(room.getName()))
+          .collect(Collectors.toList());
+   }
+
 
    @Override
    public List<String> possibleItemNames() {
@@ -150,7 +132,7 @@ public class BasicGameEngine extends GameEngine {
       return gameDesignActions.get(gameAction).getMessage();
    }
 
-   protected Room getCurrentRoom() {
+   public Room getCurrentRoom() {
       return this.currentRoom;
    }
 

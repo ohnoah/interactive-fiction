@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,8 @@ public class InstantiatedGameAction {
    }
 
    public void setArguments(List<String> arguments) {
-      this.arguments = arguments;
+      this.arguments = new ArrayList<>();
+      this.arguments.addAll(arguments);
    }
 
    @Override
