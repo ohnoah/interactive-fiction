@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,9 +14,19 @@ import javax.swing.plaf.ActionMapUIResource;
  */
 public class CommandLine extends JFrame {
    private static final String progname = "Interactive Fiction Engine";
-   private boolean playingGame = true;
+   private boolean playingGame = false;
    private NLPEngine nlpEngine = new BasicNLPEngine();
    private GameEngine gameEngine = new BasicGameEngine();
+
+
+   private GameEditState gameEditState = GameEditState.OPEN;
+   private GameEditState prevGameEditState = null;
+   // Game Editing State variables to store progress
+   private Room roomToAdd;
+   private Room roomForAction;
+   private InstantiatedGameAction instantiatedGameAction;
+   private GameEditState effectAction;
+
 
    private JTextField input;
    private JTextArea history;
@@ -28,7 +39,17 @@ public class CommandLine extends JFrame {
 
       input = new JTextField(80);
       history = new JTextArea();
-      mainpanel.add(history, BorderLayout.CENTER);
+      history.setLineWrap(true);
+      history.setWrapStyleWord(true);
+
+      // TODO: Replace with IntelliJ Implementation
+      JScrollPane areaScrollPane = new JScrollPane(history);
+      areaScrollPane.setVerticalScrollBarPolicy(
+          JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+      areaScrollPane.setPreferredSize(new Dimension(250, 250));
+
+      //mainpanel.add(history, BorderLayout.CENTER);
+      mainpanel.add(areaScrollPane, BorderLayout.CENTER);
       mainpanel.add(input, BorderLayout.SOUTH);
 
       ActionMap actionMap = new ActionMapUIResource();
@@ -41,11 +62,11 @@ public class CommandLine extends JFrame {
             // TODO: If game editing mode, process numbered CLI
             // Maybe use a variable indicating initialized progress
             if(playingGame) {
-               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
-               input.setText("");
+               writeToTerminal(cmd, sofar, processCmd(cmd));
+//               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
             }
             else{
-               System.out.println("Hello world");
+               editGame(cmd, sofar);
             }
          }
       });
@@ -53,7 +74,6 @@ public class CommandLine extends JFrame {
          @Override
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText();
-            System.out.println(cmd);
             if (cmd.length() > 0) {
                cmd = cmd.substring(0, cmd.length() - 1);
             }
@@ -73,6 +93,54 @@ public class CommandLine extends JFrame {
       setLocation(100, 100);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
+   }
+
+   private void writeToTerminal(String cmd, String sofar, String result){
+      history.setText(sofar + cmd + "\n" + result + "\n> ");
+      input.setText("");
+   }
+
+   private void editGame(String cmd, String sofar) {
+      cmd = cmd.trim();
+
+      String output = null;
+      switch(cmd){
+         case "quit":
+            output = "QUITTING";
+            break;
+         case "list":
+            output = gameEngine.possibleActionFormats().stream()
+                .map(ActionFormat::getVerb).collect(Collectors.joining(","));
+            break;
+         default:
+            switch(gameEditState) {
+               case OPEN:
+                  System.out.println("Low level");
+                  break;
+               case ROOM_ITEMS:
+                  System.out.println("Medium level");
+                  break;
+               case ACTION_TRIGGER:
+                  System.out.println("High level");
+                  break;
+               case ACTION_TRIGGER_CLARIFY:
+                  break;
+               case ACTION_ARGS:
+                  break;
+               case ACTION_PRE:
+                  break;
+               case ACTION_POST:
+                  break;
+               case ACTION_MSG:
+                  break;
+               default:
+                  output = "Invalid game-developing state. Consult the game developer.";
+            }
+      }
+
+
+      writeToTerminal(cmd, sofar, output);
+
    }
 
    private void center() {
