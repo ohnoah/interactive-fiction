@@ -64,4 +64,5 @@ public abstract class GameEngine{
         .filter(af -> trigger.equals(af.getVerb()))
         .collect(Collectors.toList());
   }
+
 }

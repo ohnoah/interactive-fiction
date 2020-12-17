@@ -55,4 +55,7 @@ public class Room {
       this.name = name;
    }
 
+   public boolean validItems(List<String> items){
+      return items.stream().allMatch(x -> this.items.contains(x));
+   }
 }
