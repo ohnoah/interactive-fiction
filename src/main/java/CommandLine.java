@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class CommandLine extends JFrame {
    private Room roomToAdd;
    private Room roomForAction;
    private InstantiatedGameAction instantiatedGameAction;
-   private GameEditState effectAction;
+   private GameDesignAction effectAction;
    private List<ActionFormat> actionFormats;
 
 
@@ -68,7 +69,7 @@ public class CommandLine extends JFrame {
             // Maybe use a variable indicating initialized progress
             if (playingGame) {
                writeToTerminal(cmd, sofar, processCmd(cmd));
-//               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
+               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
             } else {
                editGame(cmd, sofar);
             }
@@ -102,6 +103,24 @@ public class CommandLine extends JFrame {
    private void writeToTerminal(String cmd, String sofar, String result) {
       history.setText(sofar + cmd + "\n" + result + "\n> ");
       input.setText("");
+   }
+
+   private List<String> splitByCommaAndTrim(String raw){
+      return Arrays.asList(raw.split(",")).stream().map(s -> s.trim()).collect(Collectors.toList());
+   }
+
+   private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException{
+      List<String> splitByComma = Arrays.asList(cmd.split(","));
+      Map<String, String> splitMap = null;
+      if(!cmd.equals("")){
+         splitMap = splitByComma.stream()
+             .map(s -> s.split("="))
+             .collect(Collectors.toMap(split -> split[0], split -> split[1]));
+      }
+      else{
+         splitMap = new HashMap<>();
+      }
+      return splitMap;
    }
 
    private void resetAdditions() {
@@ -144,7 +163,8 @@ public class CommandLine extends JFrame {
                case OPEN:
                   switch (cmd) {
                      case "play":
-                        output = String.format("Starting your game in \"%s\".", gameEngine.getCurrentRoom().getName());
+                        output = String.format("Starting your game in \"%s\".",
+                            gameEngine.getCurrentRoom().getName());
                         playingGame = true;
                         break;
                      case "add room":
@@ -155,6 +175,9 @@ public class CommandLine extends JFrame {
                         output = "In what room?";
                         gameEditState = GameEditState.ACTION_ROOM;
                         break;
+                     default:
+                        output = "That isn't a recognized command";
+                        break;
                   }
                   break;
                case ROOM_NAME:
@@ -162,18 +185,22 @@ public class CommandLine extends JFrame {
                   if (matchingRooms.size() > 0) {
                      output = "There is already a room by that name. Try again.";
                      gameEditState = GameEditState.OPEN;
+                  } else if (cmd.length() == 0) {
+                     output = "Please enter a name with more than one character";
                   } else {
                      roomToAdd = new Room(cmd);
-                     output = String.format("Adding room %s. What items do you want to add? Enter this as a comma-separated list i.e. \"bear, bread, pizza\".", cmd);
+                     output = String.format("Adding room %s. What items do you want to add? " +
+                         "Enter this as a comma-separated list i.e. \"bear, bread, pizza\".", cmd);
                      gameEditState = GameEditState.ROOM_ITEMS;
                   }
                   break;
                case ROOM_ITEMS:
-                  List<String> splitItems = Arrays.asList(cmd.split(","));
+                  List<String> splitItems = splitByCommaAndTrim(cmd);
                   roomToAdd.setItems(splitItems);
                   gameEngine.addRoom(roomToAdd);
-                  output = String.format("Great. Added a room called \"%s\" with items \"%s\".", roomToAdd.getName(), splitItems.stream()
-                      .collect(Collectors.joining(",")));
+                  output = String.format("Great. Added a room called \"%s\" with items \"%s\"."
+                      , roomToAdd.getName(), splitItems.stream()
+                          .collect(Collectors.joining(",")));
                   if (gameEngine.getNumRooms() == 1) {
                      gameEngine.setCurrentRoom(roomToAdd);
                      output += " I've set this as the starting room as well.";
@@ -184,30 +211,35 @@ public class CommandLine extends JFrame {
                case ACTION_ROOM:
                   List<Room> matchedRooms = gameEngine.findRoom(cmd);
                   if (matchedRooms.size() < 1) {
-                     output = "Couldn't find a room with that name. Try again or add it using \"add room\" after writing \"stop\".";
+                     output = "Couldn't find a room with that name. Try again or add it " +
+                         "using \"add room\" after writing \"stop\".";
                   } else {
                      roomForAction = matchedRooms.get(0);
-                     output = "With what trigger word? Enter this as a verb e.g. \"open\". To see a list of the possible trigger words type \"list\" ";
+                     output = "With what trigger word? Enter this as a verb e.g. \"open\". " +
+                         "To see a list of the possible trigger words type \"list\" ";
                      gameEditState = GameEditState.ACTION_TRIGGER;
                   }
                   break;
                case ACTION_TRIGGER:
                   actionFormats = gameEngine.findAction(cmd);
                   if (actionFormats.size() > 1) {
-                     output = "There are multiple actions with that trigger word but different sentence structures. Enter the index of the one you meant.";
+                     output = "There are multiple actions with that trigger word but different " +
+                         "sentence structures. Enter the index of the one you meant.";
                      output += "\n";
                      for (int i = 0; i < actionFormats.size(); i++) {
-                        output += String.format("(%d) %s", i, actionFormats.get(i).getRegExpr());
+                        output += String.format("(%d) %s \n", i, actionFormats.get(i).getRegExpr());
                      }
                      gameEditState = GameEditState.ACTION_TRIGGER_CLARIFY;
                   } else if (actionFormats.size() == 1) {
                      ActionFormat actionFormat = actionFormats.get(0);
                      instantiatedGameAction = new InstantiatedGameAction(actionFormat);
-                     output = "Enter the items that this action should act upon as a comma-separated list e.g. \"apple,banana,pear\".";
+                     output = "Enter the items that this action should act upon as a " +
+                         "comma-separated list e.g. \"apple,banana,pear\".";
                      actionFormats = null;
                      gameEditState = GameEditState.ACTION_ARGS;
                   } else {
-                     output = "Couldn't find a trigger word with that name. To see a list of the possible trigger words type \"list\"";
+                     output = "Couldn't find a trigger word with that name. To see a list of " +
+                         "the possible trigger words type \"list\"";
                   }
                   break;
                case ACTION_TRIGGER_CLARIFY:
@@ -218,7 +250,8 @@ public class CommandLine extends JFrame {
                      } else {
                         ActionFormat actionFormat = actionFormats.get(index);
                         instantiatedGameAction = new InstantiatedGameAction(actionFormat);
-                        output = "Enter the items that this action should act upon as a comma-separated list e.g. \"apple,banana,pear\".";
+                        output = "Enter the items that this action should act upon as a " +
+                            "comma-separated list e.g. \"apple,banana,pear\".";
                         actionFormats = null;
                         gameEditState = GameEditState.ACTION_ARGS;
                      }
@@ -227,30 +260,58 @@ public class CommandLine extends JFrame {
                   }
                   break;
                case ACTION_ARGS:
-                  List<String> splitArgs = Arrays.asList(cmd.split(","));
-                  if (splitArgs.size() == 0) {
-                     output = "You need to enter at least one argument.";
+                  List<String> splitArgs = splitByCommaAndTrim(cmd);
+                  int numArgs = instantiatedGameAction.getAbstractActionFormat().getDegree();
+                  int givenArgs = cmd.equals("") ? 0 : splitArgs.size();
+                  if (givenArgs != numArgs) {
+                     output = String.format("Incorrect argument list. You need to enter " +
+                         "exactly %d argument(s).", numArgs);
                   } else {
-                     instantiatedGameAction.setArguments(splitArgs);
-                     output = "Enter the preconditions on the global state for this action e.g. \"room=First room,player=yellow\".";
-                     gameEditState = GameEditState.ACTION_PRE;
+                     boolean validItems = roomForAction.validItems(splitArgs);
+                     if (validItems) {
+                        instantiatedGameAction.setArguments(splitArgs);
+                        output = "Enter the preconditions on the global state for this action " +
+                            "e.g. \"room=First room,player=yellow\".";
+                        gameEditState = GameEditState.ACTION_PRE;
+                     } else {
+                        output = "One or more of those items is not in the room. Try again.";
+                     }
                   }
                   break;
                case ACTION_PRE:
                   try {
-                     Map<String, String> splitPreconds = Arrays.asList(cmd.split(",")).stream()
-                         .map(s -> s.split("="))
-                         .collect(Collectors.toMap(split -> split[0], split -> split[1]));
+                     effectAction = new GameDesignAction();
+                     Map<String, String> splitPreconds = stringToMap(cmd);
+                     effectAction.setPreconditions(splitPreconds);
+                     output = "Enter the effect on the global state for this action " +
+                         "e.g. \"room=room2,player=red\".";
+                     gameEditState = GameEditState.ACTION_POST;
                   } catch (IndexOutOfBoundsException e) {
-                     output = "Malformed string. Remember to separate each key of the world state by a \",\" and the key and the value by a \"=\" with no excess spaces";
+                     output = "Malformed string. Remember to separate each key of the world state" +
+                         " by a \",\" and the key and the value by a \"=\" with no excess spaces";
                   }
                   break;
                case ACTION_POST:
+                  try {
+                     Map<String, String> splitPostconds = stringToMap(cmd);
+                     effectAction.setUpdateState(splitPostconds);
+                     output = "Enter the message to display to the user after taking this action.";
+                     gameEditState = GameEditState.ACTION_MSG;
+                  } catch (IndexOutOfBoundsException e) {
+                     output = "Malformed string. Remember to separate each key of the world state" +
+                         " by a \",\" and the key and the value by a \"=\" with no excess spaces";
+                  }
                   break;
                case ACTION_MSG:
+                  effectAction.setMessage(cmd);
+                  gameEngine.addAction(roomForAction, instantiatedGameAction, effectAction);
+                  resetAdditions();
+                  output = "Great. Adding your new action to the game";
+                  gameEditState = GameEditState.OPEN;
                   break;
                default:
                   output = "Invalid game-developing state. Consult the game developer.";
+                  break;
             }
       }
 
@@ -267,8 +328,7 @@ public class CommandLine extends JFrame {
    }
 
    public String processCmd(String cmd) {
-      return cmd;
-/*      List<ActionFormat> possibleGameActions = gameEngine.possibleActionFormats();
+      List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
       List<String> possibleItemNames = gameEngine.possibleItemNames();
       InstantiatedGameAction gameAction = null;
       try {
@@ -278,7 +338,7 @@ public class CommandLine extends JFrame {
       }
       String gameMessage = gameEngine.progressStory(gameAction);
 
-      return gameMessage;*/
+      return gameMessage;
    }
 
    public static void main(final String[] args) {

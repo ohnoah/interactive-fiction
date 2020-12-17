@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Map;
 
 // TODO: This is really a BasicGameDesignAction and need to allow for ANTLR stuff with enhanced game engine
@@ -12,13 +13,18 @@ public class GameDesignAction {
       this.updateState = updateState;
    }
 
+   public GameDesignAction() {
+
+   }
+
 
    public Map<String, String> getPreconditions() {
       return preconditions;
    }
 
    public void setPreconditions(Map<String, String> preconditions) {
-      this.preconditions = preconditions;
+      this.preconditions = new HashMap<>();
+      this.preconditions.putAll(preconditions);
    }
 
    public Map<String, String> getUpdateState() {
@@ -26,7 +32,8 @@ public class GameDesignAction {
    }
 
    public void setUpdateState(Map<String, String> updateState) {
-      this.updateState = updateState;
+      this.updateState = new HashMap<>();
+      this.updateState.putAll(updateState);
    }
 
 

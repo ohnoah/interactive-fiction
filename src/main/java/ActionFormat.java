@@ -14,6 +14,16 @@ public class ActionFormat {
       this.regExpr = regExpr;
    }
 
+   public int getDegree(){
+      if(regExpr == null){
+         return 1;
+      }
+      else{
+         return (int) regExpr.chars().filter(c -> c == '(').count();
+      }
+
+   }
+
    public boolean isTernary(){
       return regExpr != null;
    }
