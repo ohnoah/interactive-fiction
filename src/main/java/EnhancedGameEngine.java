@@ -2,7 +2,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine{
-
+   private static final long serialVersionUID = -4373751472843245010L;
    @Override
    public List<String> possibleItemNames() {
       return null;

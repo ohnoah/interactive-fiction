@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -5,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BasicGameEngine extends GameEngine {
+public class BasicGameEngine extends GameEngine{
+   private static final long serialVersionUID = 4965893056456165060L;
    private Map<String, String> worldState;
    // room name maps
    private Map<Room, Map<InstantiatedGameAction, GameDesignAction>> designerActions;

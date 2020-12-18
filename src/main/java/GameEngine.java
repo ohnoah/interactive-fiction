@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class GameEngine{
+public abstract class GameEngine implements Serializable {
 
   private List<ActionFormat> possibleActionFormats;
 

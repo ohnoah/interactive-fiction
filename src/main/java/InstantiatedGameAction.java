@@ -1,8 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class InstantiatedGameAction {
+public class InstantiatedGameAction implements Serializable {
+   private static final long serialVersionUID = 6379776405329900763L;
    private ActionFormat abstractActionFormat;
    private List<String> arguments;
    public InstantiatedGameAction(ActionFormat actionFormat, List<String> nouns) {

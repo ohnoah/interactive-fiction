@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 // TODO: This is really a BasicGameDesignAction and need to allow for ANTLR stuff with enhanced game engine
-public class GameDesignAction {
+public class GameDesignAction implements Serializable {
    private Map<String, String> preconditions;
    private String message;
    private Map<String, String> updateState;
