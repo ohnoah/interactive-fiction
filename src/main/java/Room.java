@@ -1,10 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 // Note: Names of rooms must be unique and need to verify this in user code
 
-public class Room {
+public class Room implements Serializable {
+   private static final long serialVersionUID = 7378519455619006377L;
    private String name;
    // TODO: In enhanced maybe items are more sophisticated
    private List<String> items;

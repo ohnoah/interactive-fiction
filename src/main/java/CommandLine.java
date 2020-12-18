@@ -195,6 +195,7 @@ public class CommandLine extends JFrame {
                   }
                   break;
                case ROOM_ITEMS:
+                  // TODO: Add split based on EnhancedEngine here to allow adjectives and synonyms
                   List<String> splitItems = splitByCommaAndTrim(cmd);
                   roomToAdd.setItems(splitItems);
                   gameEngine.addRoom(roomToAdd);

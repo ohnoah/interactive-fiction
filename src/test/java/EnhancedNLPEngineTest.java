@@ -37,7 +37,9 @@ public class EnhancedNLPEngineTest {
       ActionFormat actionFormat = new ActionFormat("open", null);
       List<String> doorArr = List.of("door");
       CoreDocument document = coreDocumentFromText("open door");
-      assertEquals(doorArr, enhancedNLPEngine.findNouns(document, actionFormat));
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(doorArr, nouns);
    }
 
    @Test
@@ -45,7 +47,9 @@ public class EnhancedNLPEngineTest {
       ActionFormat actionFormat = new ActionFormat("examine", null);
       List<String> breadArr = List.of("bread");
       CoreDocument document = coreDocumentFromText("examine the bread");
-      assertEquals(breadArr, enhancedNLPEngine.findNouns(document, actionFormat));
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(breadArr, nouns);
    }
 
    @Test
@@ -53,7 +57,9 @@ public class EnhancedNLPEngineTest {
       ActionFormat actionFormat = new ActionFormat("throw", "throw ([\\w\\s]+) in ([\\w\\s]+)$");
       List<String> keyBoxArr = List.of("ball", "container");
       CoreDocument document = coreDocumentFromText("throw ball in container");
-      assertEquals(keyBoxArr, enhancedNLPEngine.findNouns(document, actionFormat));
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(keyBoxArr, nouns);
    }
 
    @Test
@@ -61,8 +67,31 @@ public class EnhancedNLPEngineTest {
       ActionFormat actionFormat = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
       List<String> keyBoxArr = List.of("key", "box");
       CoreDocument document = coreDocumentFromText("put the key in the box");
-      assertEquals(keyBoxArr, enhancedNLPEngine.findNouns(document, actionFormat));
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(keyBoxArr, nouns);
    }
+
+   @Test
+   public void findNounsFindsTernarySingleAdjective() throws JWNLException, FailedParseException {
+      ActionFormat actionFormat = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
+      List<List<String>> redBlackArr = List.of(List.of("red"), List.of("black"));
+      CoreDocument document = coreDocumentFromText("put the red key in the black box");
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(redBlackArr, adjectives);
+   }
+
+   @Test
+   public void findNounsFindsTernaryMultipleAdjectives() throws JWNLException, FailedParseException {
+      ActionFormat actionFormat = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
+      List<List<String>> multiAdjArr = List.of(List.of("larger", "red"), List.of("cutest", "blue"));
+      CoreDocument document = coreDocumentFromText("put the larger red key in the cutest blue box");
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(multiAdjArr, adjectives);
+   }
+
 
    @Rule
    public ExpectedException exceptionRule = ExpectedException.none();

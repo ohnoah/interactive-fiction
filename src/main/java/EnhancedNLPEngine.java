@@ -55,13 +55,14 @@ public class EnhancedNLPEngine extends NLPEngine {
       verb = findVerb(document);
       ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
 
-      List<String> nouns = null;
+      List<String> nouns = new ArrayList<>();
+      List<List<String>> adjectives = new ArrayList<>();
       if(actionFormat == null){
          // I DONT UNDERSTAND THAT
          throw new FailedParseException(String.format("Can't understand the verb: %s",verb));
       }
       else{
-         nouns = findNouns(document, actionFormat);
+         findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
       }
 
       //TODO: do the wordnet stuff here for nouns
@@ -86,11 +87,10 @@ public class EnhancedNLPEngine extends NLPEngine {
    }
 
    // TODO: Rule out put the box in the box
-   protected List<String> findNouns(CoreDocument document, ActionFormat actionToTake) throws FailedParseException {
+   protected void findNounsAndAdjectives(CoreDocument document, ActionFormat actionToTake, List<String> nouns, List<List<String>> adjectives) throws FailedParseException {
       // TODO: Both cases should match against possibleActionNames with Wordnet
       // Word net in here
       // Either do a regex match for PUT IN
-      List<String> nouns = new ArrayList<>();
       if(actionToTake.isTernary()){
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
          Matcher m = p.matcher(document.text());
@@ -98,7 +98,7 @@ public class EnhancedNLPEngine extends NLPEngine {
          if (doesMatch) {
             for (int i = 1; i <= m.groupCount(); i++) {
                String matchingGroup = m.group(i);
-               appendMatchingGroupNoun(nouns, document, matchingGroup, actionToTake);
+               appendMatchingGroupNoun(nouns, adjectives, document, matchingGroup, actionToTake);
             }
          } else {
             throw new FailedParseException("Argument structure after the verb was wrong.");
@@ -107,10 +107,15 @@ public class EnhancedNLPEngine extends NLPEngine {
       // Or just find the noun
       else{
          String noun  = null;
+         List<String> currentAdjectives = new ArrayList<>();
          for (CoreLabel tok : document.tokens()) {
             String tag = tok.tag();
             System.err.println(tag);
+            if(tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")){
+               currentAdjectives.add(tok.word());
+            }
             if (tag.equals("NN")) {
+               adjectives.add(currentAdjectives);
                noun = tok.word();
                nouns.add(noun);
                break;
@@ -120,7 +125,6 @@ public class EnhancedNLPEngine extends NLPEngine {
             throw new FailedParseException("No noun specified");
          }
       }
-      return nouns;
    }
 
    protected String removeNumberTag(String s){
@@ -134,7 +138,7 @@ public class EnhancedNLPEngine extends NLPEngine {
    }
 
    // TODO: How does this work if there is a "-" in the sentence
-   protected void appendMatchingGroupNoun(List<String> nouns, CoreDocument document, String matchingGroup, ActionFormat actionToTake) throws FailedParseException {
+   protected void appendMatchingGroupNoun(List<String> nouns, List<List<String>> adjectives, CoreDocument document, String matchingGroup, ActionFormat actionToTake) throws FailedParseException {
       CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup, "tokenize");
       int index = Collections.indexOfSubList(document.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()),
           matchingDoc.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()));
@@ -144,10 +148,15 @@ public class EnhancedNLPEngine extends NLPEngine {
          throw new FailedParseException("Incorrect usage of the verb: " + actionToTake.getVerb());
       }
       String noun;
+      List<String> currentAdjectives = new ArrayList<>();
       for (int i = index; i < index + matchingDoc.tokens().size(); i++) {
          CoreLabel tok = document.tokens().get(i);
          String tag = tok.tag();
+         if(tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")){
+            currentAdjectives.add(tok.word());
+         }
          if (tag.equals("NN")) {
+            adjectives.add(currentAdjectives);
             noun = tok.word();
             nouns.add(noun);
             return;
@@ -198,13 +207,13 @@ public class EnhancedNLPEngine extends NLPEngine {
       StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
       // build annotation for a review
       Annotation annotation =
-          new Annotation("turn off the chair");
+          new Annotation("examine larger red key");
       // annotate
       pipeline.annotate(annotation);
       // get tree
       Tree tree =
           annotation.get(CoreAnnotations.SentencesAnnotation.class).get(0).get(TreeCoreAnnotations.TreeAnnotation.class);
-/*      annotation.get(2)
+      //annotation.get(2)
       List<Tree> rootChildren = tree.getChild(0).getChildrenAsList();
       if(rootChildren.size() == 1 && rootChildren.get(0).label().toString().equals("VP")){
          List<Tree> childrenVP = rootChildren.get(0).getChildrenAsList();
@@ -221,20 +230,25 @@ public class EnhancedNLPEngine extends NLPEngine {
       }
       else {
          System.err.println("not 1 length");
-      }*/
+      }
 
 
       System.out.println(tree);
       Set<Constituent> treeConstituents = tree.constituents(new LabeledScoredConstituentFactory());
       for (Constituent constituent : treeConstituents) {
-         if (constituent.label() != null &&
-             (constituent.label().toString().equals("VP") || constituent.label().toString().equals("NP"))) {
+         if (constituent.label() != null){
+             //(constituent.label().toString().equals("VP") || constituent.label().toString().equals("NP"))) {
             System.err.println("found constituent: "+constituent.toString());
             System.err.println(tree.getLeaves().subList(constituent.start(), constituent.end()+1));
          }
       }
-/*      EnhancedNLPEngine enhancedNLPEngine = new EnhancedNLPEngine();
-      InstantiatedGameAction command = enhancedNLPEngine.parse("put it in the box",null);*/
+
+      EnhancedNLPEngine enhancedNLPEngine = new EnhancedNLPEngine();
+      try {
+         InstantiatedGameAction command = enhancedNLPEngine.parse("put the black key in the red key",new BasicGameEngine().getPossibleActionFormats(), List.of("key"));
+      } catch (FailedParseException e) {
+         e.printStackTrace();
+      }
    }
 
    public CoreDocument generateCoreDocumentFromString(String rawCommand, String annotatorsProperty) {
