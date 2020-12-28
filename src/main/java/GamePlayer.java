@@ -4,7 +4,14 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ComponentInputMap;
@@ -32,18 +39,34 @@ public class GamePlayer extends JFrame {
 
    private static final String progname = "IF Game Player";
    private NLPEngine nlpEngine = new BasicNLPEngine();
-   private GameEngine gameEngine = new BasicGameEngine();
+   private GameEngine gameEngine = null;
 
-   private boolean isLoaded = false;
 
    private JTextField input;
    private JTextArea history;
 
+   private void initializeJFrame(ActionMap actionMap){
+      InputMap keyMap = new ComponentInputMap(input);
+      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
+
+      SwingUtilities.replaceUIActionMap(input, actionMap);
+      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
+      input.setEditable(true);
+      history.setText("Please enter the file-name of the game you wish to play \n>");
+
+      setSize(600, 600);
+      setLocation(100, 100);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setVisible(true);
+      center();
+   }
+
    public GamePlayer() {
       super(progname);
-      JPanel mainpanel = new JPanel();
-      mainpanel.setLayout(new BorderLayout());
-      this.getContentPane().add(mainpanel);
+      JPanel mainPanel = new JPanel();
+      mainPanel.setLayout(new BorderLayout());
+      this.getContentPane().add(mainPanel);
 
       input = new JTextField(80);
       // TODO: Need to make this not-writeable
@@ -58,23 +81,40 @@ public class GamePlayer extends JFrame {
           JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
       areaScrollPane.setPreferredSize(new Dimension(250, 250));
 
-      mainpanel.add(areaScrollPane, BorderLayout.CENTER);
-      mainpanel.add(input, BorderLayout.SOUTH);
+      mainPanel.add(areaScrollPane, BorderLayout.CENTER);
+      mainPanel.add(input, BorderLayout.SOUTH);
 
       ActionMap actionMap = new ActionMapUIResource();
 
       actionMap.put("enter", new AbstractAction() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            String cmd = input.getText();
+            String cmd = input.getText().trim();
             String sofar = history.getText();
-            if(isLoaded) {
+            if(gameEngine != null) {
                writeToTerminal(cmd, sofar, processCmd(cmd));
-               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
             }
             else{
-
-
+               if(isReadableFile(cmd)){
+                  try {
+                     FileInputStream fileIn = new FileInputStream(cmd);
+                     ObjectInputStream in = new ObjectInputStream(fileIn);
+                     gameEngine = (GameEngine) in.readObject();
+                     in.close();
+                     fileIn.close();
+                     history.setText("> ");
+                     input.setText("");
+                  } catch (IOException i) {
+                     writeToTerminal(cmd, sofar, "Something went wrong when opening the file. Try again.");
+                     i.printStackTrace();
+                  } catch (ClassNotFoundException c) {
+                     writeToTerminal(cmd, sofar, "Couldn't find the GameEngine class.");
+                     c.printStackTrace();
+                  }
+               }
+               else{
+                  writeToTerminal(cmd, sofar, "That isn't a valid readable file in your file system. Try again.");
+               }
             }
          }
       });
@@ -88,20 +128,14 @@ public class GamePlayer extends JFrame {
             input.setText(cmd);
          }
       });
-      InputMap keyMap = new ComponentInputMap(input);
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
+      
+      initializeJFrame(actionMap);
 
-      SwingUtilities.replaceUIActionMap(input, actionMap);
-      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
-      input.setEditable(true);
-      history.setText("Please enter the file-name of the game you wish to play \n >");
+   }
 
-      setSize(600, 600);
-      setLocation(100, 100);
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      setVisible(true);
-      center();
+   private boolean isReadableFile(String cmd) {
+      Path path = Paths.get(cmd);
+      return Files.exists(path) && Files.isReadable(path);
    }
 
    private void writeToTerminal(String cmd, String sofar, String result) {
@@ -117,11 +151,14 @@ public class GamePlayer extends JFrame {
    }
 
    public String processCmd(String cmd) {
+      if(cmd.equals("quit")){
+         System.exit(0);
+      }
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
-      List<String> possibleItemNames = gameEngine.possibleItemNames();
+      Set<Item> possibleItems = gameEngine.possibleItems();
       InstantiatedGameAction gameAction = null;
       try {
-         gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItemNames);
+         gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItems);
       } catch (FailedParseException e) {
          return e.getMessage();
       }
@@ -133,7 +170,7 @@ public class GamePlayer extends JFrame {
    public static void main(final String[] args) {
       Runnable runner = new Runnable() {
          public void run() {
-            new BasicGameEditor();
+            new GamePlayer();
          }
       };
       EventQueue.invokeLater(runner);

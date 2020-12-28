@@ -3,18 +3,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: This is really a BasicGameDesignAction and need to allow for ANTLR stuff with enhanced game engine
-public class GameDesignAction implements Serializable {
+public class BasicGameDesignAction implements Serializable {
    private Map<String, String> preconditions;
    private String message;
    private Map<String, String> updateState;
 
-   public GameDesignAction(Map<String, String> preconditions, String message, Map<String, String> updateState) {
+   public BasicGameDesignAction(Map<String, String> preconditions, String message, Map<String, String> updateState) {
       this.preconditions = preconditions;
       this.message = message;
       this.updateState = updateState;
    }
 
-   public GameDesignAction() {
+   public BasicGameDesignAction() {
 
    }
 

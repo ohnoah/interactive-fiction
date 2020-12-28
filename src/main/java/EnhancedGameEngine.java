@@ -1,11 +1,11 @@
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import java.util.Set;
 
 public class EnhancedGameEngine extends GameEngine{
    private static final long serialVersionUID = -632593143667622722L;
 
+
    @Override
-   public List<String> possibleItemNames() {
+   public Set<Item> possibleItems() {
       return null;
    }
 

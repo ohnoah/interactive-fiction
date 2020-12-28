@@ -14,7 +14,7 @@ import net.sf.extjwnl.data.POS;
 public class BasicNLPEngine extends NLPEngine {
 
    @Override
-   public InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, List<String> possibleItemNames) throws FailedParseException {
+   public InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
       // TODO: Fail if more than one sentence or there is an and in the sentence
 
       // display tokens

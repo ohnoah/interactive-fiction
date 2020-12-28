@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +45,7 @@ public abstract class GameEngine implements Serializable {
         putOn, eat, climb, drink, wave, fill, wear, smell, listenTo, breakIt, burn, enter, search, unlockWith);
   }
 
-  public abstract List<String> possibleItemNames();
+  public abstract Set<Item> possibleItems();
 
   public abstract String progressStory(@NotNull InstantiatedGameAction gameAction);
 
