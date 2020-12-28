@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BasicGameEngine extends GameEngine{
-   private static final long serialVersionUID = 4965893056456165060L;
+   private static final long serialVersionUID = -6110210712647113376L;
    private Map<String, String> worldState;
    // room name maps
    private Map<Room, Map<InstantiatedGameAction, GameDesignAction>> designerActions;
@@ -50,12 +50,10 @@ public class BasicGameEngine extends GameEngine{
       actionsInRoom.put(triggeringAction, effectAction);
    }
 
-   @Override
    public int getNumRooms() {
       return worldRooms.size();
    }
 
-   @Override
    public List<Room> findRoom(String roomName) {
       return worldRooms.stream()
           .filter(room -> roomName.equals(room.getName()))
