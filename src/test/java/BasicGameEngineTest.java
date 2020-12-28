@@ -4,11 +4,15 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.Test;
 
 public class BasicGameEngineTest {
+
    public static BasicGameEngine oneRoomOneAction(){
-      Room room = new Room("place1", List.of("apple", "banana", "orange"));
+      Room room = new Room("place1");
+      room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
       basicGameEngine.addRoom(room);
@@ -24,16 +28,18 @@ public class BasicGameEngineTest {
       Map<String, String> postCond = new HashMap<>();
       postCond.put("random-state", "very-good");
       postCond.put("superset-state", "very-not-good");
-      GameDesignAction gameDesignAction = new GameDesignAction(preCond, "You did action 1", postCond);
+      BasicGameDesignAction basicGameDesignAction = new BasicGameDesignAction(preCond, "You did action 1", postCond);
       // Put in maps
-      basicGameEngine.addAction(room, instantiatedGameAction, gameDesignAction);
+      basicGameEngine.addAction(room, instantiatedGameAction, basicGameDesignAction);
 
       return basicGameEngine;
    }
 
    public static BasicGameEngine twoRoomTwoActions(){
-      Room room = new Room("place1", List.of("apple", "banana", "orange"));
-      Room room2 = new Room("room2", List.of("elephant"));
+      Room room = new Room("place1");
+      room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
+      Room room2 = new Room("room2");
+      room2.setItemsNoAdjectives(List.of("elephant"));
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
       basicGameEngine.addRoom(room);
@@ -47,7 +53,7 @@ public class BasicGameEngineTest {
       Map<String, String> postCond = new HashMap<>();
       postCond.put("room", "room2");
       postCond.put("state", "random");
-      GameDesignAction gameDesignAction1 = new GameDesignAction(preCond, "You did action 1", postCond);
+      BasicGameDesignAction basicGameDesignAction1 = new BasicGameDesignAction(preCond, "You did action 1", postCond);
       // Put in maps
 
 
@@ -56,10 +62,10 @@ public class BasicGameEngineTest {
       // Create value for action
       Map<String, String> preCond2 = new HashMap<>();
       preCond2.put("room", "room2");
-      GameDesignAction gameDesignAction2 = new GameDesignAction(preCond2, "You did action 2", new HashMap<>());
+      BasicGameDesignAction basicGameDesignAction2 = new BasicGameDesignAction(preCond2, "You did action 2", new HashMap<>());
 
-      basicGameEngine.addAction(room, instantiatedGameAction1, gameDesignAction1);
-      basicGameEngine.addAction(room2, instantiatedGameAction2, gameDesignAction2);
+      basicGameEngine.addAction(room, instantiatedGameAction1, basicGameDesignAction1);
+      basicGameEngine.addAction(room2, instantiatedGameAction2, basicGameDesignAction2);
       return basicGameEngine;
 
 
@@ -68,7 +74,8 @@ public class BasicGameEngineTest {
    @Test
    public void possibleItemNamesWorks(){
       BasicGameEngine basicGameEngine = oneRoomOneAction();
-      List<String> itemNames = basicGameEngine.possibleItemNames();
+      Set<Item> items = basicGameEngine.possibleItems();
+      List<String> itemNames = items.stream().map(Item::getName).collect(Collectors.toList());
       assertEquals(List.of("apple", "banana", "orange"), itemNames);
    }
    @Test

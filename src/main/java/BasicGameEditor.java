@@ -1,10 +1,15 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import java.awt.*;
@@ -31,12 +36,30 @@ public class BasicGameEditor extends JFrame {
    private Room roomToAdd;
    private Room roomForAction;
    private InstantiatedGameAction instantiatedGameAction;
-   private GameDesignAction effectAction;
+   private BasicGameDesignAction effectAction;
    private List<ActionFormat> actionFormats;
 
 
    private JTextField input;
    private JTextArea history;
+
+
+   private void initializeJFrame(ActionMap actionMap){
+      InputMap keyMap = new ComponentInputMap(input);
+      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
+
+      SwingUtilities.replaceUIActionMap(input, actionMap);
+      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
+      input.setEditable(true);
+      history.setText(">");
+
+      setSize(600, 600);
+      setLocation(100, 100);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setVisible(true);
+      center();
+   }
 
    public BasicGameEditor() {
       super(progname);
@@ -66,16 +89,15 @@ public class BasicGameEditor extends JFrame {
       actionMap.put("enter", new AbstractAction() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            String cmd = input.getText();
+            String cmd = input.getText().trim();
             String sofar = history.getText();
             // TODO: If game editing mode, process numbered CLI
             // Maybe use a variable indicating initialized progress
-            if (playingGame) {
+/*            if (playingGame) {
                writeToTerminal(cmd, sofar, processCmd(cmd));
-               history.setText(sofar + cmd + "\n" + processCmd(cmd) + "\n> ");
-            } else {
+            } else {*/
                editGame(cmd, sofar);
-            }
+/*            }*/
          }
       });
       actionMap.put("backspace", new AbstractAction() {
@@ -88,20 +110,7 @@ public class BasicGameEditor extends JFrame {
             input.setText(cmd);
          }
       });
-      InputMap keyMap = new ComponentInputMap(input);
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
-
-      SwingUtilities.replaceUIActionMap(input, actionMap);
-      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
-      input.setEditable(true);
-      history.setText(">");
-
-      setSize(600, 600);
-      setLocation(100, 100);
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      setVisible(true);
-      center();
+      initializeJFrame(actionMap);
    }
 
    private void writeToTerminal(String cmd, String sofar, String result) {
@@ -133,12 +142,43 @@ public class BasicGameEditor extends JFrame {
       effectAction = null;
       actionFormats = null;
    }
+   public static <T> boolean hasDuplicate(Iterable<T> all) {
+      Set<T> set = new HashSet<T>();
+      // Set#add returns false if the set does not change, which
+      // indicates that a duplicate element has been added.
+      for (T each: all) if (!set.add(each)) return true;
+      return false;
+   }
+
+   public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives){
+      List<String> clauses = splitByCommaAndTrim(cmd);
+      for(String clause : clauses) {
+         if (clause.contains("[") || clause.contains("]")) {
+            Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s]+)\\]$");
+            Matcher m = p.matcher(clause);
+            boolean doesMatch = m.matches();
+            if (doesMatch) {
+               String name = m.group(1);
+               String adjectiveSlots = m.group(2);
+               names.add(name);
+               adjectives.add(Arrays.asList(adjectiveSlots.split(" ")).stream()
+                   .map(String::trim).collect(Collectors.toSet()));
+            }
+            else{
+               return false;
+            }
+         }
+         else{
+            names.add(clause);
+            adjectives.add(new HashSet<>());
+         }
+      }
+      return true;
+   }
 
    // TODO: The behaviour here will depend on the implementation of GameEngine
-   // TODO: Current idea just extend GameDesignAction and check instanceof in switch
+   // TODO: Current idea just extend BasicGameDesignAction and check instanceof in switch
    private void editGame(String cmd, String sofar) {
-      cmd = cmd.trim();
-
       String output = null;
       switch (cmd) {
          case "quit":
@@ -155,7 +195,7 @@ public class BasicGameEditor extends JFrame {
             break;
          case "list items":
             if (roomForAction != null) {
-               output = roomForAction.getItems().stream().collect(Collectors.joining(","));
+               output = roomForAction.getItems().stream().map(Item::toString).collect(Collectors.joining(","));
             } else {
                output = "No room has been selected for adding an action to";
             }
@@ -217,24 +257,44 @@ public class BasicGameEditor extends JFrame {
                   } else {
                      roomToAdd = new Room(cmd);
                      output = String.format("Adding room %s. What items do you want to add? " +
-                         "Enter this as a comma-separated list i.e. \"bear, bread, pizza\".", cmd);
+                         "Enter this as a comma-separated list with adjectives space-separated in square brackets" +
+                         " i.e. \"bear [furry big brown], bread [fluffy], pizza\".", cmd);
                      gameEditState = GameEditState.ROOM_ITEMS;
                   }
                   break;
                case ROOM_ITEMS:
-                  // TODO: Add split based on EnhancedEngine here to allow adjectives and synonyms
-                  List<String> splitItems = splitByCommaAndTrim(cmd);
-                  roomToAdd.setItems(splitItems);
-                  gameEngine.addRoom(roomToAdd);
-                  output = String.format("Great. Added a room called \"%s\" with items \"%s\"."
-                      , roomToAdd.getName(), splitItems.stream()
-                          .collect(Collectors.joining(",")));
-                  if (gameEngine.getNumRooms() == 1) {
-                     gameEngine.setCurrentRoom(roomToAdd);
-                     output += " I've set this as the starting room as well.";
+                  //List<String> splitItems = splitByCommaAndTrim(cmd);
+                  List<String> names = new ArrayList<>();
+                  List<Set<String>> adjectives = new ArrayList<>();
+                  boolean validText = itemNamesAndAdjectives(cmd, names, adjectives);
+
+                  if(validText) {
+                     if (hasDuplicate(names)) {
+                        output = "Items can not have the same name. Try again.";
+                     } else {
+                        Set<Item> items = new HashSet<>();
+                        for(int i = 0; i<names.size(); i++){
+                           Item item = new Item(names.get(i), adjectives.get(i));
+                           items.add(item);
+                        }
+                        roomToAdd.setItems(items);
+                        gameEngine.addRoom(roomToAdd);
+                        output = String.format("Great. Added a room called \"%s\" with items \"%s\"."
+                            , roomToAdd.getName(), names.stream()
+                                .collect(Collectors.joining(",")));
+                        if (gameEngine.getNumRooms() == 1) {
+                           gameEngine.setCurrentRoom(roomToAdd);
+                           output += " I've set this as the starting room as well.";
+                        }
+                        resetAdditions();
+                        gameEditState = GameEditState.OPEN;
+                     }
                   }
-                  resetAdditions();
-                  gameEditState = GameEditState.OPEN;
+                  else{
+                     output = "Invalid specification. Try to use the form " +
+                         "\"name1 [adj1 adj2 ... adjn]\" for each item or just \"name2\" without" +
+                         "adjectives";
+                  }
                   break;
                case ACTION_ROOM:
                   List<Room> matchedRooms = gameEngine.findRoom(cmd);
@@ -308,7 +368,7 @@ public class BasicGameEditor extends JFrame {
                   break;
                case ACTION_PRE:
                   try {
-                     effectAction = new GameDesignAction();
+                     effectAction = new BasicGameDesignAction();
                      Map<String, String> splitPreconds = stringToMap(cmd);
                      effectAction.setPreconditions(splitPreconds);
                      output = "Enter the effect on the global state for this action " +
@@ -355,12 +415,13 @@ public class BasicGameEditor extends JFrame {
       setLocation((screen.width - d.width) / 2, (screen.height - d.height) / 2);
    }
 
+/*
    public String processCmd(String cmd) {
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
-      List<String> possibleItemNames = gameEngine.possibleItemNames();
+      List<Item> possibleItems = gameEngine.possibleItems();
       InstantiatedGameAction gameAction = null;
       try {
-         gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItemNames);
+         gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItems);
       } catch (FailedParseException e) {
          return e.getMessage();
       }
@@ -368,6 +429,7 @@ public class BasicGameEditor extends JFrame {
 
       return gameMessage;
    }
+*/
 
    public static void main(final String[] args) {
       Runnable runner = new Runnable() {
