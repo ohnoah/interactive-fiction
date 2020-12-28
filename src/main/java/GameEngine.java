@@ -46,21 +46,9 @@ public abstract class GameEngine implements Serializable {
 
   public abstract List<String> possibleItemNames();
 
-  public abstract String progressStory(InstantiatedGameAction gameAction);
+  public abstract String progressStory(@NotNull InstantiatedGameAction gameAction);
 
-  public abstract Room getCurrentRoom();
-  public abstract void setCurrentRoom(Room currentRoom);
-    // TODO: This should probably use exceptions
-  public abstract void addRoom(@NotNull Room room);
-
-  public abstract void addAction(@NotNull Room roomForAction, @NotNull InstantiatedGameAction triggeringAction, @NotNull GameDesignAction effectAction);
-
-  public abstract int getNumRooms();
-
-  public abstract List<Room> findRoom(String roomName);
-
-
-  public List<ActionFormat> findAction(String trigger){
+  public List<ActionFormat> findAction(@NotNull String trigger){
     return possibleActionFormats.stream()
         .filter(af -> trigger.equals(af.getVerb()))
         .collect(Collectors.toList());

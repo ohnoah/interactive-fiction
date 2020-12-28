@@ -1,3 +1,6 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,21 +12,21 @@ import java.awt.event.*;
 import javax.swing.plaf.ActionMapUIResource;
 
 /**
- * CommandLine
+ * BasicGameEditor
  *
  * @author Stefan Wagner, Noah Ohrner
  * @date Mi 25. Apr 17:27:19 CEST 2012, 17 Nov 2020
  * (c) GPLv3
  */
-public class CommandLine extends JFrame {
-   private static final String progname = "Interactive Fiction Engine";
+public class BasicGameEditor extends JFrame {
+   private static final String progname = "IF Basic Game Editor";
    private boolean playingGame = false;
-   private NLPEngine nlpEngine = new BasicNLPEngine();
-   private GameEngine gameEngine = new BasicGameEngine();
+   private BasicNLPEngine nlpEngine = new BasicNLPEngine();
+   private BasicGameEngine gameEngine = new BasicGameEngine();
+   private boolean saved = false;
 
 
    private GameEditState gameEditState = GameEditState.OPEN;
-   private GameEditState prevGameEditState = null;
    // Game Editing State variables to store progress
    private Room roomToAdd;
    private Room roomForAction;
@@ -35,7 +38,7 @@ public class CommandLine extends JFrame {
    private JTextField input;
    private JTextArea history;
 
-   public CommandLine() {
+   public BasicGameEditor() {
       super(progname);
       JPanel mainpanel = new JPanel();
       mainpanel.setLayout(new BorderLayout());
@@ -98,6 +101,7 @@ public class CommandLine extends JFrame {
       setLocation(100, 100);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
+      center();
    }
 
    private void writeToTerminal(String cmd, String sofar, String result) {
@@ -105,19 +109,18 @@ public class CommandLine extends JFrame {
       input.setText("");
    }
 
-   private List<String> splitByCommaAndTrim(String raw){
+   private List<String> splitByCommaAndTrim(String raw) {
       return Arrays.asList(raw.split(",")).stream().map(s -> s.trim()).collect(Collectors.toList());
    }
 
-   private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException{
+   private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException {
       List<String> splitByComma = Arrays.asList(cmd.split(","));
       Map<String, String> splitMap = null;
-      if(!cmd.equals("")){
+      if (!cmd.equals("")) {
          splitMap = splitByComma.stream()
              .map(s -> s.split("="))
              .collect(Collectors.toMap(split -> split[0], split -> split[1]));
-      }
-      else{
+      } else {
          splitMap = new HashMap<>();
       }
       return splitMap;
@@ -139,8 +142,12 @@ public class CommandLine extends JFrame {
       String output = null;
       switch (cmd) {
          case "quit":
-            output = "QUITTING";
-            System.exit(0);
+            if (!saved) {
+               output = "Warning: you have not saved your progress. If you still want to quit type quit again.";
+               saved = true;
+            } else {
+               System.exit(0);
+            }
             break;
          case "list":
             output = gameEngine.getPossibleActionFormats().stream()
@@ -175,9 +182,29 @@ public class CommandLine extends JFrame {
                         output = "In what room?";
                         gameEditState = GameEditState.ACTION_ROOM;
                         break;
+                     case "save":
+                        output = "Saving your game. What file-name do you want it to have?";
+                        gameEditState = GameEditState.SAVE_FILENAME;
+                        break;
                      default:
                         output = "That isn't a recognized command";
                         break;
+                  }
+                  break;
+               case SAVE_FILENAME:
+                  String fileName = cmd.length() > 0 ? cmd : "your-latest-game.ser";
+                  fileName = fileName.endsWith(".ser") ? fileName : fileName + ".ser";
+                  try {
+                     FileOutputStream fileOut =
+                         new FileOutputStream(fileName);
+                     ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                     out.writeObject(gameEngine);
+                     out.close();
+                     fileOut.close();
+                     output = String.format("Saved your game to disk with name: %s.", fileName);
+                     saved = true;
+                  } catch (IOException i) {
+                     i.printStackTrace();
                   }
                   break;
                case ROOM_NAME:
@@ -345,7 +372,7 @@ public class CommandLine extends JFrame {
    public static void main(final String[] args) {
       Runnable runner = new Runnable() {
          public void run() {
-            new CommandLine();
+            new BasicGameEditor();
          }
       };
       EventQueue.invokeLater(runner);

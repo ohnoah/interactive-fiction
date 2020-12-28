@@ -73,6 +73,25 @@ public class EnhancedNLPEngineTest {
    }
 
    @Test
+   public void findNounsFindsUnarySingleAdjective() throws JWNLException, FailedParseException {
+      ActionFormat actionFormat = new ActionFormat("examine", null);
+      List<List<String>> deliciousArr = List.of(List.of("delicious"));
+      CoreDocument document = coreDocumentFromText("examine the delicious bread");
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(deliciousArr, adjectives);
+   }
+   @Test
+   public void findNounsFindsUnaryMultipleAdjectives() throws JWNLException, FailedParseException {
+      ActionFormat actionFormat = new ActionFormat("examine", null);
+      List<List<String>> deliciousArr = List.of(List.of("delicious", "yellow"));
+      CoreDocument document = coreDocumentFromText("examine the delicious and yellow bread");
+      List<String> nouns = new ArrayList<>(); List<List<String>> adjectives = new ArrayList<>();
+      enhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      assertEquals(deliciousArr, adjectives);
+   }
+
+   @Test
    public void findNounsFindsTernarySingleAdjective() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
       List<List<String>> redBlackArr = List.of(List.of("red"), List.of("black"));

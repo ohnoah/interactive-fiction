@@ -1,5 +1,6 @@
 public enum GameEditState {
    OPEN,
+   SAVE_FILENAME,
    ROOM_NAME,
    ROOM_ITEMS,
    ACTION_ROOM,
