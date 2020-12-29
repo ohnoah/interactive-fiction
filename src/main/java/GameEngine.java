@@ -41,9 +41,11 @@ public abstract class GameEngine implements Serializable {
       ActionFormat enter = new ActionFormat("enter", null);
       ActionFormat search = new ActionFormat("search", null);
       ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
+      // Noah's own
+      ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
 
       this.possibleActionFormats = List.of(examine, push, take, pull, drop, turn, open, feel, putIn,
-          putOn, eat, climb, drink, wave, fill, wear, smell, listenTo, breakIt, burn, enter, search, unlockWith);
+          putOn, eat, climb, drink, wave, fill, wear, smell, listenTo, breakIt, burn, enter, search, unlockWith, remove);
    }
 
    public abstract Set<Item> possibleItems();

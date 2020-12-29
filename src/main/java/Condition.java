@@ -34,6 +34,15 @@ public class Condition {
       return getBooleanExpr().equals(condition.getBooleanExpr()) &&
           getFailureMessage().equals(condition.getFailureMessage());
    }
+   public Condition(String booleanExpr) {
+      this.booleanExpr = booleanExpr;
+      this.failureMessage = "You can't do that right now.";
+   }
+
+   public Condition(String booleanExpr, String failureMessage) {
+      this.booleanExpr = booleanExpr;
+      this.failureMessage = failureMessage;
+   }
 
    @Override
    public int hashCode() {
