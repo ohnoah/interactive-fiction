@@ -22,6 +22,8 @@ public class EnhancedNLPEngineTest {
       enhancedNLPEngine = new EnhancedNLPEngine();
    }
 
+   @Rule
+   public ExpectedException exceptionRule = ExpectedException.none();
    // Test helpers
    @Test
    public void findVerbFindsUnaryEat() throws JWNLException, FailedParseException {
@@ -123,8 +125,6 @@ public class EnhancedNLPEngineTest {
    }
 
 
-   @Rule
-   public ExpectedException exceptionRule = ExpectedException.none();
 
    @Test
    public void whenNoMatchingGameVerbThrowFailedParseException() throws FailedParseException {
@@ -212,6 +212,36 @@ public class EnhancedNLPEngineTest {
       List<String> foundItemNames = enhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
 
       assertEquals(List.of("bear", "panda", "grizzly bear"), foundItemNames);
+   }
+
+   // TODO: Test findMatchingGameItemNames
+   @Test
+   public void findMatchingGameItemNamesFailsTooManyAdjectives() throws FailedParseException {
+      exceptionRule.expect(FailedParseException.class);
+      exceptionRule.expectMessage("There is no orange,yellow grizzly bear in your environment.");
+      List<String> nouns = List.of("bear", "panda", "grizzly bear");
+      List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny", "orange", "yellow"));
+      Set<Item> gameItems = Set.of(
+          new Item("bear", Set.of("furry", "kind", "hilarious", "funny")),
+          new Item("panda"),
+          new Item("grizzly bear", Set.of("funny", "boring", "interesting"))
+      );
+      List<String> foundItemNames = enhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
+   }
+
+   // TODO: Test findMatchingGameItemNames
+   @Test
+   public void findMatchingGameItemNamesFailsWrongNoun() throws FailedParseException {
+      exceptionRule.expect(FailedParseException.class);
+      exceptionRule.expectMessage("There is no paparrazi in your environment.");
+      List<String> nouns = List.of("paparrazi", "panda", "grizzly bear");
+      List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
+      Set<Item> gameItems = Set.of(
+          new Item("kangaroo", Set.of("furry", "kind", "hilarious", "funny")),
+          new Item("panda"),
+          new Item("grizzly bear", Set.of("funny", "boring", "interesting"))
+      );
+      List<String> foundItemNames = enhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
 
    // TODO: Test failing with adjectives etc
