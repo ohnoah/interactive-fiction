@@ -8,10 +8,11 @@ public class EnhancedGameDesignAction implements Serializable {
    // In the Game Editor the default text
    // Do a folding AND to get if this passes or not
    private List<Condition> preconditions; // This is written in ANTLR syntax. This should only reference global state.
+   // TODO: use fillQueryString on this to allow for richer messages.
    private String message;
    // TODO: Do we need to add support for executing code based on prev value?
    // Frame-name -> slot-name -> new filler value
-   private Map<String, Map<String, String>> updateState;
+   private List<KnowledgeUpdate> updateState;
 
 
    public EnhancedGameDesignAction() {
