@@ -21,6 +21,8 @@ public class ActionLogic {
       // We can use knowledgeEngine constructs here
       successMessage.put(putIn, "You put the smaller _arg1 in _arg2");
       conditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume));
+      // TODO: Create KnowledgeUpdate to subtract from the volume, add _arg1 to _arg2's contains
+      // TODO: and add _arg2 to _arg2's inside field.
 
 
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
@@ -28,31 +30,59 @@ public class ActionLogic {
       checkLogic(gameAction);
    }
 
+   private void fillConditionWithArgs(Condition condition, List<String> nouns) {
+      String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns);
+      String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns);
+      condition.setBooleanExpr(newBooleanExpr);
+      condition.setFailureMessage(newFailureMessage);
+   }
+
+   private String replaceArgsWithNouns(String s, List<String> nouns) {
+      String newString = s;
+      for (int i = 1; i <= nouns.size(); i++) {
+         newString = newString.replaceAll("_arg" + i, nouns.get(i));
+      }
+      return newString;
+   }
+
+   // TODO: We are going to want the exact same logic for the GameDesignActiosn later
+   // TODO: Maybe it's best to fill condition with concrete values here and pass that in to KB
    private void checkLogic(InstantiatedGameAction gameAction) {
       boolean valid = true;
       String reasoning = "";
       ActionFormat actionFormat = gameAction.getAbstractActionFormat();
       // If action is implemented
-      if(conditionsMap.containsKey(actionFormat)){
+      List<String> nouns = gameAction.getArguments();
+      if (conditionsMap.containsKey(actionFormat)) {
          List<Condition> conditions = conditionsMap.get(actionFormat);
-         for(Condition condition : conditions){
+         // TODO: Encapsulate this in a method that can be used in EnhancedGameDesignAction as well
+         for (Condition condition : conditions) {
             // This will populate the errorMessage in Condition if fails
-            // TODO: Validate condition should use replacePlaceholders on condition.failureMsg
-            if(!knowledgeBase.validateCondition(condition, gameAction.getArguments())){
+            fillConditionWithArgs(condition, nouns);
+            try {
+               if (!knowledgeBase.validateCondition(condition.getBooleanExpr())) {
+                  valid = false;
+                  reasoning = knowledgeBase.fillQueryString(condition.getFailureMessage());
+                  break;
+               }
+            } catch (InvalidKnowledgeSyntaxException e) {
                valid = false;
-               reasoning = condition.getFailureMessage();
-               break;
+               reasoning = "There was an error behind the scenes. Try performing another action.";
+               e.printStackTrace();
             }
          }
-         if(valid){
-            reasoning = knowledgeBase.replacePlaceholders(successMessage.get(actionFormat));
-         }
+         if (valid) {
+            String populatedSuccessMessage = replaceArgsWithNouns(successMessage.get(actionFormat), nouns);
+            reasoning = knowledgeBase.fillQueryString(populatedSuccessMessage);
 
-         List<KnowledgeUpdate> knowledgeUpdates =
-             knowledgeUpdateMap.getOrDefault(actionFormat, new ArrayList<>());
-         // TODO: Use a method on the knowledgeBase to update it. This method needs to understand
-         // TODO: the engineering of the KnowledgeUpdate
-         //
+            List<KnowledgeUpdate> knowledgeUpdates =
+                knowledgeUpdateMap.getOrDefault(actionFormat, new ArrayList<>());
+            for(KnowledgeUpdate knowledgeUpdate : knowledgeUpdates){
+               knowledgeBase.update(knowledgeUpdate);
+            }
+         }
+         // TODO: Encapsulate
+
       }
       this.valid = valid;
       this.reasoning = reasoning;
