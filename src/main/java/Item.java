@@ -30,6 +30,7 @@ public class Item implements Serializable {
       this.name = name;
       this.adjectives = new HashSet<>();
       this.adjectives.addAll(defaultAdjectives);
+      this.synonyms = new HashSet<>();
    }
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives, @NotNull Set<String> synonyms) {

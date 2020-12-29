@@ -102,7 +102,7 @@ public class EnhancedNLPEngine extends NLPEngine {
                   continue nounLoop;
                } else {
                   String missingItems = adjectives.get(i).stream()
-                      .filter(s -> !item.getAdjectives().contains(s)).collect(Collectors.joining(","));
+                      .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
                   throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
                }
             }
