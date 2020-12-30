@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,17 @@ public class EnhancedGameDesignAction implements Serializable {
 
    }
 
+   public List<Condition> getPreconditions() {
+      List<Condition> returner = new ArrayList<>();
+      returner.addAll(preconditions);
+      return returner;
+   }
+
+   public List<KnowledgeUpdate> getUpdateState() {
+      List<KnowledgeUpdate> returner = new ArrayList<>();
+      returner.addAll(updateState);
+      return returner;
+   }
 
    public String getMessage() {
       return message;

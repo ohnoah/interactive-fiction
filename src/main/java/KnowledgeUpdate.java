@@ -6,6 +6,48 @@ import java.util.regex.Pattern;
 public class KnowledgeUpdate implements Serializable {
    private UpdateType updateType;
    private boolean isConstantUpdate;
+
+   public UpdateType getUpdateType() {
+      return updateType;
+   }
+
+   @Override
+   public String toString() {
+      return "KnowledgeUpdate{" +
+          "updateType=" + updateType +
+          ", isConstantUpdate=" + isConstantUpdate +
+          ", updateConstant='" + updateConstant + '\'' +
+          ", settingFrameID='" + settingFrameID + '\'' +
+          ", settingSlot='" + settingSlot + '\'' +
+          ", updatingFrameID='" + updatingFrameID + '\'' +
+          ", updatingSlot='" + updatingSlot + '\'' +
+          '}';
+   }
+
+   public boolean isConstantUpdate() {
+      return isConstantUpdate;
+   }
+
+   public String getUpdateConstant() {
+      return updateConstant;
+   }
+
+   public String getSettingFrameID() {
+      return settingFrameID;
+   }
+
+   public String getSettingSlot() {
+      return settingSlot;
+   }
+
+   public String getUpdatingFrameID() {
+      return updatingFrameID;
+   }
+
+   public String getUpdatingSlot() {
+      return updatingSlot;
+   }
+
    private String updateConstant;
    private String settingFrameID;
    private String settingSlot;

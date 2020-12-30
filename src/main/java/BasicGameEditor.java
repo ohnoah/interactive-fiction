@@ -44,7 +44,7 @@ public class BasicGameEditor extends JFrame {
    private JTextArea history;
 
 
-   private void initializeJFrame(ActionMap actionMap){
+   private void initializeJFrame(ActionMap actionMap) {
       InputMap keyMap = new ComponentInputMap(input);
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
@@ -96,8 +96,8 @@ public class BasicGameEditor extends JFrame {
 /*            if (playingGame) {
                writeToTerminal(cmd, sofar, processCmd(cmd));
             } else {*/
-               editGame(cmd, sofar);
-/*            }*/
+            editGame(cmd, sofar);
+            /*            }*/
          }
       });
       actionMap.put("backspace", new AbstractAction() {
@@ -142,17 +142,22 @@ public class BasicGameEditor extends JFrame {
       effectAction = null;
       actionFormats = null;
    }
+
    public static <T> boolean hasDuplicate(Iterable<T> all) {
       Set<T> set = new HashSet<T>();
       // Set#add returns false if the set does not change, which
       // indicates that a duplicate element has been added.
-      for (T each: all) if (!set.add(each)) return true;
+      for (T each : all) {
+         if (!set.add(each)) {
+            return true;
+         }
+      }
       return false;
    }
 
-   public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives){
+   public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
       List<String> clauses = splitByCommaAndTrim(cmd);
-      for(String clause : clauses) {
+      for (String clause : clauses) {
          if (clause.contains("[") || clause.contains("]")) {
             Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s]+)\\]$");
             Matcher m = p.matcher(clause);
@@ -163,12 +168,10 @@ public class BasicGameEditor extends JFrame {
                names.add(name);
                adjectives.add(Arrays.asList(adjectiveSlots.split(" ")).stream()
                    .map(String::trim).collect(Collectors.toSet()));
-            }
-            else{
+            } else {
                return false;
             }
-         }
-         else{
+         } else {
             names.add(clause);
             adjectives.add(new HashSet<>());
          }
@@ -268,12 +271,14 @@ public class BasicGameEditor extends JFrame {
                   List<Set<String>> adjectives = new ArrayList<>();
                   boolean validText = itemNamesAndAdjectives(cmd, names, adjectives);
 
-                  if(validText) {
+                  if (validText) {
                      if (hasDuplicate(names)) {
                         output = "Items can not have the same name. Try again.";
+                     } else if (names.contains("world")) {
+                        output = "The word \"world\" is reserved";
                      } else {
                         Set<Item> items = new HashSet<>();
-                        for(int i = 0; i<names.size(); i++){
+                        for (int i = 0; i < names.size(); i++) {
                            Item item = new Item(names.get(i), adjectives.get(i));
                            items.add(item);
                         }
@@ -289,8 +294,7 @@ public class BasicGameEditor extends JFrame {
                         resetAdditions();
                         gameEditState = GameEditState.OPEN;
                      }
-                  }
-                  else{
+                  } else {
                      output = "Invalid specification. Try to use the form " +
                          "\"name1 [adj1 adj2 ... adjn]\" for each item or just \"name2\" without" +
                          "adjectives";

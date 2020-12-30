@@ -1,5 +1,19 @@
 public class KnowledgeBase {
 
+
+   private String stripUnderscore(String s) {
+      if (s.charAt(0) == '_') {
+         return s.substring(1);
+      } else {
+         return s;
+      }
+   }
+
+   public boolean frameNameEquals(String s1, String s2) {
+      return stripUnderscore(s1).equals(stripUnderscore(s2));
+   }
+   // TODO: ALL of these need to throw MISSING Knowledge exception
+
    public String fillQueryString(String failureMessage) {
       // TODO: Replace all possible query strings that start with _ in the strings.
       return null;
@@ -19,4 +33,13 @@ public class KnowledgeBase {
       // TODO: failure mode will be to write the type failure to an error file and ignore the update
    }
 
+   public void printExceptionToLog(InvalidKnowledgeSyntaxException e) {
+   }
+
+   public String query(String settingFrameID, String settingSlot) {
+      return null;
+   }
+
+   public void printToErrorLog(String s) {
+   }
 }

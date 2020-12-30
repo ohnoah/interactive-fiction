@@ -8,6 +8,25 @@ import org.jetbrains.annotations.NotNull;
 public abstract class GameEngine implements Serializable {
 
    private List<ActionFormat> possibleActionFormats;
+   protected List<Room> worldRooms;
+   protected Room currentRoom;
+
+   protected void moveRoom(String roomName) {
+      List<Room> matched = findRoom(roomName);
+      if (matched.size() >= 1) {
+         currentRoom = matched.get(0);
+      }
+      else {
+         System.err.println("Invalid room. Contact system administrator.");
+      }
+
+   }
+
+   public List<Room> findRoom(String roomName) {
+      return worldRooms.stream()
+          .filter(room -> roomName.equals(room.getName()))
+          .collect(Collectors.toList());
+   }
 
    public final List<ActionFormat> getPossibleActionFormats() {
       List<ActionFormat> actionFormats = new ArrayList<>();
