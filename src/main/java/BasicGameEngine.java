@@ -9,19 +9,17 @@ import java.util.stream.Collectors;
 
 // TODO: Start message
 
-public class BasicGameEngine extends GameEngine implements Serializable{
+public class BasicGameEngine extends GameEngine implements Serializable {
    private static final long serialVersionUID = 7326328040473434623L;
    private Map<String, String> worldState;
    // room name maps
    private Map<Room, Map<InstantiatedGameAction, BasicGameDesignAction>> designerActions;
-   private List<Room> worldRooms;
 
    public void setCurrentRoom(Room currentRoom) {
       this.currentRoom = currentRoom;
       this.worldState.put("room", currentRoom.getName());
    }
 
-   private Room currentRoom;
 
    public BasicGameEngine() {
       super();
@@ -31,7 +29,7 @@ public class BasicGameEngine extends GameEngine implements Serializable{
       currentRoom = null;
    }
 
-   public BasicGameEngine(@NotNull List<Room> rooms, @NotNull  Room startRoom, @NotNull Map<Room, Map<InstantiatedGameAction, BasicGameDesignAction>> allowedActions) {
+   public BasicGameEngine(@NotNull List<Room> rooms, @NotNull Room startRoom, @NotNull Map<Room, Map<InstantiatedGameAction, BasicGameDesignAction>> allowedActions) {
       super();
       this.worldRooms = rooms;
       this.designerActions = allowedActions;
@@ -41,8 +39,8 @@ public class BasicGameEngine extends GameEngine implements Serializable{
    }
 
    // TODO: This should probably use exceptions
-   public void addRoom(@NotNull Room room){
-      if(!worldRooms.contains(room)){
+   public void addRoom(@NotNull Room room) {
+      if (!worldRooms.contains(room)) {
          worldRooms.add(room);
          designerActions.putIfAbsent(room, new HashMap<>());
       }
@@ -57,11 +55,6 @@ public class BasicGameEngine extends GameEngine implements Serializable{
       return worldRooms.size();
    }
 
-   public List<Room> findRoom(String roomName) {
-      return worldRooms.stream()
-          .filter(room -> roomName.equals(room.getName()))
-          .collect(Collectors.toList());
-   }
 
 
 
@@ -119,22 +112,7 @@ public class BasicGameEngine extends GameEngine implements Serializable{
       }
    }
 
-   protected void moveRoom(String roomName) {
-      List<Room> matched = worldRooms.stream()
-          .filter(room -> roomName.equals(room.getName()))
-          .collect(Collectors.toList());
-      if (matched.size() == 1) {
-         currentRoom = matched.get(0);
-      } else {
-         System.err.println("Invalid room. Contact system administrator.");
-      }
 
-   }
-
-   protected String getActionMessage(Room currentRoom, InstantiatedGameAction gameAction) {
-      Map<InstantiatedGameAction, BasicGameDesignAction> gameDesignActions = designerActions.get(currentRoom);
-      return gameDesignActions.get(gameAction).getMessage();
-   }
 
    public Room getCurrentRoom() {
       return this.currentRoom;
