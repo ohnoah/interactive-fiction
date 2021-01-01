@@ -80,10 +80,10 @@ public class KnowledgeUpdate implements Serializable {
    }
 
    public KnowledgeUpdate(String expr) throws InvalidKnowledgeSyntaxException {
-      String knowledgeExpr = "^([\\w]+::[\\w]+)";
-      String setTypeExpr = "(=|\\+=|-=|\\*=|/=)";
-      String numberExpr = "\\d*\\.?\\d+";
-      String stringExpr = "\\w*";
+      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String setTypeExpr = KnowledgeRegex.setTypeExpr;
+      String numberExpr = KnowledgeRegex.numberExpr;
+      String stringExpr = KnowledgeRegex.stringExpr;
 
       Pattern variable = Pattern.compile(String.format("^%s %s %s$", knowledgeExpr, setTypeExpr, knowledgeExpr));
       Matcher constantMatcher = variable.matcher(expr);

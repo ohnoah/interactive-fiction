@@ -10,9 +10,8 @@ import org.jetbrains.annotations.NotNull;
 // Note: Names of rooms must be unique and need to verify this in user code
 
 public class Room implements Serializable {
-   private static final long serialVersionUID = 7378519455619006377L;
+   private static final long serialVersionUID = 5587204892436301652L;
    private String name;
-   // TODO: In enhanced maybe items are more sophisticated
    private Set<Item> items;
 
    public Room(@NotNull String name){
@@ -21,19 +20,15 @@ public class Room implements Serializable {
 
    public Room(String name, List<Item> items) {
       this.name = name;
-      this.items = new HashSet<>();
-      this.items.addAll(items);
+      this.items = new HashSet<>(items);
    }
 
    public Set<Item> getItems() {
-      Set<Item> al = new HashSet<>();
-      al.addAll(items);
-      return al;
+      return new HashSet<>(items);
    }
 
    public void setItems(Set<Item> items) {
-      this.items = new HashSet<>();
-      this.items.addAll(items);
+      this.items = new HashSet<>(items);
    }
    public void setItemsNoAdjectives(List<String> items){
       this.items = items.stream().map(Item::new).collect(Collectors.toSet());

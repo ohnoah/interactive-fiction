@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 public class Item implements Serializable {
-   private static final long serialVersionUID = 7866571131647302083L;
+   private static final long serialVersionUID = -2769417686782978456L;
    private String name;
    // Both of these should be sets
    private Set<String> adjectives;
@@ -35,10 +35,8 @@ public class Item implements Serializable {
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives, @NotNull Set<String> synonyms) {
       this.name = name;
-      this.adjectives = new HashSet<>();
-      this.adjectives.addAll(defaultAdjectives);
-      this.synonyms = new HashSet<>();
-      this.synonyms.addAll(synonyms);
+      this.adjectives = new HashSet<>(defaultAdjectives);
+      this.synonyms = new HashSet<>(synonyms);
    }
 
    @Override
@@ -59,9 +57,7 @@ public class Item implements Serializable {
    }
 
    public Set<String> getAdjectives() {
-      Set<String> returner = new HashSet<>();
-      returner.addAll(adjectives);
-      return returner;
+      return new HashSet<>(adjectives);
    }
 
    public void setAdjectives(Set<String> adjectives) {
@@ -70,14 +66,11 @@ public class Item implements Serializable {
    }
 
    public Set<String> getSynonyms() {
-      Set<String> returner = new HashSet<>();
-      returner.addAll(synonyms);
-      return returner;
+      return new HashSet<>(synonyms);
    }
 
    public void setSynonyms(List<String> synonyms) {
-      this.synonyms = new HashSet<>();
-      this.synonyms.addAll(synonyms);
+      this.synonyms = new HashSet<>(synonyms);
    }
 
 
