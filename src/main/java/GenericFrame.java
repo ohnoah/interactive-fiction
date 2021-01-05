@@ -7,14 +7,14 @@ public class GenericFrame {
    private String id;
 
 
-   private Map<String, String> slots;
+   private Map<String, Object> slots;
 
    public GenericFrame(@NotNull String id) {
       this.id = id;
       this.slots = new HashMap<>();
    }
 
-   public void addSlots(Map<String, String> slots) {
+   public void addSlots(Map<String, Object> slots) {
       this.slots.putAll(slots);
    }
 
@@ -22,7 +22,7 @@ public class GenericFrame {
       return id;
    }
 
-   public Map<String, String> getSlots() {
+   public Map<String, Object> getSlots() {
       return new HashMap<>(slots);
    }
 

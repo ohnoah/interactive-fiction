@@ -38,7 +38,7 @@ public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {
    @Override
    public List<String> visitStringelems(ConstantsParser.StringelemsContext ctx) {
       List<String> stringList = new ArrayList<>();
-      for (TerminalNode t: ctx.STRING()) {
+      for (TerminalNode t : ctx.STRING()) {
          stringList.add(t.getText());
       }
       return stringList;
@@ -47,7 +47,7 @@ public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {
    @Override
    public List<Double> visitNumberelems(ConstantsParser.NumberelemsContext ctx) {
       List<Double> doubleList = new ArrayList<>();
-      for (TerminalNode t: ctx.DECIMAL()) {
+      for (TerminalNode t : ctx.DECIMAL()) {
          doubleList.add(Double.valueOf(t.getText()));
       }
       return doubleList;
