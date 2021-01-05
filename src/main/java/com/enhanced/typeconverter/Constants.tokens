@@ -1,0 +1,11 @@
+QUOTE=1
+STRING=2
+DECIMAL=3
+BEGL=4
+ENDL=5
+SEP=6
+WS=7
+'"'=1
+'['=4
+']'=5
+','=6

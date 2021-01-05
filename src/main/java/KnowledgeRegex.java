@@ -7,10 +7,12 @@ public class KnowledgeRegex {
    public static String setTypeExpr;
    public static String numberExpr;
    public static String stringExpr;
+   public static String frameNameExpr;
    static {
-      knowledgeExpr = "[_]? [a-zA-Z0-9]* [:] [:] [a-zA-Z0-9]*";
-      numberExpr = "'-'? [0-9]+ ( '.' [0-9]+ )? ";
-      stringExpr = "[\"] [a-zA-Z_0-9]* [\"]";
+      frameNameExpr = "_?[a-zA-Z0-9]+";
+      knowledgeExpr = "_?([a-zA-Z0-9]+)::([a-zA-Z0-9]+)";
+      numberExpr = "-?[0-9]+(\\.[0-9]+)?";
+      stringExpr = "\"[\\s\\w\\p{Punct}]*\"";
 
 
       setTypeExpr = "(=|\\+=|-=|\\*=|/=)";

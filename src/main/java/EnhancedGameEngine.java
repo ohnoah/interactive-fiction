@@ -60,16 +60,25 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
           knowledgeBase.frameNameEquals(knowledgeUpdate.getUpdatingSlot(), "room")) {
          List<Room> rooms;
          if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
-            knowledgeBase.printToErrorLog("Treating non-setting as setting because this is current room");
+            this.printToErrorLog("Treating non-setting as setting because this is current room");
          }
          if (knowledgeUpdate.isConstantUpdate()) {
-            moveRoom(knowledgeUpdate.getUpdateConstant());
+            try {
+               moveRoom((String) knowledgeUpdate.getUpdateConstant());
+            } catch (ClassCastException e) {
+
+            }
          } else {
             moveRoom(knowledgeBase.query(knowledgeUpdate.getSettingFrameID(), knowledgeUpdate.getSettingSlot()));
          }
       }
    }
 
+   private void printToErrorLog(String s) {
+   }
+
+   private void printExceptionToLog(KnowledgeException e) {
+   }
 
    // TODO: We are going to want the exact same logic for the GameDesignActiosn later
    protected Justification conditionallyPerformAction(@NotNull List<Condition> conditions,
@@ -88,11 +97,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
                reasoning = knowledgeBase.fillQueryString(condition.getFailureMessage());
                break;
             }
-         } catch (InvalidKnowledgeSyntaxException e) {
+         } catch (KnowledgeException e) {
             valid = false;
             reasoning = "There was an error behind the scenes. Try performing another action.";
             // TODO: Print stack trace using PrintStream
-            knowledgeBase.printExceptionToLog(e);
+            this.printExceptionToLog(e);
             break;
          }
       }
@@ -107,6 +116,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       return new Justification(valid, reasoning);
    }
+
 
    private Justification performDesignLogic(@NotNull InstantiatedGameAction instGameAction, @NotNull EnhancedGameDesignAction designAction) {
       List<Condition> designConditions = designAction.getPreconditions();
