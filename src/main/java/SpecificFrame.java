@@ -15,16 +15,16 @@ public class SpecificFrame {
 
    private String id;
    // TODO: Maybe just change to this to be <String, Object>
-   private Map<String, String> slots;
+   private Map<String, Object> slots;
    private List<GenericFrame> parents;
 
-   public SpecificFrame(@NotNull String id){
+   public SpecificFrame(@NotNull String id) {
       this.id = id;
       this.slots = new HashMap<>();
       this.parents = new ArrayList<>();
    }
 
-   public SpecificFrame(@NotNull String id, @NotNull Map<String, String> slots, @NotNull List<GenericFrame> parents) {
+   public SpecificFrame(@NotNull String id, @NotNull Map<String, Object> slots, @NotNull List<GenericFrame> parents) {
       this.id = id;
       this.slots = slots;
       for (GenericFrame parent : parents) {
@@ -41,34 +41,34 @@ public class SpecificFrame {
       return new ArrayList<>(parents);
    }
 
-   public Map<String, String> getSlots() {
+   public Map<String, Object> getSlots() {
       return new HashMap<>(slots);
    }
 
    public Object getFiller(String slotName) throws KnowledgeException {
-      if(slots.containsKey(slotName)) {
+      if (slots.containsKey(slotName)) {
          // TODO: DO type inference here and return as the right type
          return slots.get(slotName);
       }
-      else{
-         throw new KnowledgeException(String.format("%s on %s is missing.", slotName, this.toString()));
+      else {
+         throw new KnowledgeException(String.format("Slot: %s on Frame: %s is missing.", slotName, this.toString()));
       }
    }
 
-   public void setSlots(Map<String, String> slots) {
+   public void setSlots(Map<String, Object> slots) {
       this.slots = new HashMap<>(slots);
    }
 
-   public void updateFiller(@NotNull String slotName, String filler) {
+   public void updateFiller(@NotNull String slotName, @NotNull Object filler) {
       slots.put(slotName, filler);
    }
 
 
    // Whatever is in the slots map takes precedence over inheritance that is added
    public void addParent(@NotNull GenericFrame parent) {
-      for (Map.Entry<String, String> entry : parent.getSlots().entrySet()) {
+      for (Map.Entry<String, Object> entry : parent.getSlots().entrySet()) {
          String slotName = entry.getKey();
-         String filler = entry.getValue();
+         Object filler = entry.getValue();
          if (!slots.containsKey(slotName)) {
             updateFiller(slotName, filler);
          }

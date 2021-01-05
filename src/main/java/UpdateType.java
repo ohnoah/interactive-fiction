@@ -3,5 +3,4 @@ public enum UpdateType {
    ADD,
    SUBTRACT,
    MULTIPLY,
-   DIVIDE
 }

@@ -29,7 +29,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          String frame = m.group(1);
          String slot = m.group(2);
          return List.of(frame, slot);
-      } else {
+      }
+      else {
          throw new RuntimeKnowledgeException("Invalid syntax for query: " + text);
       }
    }
@@ -42,7 +43,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    public List<?> visitList(SimpleBooleanParser.ListContext ctx) {
       if (ctx.numberlist() != null) {
          return visitNumberlist(ctx.numberlist());
-      } else {
+      }
+      else {
          return visitStringlist(ctx.stringlist());
       }
    }
@@ -56,7 +58,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          } catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage());
          }
-      } else {
+      }
+      else {
          return ctx.stringelems() == null ? new ArrayList<>() : this.visitStringelems(ctx.stringelems());
       }
    }
@@ -70,7 +73,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          } catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage());
          }
-      } else {
+      }
+      else {
          return ctx.numberelems() == null ? new ArrayList<>() : this.visitNumberelems(ctx.numberelems());
       }
    }
@@ -99,7 +103,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       TerminalNode identifier = ctx.IDENTIFIER();
       if (decimal != null) {
          return Double.valueOf(decimal.getText());
-      } else {
+      }
+      else {
          try {
             List<String> frameAndSlot = frameAndSlot(identifier.getText());
             return knowledgeBase.queryDouble(frameAndSlot.get(0), frameAndSlot.get(1));
@@ -115,7 +120,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       TerminalNode identifier = ctx.IDENTIFIER();
       if (string != null) {
          return ctx.getText().replace("\"", "");
-      } else {
+      }
+      else {
          try {
             List<String> frameAndSlot = frameAndSlot(identifier.getText());
             return knowledgeBase.queryString(frameAndSlot.get(0), frameAndSlot.get(1));
@@ -142,7 +148,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    public Boolean visitBinaryBooleantype(SimpleBooleanParser.BinaryBooleantypeContext ctx) {
       if (ctx.op.AND() != null) {
          return asBoolean(ctx.left) && asBoolean(ctx.right);
-      } else if (ctx.op.OR() != null) {
+      }
+      else if (ctx.op.OR() != null) {
          return asBoolean(ctx.left) || asBoolean(ctx.right);
       }
       throw new RuntimeKnowledgeException("not implemented: binary operator " + ctx.op.getText());
@@ -177,13 +184,17 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    public Boolean visitStringComparatorBooleantype(SimpleBooleanParser.StringComparatorBooleantypeContext ctx) {
       if (ctx.op.EQ() != null) {
          return this.visit(ctx.left).equals(this.visit(ctx.right));
-      } else if (ctx.op.LE() != null) {
+      }
+      else if (ctx.op.LE() != null) {
          return asString(ctx.left).compareTo(asString(ctx.right)) <= 0;
-      } else if (ctx.op.GE() != null) {
+      }
+      else if (ctx.op.GE() != null) {
          return asString(ctx.left).compareTo(asString(ctx.right)) >= 0;
-      } else if (ctx.op.LT() != null) {
+      }
+      else if (ctx.op.LT() != null) {
          return asString(ctx.left).compareTo(asString(ctx.right)) < 0;
-      } else if (ctx.op.GT() != null) {
+      }
+      else if (ctx.op.GT() != null) {
          return asString(ctx.left).compareTo(asString(ctx.right)) > 0;
       }
       throw new RuntimeException("not implemented: comparator operator " + ctx.op.getText());
@@ -193,13 +204,17 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    public Boolean visitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx) {
       if (ctx.op.EQ() != null) {
          return this.visit(ctx.left).equals(this.visit(ctx.right));
-      } else if (ctx.op.LE() != null) {
+      }
+      else if (ctx.op.LE() != null) {
          return asDouble(ctx.left) <= asDouble(ctx.right);
-      } else if (ctx.op.GE() != null) {
+      }
+      else if (ctx.op.GE() != null) {
          return asDouble(ctx.left) >= asDouble(ctx.right);
-      } else if (ctx.op.LT() != null) {
+      }
+      else if (ctx.op.LT() != null) {
          return asDouble(ctx.left) < asDouble(ctx.right);
-      } else if (ctx.op.GT() != null) {
+      }
+      else if (ctx.op.GT() != null) {
          return asDouble(ctx.left) > asDouble(ctx.right);
       }
       throw new RuntimeException("not implemented: binary operator " + ctx.op.getText());

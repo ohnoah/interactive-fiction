@@ -68,7 +68,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             } catch (ClassCastException e) {
 
             }
-         } else {
+         }
+         else {
             moveRoom(knowledgeBase.query(knowledgeUpdate.getSettingFrameID(), knowledgeUpdate.getSettingSlot()));
          }
       }
@@ -139,7 +140,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          String successMessage = implementedSuccessMessageMap.get(actionFormat);
          List<KnowledgeUpdate> knowledgeUpdates = implementedKnowledgeUpdateMap.getOrDefault(actionFormat, new ArrayList<>());
          justification = conditionallyPerformAction(conditions, nouns, successMessage, knowledgeUpdates);
-      } else {
+      }
+      else {
          justification = new Justification(true, "");
       }
       return justification;
@@ -153,7 +155,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       Justification implJust = performImplementedLogic(gameAction);
       if (!implJust.isAccepted()) { // Implemented but fails
          return message;
-      } else { // Implemented and accepts or not implemented
+      }
+      else { // Implemented and accepts or not implemented
          message = implJust.getReasoning();
       }
 
@@ -163,7 +166,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if (enhancedGameDesignAction == null) {
          if (message.equals("")) { // It's an implemented action
             return "You can't do that right now";
-         } else { // It's implemented but not designed
+         }
+         else { // It's implemented but not designed
             return message + "Nothing important happens.";
          }
       }

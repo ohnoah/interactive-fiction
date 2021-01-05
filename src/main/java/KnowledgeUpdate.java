@@ -18,7 +18,7 @@ public class KnowledgeUpdate implements Serializable {
    private String updatingSlot;
    private static TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
 
-   private static Object typeConvert(String expression){
+   private static Object typeConvert(String expression) {
 
       ConstantsLexer lexer = new ConstantsLexer(CharStreams.fromString(expression));
       ConstantsParser parser = new ConstantsParser(new CommonTokenStream(lexer));
@@ -76,13 +76,15 @@ public class KnowledgeUpdate implements Serializable {
       this.isConstantUpdate = isConstant(updateValue);
       if (isConstantUpdate) {
          updateConstant = typeConvert(updateValue);
-      } else {
+      }
+      else {
          String[] knowledgeParts = updateValue.split("::");
          updatingFrameID = knowledgeParts[0];
          updatingSlot = knowledgeParts[1];
       }
    }
 
+   // TODO: REformat to use objects
    public KnowledgeUpdate(UpdateType updateType, String updatingFrameID, String updatingSlot, String updateValue) {
       this.updateType = updateType;
       this.updatingFrameID = updatingFrameID;
@@ -110,7 +112,8 @@ public class KnowledgeUpdate implements Serializable {
          String[] splitUpdating = secondKnowledge.split("::");
          this.updatingFrameID = splitUpdating[0];
          this.updatingSlot = splitUpdating[1];
-      } else {
+      }
+      else {
          Pattern constant = Pattern.compile(String.format("^%s %s (%s|%s)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr));
          Matcher constantMatcher = constant.matcher(expr);
          if (constantMatcher.matches()) {
@@ -118,7 +121,8 @@ public class KnowledgeUpdate implements Serializable {
             firstKnowledge = constantMatcher.group(1);
             stringUpdateType = constantMatcher.group(2);
             secondKnowledge = constantMatcher.group(3);
-         } else {
+         }
+         else {
             throw new KnowledgeException("Doesn't follow the setting syntax.");
          }
       }
@@ -139,9 +143,6 @@ public class KnowledgeUpdate implements Serializable {
             break;
          case "*=":
             updateType = UpdateType.MULTIPLY;
-            break;
-         case "/=":
-            updateType = UpdateType.DIVIDE;
             break;
          default:
             throw new KnowledgeException("Wrong setting type");

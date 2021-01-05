@@ -1,5 +1,6 @@
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,6 +8,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 
+@SuppressWarnings("ALL")
 public class KnowledgeBase {
 
    private List<GenericFrame> genericFrames;
@@ -15,7 +17,8 @@ public class KnowledgeBase {
    private String stripUnderscore(String s) {
       if (s.charAt(0) == '_') {
          return s.substring(1);
-      } else {
+      }
+      else {
          return s;
       }
    }
@@ -34,7 +37,8 @@ public class KnowledgeBase {
          String frame = m.group(1);
          String slot = m.group(2);
          return List.of(frame, slot);
-      } else {
+      }
+      else {
          throw new KnowledgeException("Invalid syntax for query: " + text);
       }
    }
@@ -81,73 +85,171 @@ public class KnowledgeBase {
       }
    }
 
+   private SpecificFrame findSpecificFrameAlways(String frameId) {
+      return this.specificFrames.stream().filter(frame -> frame.getId().equals(frameId)).findAny().orElse(new SpecificFrame(frameId));
+
+   }
+
+   private SpecificFrame findSpecificFrame(String frameId) throws KnowledgeException {
+      return this.specificFrames.stream().filter(frame -> frame.getId().equals(frameId)).findAny()
+          .orElseThrow(() -> new KnowledgeException(String.format("Frame: %s, Slot: %s doesn't exist", frameId)));
+   }
+
    public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException {
       // TODO: Use a method on the knowledgeBase to update it. This method needs to understand
       // TODO: the engineering of the KnowledgeUpdate
       // TODO: It also needs to notice type failures when using
       // TODO *=, /= on non-numeric
       // TODO: failure mode will be to write the type failure to an error file and ignore the update
+      Object settingValue;
+      if (knowledgeUpdate.isConstantUpdate()) {
+         settingValue = knowledgeUpdate.getUpdateConstant();
+      }
+      else {
+         try {
+            settingValue = this.query(knowledgeUpdate.getUpdatingFrameID(), knowledgeUpdate.getUpdatingSlot());
+         } catch (KnowledgeException e) {
+            throw new KnowledgeException("Couldn't fulfill update with KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
+         }
+      }
+      SpecificFrame frameToSet = this.findSpecificFrameAlways(knowledgeUpdate.getSettingFrameID());
+      String slotToSet = knowledgeUpdate.getSettingSlot();
+
+      // TODO: FIX THIS
+      Object result = 12831283;
+      switch (knowledgeUpdate.getUpdateType()) {
+         case SET:
+            result = settingValue;
+            break;
+         case ADD:
+            Object addValue = frameToSet.getFiller(slotToSet);
+            if (addValue instanceof Double && settingValue instanceof Double) {
+               result = (Double) addValue + (Double) settingValue;
+            }
+            else if (addValue instanceof String && settingValue instanceof String) {
+               result = (String) addValue + (String) settingValue;
+            }
+            else if (addValue instanceof List && settingValue instanceof List) {
+               if (isPotentiallyStringList(addValue) && isPotentiallyStringList(settingValue)) {
+                  ((List) addValue).addAll((List) settingValue);
+               }
+               else if (isPotentiallyDoubleList(addValue) && isPotentiallyDoubleList(settingValue)) {
+                  ((List) addValue).addAll((List) settingValue);
+               }
+               else {
+                  throw new KnowledgeException("Mismatched list types when updating with ADD "
+                      + knowledgeUpdate.toString() +
+                      "for currentval: " + addValue.toString() + " settingVal: " + settingValue.toString());
+               }
+               result = addValue;
+            }
+            break;
+         case SUBTRACT:
+            Object subtractValue = frameToSet.getFiller(slotToSet);
+            if (subtractValue instanceof Double && settingValue instanceof Double) {
+               result = (Double) subtractValue + (Double) settingValue;
+            }
+            else if (subtractValue instanceof List && settingValue instanceof List) {
+               if (isPotentiallyStringList(subtractValue) && isPotentiallyStringList(settingValue)) {
+                  ((List) subtractValue).removeAll((List) settingValue);
+               }
+               else if (isPotentiallyDoubleList(subtractValue) && isPotentiallyDoubleList(settingValue)) {
+                  ((List) subtractValue).removeAll((List) settingValue);
+               }
+               else {
+                  throw new KnowledgeException("Mismatched types when updating with SUB "
+                      + knowledgeUpdate.toString() +
+                      "for currentval: " + subtractValue.toString() + " settingVal: " + settingValue.toString());
+               }
+               result = subtractValue;
+            }
+            break;
+         case MULTIPLY:
+            Object multiplyValue = frameToSet.getFiller(slotToSet);
+            if (multiplyValue instanceof Double && settingValue instanceof Double) {
+               result = (Double) multiplyValue * (Double) settingValue;
+            }
+            else {
+               throw new KnowledgeException("Mismatched types when updating with SUB "
+                   + knowledgeUpdate.toString() +
+                   "for currentval: " + multiplyValue.toString() + " settingVal: " + settingValue.toString());
+            }
+            break;
+         default:
+            throw new KnowledgeException("Not implemented KnowledgeUpdateType " + knowledgeUpdate.toString());
+      }
+      frameToSet.updateFiller(knowledgeUpdate.getSettingFrameID(), result);
+
+
    }
 
    public Object query(String frame, String slot) throws KnowledgeException {
-      throw new KnowledgeException(String.format("Frame: %s, Slot: %s doesn't exist", frame, slot));
+      SpecificFrame frameQueried = findSpecificFrame(frame);
+      return frameQueried;
    }
 
-   public String queryString(String frame, String slot) throws KnowledgeException{
+   public String queryString(String frame, String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
-      if(queryResult instanceof String) {
+      if (queryResult instanceof String) {
          return (String) queryResult;
       }
-      else{
+      else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to String", frame, slot, queryResult.toString()));
       }
    }
 
-   public Double queryDouble(String frame, String slot) throws KnowledgeException{
+   public Double queryDouble(String frame, String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
-      if(queryResult instanceof Double){
+      if (queryResult instanceof Double) {
          return (Double) queryResult;
       }
-      else{
+      else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to Double", frame, slot, queryResult.toString()));
       }
    }
+
    public Boolean queryBoolean(String frame, String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof Boolean) {
          return (Boolean) queryResult;
-      } else {
+      }
+      else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to Boolean", frame, slot, queryResult.toString()));
       }
    }
 
-   public List<Double> queryDoubleList(String frame, String slot) throws KnowledgeException{
+   private boolean isPotentiallyStringList(Object object) {
+      return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof String));
+   }
+
+   private boolean isPotentiallyDoubleList(Object object) {
+      return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof Double));
+   }
+
+   public List<Double> queryDoubleList(String frame, String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
-      if(queryResult instanceof List && (queryResult == null || (((List) queryResult).size() == 0) || (((List) queryResult).size() > 0 && ((List) queryResult).get(0) instanceof Double))){
+      if (isPotentiallyDoubleList(queryResult)) {
          return (List<Double>) queryResult;
       }
-      else{
+      else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to List<Double>", frame, slot, queryResult.toString()));
       }
    }
 
-   public List<String> queryStringList(String frame, String slot) throws KnowledgeException{
+   public List<String> queryStringList(String frame, String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
-      if(queryResult instanceof List && (queryResult == null || (((List) queryResult).size() == 0) || (((List) queryResult).size() > 0 && ((List) queryResult).get(0) instanceof String))){
+      if (isPotentiallyStringList(queryResult)) {
          return (List<String>) queryResult;
       }
-      else{
+      else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to List<String>", frame, slot, queryResult.toString()));
       }
    }
-
-
-
 
 
    public static void main(String[] args) {
