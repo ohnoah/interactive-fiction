@@ -18,65 +18,183 @@ public interface SimpleBooleanListener extends ParseTreeListener {
 	 */
 	void exitParse(SimpleBooleanParser.ParseContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code binaryExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#list}.
 	 * @param ctx the parse tree
 	 */
-	void enterBinaryExpression(SimpleBooleanParser.BinaryExpressionContext ctx);
+	void enterList(SimpleBooleanParser.ListContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code binaryExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#list}.
 	 * @param ctx the parse tree
 	 */
-	void exitBinaryExpression(SimpleBooleanParser.BinaryExpressionContext ctx);
+	void exitList(SimpleBooleanParser.ListContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code decimalExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#stringlist}.
 	 * @param ctx the parse tree
 	 */
-	void enterDecimalExpression(SimpleBooleanParser.DecimalExpressionContext ctx);
+	void enterStringlist(SimpleBooleanParser.StringlistContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code decimalExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#stringlist}.
 	 * @param ctx the parse tree
 	 */
-	void exitDecimalExpression(SimpleBooleanParser.DecimalExpressionContext ctx);
+	void exitStringlist(SimpleBooleanParser.StringlistContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code boolExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#numberlist}.
 	 * @param ctx the parse tree
 	 */
-	void enterBoolExpression(SimpleBooleanParser.BoolExpressionContext ctx);
+	void enterNumberlist(SimpleBooleanParser.NumberlistContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code boolExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#numberlist}.
 	 * @param ctx the parse tree
 	 */
-	void exitBoolExpression(SimpleBooleanParser.BoolExpressionContext ctx);
+	void exitNumberlist(SimpleBooleanParser.NumberlistContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code identifierExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#stringelems}.
 	 * @param ctx the parse tree
 	 */
-	void enterIdentifierExpression(SimpleBooleanParser.IdentifierExpressionContext ctx);
+	void enterStringelems(SimpleBooleanParser.StringelemsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code identifierExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#stringelems}.
 	 * @param ctx the parse tree
 	 */
-	void exitIdentifierExpression(SimpleBooleanParser.IdentifierExpressionContext ctx);
+	void exitStringelems(SimpleBooleanParser.StringelemsContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code notExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#numberelems}.
 	 * @param ctx the parse tree
 	 */
-	void enterNotExpression(SimpleBooleanParser.NotExpressionContext ctx);
+	void enterNumberelems(SimpleBooleanParser.NumberelemsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code notExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#numberelems}.
 	 * @param ctx the parse tree
 	 */
-	void exitNotExpression(SimpleBooleanParser.NotExpressionContext ctx);
+	void exitNumberelems(SimpleBooleanParser.NumberelemsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#numbertype}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumbertype(SimpleBooleanParser.NumbertypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#numbertype}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumbertype(SimpleBooleanParser.NumbertypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#stringtype}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringtype(SimpleBooleanParser.StringtypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#stringtype}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringtype(SimpleBooleanParser.StringtypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringInBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringInBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code boolcomparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code boolcomparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code binaryBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryBooleantype(SimpleBooleanParser.BinaryBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code binaryBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryBooleantype(SimpleBooleanParser.BinaryBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code numberInBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code numberInBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code identifierBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifierBooleantype(SimpleBooleanParser.IdentifierBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code identifierBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifierBooleantype(SimpleBooleanParser.IdentifierBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code boolBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolBooleantype(SimpleBooleanParser.BoolBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code boolBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolBooleantype(SimpleBooleanParser.BoolBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code listComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterListComparatorBooleantype(SimpleBooleanParser.ListComparatorBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code listComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitListComparatorBooleantype(SimpleBooleanParser.ListComparatorBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringComparatorBooleantype(SimpleBooleanParser.StringComparatorBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringComparatorBooleantype(SimpleBooleanParser.StringComparatorBooleantypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code numberComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code numberComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code parenExpression}
 	 * labeled alternative in {@link SimpleBooleanParser#expression}.
@@ -90,27 +208,59 @@ public interface SimpleBooleanListener extends ParseTreeListener {
 	 */
 	void exitParenExpression(SimpleBooleanParser.ParenExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code comparatorExpression}
+	 * Enter a parse tree produced by the {@code notExpression}
 	 * labeled alternative in {@link SimpleBooleanParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterComparatorExpression(SimpleBooleanParser.ComparatorExpressionContext ctx);
+	void enterNotExpression(SimpleBooleanParser.NotExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code comparatorExpression}
+	 * Exit a parse tree produced by the {@code notExpression}
 	 * labeled alternative in {@link SimpleBooleanParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitComparatorExpression(SimpleBooleanParser.ComparatorExpressionContext ctx);
+	void exitNotExpression(SimpleBooleanParser.NotExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleBooleanParser#comparator}.
+	 * Enter a parse tree produced by the {@code booleantypeExpression}
+	 * labeled alternative in {@link SimpleBooleanParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterComparator(SimpleBooleanParser.ComparatorContext ctx);
+	void enterBooleantypeExpression(SimpleBooleanParser.BooleantypeExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleBooleanParser#comparator}.
+	 * Exit a parse tree produced by the {@code booleantypeExpression}
+	 * labeled alternative in {@link SimpleBooleanParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitComparator(SimpleBooleanParser.ComparatorContext ctx);
+	void exitBooleantypeExpression(SimpleBooleanParser.BooleantypeExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#boolcomparator}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#boolcomparator}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#listcomparator}.
+	 * @param ctx the parse tree
+	 */
+	void enterListcomparator(SimpleBooleanParser.ListcomparatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#listcomparator}.
+	 * @param ctx the parse tree
+	 */
+	void exitListcomparator(SimpleBooleanParser.ListcomparatorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimpleBooleanParser#nonboolcomparator}.
+	 * @param ctx the parse tree
+	 */
+	void enterNonboolcomparator(SimpleBooleanParser.NonboolcomparatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleBooleanParser#nonboolcomparator}.
+	 * @param ctx the parse tree
+	 */
+	void exitNonboolcomparator(SimpleBooleanParser.NonboolcomparatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimpleBooleanParser#binary}.
 	 * @param ctx the parse tree

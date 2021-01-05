@@ -6,7 +6,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class SpecificFrame {
 
+   @Override
+   public String toString() {
+      return "SpecificFrame{" +
+          "id='" + id + '\'' +
+          '}';
+   }
+
    private String id;
+   // TODO: Maybe just change to this to be <String, Object>
    private Map<String, String> slots;
    private List<GenericFrame> parents;
 
@@ -37,8 +45,14 @@ public class SpecificFrame {
       return new HashMap<>(slots);
    }
 
-   public String getFiller(String slotName){
-      return slots.get(slotName);
+   public Object getFiller(String slotName) throws KnowledgeException {
+      if(slots.containsKey(slotName)) {
+         // TODO: DO type inference here and return as the right type
+         return slots.get(slotName);
+      }
+      else{
+         throw new KnowledgeException(String.format("%s on %s is missing.", slotName, this.toString()));
+      }
    }
 
    public void setSlots(Map<String, String> slots) {
