@@ -66,6 +66,18 @@ public interface ConstantsListener extends ParseTreeListener {
 	 */
 	void exitDecimalExpression(ConstantsParser.DecimalExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code boolExpression}
+	 * labeled alternative in {@link ConstantsParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolExpression(ConstantsParser.BoolExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code boolExpression}
+	 * labeled alternative in {@link ConstantsParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolExpression(ConstantsParser.BoolExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ConstantsParser#stringelems}.
 	 * @param ctx the parse tree
 	 */
@@ -85,4 +97,14 @@ public interface ConstantsListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumberelems(ConstantsParser.NumberelemsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ConstantsParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterBool(ConstantsParser.BoolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ConstantsParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitBool(ConstantsParser.BoolContext ctx);
 }

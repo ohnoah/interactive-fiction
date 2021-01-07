@@ -17,25 +17,28 @@ public class ConstantsParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		QUOTE=1, STRING=2, DECIMAL=3, BEGL=4, ENDL=5, SEP=6, WS=7;
+		TRUE=1, FALSE=2, QUOTE=3, STRING=4, DECIMAL=5, BEGL=6, ENDL=7, SEP=8, 
+		WS=9;
 	public static final int
-		RULE_typeconvert = 0, RULE_expression = 1, RULE_stringelems = 2, RULE_numberelems = 3;
+		RULE_typeconvert = 0, RULE_expression = 1, RULE_stringelems = 2, RULE_numberelems = 3, 
+		RULE_bool = 4;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"typeconvert", "expression", "stringelems", "numberelems"
+			"typeconvert", "expression", "stringelems", "numberelems", "bool"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'\"'", null, null, "'['", "']'", "','"
+			null, "'TRUE'", "'FALSE'", "'\"'", null, null, "'['", "']'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "QUOTE", "STRING", "DECIMAL", "BEGL", "ENDL", "SEP", "WS"
+			null, "TRUE", "FALSE", "QUOTE", "STRING", "DECIMAL", "BEGL", "ENDL", 
+			"SEP", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -119,9 +122,9 @@ public class ConstantsParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(8);
+			setState(10);
 			expression();
-			setState(9);
+			setState(11);
 			match(EOF);
 			}
 		}
@@ -202,6 +205,25 @@ public class ConstantsParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class BoolExpressionContext extends ExpressionContext {
+		public BoolContext bool() {
+			return getRuleContext(BoolContext.class,0);
+		}
+		public BoolExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ConstantsListener ) ((ConstantsListener)listener).enterBoolExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ConstantsListener ) ((ConstantsListener)listener).exitBoolExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ConstantsVisitor ) return ((ConstantsVisitor<? extends T>)visitor).visitBoolExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class NumberelemsExpressionContext extends ExpressionContext {
 		public TerminalNode BEGL() { return getToken(ConstantsParser.BEGL, 0); }
 		public TerminalNode ENDL() { return getToken(ConstantsParser.ENDL, 0); }
@@ -229,26 +251,26 @@ public class ConstantsParser extends Parser {
 		enterRule(_localctx, 2, RULE_expression);
 		int _la;
 		try {
-			setState(23);
+			setState(26);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				_localctx = new StringelemsExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(11);
-				match(BEGL);
 				setState(13);
+				match(BEGL);
+				setState(15);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==STRING) {
 					{
-					setState(12);
+					setState(14);
 					stringelems();
 					}
 				}
 
-				setState(15);
+				setState(17);
 				match(ENDL);
 				}
 				break;
@@ -256,19 +278,19 @@ public class ConstantsParser extends Parser {
 				_localctx = new NumberelemsExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(16);
-				match(BEGL);
 				setState(18);
+				match(BEGL);
+				setState(20);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DECIMAL) {
 					{
-					setState(17);
+					setState(19);
 					numberelems();
 					}
 				}
 
-				setState(20);
+				setState(22);
 				match(ENDL);
 				}
 				break;
@@ -276,7 +298,7 @@ public class ConstantsParser extends Parser {
 				_localctx = new StringExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(21);
+				setState(23);
 				match(STRING);
 				}
 				break;
@@ -284,8 +306,16 @@ public class ConstantsParser extends Parser {
 				_localctx = new DecimalExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(22);
+				setState(24);
 				match(DECIMAL);
+				}
+				break;
+			case 5:
+				_localctx = new BoolExpressionContext(_localctx);
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(25);
+				bool();
 				}
 				break;
 			}
@@ -336,21 +366,21 @@ public class ConstantsParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(25);
+			setState(28);
 			match(STRING);
-			setState(30);
+			setState(33);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==SEP) {
 				{
 				{
-				setState(26);
+				setState(29);
 				match(SEP);
-				setState(27);
+				setState(30);
 				match(STRING);
 				}
 				}
-				setState(32);
+				setState(35);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -402,21 +432,21 @@ public class ConstantsParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33);
+			setState(36);
 			match(DECIMAL);
-			setState(38);
+			setState(41);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==SEP) {
 				{
 				{
-				setState(34);
+				setState(37);
 				match(SEP);
-				setState(35);
+				setState(38);
 				match(DECIMAL);
 				}
 				}
-				setState(40);
+				setState(43);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -433,19 +463,73 @@ public class ConstantsParser extends Parser {
 		return _localctx;
 	}
 
+	public static class BoolContext extends ParserRuleContext {
+		public TerminalNode TRUE() { return getToken(ConstantsParser.TRUE, 0); }
+		public TerminalNode FALSE() { return getToken(ConstantsParser.FALSE, 0); }
+		public BoolContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bool; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ConstantsListener ) ((ConstantsListener)listener).enterBool(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ConstantsListener ) ((ConstantsListener)listener).exitBool(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ConstantsVisitor ) return ((ConstantsVisitor<? extends T>)visitor).visitBool(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BoolContext bool() throws RecognitionException {
+		BoolContext _localctx = new BoolContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_bool);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(44);
+			_la = _input.LA(1);
+			if ( !(_la==TRUE || _la==FALSE) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\t,\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\3\3\3\5\3\20\n\3\3\3\3\3\3\3\5\3\25\n"+
-		"\3\3\3\3\3\3\3\5\3\32\n\3\3\4\3\4\3\4\7\4\37\n\4\f\4\16\4\"\13\4\3\5\3"+
-		"\5\3\5\7\5\'\n\5\f\5\16\5*\13\5\3\5\2\2\6\2\4\6\b\2\2\2.\2\n\3\2\2\2\4"+
-		"\31\3\2\2\2\6\33\3\2\2\2\b#\3\2\2\2\n\13\5\4\3\2\13\f\7\2\2\3\f\3\3\2"+
-		"\2\2\r\17\7\6\2\2\16\20\5\6\4\2\17\16\3\2\2\2\17\20\3\2\2\2\20\21\3\2"+
-		"\2\2\21\32\7\7\2\2\22\24\7\6\2\2\23\25\5\b\5\2\24\23\3\2\2\2\24\25\3\2"+
-		"\2\2\25\26\3\2\2\2\26\32\7\7\2\2\27\32\7\4\2\2\30\32\7\5\2\2\31\r\3\2"+
-		"\2\2\31\22\3\2\2\2\31\27\3\2\2\2\31\30\3\2\2\2\32\5\3\2\2\2\33 \7\4\2"+
-		"\2\34\35\7\b\2\2\35\37\7\4\2\2\36\34\3\2\2\2\37\"\3\2\2\2 \36\3\2\2\2"+
-		" !\3\2\2\2!\7\3\2\2\2\" \3\2\2\2#(\7\5\2\2$%\7\b\2\2%\'\7\5\2\2&$\3\2"+
-		"\2\2\'*\3\2\2\2(&\3\2\2\2()\3\2\2\2)\t\3\2\2\2*(\3\2\2\2\7\17\24\31 (";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13\61\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\3\3\3\5\3\22\n\3\3\3\3\3\3"+
+		"\3\5\3\27\n\3\3\3\3\3\3\3\3\3\5\3\35\n\3\3\4\3\4\3\4\7\4\"\n\4\f\4\16"+
+		"\4%\13\4\3\5\3\5\3\5\7\5*\n\5\f\5\16\5-\13\5\3\6\3\6\3\6\2\2\7\2\4\6\b"+
+		"\n\2\3\3\2\3\4\2\63\2\f\3\2\2\2\4\34\3\2\2\2\6\36\3\2\2\2\b&\3\2\2\2\n"+
+		".\3\2\2\2\f\r\5\4\3\2\r\16\7\2\2\3\16\3\3\2\2\2\17\21\7\b\2\2\20\22\5"+
+		"\6\4\2\21\20\3\2\2\2\21\22\3\2\2\2\22\23\3\2\2\2\23\35\7\t\2\2\24\26\7"+
+		"\b\2\2\25\27\5\b\5\2\26\25\3\2\2\2\26\27\3\2\2\2\27\30\3\2\2\2\30\35\7"+
+		"\t\2\2\31\35\7\6\2\2\32\35\7\7\2\2\33\35\5\n\6\2\34\17\3\2\2\2\34\24\3"+
+		"\2\2\2\34\31\3\2\2\2\34\32\3\2\2\2\34\33\3\2\2\2\35\5\3\2\2\2\36#\7\6"+
+		"\2\2\37 \7\n\2\2 \"\7\6\2\2!\37\3\2\2\2\"%\3\2\2\2#!\3\2\2\2#$\3\2\2\2"+
+		"$\7\3\2\2\2%#\3\2\2\2&+\7\7\2\2\'(\7\n\2\2(*\7\7\2\2)\'\3\2\2\2*-\3\2"+
+		"\2\2+)\3\2\2\2+,\3\2\2\2,\t\3\2\2\2-+\3\2\2\2./\t\2\2\2/\13\3\2\2\2\7"+
+		"\21\26\34#+";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

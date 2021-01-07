@@ -76,6 +76,18 @@ public class ConstantsBaseListener implements ConstantsListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBoolExpression(ConstantsParser.BoolExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolExpression(ConstantsParser.BoolExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStringelems(ConstantsParser.StringelemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -95,6 +107,18 @@ public class ConstantsBaseListener implements ConstantsListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumberelems(ConstantsParser.NumberelemsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBool(ConstantsParser.BoolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBool(ConstantsParser.BoolContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

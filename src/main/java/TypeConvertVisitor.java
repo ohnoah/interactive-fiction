@@ -11,6 +11,26 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {
    @Override
+   public Object visitBoolExpression(ConstantsParser.BoolExpressionContext ctx) {
+      return this.visitBool(ctx.bool());
+   }
+
+   @Override
+   public String visitStringExpression(ConstantsParser.StringExpressionContext ctx) {
+      return ctx.getText().substring(1, ctx.getText().length() - 1);
+   }
+
+   @Override
+   public Double visitDecimalExpression(ConstantsParser.DecimalExpressionContext ctx) {
+      return Double.valueOf(ctx.getText());
+   }
+
+   @Override
+   public Boolean visitBool(ConstantsParser.BoolContext ctx) {
+      return ctx.TRUE() != null;
+   }
+
+   @Override
    public Object visitTypeconvert(ConstantsParser.TypeconvertContext ctx) {
       return super.visit(ctx.expression());
    }
@@ -26,20 +46,10 @@ public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {
    }
 
    @Override
-   public String visitStringExpression(ConstantsParser.StringExpressionContext ctx) {
-      return ctx.STRING().getText().replace("\"", "");
-   }
-
-   @Override
-   public Double visitDecimalExpression(ConstantsParser.DecimalExpressionContext ctx) {
-      return Double.valueOf(ctx.DECIMAL().getText());
-   }
-
-   @Override
    public List<String> visitStringelems(ConstantsParser.StringelemsContext ctx) {
       List<String> stringList = new ArrayList<>();
       for (TerminalNode t : ctx.STRING()) {
-         stringList.add(t.getText());
+         stringList.add(t.getText().substring(1, t.getText().length() - 1));
       }
       return stringList;
    }
@@ -57,13 +67,9 @@ public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {
    public static void main(String[] args) {
       String expression = "[1,2,3.1]";
       String expression2 = "\"I like pizza.\"";
-      ConstantsLexer lexer = new ConstantsLexer(CharStreams.fromString(expression));
-      ConstantsParser parser = new ConstantsParser(new CommonTokenStream(lexer));
-      ConstantsLexer lexer2 = new ConstantsLexer(CharStreams.fromString(expression2));
-      ConstantsParser parser2 = new ConstantsParser(new CommonTokenStream(lexer2));
       TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
-      Object result = typeConvertVisitor.visit(parser.typeconvert());
-      Object result2 = typeConvertVisitor.visit(parser2.typeconvert());
+      Object result = VisitorFactory.typeConvert(typeConvertVisitor, expression);
+      Object result2 = VisitorFactory.typeConvert(typeConvertVisitor, expression2);
       System.out.printf("%-70s -> %s\n", expression, result);
       System.out.printf("%-70s -> %s\n", expression2, result2);
    }

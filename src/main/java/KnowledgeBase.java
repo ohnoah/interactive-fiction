@@ -1,5 +1,6 @@
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -7,12 +8,38 @@ import java.util.regex.Pattern;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 @SuppressWarnings("ALL")
 public class KnowledgeBase {
 
    private List<GenericFrame> genericFrames;
    private List<SpecificFrame> specificFrames;
+
+   public KnowledgeBase() {
+      this.genericFrames = new ArrayList<>();
+      this.specificFrames = new ArrayList<>();
+   }
+
+   public boolean addGenericFrame(GenericFrame g) {
+      if (!this.genericFrames.contains(g)) {
+         this.genericFrames.add(g);
+         return true;
+      }
+      else{
+         return false;
+      }
+   }
+
+   public boolean addSpecificFrame(SpecificFrame s) {
+      if (!this.specificFrames.contains(s)) {
+         this.specificFrames.add(s);
+         return true;
+      }
+      else{
+         return false;
+      }
+   }
 
    private String stripUnderscore(String s) {
       if (s.charAt(0) == '_') {
@@ -43,7 +70,7 @@ public class KnowledgeBase {
       }
    }
 
-   public String fillQueryString(String failureMessage) throws KnowledgeException {
+   public String fillQueryString(String failureMessage) {
       // TODO: Replace all possible query strings that start with _ in the strings. Don't replace values
       String valueRegex = KnowledgeRegex.knowledgeExpr;
 
@@ -52,10 +79,20 @@ public class KnowledgeBase {
       String halfway = failureMessage;
       while (valueMatcher.find()) {
          String match = valueMatcher.group();
-         List<String> frameAndSlot = frameAndSlot(match);
+         List<String> frameAndSlot = null;
+         try {
+            frameAndSlot = frameAndSlot(match);
+         } catch (KnowledgeException e) {
+            this.printLogToFile("Failed subsequence match for fillQueryString " + failureMessage);
+         }
          int start = valueMatcher.start();
          int end = valueMatcher.end();
-         halfway = halfway.substring(0, start) + this.query(frameAndSlot.get(0), frameAndSlot.get(1)).toString() + halfway.substring(end);
+         try {
+            halfway = halfway.substring(0, start) + this.query(frameAndSlot.get(0), frameAndSlot.get(1)).toString() + halfway.substring(end);
+         } catch (KnowledgeException e) {
+            this.printLogToFile("Couldn't query in fillQueryString for " + frameAndSlot.get(0) + frameAndSlot.get(1));
+            halfway = halfway;
+         }
       }
 
       String frameIdRegex = KnowledgeRegex.frameNameExpr;
@@ -67,21 +104,20 @@ public class KnowledgeBase {
       return result;
    }
 
+   private void printLogToFile(String s) {
+   }
+
 
    public boolean conditionFails(String expression) throws KnowledgeException {
       // TODO: Run the SimpleBoolean thing on the condition and change so that the identifier
       // TODO: gets values from the Frames
       // TODO: If the string is invalid, throw an exception
-      SimpleBooleanLexer lexer = new SimpleBooleanLexer(CharStreams.fromString(expression));
       try {
-         SimpleBooleanParser parser = new SimpleBooleanParser(new CommonTokenStream(lexer));
-         Boolean result = (Boolean) new ConditionEvaluationVisitor(this).visit(parser.parse());
+         Boolean result = VisitorFactory.evaluateCondition(new ConditionEvaluationVisitor(this), expression);
          System.out.printf("%-70s -> %s\n", expression, result);
          return result;
-      } catch (RecognitionException e) {
+      } catch (ParseCancellationException | RecognitionException e) {
          throw new KnowledgeException("Couldn't parse expression" + expression + " ." + e.getMessage());
-      } catch (RuntimeKnowledgeException e) {
-         throw new KnowledgeException("Error when parsing expression " + expression + " ." + e.getMessage());
       }
    }
 
