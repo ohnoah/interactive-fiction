@@ -6,7 +6,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine implements Serializable {
-   private static final long serialVersionUID = -5723053787789695459L;
+   private static final long serialVersionUID = 5401761050535235131L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
    // Implemented actions stuff
@@ -55,29 +55,49 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
-      knowledgeBase.update(knowledgeUpdate);
+      try {
+         knowledgeBase.update(knowledgeUpdate);
+      }
+      catch(KnowledgeException e) {
+         printExceptionToLog(e);
+      }
       if (knowledgeBase.frameNameEquals(knowledgeUpdate.getUpdatingFrameID(), "world") &&
           knowledgeBase.frameNameEquals(knowledgeUpdate.getUpdatingSlot(), "room")) {
-         List<Room> rooms;
          if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
             this.printToErrorLog("Treating non-setting as setting because this is current room");
          }
+         Object moveTo = null;
          if (knowledgeUpdate.isConstantUpdate()) {
+            moveTo = knowledgeUpdate.getUpdateConstant();
+         }
+         else {
             try {
-               moveRoom((String) knowledgeUpdate.getUpdateConstant());
-            } catch (ClassCastException e) {
-
+               moveTo = knowledgeBase.query(knowledgeUpdate.getSettingFrameID(), knowledgeUpdate.getSettingSlot());
+            } catch (KnowledgeException e) {
+               this.printExceptionToLog(e);
+               this.printToErrorLog("Failed to move room");
+               return;
+            }
+         }
+         if (moveTo instanceof String) {
+            boolean success = moveRoom((String) moveTo);
+            if (!success) {
+               printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+                   " failed due to non-existent room name");
             }
          }
          else {
-            moveRoom(knowledgeBase.query(knowledgeUpdate.getSettingFrameID(), knowledgeUpdate.getSettingSlot()));
+            printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+                " failed due to wrong type in room");
          }
       }
    }
 
+   // TODO:
    private void printToErrorLog(String s) {
    }
 
+   // TODO:
    private void printExceptionToLog(KnowledgeException e) {
    }
 

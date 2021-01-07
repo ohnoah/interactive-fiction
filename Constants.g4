@@ -9,6 +9,7 @@ expression
  | BEGL numberelems? ENDL #numberelemsExpression
  | STRING #stringExpression
  | DECIMAL #decimalExpression
+ | bool #boolExpression
  ;
 
 stringelems
@@ -19,10 +20,14 @@ numberelems
   : DECIMAL ( SEP DECIMAL )*
   ;
 
+bool
+ : TRUE | FALSE
+ ;
 
-
+TRUE       : 'TRUE' ;
+FALSE      : 'FALSE' ;
 QUOTE      : '"' ;
-STRING     : ["] [a-zA-Z0-9!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
+STRING     : ["] [a-zA-Z0-9!#$%&()'*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
 
 BEGL : '[';

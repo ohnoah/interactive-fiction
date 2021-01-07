@@ -45,6 +45,13 @@ public interface ConstantsVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecimalExpression(ConstantsParser.DecimalExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code boolExpression}
+	 * labeled alternative in {@link ConstantsParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolExpression(ConstantsParser.BoolExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ConstantsParser#stringelems}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -56,4 +63,10 @@ public interface ConstantsVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNumberelems(ConstantsParser.NumberelemsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ConstantsParser#bool}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBool(ConstantsParser.BoolContext ctx);
 }

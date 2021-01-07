@@ -11,13 +11,15 @@ public abstract class GameEngine implements Serializable {
    protected List<Room> worldRooms;
    protected Room currentRoom;
 
-   protected void moveRoom(String roomName) {
+   protected boolean moveRoom(String roomName) {
       List<Room> matched = findRoom(roomName);
       if (matched.size() >= 1) {
          currentRoom = matched.get(0);
+         return true;
       }
       else {
          System.err.println("Invalid room. Contact system administrator.");
+         return false;
       }
 
    }
