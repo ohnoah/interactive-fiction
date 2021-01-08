@@ -47,6 +47,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    public EnhancedGameEngine() {
       this.knowledgeBase = new KnowledgeBase();
+      SpecificFrame worldFrame = new SpecificFrame("world");
+      this.knowledgeBase.addSpecificFrame(worldFrame);
    }
 
    protected void fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
@@ -64,41 +66,46 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return newString;
    }
 
+   private void updateRoomWithKnowledgeUpdate(@NotNull KnowledgeUpdate knowledgeUpdate) {
+      if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
+         this.printToErrorLog("Treating non-setting as setting because this is current room");
+      }
+      Object moveTo = null;
+      if (knowledgeUpdate.isConstantUpdate()) {
+         moveTo = knowledgeUpdate.getUpdateConstant();
+      }
+      else {
+         try {
+            moveTo = knowledgeBase.query(knowledgeUpdate.getFrameToUpdate(), knowledgeUpdate.getSlotToUpdate());
+         } catch (KnowledgeException e) {
+            this.printExceptionToLog(e);
+            this.printToErrorLog("Failed to move room");
+            return;
+         }
+      }
+      if (moveTo instanceof String) {
+         boolean success = moveRoom((String) moveTo);
+         if (!success) {
+            printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+                " failed due to non-existent room name");
+         }
+      }
+      else {
+         printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+             " failed due to wrong type in room");
+      }
+   }
+
    private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       try {
          knowledgeBase.update(knowledgeUpdate);
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
+         return;
       }
       if (knowledgeBase.frameNameEquals(knowledgeUpdate.getForeignFrame(), "world") &&
           knowledgeBase.frameNameEquals(knowledgeUpdate.getForeignSlot(), "room")) {
-         if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
-            this.printToErrorLog("Treating non-setting as setting because this is current room");
-         }
-         Object moveTo = null;
-         if (knowledgeUpdate.isConstantUpdate()) {
-            moveTo = knowledgeUpdate.getUpdateConstant();
-         }
-         else {
-            try {
-               moveTo = knowledgeBase.query(knowledgeUpdate.getFrameToUpdate(), knowledgeUpdate.getSlotToUpdate());
-            } catch (KnowledgeException e) {
-               this.printExceptionToLog(e);
-               this.printToErrorLog("Failed to move room");
-               return;
-            }
-         }
-         if (moveTo instanceof String) {
-            boolean success = moveRoom((String) moveTo);
-            if (!success) {
-               printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
-                   " failed due to non-existent room name");
-            }
-         }
-         else {
-            printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
-                " failed due to wrong type in room");
-         }
+         updateRoomWithKnowledgeUpdate(knowledgeUpdate);
       }
    }
 
@@ -118,7 +125,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       try {
          FileWriter fw = new FileWriter(errorLogFName, true);
          PrintWriter pw = new PrintWriter(fw);
-         e.printStackTrace (pw);
+         e.printStackTrace(pw);
       } catch (IOException openException) {
          System.err.println("Couldn't write to error");
          e.printStackTrace();
