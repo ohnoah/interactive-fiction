@@ -45,13 +45,14 @@ public class SpecificFrame {
       return new HashMap<>(slots);
    }
 
-   public Object getFiller(String slotName) throws KnowledgeException {
+   public Object getFiller(String slotName) throws MissingKnowledgeException {
       if (slots.containsKey(slotName)) {
          // TODO: DO type inference here and return as the right type
          return slots.get(slotName);
       }
       else {
-         throw new KnowledgeException(String.format("Slot: %s on Frame: %s is missing.", slotName, this.toString()));
+         String missingString = String.format("Item: %s doesn't have a \"%s\".", slotName, this.toString());
+         throw new MissingKnowledgeException(missingString, missingString);
       }
    }
 

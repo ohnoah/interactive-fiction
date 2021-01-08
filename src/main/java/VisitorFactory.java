@@ -17,7 +17,7 @@ public class VisitorFactory {
       return typeConvertVisitor.visit(parser.typeconvert());
    }
 
-   public static Boolean evaluateCondition(ConditionEvaluationVisitor conditionEvaluationVisitor, String expression) throws KnowledgeException {
+   public static Boolean evaluateCondition(ConditionEvaluationVisitor conditionEvaluationVisitor, String expression) throws KnowledgeException, MissingKnowledgeException {
       SimpleBooleanLexer lexer = new SimpleBooleanLexer(CharStreams.fromString(expression));
       lexer.removeErrorListeners();
       lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
@@ -29,6 +29,9 @@ public class VisitorFactory {
          return (Boolean) conditionEvaluationVisitor.visit(parser.parse());
       } catch (RuntimeKnowledgeException e) {
          throw new KnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage());
+      }
+      catch (RuntimeMissingException e){
+         throw new MissingKnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage(), e.getMissingString());
       }
    }
 }

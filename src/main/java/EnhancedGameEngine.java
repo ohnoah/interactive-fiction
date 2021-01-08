@@ -14,14 +14,14 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine implements Serializable {
-   private static final long serialVersionUID = -8553667082678456914L;
+   private static final long serialVersionUID = 4644570525716437816L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
    // Implemented actions stuff
    private static Map<ActionFormat, List<Condition>> implementedConditionsMap;
    private static Map<ActionFormat, String> implementedSuccessMessageMap;
    private static Map<ActionFormat, List<KnowledgeUpdate>> implementedKnowledgeUpdateMap;
-   private String errorLogFName = "error-log-" + DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm").format(LocalDateTime.now());
+   private static String errorLogFName = "error-log-" + DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm").format(LocalDateTime.now());
 
    static {
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
@@ -32,8 +32,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       // We can use knowledgeEngine constructs here
       implementedSuccessMessageMap.put(putIn, "You put the smaller _arg1 in _arg2");
       implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume));
-      // TODO: Create KnowledgeUpdate to subtract from the volume, add _arg1 to _arg2's contains
+      // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
       // TODO: and add _arg2 to _arg2's inside field.
+      try {
+         KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg2::internalVolume -= _arg1::volume");
+      } catch (KnowledgeException e) {
+         printExceptionToLog(e);
+      }
 
 
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
@@ -43,6 +48,15 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    @Override
    public Set<Item> possibleItems() {
       return currentRoom.getItems();
+   }
+
+   public void setCurrentRoom(Room currentRoom) {
+      this.currentRoom = currentRoom;
+      try {
+         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room = %s", currentRoom.getName())));
+      } catch (KnowledgeException e) {
+         printExceptionToLog(e);
+      }
    }
 
    public EnhancedGameEngine() {
@@ -77,9 +91,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       else {
          try {
             moveTo = knowledgeBase.query(knowledgeUpdate.getFrameToUpdate(), knowledgeUpdate.getSlotToUpdate());
-         } catch (KnowledgeException e) {
-            this.printExceptionToLog(e);
-            this.printToErrorLog("Failed to move room");
+         } catch (KnowledgeException | MissingKnowledgeException e) {
+            printExceptionToLog(e);
+            printToErrorLog("Failed to move room");
             return;
          }
       }
@@ -99,7 +113,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       try {
          knowledgeBase.update(knowledgeUpdate);
-      } catch (KnowledgeException e) {
+      } catch (KnowledgeException | MissingKnowledgeException e) {
          printExceptionToLog(e);
          return;
       }
@@ -109,8 +123,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   private void printToErrorLog(String s) {
+   private static void printToErrorLog(String s) {
       try {
+         System.err.println("Writing error string to log");
          File file = new File(errorLogFName);
          file.createNewFile();
          Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
@@ -121,8 +136,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   private void printExceptionToLog(KnowledgeException e) {
+   private static void printExceptionToLog(Exception e) {
       try {
+         System.err.println("Writing error to log");
          FileWriter fw = new FileWriter(errorLogFName, true);
          PrintWriter pw = new PrintWriter(fw);
          e.printStackTrace(pw);
@@ -153,8 +169,12 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          } catch (KnowledgeException e) {
             valid = false;
             reasoning = "There was an error behind the scenes. Try performing another action.";
-            // TODO: Print stack trace using PrintStream
-            this.printExceptionToLog(e);
+            printExceptionToLog(e);
+            break;
+         } catch (MissingKnowledgeException e) {
+            valid = false;
+            reasoning = e.getMissingString();
+            printExceptionToLog(e);
             break;
          }
       }

@@ -11,14 +11,14 @@ public class ConditionEvaluationVisitorTest {
    @Rule
    public ExpectedException exceptionRule = ExpectedException.none();
 
-   private Boolean produceResult(KnowledgeBase kb, String expression) throws KnowledgeException {
+   private Boolean produceResult(KnowledgeBase kb, String expression) throws KnowledgeException, MissingKnowledgeException {
       return kb.conditionFails(expression);
    }
 
 
    // No Knowledge Base Tests
    @Test
-   public void loneStringFailedParseException() throws KnowledgeException {
+   public void loneStringFailedParseException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"Hello world. I'm John Doe ? and this should fail\"";
       exceptionRule.expect(ParseCancellationException.class);
       exceptionRule.expectMessage("line 1:50 no viable alternative at input '\"Hello world. I'm John Doe ? and this should fail\"'");
@@ -28,7 +28,7 @@ public class ConditionEvaluationVisitorTest {
 
 
    @Test
-   public void loneDoubleFailedParseException() throws KnowledgeException {
+   public void loneDoubleFailedParseException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "123.4567";
       exceptionRule.expect(ParseCancellationException.class);
       exceptionRule.expectMessage("line 1:8 no viable alternative at input '123.4567'");
@@ -37,7 +37,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void loneTrueSuccess() throws KnowledgeException {
+   public void loneTrueSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "TRUE";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -45,7 +45,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void loneFalseSuccess() throws KnowledgeException {
+   public void loneFalseSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "FALSE";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -53,7 +53,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void bracketedBoolEqualExpression() throws KnowledgeException {
+   public void bracketedBoolEqualExpression() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(1.0 IN [])=FALSE";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -61,7 +61,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void bracketedBoolEqualNotExpression() throws KnowledgeException {
+   public void bracketedBoolEqualNotExpression() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(1.0 IN [])=(NOT TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -69,7 +69,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void notTrueIsFalse() throws KnowledgeException {
+   public void notTrueIsFalse() throws KnowledgeException, MissingKnowledgeException {
       String expression = "NOT TRUE = FALSE";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -77,7 +77,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void simpleAndSuccess() throws KnowledgeException {
+   public void simpleAndSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "TRUE AND FALSE";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -85,7 +85,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void compositeOrAndSuccess() throws KnowledgeException {
+   public void compositeOrAndSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(TRUE OR FALSE) AND (TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -93,7 +93,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void compositeIdentifierOrAndSuccess() throws KnowledgeException {
+   public void compositeIdentifierOrAndSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(_test::banna OR TRUE) AND (TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
       SpecificFrame s = new SpecificFrame("test");
@@ -105,7 +105,7 @@ public class ConditionEvaluationVisitorTest {
 
 
    @Test
-   public void stringInequalitySuccess() throws KnowledgeException {
+   public void stringInequalitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"aaa!!!\" > \"bbbAAA\"";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -113,7 +113,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringInequalityEqualSuccess() throws KnowledgeException {
+   public void stringInequalityEqualSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"abc\" <= \"abc\"";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -121,7 +121,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringInequalitySymmetry() throws KnowledgeException {
+   public void stringInequalitySymmetry() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"aaa!!!\" >= \"bbbAAA\"";
       String expressionSwapped = "\"bbbAAA\" <= \"aaa!!!\"";
       KnowledgeBase kb = new KnowledgeBase();
@@ -131,7 +131,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringStrictInequalitySymmetry() throws KnowledgeException {
+   public void stringStrictInequalitySymmetry() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"!?.\" >= \"okok\"";
       String expressionSwapped = "\"okok\" <= \"!?.\"";
       KnowledgeBase kb = new KnowledgeBase();
@@ -141,7 +141,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringEqualitySuccess() throws KnowledgeException {
+   public void stringEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"hello, world\" = \"hello, world\"";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -149,7 +149,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleInequalitySuccess() throws KnowledgeException {
+   public void doubleInequalitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "3.14 >= 2.189";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -157,7 +157,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleInequalityNegativeSuccess() throws KnowledgeException {
+   public void doubleInequalityNegativeSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "-0.5 < -1.1";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -165,7 +165,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleInequalityEqualSuccess() throws KnowledgeException {
+   public void doubleInequalityEqualSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "0.512 >= 0.512";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -173,7 +173,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleInequalityIntegerSuccess() throws KnowledgeException {
+   public void doubleInequalityIntegerSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "123.12 < 123";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -181,7 +181,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleEqualitySuccess() throws KnowledgeException {
+   public void doubleEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "3.1416 = 3.1416";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -189,7 +189,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringListEqualitySuccess() throws KnowledgeException {
+   public void stringListEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "[\"first string,\", \"second string!\", \"THIRD STRING.\"] = [\"first string,\", \"second string!\", \"THIRD STRING.\"]";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -197,7 +197,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleListEqualitySuccess() throws KnowledgeException {
+   public void doubleListEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "([123.123, 3.1416, 1, 10.9] = [123.123, 3.1416, 1.0, 10.9])";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -205,7 +205,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleListEqualityFail() throws KnowledgeException {
+   public void doubleListEqualityFail() throws KnowledgeException, MissingKnowledgeException {
       String expression = "[123.123, 3.141592, 1, 10.9] = [123.123, 3.1416, 1.0, 10.9]";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -213,7 +213,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleListInSuccess() throws KnowledgeException {
+   public void doubleListInSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(123.123 IN [123.123, 3.1416, 1.0, 10.9])";
       String expression2 = "3.1416 IN [123.123, 3.1416, 1.0, 10.9]";
       String expression3 = "1 IN [123.123, 3.1416, 1.0, 10.9]";
@@ -227,7 +227,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringListInSuccess() throws KnowledgeException {
+   public void stringListInSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"first string\" IN [\"first string\", \"Second string!\", \"Third, string?\"]";
       String expression2 = "\"Second string!\" IN [\"first string\", \"Second string!\", \"Third, string?\"]";
       String expression3 = "\"Third, string?\" IN [\"first string\", \"Second string!\", \"Third, string?\"]";
@@ -239,7 +239,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void emptyListEqualEmptyListSuccess() throws KnowledgeException {
+   public void emptyListEqualEmptyListSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "[] = []";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -247,7 +247,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void stringListInEmptyFails() throws KnowledgeException {
+   public void stringListInEmptyFails() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"first string\" IN []";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -255,7 +255,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void doubleListInEmptyFails() throws KnowledgeException {
+   public void doubleListInEmptyFails() throws KnowledgeException, MissingKnowledgeException {
       String expression = "1.0 IN []";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceResult(kb, expression);
@@ -264,7 +264,7 @@ public class ConditionEvaluationVisitorTest {
 
    // Interactions with KnowledgeBase
    @Test
-   public void failedUnderscoreIdentifierThrowsException() throws KnowledgeException {
+   public void failedUnderscoreIdentifierThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "_test::test IN  [] ";
       KnowledgeBase kb = new KnowledgeBase();
 
@@ -275,7 +275,7 @@ public class ConditionEvaluationVisitorTest {
 
 
    @Test
-   public void failedIdentifierThrowsException() throws KnowledgeException {
+   public void failedIdentifierThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "test1::banana";
       KnowledgeBase kb = new KnowledgeBase();
 
@@ -285,18 +285,18 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void missingSlotThrowsException() throws KnowledgeException {
+   public void missingSlotThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(Test491::Apple)";
       KnowledgeBase kb = new KnowledgeBase();
       kb.addSpecificFrame(new SpecificFrame("Test491"));
 
-      exceptionRule.expect(KnowledgeException.class);
+      exceptionRule.expect(MissingKnowledgeException.class);
       exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". Slot: Apple on Frame: SpecificFrame{id='Test491'} is missing.");
       Boolean result = produceResult(kb, expression);
    }
 
    @Test
-   public void wrongTypeIdentifierStringThrowsException() throws KnowledgeException {
+   public void wrongTypeIdentifierStringThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "Test91::Ural1 = \"banana\"";
       KnowledgeBase kb = new KnowledgeBase();
 
@@ -310,7 +310,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void wrongTypeIdentifierDoubleThrowsException() throws KnowledgeException {
+   public void wrongTypeIdentifierDoubleThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "Test92::Ural12 >= 4.0";
       KnowledgeBase kb = new KnowledgeBase();
 
@@ -327,7 +327,7 @@ public class ConditionEvaluationVisitorTest {
 
 
    @Test
-   public void identifierStringExpressionSuccess() throws KnowledgeException {
+   public void identifierStringExpressionSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "Test932::Ural1234 = \"hello\"";
       KnowledgeBase kb = new KnowledgeBase();
 
@@ -342,7 +342,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void identifierBooleanExpressionSuccess() throws KnowledgeException {
+   public void identifierBooleanExpressionSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "Test9324::Ural123456";
       KnowledgeBase kb = new KnowledgeBase();
 
@@ -358,7 +358,7 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void identifierDoubleExpressionSuccess() throws KnowledgeException {
+   public void identifierDoubleExpressionSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "Test93245::Ural1234567 > 3.01";
       KnowledgeBase kb = new KnowledgeBase();
 

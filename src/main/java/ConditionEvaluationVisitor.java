@@ -58,6 +58,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             return knowledgeBase.queryStringList(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage());
+         } catch (MissingKnowledgeException e) {
+            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
          }
       }
       else {
@@ -73,6 +75,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             return knowledgeBase.queryDoubleList(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage());
+         } catch (MissingKnowledgeException e) {
+            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
          }
       }
       else {
@@ -111,6 +115,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             return knowledgeBase.queryDouble(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage());
+         } catch (MissingKnowledgeException e) {
+            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
          }
       }
    }
@@ -120,7 +126,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       TerminalNode string = ctx.STRING();
       TerminalNode identifier = ctx.IDENTIFIER();
       if (string != null) {
-         return ctx.getText().substring(1, ctx.getText().length()-1);
+         return ctx.getText().substring(1, ctx.getText().length() - 1);
       }
       else {
          try {
@@ -128,6 +134,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             return knowledgeBase.queryString(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage());
+         } catch (MissingKnowledgeException e) {
+            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
          }
       }
    }
@@ -172,6 +180,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          return knowledgeBase.queryBoolean(frameAndSlot.get(0), frameAndSlot.get(1));
       } catch (KnowledgeException e) {
          throw new RuntimeKnowledgeException(e.getMessage());
+      } catch (MissingKnowledgeException e) {
+         throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
       }
    }
 
@@ -240,7 +250,6 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    public Object visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) {
       return !((Boolean) this.visit(ctx.booleantype()));
    }
-
 
 
    /// SDSDSDS
