@@ -12,12 +12,12 @@ list
 
 stringlist
  :  BEGL stringelems? ENDL
- || IDENTIFIER
+ | IDENTIFIER
  ;
 
 numberlist
  :  BEGL numberelems? ENDL
- || IDENTIFIER
+ | IDENTIFIER
  ;
 
 stringelems
@@ -40,7 +40,9 @@ stringtype
  ;
 
 booleantype
- : left=booleantype op=boolcomparator right=booleantype #boolcomparatorBooleantype
+ : LPAREN booleantype RPAREN #parenBooleanType
+ | NOT booleantype #notBooleanType
+ | left=booleantype op=boolcomparator right=booleantype #boolcomparatorBooleantype
  | left=booleantype op=binary right=booleantype #binaryBooleantype
  | left=stringtype op=nonboolcomparator right=stringtype #stringComparatorBooleantype
  | left=numbertype op=nonboolcomparator right=numbertype #numberComparatorBooleantype
@@ -52,9 +54,7 @@ booleantype
  ;
 
 expression
- : LPAREN expression RPAREN                       #parenExpression
- | NOT expression                                 #notExpression
- | booleantype                                        #booleantypeExpression
+ : booleantype                                  #booleantypeExpression
  ;
 
 boolcomparator
@@ -91,7 +91,7 @@ EQ         : '=' ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 QUOTE      : '"' ;
-STRING     : ["] [a-zA-Z0-9!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
+STRING     : ["] [a-zA-Z0-9'!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
 IDENTIFIER : [_]? [a-zA-Z0-9]* [:] [:] [a-zA-Z0-9]* ;
 

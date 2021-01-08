@@ -28,7 +28,7 @@ public class VisitorFactory {
       try {
          return (Boolean) conditionEvaluationVisitor.visit(parser.parse());
       } catch (RuntimeKnowledgeException e) {
-         throw new KnowledgeException("Error when parsing expression " + expression + " ." + e.getMessage());
+         throw new KnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage());
       }
    }
 }

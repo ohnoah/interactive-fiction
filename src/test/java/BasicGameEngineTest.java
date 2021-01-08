@@ -75,8 +75,8 @@ public class BasicGameEngineTest {
    public void possibleItemNamesWorks(){
       BasicGameEngine basicGameEngine = oneRoomOneAction();
       Set<Item> items = basicGameEngine.possibleItems();
-      List<String> itemNames = items.stream().map(Item::getName).collect(Collectors.toList());
-      assertEquals(List.of("apple", "banana", "orange"), itemNames);
+      Set<String> itemNames = items.stream().map(Item::getName).collect(Collectors.toSet());
+      assertEquals(Set.of("apple", "banana", "orange"), itemNames);
    }
    @Test
    public void messageAfterProgressStory(){

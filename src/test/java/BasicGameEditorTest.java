@@ -42,6 +42,6 @@ public class BasicGameEditorTest {
       List<String> names = new ArrayList<>();
       List<Set<String>> adj = new ArrayList<>();
       boolean valid = basicGameEditor.itemNamesAndAdjectives(test, names, adj);
-      assertEquals(List.of(List.of("fuzzy", "brown", "pink"), List.of(), List.of("tomato", "yellow"), List.of("grey")), adj);
+      assertEquals(List.of(Set.of("fuzzy", "brown", "pink"), Set.of(), Set.of("tomato", "yellow"), Set.of("grey")), adj);
    }
 }

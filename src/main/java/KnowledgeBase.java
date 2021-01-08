@@ -1,7 +1,6 @@
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,16 +8,19 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("ALL")
 public class KnowledgeBase {
 
    private List<GenericFrame> genericFrames;
    private List<SpecificFrame> specificFrames;
+   private ConditionEvaluationVisitor conditionEvaluationVisitor;
 
    public KnowledgeBase() {
       this.genericFrames = new ArrayList<>();
       this.specificFrames = new ArrayList<>();
+      conditionEvaluationVisitor = new ConditionEvaluationVisitor(this);
    }
 
    public boolean addGenericFrame(GenericFrame g) {
@@ -113,11 +115,11 @@ public class KnowledgeBase {
       // TODO: gets values from the Frames
       // TODO: If the string is invalid, throw an exception
       try {
-         Boolean result = VisitorFactory.evaluateCondition(new ConditionEvaluationVisitor(this), expression);
+         Boolean result = VisitorFactory.evaluateCondition(conditionEvaluationVisitor, expression);
          System.out.printf("%-70s -> %s\n", expression, result);
          return result;
-      } catch (ParseCancellationException | RecognitionException e) {
-         throw new KnowledgeException("Couldn't parse expression" + expression + " ." + e.getMessage());
+      } catch (RecognitionException | ParseCancellationException e) {
+         throw new ParseCancellationException("Couldn't parse expression" + expression + " ." + e.getMessage());
       }
    }
 
@@ -128,7 +130,7 @@ public class KnowledgeBase {
 
    private SpecificFrame findSpecificFrame(String frameId) throws KnowledgeException {
       return this.specificFrames.stream().filter(frame -> frame.getId().equals(frameId)).findAny()
-          .orElseThrow(() -> new KnowledgeException(String.format("Frame: %s, Slot: %s doesn't exist", frameId)));
+          .orElseThrow(() -> new KnowledgeException(String.format("Frame: %s doesn't exist", frameId)));
    }
 
    public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException {
@@ -143,13 +145,13 @@ public class KnowledgeBase {
       }
       else {
          try {
-            settingValue = this.query(knowledgeUpdate.getUpdatingFrameID(), knowledgeUpdate.getUpdatingSlot());
+            settingValue = this.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException e) {
             throw new KnowledgeException("Couldn't fulfill update with KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
          }
       }
-      SpecificFrame frameToSet = this.findSpecificFrameAlways(knowledgeUpdate.getSettingFrameID());
-      String slotToSet = knowledgeUpdate.getSettingSlot();
+      SpecificFrame frameToSet = this.findSpecificFrameAlways(knowledgeUpdate.getFrameToUpdate());
+      String slotToSet = knowledgeUpdate.getSlotToUpdate();
 
       // TODO: FIX THIS
       Object result = 12831283;
@@ -214,17 +216,17 @@ public class KnowledgeBase {
          default:
             throw new KnowledgeException("Not implemented KnowledgeUpdateType " + knowledgeUpdate.toString());
       }
-      frameToSet.updateFiller(knowledgeUpdate.getSettingFrameID(), result);
+      frameToSet.updateFiller(knowledgeUpdate.getFrameToUpdate(), result);
 
 
    }
 
-   public Object query(String frame, String slot) throws KnowledgeException {
+   public Object query(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
       SpecificFrame frameQueried = findSpecificFrame(frame);
-      return frameQueried;
+      return frameQueried.getFiller(slot);
    }
 
-   public String queryString(String frame, String slot) throws KnowledgeException {
+   public String queryString(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof String) {
          return (String) queryResult;
@@ -235,7 +237,7 @@ public class KnowledgeBase {
       }
    }
 
-   public Double queryDouble(String frame, String slot) throws KnowledgeException {
+   public Double queryDouble(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof Double) {
          return (Double) queryResult;
@@ -246,7 +248,7 @@ public class KnowledgeBase {
       }
    }
 
-   public Boolean queryBoolean(String frame, String slot) throws KnowledgeException {
+   public Boolean queryBoolean(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof Boolean) {
          return (Boolean) queryResult;

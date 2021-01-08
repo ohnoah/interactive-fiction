@@ -66,6 +66,13 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code parenBooleanType}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code boolcomparatorBooleantype}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree
@@ -86,6 +93,13 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code notBooleanType}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code identifierBooleantype}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
@@ -121,20 +135,6 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code parenExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParenExpression(SimpleBooleanParser.ParenExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code notExpression}
-	 * labeled alternative in {@link SimpleBooleanParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNotExpression(SimpleBooleanParser.NotExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code booleantypeExpression}
 	 * labeled alternative in {@link SimpleBooleanParser#expression}.

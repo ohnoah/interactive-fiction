@@ -9,7 +9,7 @@ import org.junit.rules.ExpectedException;
 
 public class TypeConvertVisitorTest {
 
-   public Object produceResult(String expression) {
+   private Object produceResult(String expression) {
       TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
       return VisitorFactory.typeConvert(typeConvertVisitor, expression);
    }
