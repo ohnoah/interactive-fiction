@@ -91,8 +91,9 @@ public class KnowledgeBase {
          int end = valueMatcher.end();
          try {
             halfway = halfway.substring(0, start) + this.query(frameAndSlot.get(0), frameAndSlot.get(1)).toString() + halfway.substring(end);
-         } catch (KnowledgeException e) {
+         } catch (MissingKnowledgeException | KnowledgeException e) {
             this.printLogToFile("Couldn't query in fillQueryString for " + frameAndSlot.get(0) + frameAndSlot.get(1));
+            this.printLogToFile(e.getMessage());
             halfway = halfway;
          }
       }
@@ -110,7 +111,7 @@ public class KnowledgeBase {
    }
 
 
-   public boolean conditionFails(String expression) throws KnowledgeException {
+   public boolean conditionFails(String expression) throws KnowledgeException, MissingKnowledgeException {
       // TODO: Run the SimpleBoolean thing on the condition and change so that the identifier
       // TODO: gets values from the Frames
       // TODO: If the string is invalid, throw an exception
@@ -133,7 +134,7 @@ public class KnowledgeBase {
           .orElseThrow(() -> new KnowledgeException(String.format("Frame: %s doesn't exist", frameId)));
    }
 
-   public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException {
+   public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException, MissingKnowledgeException {
       // TODO: Use a method on the knowledgeBase to update it. This method needs to understand
       // TODO: the engineering of the KnowledgeUpdate
       // TODO: It also needs to notice type failures when using
@@ -221,12 +222,12 @@ public class KnowledgeBase {
 
    }
 
-   public Object query(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
+   public Object query(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
       SpecificFrame frameQueried = findSpecificFrame(frame);
       return frameQueried.getFiller(slot);
    }
 
-   public String queryString(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
+   public String queryString(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof String) {
          return (String) queryResult;
@@ -237,7 +238,7 @@ public class KnowledgeBase {
       }
    }
 
-   public Double queryDouble(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
+   public Double queryDouble(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof Double) {
          return (Double) queryResult;
@@ -248,7 +249,7 @@ public class KnowledgeBase {
       }
    }
 
-   public Boolean queryBoolean(@NotNull String frame, @NotNull String slot) throws KnowledgeException {
+   public Boolean queryBoolean(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (queryResult instanceof Boolean) {
          return (Boolean) queryResult;
@@ -267,7 +268,7 @@ public class KnowledgeBase {
       return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof Double));
    }
 
-   public List<Double> queryDoubleList(String frame, String slot) throws KnowledgeException {
+   public List<Double> queryDoubleList(String frame, String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (isPotentiallyDoubleList(queryResult)) {
          return (List<Double>) queryResult;
@@ -278,7 +279,7 @@ public class KnowledgeBase {
       }
    }
 
-   public List<String> queryStringList(String frame, String slot) throws KnowledgeException {
+   public List<String> queryStringList(String frame, String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
       if (isPotentiallyStringList(queryResult)) {
          return (List<String>) queryResult;
