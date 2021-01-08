@@ -1,4 +1,12 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -6,13 +14,14 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine implements Serializable {
-   private static final long serialVersionUID = 5401761050535235131L;
+   private static final long serialVersionUID = -8553667082678456914L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
    // Implemented actions stuff
    private static Map<ActionFormat, List<Condition>> implementedConditionsMap;
    private static Map<ActionFormat, String> implementedSuccessMessageMap;
    private static Map<ActionFormat, List<KnowledgeUpdate>> implementedKnowledgeUpdateMap;
+   private String errorLogFName = "error-log-" + DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm").format(LocalDateTime.now());
 
    static {
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
@@ -37,6 +46,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    public EnhancedGameEngine() {
+      this.knowledgeBase = new KnowledgeBase();
    }
 
    protected void fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
@@ -57,12 +67,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       try {
          knowledgeBase.update(knowledgeUpdate);
-      }
-      catch(KnowledgeException e) {
+      } catch (KnowledgeException e) {
          printExceptionToLog(e);
       }
-      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getUpdatingFrameID(), "world") &&
-          knowledgeBase.frameNameEquals(knowledgeUpdate.getUpdatingSlot(), "room")) {
+      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getForeignFrame(), "world") &&
+          knowledgeBase.frameNameEquals(knowledgeUpdate.getForeignSlot(), "room")) {
          if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
             this.printToErrorLog("Treating non-setting as setting because this is current room");
          }
@@ -72,7 +81,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
          else {
             try {
-               moveTo = knowledgeBase.query(knowledgeUpdate.getSettingFrameID(), knowledgeUpdate.getSettingSlot());
+               moveTo = knowledgeBase.query(knowledgeUpdate.getFrameToUpdate(), knowledgeUpdate.getSlotToUpdate());
             } catch (KnowledgeException e) {
                this.printExceptionToLog(e);
                this.printToErrorLog("Failed to move room");
@@ -93,12 +102,28 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   // TODO:
    private void printToErrorLog(String s) {
+      try {
+         File file = new File(errorLogFName);
+         file.createNewFile();
+         Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+      } catch (IOException e) {
+         System.err.println("Couldn't write to error");
+         System.err.println(s);
+         e.printStackTrace();
+      }
    }
 
-   // TODO:
    private void printExceptionToLog(KnowledgeException e) {
+      try {
+         FileWriter fw = new FileWriter(errorLogFName, true);
+         PrintWriter pw = new PrintWriter(fw);
+         e.printStackTrace (pw);
+      } catch (IOException openException) {
+         System.err.println("Couldn't write to error");
+         e.printStackTrace();
+         openException.printStackTrace();
+      }
    }
 
    // TODO: We are going to want the exact same logic for the GameDesignActiosn later
@@ -143,9 +168,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       List<Condition> designConditions = designAction.getPreconditions();
       List<KnowledgeUpdate> designUpdates = designAction.getUpdateState();
       String placeholderMessage = designAction.getMessage();
-      Justification justification =
-          conditionallyPerformAction(designConditions, instGameAction.getArguments(), placeholderMessage, designUpdates);
-      return justification;
+      return conditionallyPerformAction(designConditions, instGameAction.getArguments(), placeholderMessage, designUpdates);
    }
 
 

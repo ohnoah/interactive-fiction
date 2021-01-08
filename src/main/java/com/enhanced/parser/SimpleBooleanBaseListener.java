@@ -124,6 +124,18 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -155,6 +167,18 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -215,30 +239,6 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParenExpression(SimpleBooleanParser.ParenExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParenExpression(SimpleBooleanParser.ParenExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNotExpression(SimpleBooleanParser.NotExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNotExpression(SimpleBooleanParser.NotExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

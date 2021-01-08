@@ -1,3 +1,4 @@
+import com.enhanced.parser.SimpleBooleanLexer;
 import java.util.ArrayList;
 import java.util.List;
 import com.enhanced.parser.SimpleBooleanParser;
@@ -17,8 +18,8 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Object visitParse(SimpleBooleanParser.ParseContext ctx) {
-      return super.visit(ctx.expression());
+   public Boolean visitParse(SimpleBooleanParser.ParseContext ctx) {
+      return (Boolean) super.visit(ctx.expression());
    }
 
    private List<String> frameAndSlot(String text) throws RuntimeKnowledgeException {
@@ -119,7 +120,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       TerminalNode string = ctx.STRING();
       TerminalNode identifier = ctx.IDENTIFIER();
       if (string != null) {
-         return ctx.getText().replace("\"", "");
+         return ctx.getText().substring(1, ctx.getText().length()-1);
       }
       else {
          try {
@@ -133,13 +134,17 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
    @Override
    public Boolean visitStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx) {
-      return this.visitStringlist(ctx.stringlist()).contains(this.visitStringtype(ctx.stringtype()));
+      List<String> stringList = this.visitStringlist(ctx.stringlist());
+      String stringType = this.visitStringtype(ctx.stringtype());
+      return stringList.contains(stringType);
    }
 
    @Override
    public Boolean visitBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx) {
       if (ctx.op.EQ() != null) {
-         return this.visit(ctx.left).equals(ctx.right);
+         Boolean left = (Boolean) this.visit(ctx.left);
+         Boolean right = (Boolean) this.visit(ctx.right);
+         return left.equals(right);
       }
       throw new RuntimeKnowledgeException("not implemented: comparator operator " + ctx.op.getText());
    }
@@ -227,14 +232,15 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
 
    @Override
-   public Object visitParenExpression(SimpleBooleanParser.ParenExpressionContext ctx) {
-      return super.visit(ctx.expression());
+   public Object visitParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx) {
+      return this.visit(ctx.booleantype());
    }
 
    @Override
-   public Object visitNotExpression(SimpleBooleanParser.NotExpressionContext ctx) {
-      return !((Boolean) this.visit(ctx.expression()));
+   public Object visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) {
+      return !((Boolean) this.visit(ctx.booleantype()));
    }
+
 
 
    /// SDSDSDS
