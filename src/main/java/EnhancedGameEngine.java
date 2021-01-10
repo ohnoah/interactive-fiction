@@ -25,12 +25,18 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private static String errorLogFName = "error-log-" + DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm").format(LocalDateTime.now());
 
    static {
+      // Initialize maps for implementedLogic
+      implementedConditionsMap =  new HashMap<>();
+      implementedSuccessMessageMap =  new HashMap<>();
+      implementedConditionsMap = new HashMap<>();
+
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
       Condition putConditionIsContainer = new Condition("_arg2::isContainer",
           "You can't do that because _arg2 is not a container");
       Condition putConditionVolume = new Condition("_arg1::volume <= _arg2::volume",
           "_arg2 is not big enough to contain _arg1");
       // We can use knowledgeEngine constructs here
+
       implementedSuccessMessageMap.put(putIn, "You put the smaller _arg1 in _arg2");
       implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume));
       // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains

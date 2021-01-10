@@ -14,7 +14,7 @@ public class Room implements Serializable {
    private String name;
    private Set<Item> items;
 
-   public Room(@NotNull String name){
+   public Room(@NotNull String name) {
       this.name = name;
    }
 
@@ -30,7 +30,8 @@ public class Room implements Serializable {
    public void setItems(Set<Item> items) {
       this.items = new HashSet<>(items);
    }
-   public void setItemsNoAdjectives(List<String> items){
+
+   public void setItemsNoAdjectives(List<String> items) {
       this.items = items.stream().map(Item::new).collect(Collectors.toSet());
    }
 
@@ -67,7 +68,7 @@ public class Room implements Serializable {
       this.name = name;
    }
 
-   public boolean validItems(List<String> items){
+   public boolean validItems(List<String> items) {
       return items.stream().allMatch(x -> this.items.contains(x));
    }
 }

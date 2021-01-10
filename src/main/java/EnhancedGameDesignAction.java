@@ -16,9 +16,9 @@ public class EnhancedGameDesignAction implements Serializable {
    private List<KnowledgeUpdate> updateState;
 
    public EnhancedGameDesignAction(List<Condition> preconditions, String message, List<KnowledgeUpdate> updateState) {
-      this.preconditions = preconditions;
+      this.preconditions = new ArrayList<>(preconditions);
       this.message = message;
-      this.updateState = updateState;
+      this.updateState = new ArrayList<>(updateState);
    }
 
    public EnhancedGameDesignAction() {
@@ -27,15 +27,11 @@ public class EnhancedGameDesignAction implements Serializable {
 
 
    public List<Condition> getPreconditions() {
-      List<Condition> returner = new ArrayList<>();
-      returner.addAll(preconditions);
-      return returner;
+      return new ArrayList<>(preconditions);
    }
 
    public List<KnowledgeUpdate> getUpdateState() {
-      List<KnowledgeUpdate> returner = new ArrayList<>();
-      returner.addAll(updateState);
-      return returner;
+      return new ArrayList<>(updateState);
    }
 
    public String getMessage() {
