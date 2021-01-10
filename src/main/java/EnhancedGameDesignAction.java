@@ -15,10 +15,16 @@ public class EnhancedGameDesignAction implements Serializable {
    // Frame-name -> slot-name -> new filler value
    private List<KnowledgeUpdate> updateState;
 
+   public EnhancedGameDesignAction(List<Condition> preconditions, String message, List<KnowledgeUpdate> updateState) {
+      this.preconditions = preconditions;
+      this.message = message;
+      this.updateState = updateState;
+   }
 
    public EnhancedGameDesignAction() {
 
    }
+
 
    public List<Condition> getPreconditions() {
       List<Condition> returner = new ArrayList<>();
