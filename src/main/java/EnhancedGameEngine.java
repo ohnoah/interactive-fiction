@@ -8,6 +8,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -254,5 +255,18 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
       return null;
+   }
+
+   public void addAction(Room room, InstantiatedGameAction instantiatedAction, EnhancedGameDesignAction enhancedAction) {
+      Map<InstantiatedGameAction, EnhancedGameDesignAction> actionsInRoom = designerActions.getOrDefault(room, new HashMap<>());
+      actionsInRoom.put(instantiatedAction, enhancedAction);
+   }
+
+   // TODO: This should probably use exceptions
+   public void addRoom(@NotNull Room room) {
+      if (!worldRooms.contains(room)) {
+         worldRooms.add(room);
+         designerActions.putIfAbsent(room, new HashMap<>());
+      }
    }
 }
