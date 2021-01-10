@@ -1,15 +1,14 @@
 import static org.junit.Assert.*;
 
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
 
 public class EnhancedGameEngineTest {
-   public static EnhancedGameEngine oneRoomOneAction(){
+   private static EnhancedGameEngine oneRoomOneAction() {
       Room room = new Room("place1");
       room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
 
@@ -22,19 +21,25 @@ public class EnhancedGameEngineTest {
       // Create key for action
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
       // Create value for action
-      Map<String, String> preCond = new HashMap<>();
-      preCond.put("room", "place1");
-      Map<String, String> postCond = new HashMap<>();
-      postCond.put("random-state", "very-good");
-      postCond.put("superset-state", "very-not-good");
-      EnhancedGameDesignAction enhancedGameDesignAction = new EnhancedGameDesignAction(preCond, "You did action 1", postCond);
+      List<Condition> conditions = new ArrayList<>();
+      conditions.add(new Condition("world::room = \"place1\"", "You are not in place1 yet, you are in world::room"));
+      List<KnowledgeUpdate> knowledgeUpdates = new ArrayList<>();
+      try {
+         knowledgeUpdates.add(new KnowledgeUpdate("world::random-state = \"very-good\""));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::numActions = 0"));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::superset-state = \"very-not-good\""));
+      } catch (KnowledgeException e) {
+         e.printStackTrace();
+         return new EnhancedGameEngine();
+      }
+      EnhancedGameDesignAction enhancedGameDesignAction = new EnhancedGameDesignAction(conditions, "You did action 1 in enhanced.", knowledgeUpdates);
       // Put in maps
       enhancedGameEngine.addAction(room, instantiatedGameAction, enhancedGameDesignAction);
 
       return enhancedGameEngine;
    }
 
-   public static EnhancedGameEngine twoRoomTwoActions(){
+   private static EnhancedGameEngine twoRoomTwoActions() {
       Room room = new Room("place1");
       room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
       Room room2 = new Room("room2");
@@ -47,21 +52,33 @@ public class EnhancedGameEngineTest {
       // Create key for action
       InstantiatedGameAction instantiatedGameAction1 = new InstantiatedGameAction(new ActionFormat("open"), List.of("banana"));
       // Create value for action
-      Map<String, String> preCond = new HashMap<>();
-      preCond.put("room", "place1");
-      Map<String, String> postCond = new HashMap<>();
-      postCond.put("room", "room2");
-      postCond.put("state", "random");
-      EnhancedGameDesignAction enhancedGameDesignAction1 = new EnhancedGameDesignAction(preCond, "You did action 1", postCond);
-      // Put in maps
+      List<Condition> conditions1 = new ArrayList<>();
+      conditions1.add(new Condition("world::room = \"place1\"", "You are not in place1 yet, you are in world::room"));
+      List<KnowledgeUpdate> knowledgeUpdates1 = new ArrayList<>();
 
-
-      // Create key for action
       InstantiatedGameAction instantiatedGameAction2 = new InstantiatedGameAction(new ActionFormat("eat"), List.of("elephant"));
-      // Create value for action
-      Map<String, String> preCond2 = new HashMap<>();
-      preCond2.put("room", "room2");
-      EnhancedGameDesignAction enhancedGameDesignAction2 = new EnhancedGameDesignAction(preCond2, "You did action 2", new HashMap<>());
+      List<Condition> conditions2 = new ArrayList<>();
+      List<KnowledgeUpdate> knowledgeUpdates2 = new ArrayList<>();
+      // Create key for action
+      try {
+         knowledgeUpdates1
+             .add(new KnowledgeUpdate("world::room = \"room2\""));
+         knowledgeUpdates1
+             .add(new KnowledgeUpdate("world::state = \"random\""));
+
+         // Create value for action
+         conditions2.add(new Condition("world::room = \"room2\"", "You are not in room2 yet, you are in world::room"));
+         knowledgeUpdates2
+             .add(new KnowledgeUpdate("world::numActions += 1"));
+      } catch (KnowledgeException e) {
+         e.printStackTrace();
+         return new EnhancedGameEngine();
+      }
+
+      EnhancedGameDesignAction enhancedGameDesignAction1 =
+          new EnhancedGameDesignAction(conditions1, "You did action 1", knowledgeUpdates1);
+      EnhancedGameDesignAction enhancedGameDesignAction2 =
+          new EnhancedGameDesignAction(conditions2, "You did action 2 number world::numActions", knowledgeUpdates2);
 
       enhancedGameEngine.addAction(room, instantiatedGameAction1, enhancedGameDesignAction1);
       enhancedGameEngine.addAction(room2, instantiatedGameAction2, enhancedGameDesignAction2);
@@ -70,7 +87,7 @@ public class EnhancedGameEngineTest {
    }
 
    @Test
-   public void possibleItemNamesWorks(){
+   public void possibleItemNamesWorks() {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
       Set<Item> items = enhancedGameEngine.possibleItems();
       Set<String> itemNames = items.stream().map(Item::getName).collect(Collectors.toSet());
@@ -78,7 +95,7 @@ public class EnhancedGameEngineTest {
    }
 
    @Test
-   public void messageAfterProgressStory(){
+   public void messageAfterProgressStory() {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
       ActionFormat actionFormat = new ActionFormat("eat");
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
@@ -100,7 +117,7 @@ public class EnhancedGameEngineTest {
    }*/
 
    @Test
-   public void messagesProgressStoryTwoRoomsTwoActions(){
+   public void messagesProgressStoryTwoRoomsTwoActions() {
       EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
       ActionFormat openActionFormat = new ActionFormat("open");
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
