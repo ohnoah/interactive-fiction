@@ -117,7 +117,7 @@ public class KnowledgeUpdate implements Serializable {
       setSettingProperties(secondKnowledge);
 
       switch (stringUpdateType) {
-         case "=":
+         case ":=":
             updateType = UpdateType.SET;
             break;
          case "+=":

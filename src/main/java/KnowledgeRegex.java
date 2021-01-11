@@ -21,7 +21,7 @@ public class KnowledgeRegex {
       numberListExpr = "\\[(?:" + numberExpr + "(?:, " + numberExpr   + ")*)?\\]";
 
 
-      setTypeExpr = "(=|\\+=|-=|\\*=|/=)";
+      setTypeExpr = "(:=|\\+=|-=|\\*=|/=)";
    }
 
 }

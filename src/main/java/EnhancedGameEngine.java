@@ -72,7 +72,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    public void setCurrentRoom(Room newRoom) {
       this.currentRoom = newRoom;
       try {
-         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room = \"%s\"", currentRoom.getName())));
+         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room := \"%s\"", currentRoom.getName())));
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
       }

@@ -42,46 +42,33 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
    @Override
    public List<?> visitList(SimpleBooleanParser.ListContext ctx) {
-      if (ctx.numberlist() != null) {
+      if (ctx.IDENTIFIER() != null) {
+         List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
+         try {
+            return knowledgeBase.queryList(frameAndSlot.get(0), frameAndSlot.get(1));
+         } catch (KnowledgeException e) {
+            throw new RuntimeKnowledgeException(e.getMessage(), e);
+         } catch (MissingKnowledgeException e) {
+            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
+         }
+      }
+      else if (ctx.numberlist() != null) {
          return visitNumberlist(ctx.numberlist());
       }
       else {
          return visitStringlist(ctx.stringlist());
       }
+
    }
 
    @Override
    public List<String> visitStringlist(SimpleBooleanParser.StringlistContext ctx) {
-      if (ctx.IDENTIFIER() != null) {
-         try {
-            List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
-            return knowledgeBase.queryStringList(frameAndSlot.get(0), frameAndSlot.get(1));
-         } catch (KnowledgeException e) {
-            throw new RuntimeKnowledgeException(e.getMessage(), e);
-         } catch (MissingKnowledgeException e) {
-            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
-         }
-      }
-      else {
-         return ctx.stringelems() == null ? new ArrayList<>() : this.visitStringelems(ctx.stringelems());
-      }
+      return ctx.stringelems() == null ? new ArrayList<>() : this.visitStringelems(ctx.stringelems());
    }
 
    @Override
    public List<Double> visitNumberlist(SimpleBooleanParser.NumberlistContext ctx) {
-      if (ctx.IDENTIFIER() != null) {
-         try {
-            List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
-            return knowledgeBase.queryDoubleList(frameAndSlot.get(0), frameAndSlot.get(1));
-         } catch (KnowledgeException e) {
-            throw new RuntimeKnowledgeException(e.getMessage(), e);
-         } catch (MissingKnowledgeException e) {
-            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
-         }
-      }
-      else {
-         return ctx.numberelems() == null ? new ArrayList<>() : this.visitNumberelems(ctx.numberelems());
-      }
+      return ctx.numberelems() == null ? new ArrayList<>() : this.visitNumberelems(ctx.numberelems());
    }
 
    @Override
@@ -142,9 +129,12 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
    @Override
    public Boolean visitStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx) {
-      List<String> stringList = this.visitStringlist(ctx.stringlist());
-      String stringType = this.visitStringtype(ctx.stringtype());
-      return stringList.contains(stringType);
+      return this.visitList(ctx.list()).contains(this.visitStringtype(ctx.stringtype()));
+   }
+
+   @Override
+   public Boolean visitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx) {
+      return this.visitList(ctx.list()).contains(this.visitNumbertype(ctx.numbertype()));
    }
 
    @Override
@@ -168,10 +158,6 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       throw new RuntimeKnowledgeException("not implemented: binary operator " + ctx.op.getText());
    }
 
-   @Override
-   public Boolean visitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx) {
-      return this.visitNumberlist(ctx.numberlist()).contains(this.visitNumbertype(ctx.numbertype()));
-   }
 
    @Override
    public Boolean visitIdentifierBooleantype(SimpleBooleanParser.IdentifierBooleantypeContext ctx) {
