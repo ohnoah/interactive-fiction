@@ -8,7 +8,7 @@ public class KnowledgeUpdateTest {
 
    @Test
    public void stringConstructorUpdateTypeSet() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana = 4.0");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana := 4.0");
       assertEquals(UpdateType.SET, knowledgeUpdate.getUpdateType());
    }
 
@@ -32,26 +32,26 @@ public class KnowledgeUpdateTest {
 
    @Test
    public void stringConstructorConstantDoubleValue() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana = 4.0");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana := 4.0");
       assertEquals(4.0, knowledgeUpdate.getUpdateConstant());
    }
 
    @Test
    public void stringConstructorConstantStringValue() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("test1::Banana = \"hello, world!\"");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("test1::Banana := \"hello, world!\"");
       assertEquals("hello, world!", knowledgeUpdate.getUpdateConstant());
    }
 
    @Test
    public void stringConstructorConstantDoubleSuccess() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana = 4.0");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana := 4.0");
       KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.SET, "test1", "Banana", "4.0");
       assertEquals(knowledgeUpdate, knowledgeUpdate1);
    }
 
    @Test
    public void stringConstructorConstantStringSuccess() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana = \"hello, world!\"");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test1::Banana := \"hello, world!\"");
       KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.SET, "test1", "Banana", "\"hello, world!\"");
       assertEquals(knowledgeUpdate, knowledgeUpdate1);
    }
@@ -59,32 +59,32 @@ public class KnowledgeUpdateTest {
 
    @Test
    public void stringConstructorConstantStringListSuccess() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone = [\"hello, world!\"]");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := [\"hello, world!\"]");
       KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.SET, "test51", "BananaPhone", "[\"hello, world!\"]");
       assertEquals(knowledgeUpdate, knowledgeUpdate1);
    }
 
    @Test
    public void stringConstructorConstantStringListIsConstant() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone = [\"hello, world!\"]");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := [\"hello, world!\"]");
       assertTrue(knowledgeUpdate.isConstantUpdate());
    }
 
    @Test
    public void stringConstructorConstantStringListValue() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone = [\"hello, world!\"]");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := [\"hello, world!\"]");
       assertEquals(List.of("hello, world!"), knowledgeUpdate.getUpdateConstant());
    }
 
    @Test
    public void stringConstructorConstantNumberListValue() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone = [4.0, 1.2312, 1213123]");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := [4.0, 1.2312, 1213123]");
       assertEquals(List.of(4.0, 1.2312, 1213123.0), knowledgeUpdate.getUpdateConstant());
    }
 
    @Test
    public void stringConstructorConstantNumberSuccess() throws KnowledgeException {
-      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone = [4.0, 1.2312, 1213123]");
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := [4.0, 1.2312, 1213123]");
       KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.SET, "test51", "BananaPhone", "[4.0, 1.2312, 1213123]");
       assertEquals(knowledgeUpdate, knowledgeUpdate1);
    }

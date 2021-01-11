@@ -6,18 +6,17 @@ parse
 
 
 list
-  : stringlist
+  : IDENTIFIER
+  | stringlist
   | numberlist
   ;
 
 stringlist
  :  BEGL stringelems? ENDL
- | IDENTIFIER
  ;
 
 numberlist
  :  BEGL numberelems? ENDL
- | IDENTIFIER
  ;
 
 stringelems
@@ -47,8 +46,8 @@ booleantype
  | left=stringtype op=nonboolcomparator right=stringtype #stringComparatorBooleantype
  | left=numbertype op=nonboolcomparator right=numbertype #numberComparatorBooleantype
  | left=list op=listcomparator right=list #listComparatorBooleantype
- | stringtype IN stringlist #stringInBooleantype
- | numbertype IN numberlist #numberInBooleantype
+ | stringtype IN list #stringInBooleantype
+ | numbertype IN list #numberInBooleantype
  | bool #boolBooleantype
  | IDENTIFIER #identifierBooleantype
  ;

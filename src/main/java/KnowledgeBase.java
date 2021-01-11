@@ -186,7 +186,7 @@ public class KnowledgeBase {
       String slotToSet = knowledgeUpdate.getSlotToUpdate();
 
       // TODO: FIX THIS
-      Object result = 123123213;
+      Object result = null;
       switch (knowledgeUpdate.getUpdateType()) {
          case SET:
             result = settingValue;
@@ -219,6 +219,7 @@ public class KnowledgeBase {
                       + knowledgeUpdate.toString() +
                       "for currentval: " + addValue.toString() + " settingVal: " + settingValue.toString());
                }
+               result = addValue;
             }
             break;
          case SUBTRACT:
@@ -255,6 +256,7 @@ public class KnowledgeBase {
          default:
             throw new KnowledgeException("Not implemented KnowledgeUpdateType " + knowledgeUpdate.toString());
       }
+      if(result == null) throw new KnowledgeException("Result is somehow null" + knowledgeUpdate.toString());
       frameToSet.updateFiller(slotToSet, result);
 
 
@@ -314,6 +316,17 @@ public class KnowledgeBase {
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to List<Double>", frame, slot, queryResult.toString()));
+      }
+   }
+
+   public List<?> queryList(String frame, String slot) throws KnowledgeException, MissingKnowledgeException {
+      Object queryResult = this.query(frame, slot);
+      if (queryResult instanceof List) {
+         return (List<?>) queryResult;
+      }
+      else {
+         throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
+             ", slot: %s - %s - to List<?>", frame, slot, queryResult.toString()));
       }
    }
 

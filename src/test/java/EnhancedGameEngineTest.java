@@ -27,9 +27,9 @@ public class EnhancedGameEngineTest {
       conditions.add(new Condition("world::room = \"place1\"", "I believe you are not in place1 yet, you are in world::room."));
       List<KnowledgeUpdate> knowledgeUpdates = new ArrayList<>();
       try {
-         knowledgeUpdates.add(new KnowledgeUpdate("world::randomState = \"very-good\""));
-         knowledgeUpdates.add(new KnowledgeUpdate("world::numActions = 0"));
-         knowledgeUpdates.add(new KnowledgeUpdate("world::supersetState = \"very-not-good\""));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::randomState := \"very-good\""));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::numActions := 0"));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::supersetState := \"very-not-good\""));
       } catch (KnowledgeException e) {
          e.printStackTrace();
          return null;
@@ -63,11 +63,11 @@ public class EnhancedGameEngineTest {
       List<KnowledgeUpdate> knowledgeUpdates2 = new ArrayList<>();
       // Create key for action
       try {
-         knowledgeUpdates1.add(new KnowledgeUpdate("world::room = \"room2\""));
-         knowledgeUpdates1.add(new KnowledgeUpdate("world::state = \"random\""));
-         knowledgeUpdates1.add(new KnowledgeUpdate("world::numActions = 0"));
-         knowledgeUpdates1.add(new KnowledgeUpdate("world::randomList = []"));
-         knowledgeUpdates1.add(new KnowledgeUpdate("world::numberList = [3.14, 3.142]"));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::room := \"room2\""));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::state := \"random\""));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::numActions := 0"));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::randomList := []"));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::numberList := [3.14, 3.142]"));
 
          // Create value for action
          conditions2.add(new Condition("world::room = \"room2\"", "100% you are not in room2 yet, you are in world::room"));
@@ -107,18 +107,16 @@ public class EnhancedGameEngineTest {
       assertEquals("You did action 1 in enhanced.", message);
    }
 
-/*   @Test
-   public void validatePreconditionAfterProgressStory(){
+   @Test
+   public void validateConditionAfterProgressStory() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
       ActionFormat actionFormat = new ActionFormat("eat");
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
       enhancedGameEngine.progressStory(instantiatedGameAction);
-      Map<String, String> postState = new HashMap<>();
-      postState.put("random-state", "very-good");
-      postState.put("room", "place1");
-      boolean validPrecond = enhancedGameEngine.validatePrecondition(postState);
+      String postCondition = "world::randomState = \"very-good\" AND room=\"place1\"";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
-   }*/
+   }
 
    @Test
    public void messagesProgressStoryTwoRoomsTwoActions() {
