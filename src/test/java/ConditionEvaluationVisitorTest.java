@@ -11,8 +11,8 @@ public class ConditionEvaluationVisitorTest {
    @Rule
    public ExpectedException exceptionRule = ExpectedException.none();
 
-   private Boolean produceResult(KnowledgeBase kb, String expression) throws KnowledgeException, MissingKnowledgeException {
-      return kb.conditionFails(expression);
+   private Boolean produceBooleanResult(KnowledgeBase kb, String expression) throws KnowledgeException, MissingKnowledgeException {
+      return kb.conditionSucceeds(expression);
    }
 
 
@@ -23,7 +23,7 @@ public class ConditionEvaluationVisitorTest {
       exceptionRule.expect(ParseCancellationException.class);
       exceptionRule.expectMessage("line 1:50 no viable alternative at input '\"Hello world. I'm John Doe ? and this should fail\"'");
       KnowledgeBase kb = new KnowledgeBase();
-      produceResult(kb, expression);
+      produceBooleanResult(kb, expression);
    }
 
 
@@ -33,14 +33,14 @@ public class ConditionEvaluationVisitorTest {
       exceptionRule.expect(ParseCancellationException.class);
       exceptionRule.expectMessage("line 1:8 no viable alternative at input '123.4567'");
       KnowledgeBase kb = new KnowledgeBase();
-      produceResult(kb, expression);
+      produceBooleanResult(kb, expression);
    }
 
    @Test
    public void loneTrueSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "TRUE";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -48,7 +48,7 @@ public class ConditionEvaluationVisitorTest {
    public void loneFalseSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "FALSE";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -56,7 +56,7 @@ public class ConditionEvaluationVisitorTest {
    public void bracketedBoolEqualExpression() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(1.0 IN [])=FALSE";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -64,7 +64,7 @@ public class ConditionEvaluationVisitorTest {
    public void bracketedBoolEqualNotExpression() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(1.0 IN [])=(NOT TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -72,7 +72,7 @@ public class ConditionEvaluationVisitorTest {
    public void notTrueIsFalse() throws KnowledgeException, MissingKnowledgeException {
       String expression = "NOT TRUE = FALSE";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -80,7 +80,7 @@ public class ConditionEvaluationVisitorTest {
    public void simpleAndSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "TRUE AND FALSE";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -88,7 +88,7 @@ public class ConditionEvaluationVisitorTest {
    public void compositeOrAndSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "(TRUE OR FALSE) AND (TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -99,16 +99,15 @@ public class ConditionEvaluationVisitorTest {
       SpecificFrame s = new SpecificFrame("test");
       s.updateFiller("banna", false);
       kb.addSpecificFrame(s);
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
-
-   @Test
+      @Test
    public void stringInequalitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"aaa!!!\" > \"bbbAAA\"";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -116,7 +115,7 @@ public class ConditionEvaluationVisitorTest {
    public void stringInequalityEqualSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"abc\" <= \"abc\"";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -125,8 +124,8 @@ public class ConditionEvaluationVisitorTest {
       String expression = "\"aaa!!!\" >= \"bbbAAA\"";
       String expressionSwapped = "\"bbbAAA\" <= \"aaa!!!\"";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
-      Boolean resultSwapped = produceResult(kb, expressionSwapped);
+      Boolean result = produceBooleanResult(kb, expression);
+      Boolean resultSwapped = produceBooleanResult(kb, expressionSwapped);
       assertEquals(result, resultSwapped);
    }
 
@@ -135,8 +134,8 @@ public class ConditionEvaluationVisitorTest {
       String expression = "\"!?.\" >= \"okok\"";
       String expressionSwapped = "\"okok\" <= \"!?.\"";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
-      Boolean resultSwapped = produceResult(kb, expressionSwapped);
+      Boolean result = produceBooleanResult(kb, expression);
+      Boolean resultSwapped = produceBooleanResult(kb, expressionSwapped);
       assertEquals(result, resultSwapped);
    }
 
@@ -144,15 +143,23 @@ public class ConditionEvaluationVisitorTest {
    public void stringEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"hello, world\" = \"hello, world\"";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
+   }
+
+   @Test
+   public void stringEqualityFail() throws KnowledgeException, MissingKnowledgeException {
+      String expression = "\"hello, world\" = \"hello, world1\"";
+      KnowledgeBase kb = new KnowledgeBase();
+      Boolean result = produceBooleanResult(kb, expression);
+      assertFalse(result);
    }
 
    @Test
    public void doubleInequalitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "3.14 >= 2.189";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -160,7 +167,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleInequalityNegativeSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "-0.5 < -1.1";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -168,7 +175,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleInequalityEqualSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "0.512 >= 0.512";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -176,7 +183,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleInequalityIntegerSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "123.12 < 123";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -184,7 +191,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "3.1416 = 3.1416";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -192,7 +199,7 @@ public class ConditionEvaluationVisitorTest {
    public void stringListEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "[\"first string,\", \"second string!\", \"THIRD STRING.\"] = [\"first string,\", \"second string!\", \"THIRD STRING.\"]";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -200,7 +207,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleListEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "([123.123, 3.1416, 1, 10.9] = [123.123, 3.1416, 1.0, 10.9])";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -208,7 +215,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleListEqualityFail() throws KnowledgeException, MissingKnowledgeException {
       String expression = "[123.123, 3.141592, 1, 10.9] = [123.123, 3.1416, 1.0, 10.9]";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -219,10 +226,10 @@ public class ConditionEvaluationVisitorTest {
       String expression3 = "1 IN [123.123, 3.1416, 1.0, 10.9]";
       String expression4 = "10.9 IN [123.123, 3.1416, 1.0, 10.9]";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
-      Boolean result2 = produceResult(kb, expression2);
-      Boolean result3 = produceResult(kb, expression3);
-      Boolean result4 = produceResult(kb, expression4);
+      Boolean result = produceBooleanResult(kb, expression);
+      Boolean result2 = produceBooleanResult(kb, expression2);
+      Boolean result3 = produceBooleanResult(kb, expression3);
+      Boolean result4 = produceBooleanResult(kb, expression4);
       assertTrue(result && result2 && result3 && result4);
    }
 
@@ -232,9 +239,9 @@ public class ConditionEvaluationVisitorTest {
       String expression2 = "\"Second string!\" IN [\"first string\", \"Second string!\", \"Third, string?\"]";
       String expression3 = "\"Third, string?\" IN [\"first string\", \"Second string!\", \"Third, string?\"]";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
-      Boolean result2 = produceResult(kb, expression2);
-      Boolean result3 = produceResult(kb, expression3);
+      Boolean result = produceBooleanResult(kb, expression);
+      Boolean result2 = produceBooleanResult(kb, expression2);
+      Boolean result3 = produceBooleanResult(kb, expression3);
       assertTrue(result && result2 && result3);
    }
 
@@ -242,7 +249,7 @@ public class ConditionEvaluationVisitorTest {
    public void emptyListEqualEmptyListSuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "[] = []";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -250,7 +257,7 @@ public class ConditionEvaluationVisitorTest {
    public void stringListInEmptyFails() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"first string\" IN []";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -258,7 +265,7 @@ public class ConditionEvaluationVisitorTest {
    public void doubleListInEmptyFails() throws KnowledgeException, MissingKnowledgeException {
       String expression = "1.0 IN []";
       KnowledgeBase kb = new KnowledgeBase();
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -270,7 +277,7 @@ public class ConditionEvaluationVisitorTest {
 
       exceptionRule.expect(KnowledgeException.class);
       exceptionRule.expectMessage("Error when parsing expression \"_test::test IN  [] \". Frame: test doesn't exist");
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
    }
 
 
@@ -281,7 +288,7 @@ public class ConditionEvaluationVisitorTest {
 
       exceptionRule.expect(KnowledgeException.class);
       exceptionRule.expectMessage("Error when parsing expression \"test1::banana\". Frame: test1 doesn't exist");
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
    }
 
    @Test
@@ -291,8 +298,8 @@ public class ConditionEvaluationVisitorTest {
       kb.addSpecificFrame(new SpecificFrame("Test491"));
 
       exceptionRule.expect(MissingKnowledgeException.class);
-      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". Slot: Apple on Frame: SpecificFrame{id='Test491'} is missing.");
-      Boolean result = produceResult(kb, expression);
+      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". Item: Test491 doesn't have a \"Apple\"");
+      Boolean result = produceBooleanResult(kb, expression);
    }
 
    @Test
@@ -306,7 +313,7 @@ public class ConditionEvaluationVisitorTest {
 
       exceptionRule.expect(KnowledgeException.class);
       exceptionRule.expectMessage("Error when parsing expression \"Test91::Ural1 = \"banana\"\". Couldn't cast the result of query for frame: Test91, slot: Ural1 - true - to String");
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
    }
 
    @Test
@@ -322,7 +329,7 @@ public class ConditionEvaluationVisitorTest {
 
       exceptionRule.expect(KnowledgeException.class);
       exceptionRule.expectMessage("Error when parsing expression \"Test92::Ural12 >= 4.0\". Couldn't cast the result of query for frame: Test92, slot: Ural12 - hello - to Double");
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
    }
 
 
@@ -337,7 +344,7 @@ public class ConditionEvaluationVisitorTest {
       s2.updateFiller("Ural123", 4.5);
       kb.addSpecificFrame(s);
 
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 
@@ -353,7 +360,7 @@ public class ConditionEvaluationVisitorTest {
       s2.updateFiller("Ural123456", true);
       kb.addSpecificFrame(s);
 
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
    }
 
@@ -369,7 +376,7 @@ public class ConditionEvaluationVisitorTest {
       s2.updateFiller("Ural123456", -1);
       kb.addSpecificFrame(s);
 
-      Boolean result = produceResult(kb, expression);
+      Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
 

@@ -25,13 +25,11 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       super();
       worldState = new HashMap<>();
       designerActions = new HashMap<>();
-      worldRooms = new ArrayList<>();
-      currentRoom = null;
    }
 
    public BasicGameEngine(@NotNull List<Room> rooms, @NotNull Room startRoom, @NotNull Map<Room, Map<InstantiatedGameAction, BasicGameDesignAction>> allowedActions) {
       super();
-      this.worldRooms = rooms;
+      this.worldRooms.addAll(rooms);
       this.designerActions = allowedActions;
       this.worldRooms.forEach(x -> designerActions.putIfAbsent(x, new HashMap<InstantiatedGameAction, BasicGameDesignAction>()));
       this.worldState = new HashMap<>();

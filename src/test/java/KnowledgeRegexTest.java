@@ -135,5 +135,77 @@ public class KnowledgeRegexTest {
       assertTrue(Pattern.matches(stringExpr, string));
    }
 
+   @Test
+   public void testEmptyStringList() {
+      String string = "[]";
+      String stringListExpr = KnowledgeRegex.stringListExpr;
+
+      assertTrue(Pattern.matches(stringListExpr, string));
+   }
+
+   @Test
+   public void testOneItemStringList() {
+      String string = "[\"banana!\"]";
+      String stringListExpr = KnowledgeRegex.stringListExpr;
+
+      assertTrue(Pattern.matches(stringListExpr, string));
+   }
+
+   @Test
+   public void testThreeItemStringList() {
+      String string = "[\"banana!\", \"?!.\", \"pizza amd bamama\"]";
+      String stringListExpr = KnowledgeRegex.stringListExpr;
+
+      assertTrue(Pattern.matches(stringListExpr, string));
+   }
+
+   @Test
+   public void testStringListDoesntMatchDoubleList() {
+      String string = "[4.0, 1, 6]";
+      String stringListExpr = KnowledgeRegex.stringListExpr;
+
+      assertFalse(Pattern.matches(stringListExpr, string));
+   }
+
+   @Test
+   public void testStringListDoesntMatchString() {
+      String string = "\"banana\"";
+      String stringListExpr = KnowledgeRegex.stringListExpr;
+
+      assertFalse(Pattern.matches(stringListExpr, string));
+   }
+
+   @Test
+   public void testEmptyNumberList() {
+      String string = "[]";
+      String numberListExpr = KnowledgeRegex.numberListExpr;
+
+      assertTrue(Pattern.matches(numberListExpr, string));
+   }
+
+   @Test
+   public void testSingleNumberList() {
+      String string = "[1.042134]";
+      String numberListExpr = KnowledgeRegex.numberListExpr;
+
+      assertTrue(Pattern.matches(numberListExpr, string));
+   }
+
+   @Test
+   public void testTripleNumberList() {
+      String string = "[1.042134, 1, 21039123]";
+      String numberListExpr = KnowledgeRegex.numberListExpr;
+
+      assertTrue(Pattern.matches(numberListExpr, string));
+   }
+
+   @Test
+   public void testNumberListNoMatchDouble() {
+      String string = "1.04213";
+      String numberListExpr = KnowledgeRegex.numberListExpr;
+
+      assertFalse(Pattern.matches(numberListExpr, string));
+   }
+
 
 }

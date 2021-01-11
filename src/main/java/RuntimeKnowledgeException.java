@@ -7,4 +7,8 @@ public class RuntimeKnowledgeException extends RuntimeException{
       super(message);
    }
 
+   public RuntimeKnowledgeException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
 }

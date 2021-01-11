@@ -28,10 +28,10 @@ public class VisitorFactory {
       try {
          return (Boolean) conditionEvaluationVisitor.visit(parser.parse());
       } catch (RuntimeKnowledgeException e) {
-         throw new KnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage());
+         throw new KnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage(), e);
       }
       catch (RuntimeMissingException e){
-         throw new MissingKnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage(), e.getMissingString());
+         throw new MissingKnowledgeException("Error when parsing expression \"" + expression + "\". " + e.getMessage(), e, e.getMissingString());
       }
    }
 }
