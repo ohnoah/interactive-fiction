@@ -57,9 +57,9 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
             return knowledgeBase.queryStringList(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
-            throw new RuntimeKnowledgeException(e.getMessage());
+            throw new RuntimeKnowledgeException(e.getMessage(), e);
          } catch (MissingKnowledgeException e) {
-            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
+            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
       else {
@@ -74,9 +74,9 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
             return knowledgeBase.queryDoubleList(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
-            throw new RuntimeKnowledgeException(e.getMessage());
+            throw new RuntimeKnowledgeException(e.getMessage(), e);
          } catch (MissingKnowledgeException e) {
-            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
+            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
       else {
@@ -114,9 +114,9 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             List<String> frameAndSlot = frameAndSlot(identifier.getText());
             return knowledgeBase.queryDouble(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
-            throw new RuntimeKnowledgeException(e.getMessage());
+            throw new RuntimeKnowledgeException(e.getMessage(), e);
          } catch (MissingKnowledgeException e) {
-            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
+            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
    }
@@ -133,9 +133,9 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             List<String> frameAndSlot = frameAndSlot(identifier.getText());
             return knowledgeBase.queryString(frameAndSlot.get(0), frameAndSlot.get(1));
          } catch (KnowledgeException e) {
-            throw new RuntimeKnowledgeException(e.getMessage());
+            throw new RuntimeKnowledgeException(e.getMessage(), e);
          } catch (MissingKnowledgeException e) {
-            throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
+            throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
    }
@@ -179,9 +179,9 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
          return knowledgeBase.queryBoolean(frameAndSlot.get(0), frameAndSlot.get(1));
       } catch (KnowledgeException e) {
-         throw new RuntimeKnowledgeException(e.getMessage());
+         throw new RuntimeKnowledgeException(e.getMessage(), e);
       } catch (MissingKnowledgeException e) {
-         throw new RuntimeMissingException(e.getMessage(), e.getMissingString());
+         throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
       }
    }
 
@@ -198,7 +198,9 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    @Override
    public Boolean visitStringComparatorBooleantype(SimpleBooleanParser.StringComparatorBooleantypeContext ctx) {
       if (ctx.op.EQ() != null) {
-         return this.visit(ctx.left).equals(this.visit(ctx.right));
+         String left = asString(ctx.left);
+         String right = asString(ctx.right);
+         return left.equals(right);
       }
       else if (ctx.op.LE() != null) {
          return asString(ctx.left).compareTo(asString(ctx.right)) <= 0;
@@ -218,7 +220,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    @Override
    public Boolean visitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx) {
       if (ctx.op.EQ() != null) {
-         return this.visit(ctx.left).equals(this.visit(ctx.right));
+         return asDouble(ctx.left) == (asDouble(ctx.right));
       }
       else if (ctx.op.LE() != null) {
          return asDouble(ctx.left) <= asDouble(ctx.right);

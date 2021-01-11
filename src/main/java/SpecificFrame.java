@@ -51,7 +51,7 @@ public class SpecificFrame {
          return slots.get(slotName);
       }
       else {
-         String missingString = String.format("Item: %s doesn't have a \"%s\".", slotName, this.toString());
+         String missingString = String.format("Item: %s doesn't have a \"%s\".", this.getId(), slotName);
          throw new MissingKnowledgeException(missingString, missingString);
       }
    }

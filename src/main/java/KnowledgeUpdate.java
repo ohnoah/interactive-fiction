@@ -9,8 +9,10 @@ public class KnowledgeUpdate implements Serializable {
    private boolean isConstantUpdate;
 
    private Object updateConstant;
+   // LEFT SIDE OF ASSIGNMENT
    private String frameToUpdate;
    private String slotToUpdate;
+   // RIGHT SIDE OF ASSIGNMENT
    private String foreignFrame;
    private String foreignSlot;
    private static TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
@@ -81,6 +83,8 @@ public class KnowledgeUpdate implements Serializable {
       String setTypeExpr = KnowledgeRegex.setTypeExpr;
       String numberExpr = KnowledgeRegex.numberExpr;
       String stringExpr = KnowledgeRegex.stringExpr;
+      String stringListExpr = KnowledgeRegex.stringListExpr;
+      String numberListExpr = KnowledgeRegex.numberListExpr;
 
       Pattern variable = Pattern.compile(String.format("^%s %s %s$", knowledgeExpr, setTypeExpr, largeCaptureKnowledgeExpr));
       Matcher variableMatcher = variable.matcher(expr);
@@ -94,7 +98,9 @@ public class KnowledgeUpdate implements Serializable {
          secondKnowledge = variableMatcher.group(4);
       }
       else {
-         Pattern constant = Pattern.compile(String.format("^%s %s (%s|%s)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr));
+         Pattern constant = Pattern.compile(
+             String.format("^%s %s (%s|%s|%s|%s)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
+         );
          Matcher constantMatcher = constant.matcher(expr);
          if (constantMatcher.matches()) {
             this.isConstantUpdate = true;
@@ -104,7 +110,8 @@ public class KnowledgeUpdate implements Serializable {
             secondKnowledge = constantMatcher.group(4);
          }
          else {
-            throw new KnowledgeException("Doesn't follow the setting syntax.");
+            // NOTE. Only alphanumeric chars in KnowledgeExpr
+            throw new KnowledgeException("KnowledgeUpdate doesn't follow the setting syntax. " + expr);
          }
       }
       setSettingProperties(secondKnowledge);

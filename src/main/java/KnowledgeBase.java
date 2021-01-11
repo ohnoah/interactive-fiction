@@ -1,5 +1,11 @@
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,6 +22,9 @@ public class KnowledgeBase {
    private List<GenericFrame> genericFrames;
    private List<SpecificFrame> specificFrames;
    private ConditionEvaluationVisitor conditionEvaluationVisitor;
+   private boolean firstError = true;
+   private String errorHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
+
 
    public KnowledgeBase() {
       this.genericFrames = new ArrayList<>();
@@ -72,8 +81,18 @@ public class KnowledgeBase {
       }
    }
 
+   private static String queryResultToString(Object queryResult) {
+      if(queryResult instanceof Double) {
+         double num = (double) queryResult;
+         if ((int) num == num) return Integer.toString((int) num); //for you, StackOverflowException
+         return String.valueOf(num); //and for you, Christian Kuetbach
+      }
+      return queryResult.toString();
+   }
+
    public String fillQueryString(String failureMessage) {
       // TODO: Replace all possible query strings that start with _ in the strings. Don't replace values
+      System.out.println(failureMessage);
       String valueRegex = KnowledgeRegex.knowledgeExpr;
 
       Pattern valuePattern = Pattern.compile(valueRegex);
@@ -90,7 +109,8 @@ public class KnowledgeBase {
          int start = valueMatcher.start();
          int end = valueMatcher.end();
          try {
-            halfway = halfway.substring(0, start) + this.query(frameAndSlot.get(0), frameAndSlot.get(1)).toString() + halfway.substring(end);
+            Object queryResult = this.query(frameAndSlot.get(0), frameAndSlot.get(1));
+            halfway = halfway.substring(0, start) + queryResultToString(queryResult) + halfway.substring(end);
          } catch (MissingKnowledgeException | KnowledgeException e) {
             this.printLogToFile("Couldn't query in fillQueryString for " + frameAndSlot.get(0) + frameAndSlot.get(1));
             this.printLogToFile(e.getMessage());
@@ -108,10 +128,21 @@ public class KnowledgeBase {
    }
 
    private void printLogToFile(String s) {
+      try {
+         System.err.println("\n Writing KNOWLEDGEBASE error string to log \n");
+         File file = new File("knowledge-base-error-log.txt");
+         file.createNewFile();
+         if(firstError) Files.write(file.toPath(), errorHeader.getBytes(), StandardOpenOption.APPEND); firstError = false;
+         Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+      } catch (IOException e) {
+         System.err.println("Couldn't write to error");
+         System.err.println(s);
+         e.printStackTrace();
+      }
    }
 
 
-   public boolean conditionFails(String expression) throws KnowledgeException, MissingKnowledgeException {
+   public boolean conditionSucceeds(String expression) throws KnowledgeException, MissingKnowledgeException {
       // TODO: Run the SimpleBoolean thing on the condition and change so that the identifier
       // TODO: gets values from the Frames
       // TODO: If the string is invalid, throw an exception
@@ -155,7 +186,7 @@ public class KnowledgeBase {
       String slotToSet = knowledgeUpdate.getSlotToUpdate();
 
       // TODO: FIX THIS
-      Object result = 12831283;
+      Object result = 123123213;
       switch (knowledgeUpdate.getUpdateType()) {
          case SET:
             result = settingValue;
@@ -168,12 +199,9 @@ public class KnowledgeBase {
             else if (addValue instanceof String && settingValue instanceof String) {
                result = (String) addValue + (String) settingValue;
             }
-            else if (addValue instanceof List && settingValue instanceof List) {
-               if (isPotentiallyStringList(addValue) && isPotentiallyStringList(settingValue)) {
-                  ((List) addValue).addAll((List) settingValue);
-               }
-               else if (isPotentiallyDoubleList(addValue) && isPotentiallyDoubleList(settingValue)) {
-                  ((List) addValue).addAll((List) settingValue);
+            else if (addValue instanceof List && settingValue instanceof Double) {
+               if (isPotentiallyDoubleList(addValue)) {
+                  ((List) addValue).add(settingValue);
                }
                else {
                   throw new KnowledgeException("Mismatched list types when updating with ADD "
@@ -181,6 +209,16 @@ public class KnowledgeBase {
                       "for currentval: " + addValue.toString() + " settingVal: " + settingValue.toString());
                }
                result = addValue;
+            }
+            else if(addValue instanceof List && settingValue instanceof String){
+               if (isPotentiallyStringList(addValue)) {
+                  ((List) addValue).add(settingValue);
+               }
+               else {
+                  throw new KnowledgeException("Mismatched list types when updating with ADD "
+                      + knowledgeUpdate.toString() +
+                      "for currentval: " + addValue.toString() + " settingVal: " + settingValue.toString());
+               }
             }
             break;
          case SUBTRACT:
@@ -217,7 +255,7 @@ public class KnowledgeBase {
          default:
             throw new KnowledgeException("Not implemented KnowledgeUpdateType " + knowledgeUpdate.toString());
       }
-      frameToSet.updateFiller(knowledgeUpdate.getFrameToUpdate(), result);
+      frameToSet.updateFiller(slotToSet, result);
 
 
    }

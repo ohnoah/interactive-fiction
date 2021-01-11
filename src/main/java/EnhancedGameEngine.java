@@ -22,55 +22,66 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private static Map<ActionFormat, List<Condition>> implementedConditionsMap;
    private static Map<ActionFormat, String> implementedSuccessMessageMap;
    private static Map<ActionFormat, List<KnowledgeUpdate>> implementedKnowledgeUpdateMap;
-   private static String errorLogFName = "error-log-" + DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm").format(LocalDateTime.now());
+   private static boolean firstError = true;
+   private static String errorLogHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
+   private static String errorLogFName = "error-log-game.txt";
 
    static {
       // Initialize maps for implementedLogic
-      implementedConditionsMap =  new HashMap<>();
-      implementedSuccessMessageMap =  new HashMap<>();
       implementedConditionsMap = new HashMap<>();
+      implementedSuccessMessageMap = new HashMap<>();
+      implementedKnowledgeUpdateMap = new HashMap<>();
 
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
-      Condition putConditionIsContainer = new Condition("_arg2::isContainer",
-          "You can't do that because _arg2 is not a container");
-      Condition putConditionVolume = new Condition("_arg1::volume <= _arg2::volume",
+      Condition putConditionIsContainer = new Condition("_arg1::isContainer",
+          "You can't do that because _arg1 is not a container");
+      Condition putConditionVolume = new Condition("_arg0::volume <= _arg1:internalVolume",
           "_arg2 is not big enough to contain _arg1");
       // We can use knowledgeEngine constructs here
 
-      implementedSuccessMessageMap.put(putIn, "You put the smaller _arg1 in _arg2");
+      implementedSuccessMessageMap.put(putIn, "You put the smaller _arg0 in _arg1");
       implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume));
       // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
       // TODO: and add _arg2 to _arg2's inside field.
       try {
-         KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg2::internalVolume -= _arg1::volume");
+         KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
+         KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += [_arg0::volume]");
+         implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume));
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
       }
 
-
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
    }
 
+
+   public EnhancedGameEngine() {
+      super();
+      this.designerActions = new HashMap<>();
+      this.knowledgeBase = new KnowledgeBase();
+      SpecificFrame worldFrame = new SpecificFrame("world");
+      worldFrame.updateFiller("room", "");
+      this.knowledgeBase.addSpecificFrame(worldFrame);
+   }
 
    @Override
    public Set<Item> possibleItems() {
       return currentRoom.getItems();
    }
 
-   public void setCurrentRoom(Room currentRoom) {
-      this.currentRoom = currentRoom;
+   public void setCurrentRoom(Room newRoom) {
+      this.currentRoom = newRoom;
       try {
-         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room = %s", currentRoom.getName())));
+         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room = \"%s\"", currentRoom.getName())));
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
       }
    }
 
-   public EnhancedGameEngine() {
-      this.knowledgeBase = new KnowledgeBase();
-      SpecificFrame worldFrame = new SpecificFrame("world");
-      this.knowledgeBase.addSpecificFrame(worldFrame);
+   protected boolean conditionSucceeds(String condition) throws KnowledgeException, MissingKnowledgeException {
+      return knowledgeBase.conditionSucceeds(condition);
    }
+
 
    protected void fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
       String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns);
@@ -81,15 +92,18 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns) {
       String newString = s;
-      for (int i = 1; i <= nouns.size(); i++) {
-         newString = newString.replaceAll("_arg" + i, nouns.get(i));
+      for (int i = 0; i < nouns.size(); i++) {
+         String argString = "_arg" + i;
+         if (newString.contains(argString)) {
+            newString = newString.replaceAll(argString, nouns.get(i));
+         }
       }
       return newString;
    }
 
    private void updateRoomWithKnowledgeUpdate(@NotNull KnowledgeUpdate knowledgeUpdate) {
       if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
-         this.printToErrorLog("Treating non-setting as setting because this is current room");
+         printToErrorLog("Treating non-setting as setting because this is current room");
       }
       Object moveTo = null;
       if (knowledgeUpdate.isConstantUpdate()) {
@@ -124,8 +138,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          printExceptionToLog(e);
          return;
       }
-      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getForeignFrame(), "world") &&
-          knowledgeBase.frameNameEquals(knowledgeUpdate.getForeignSlot(), "room")) {
+      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
+          knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "room")) {
          updateRoomWithKnowledgeUpdate(knowledgeUpdate);
       }
    }
@@ -135,6 +149,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          System.err.println("Writing error string to log");
          File file = new File(errorLogFName);
          file.createNewFile();
+         if (firstError) {
+            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
+         }
+         firstError = false;
+
          Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
       } catch (IOException e) {
          System.err.println("Couldn't write to error");
@@ -146,7 +165,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private static void printExceptionToLog(Exception e) {
       try {
          System.err.println("Writing error to log");
-         FileWriter fw = new FileWriter(errorLogFName, true);
+         File file = new File(errorLogFName);
+         file.createNewFile();
+         if (firstError) {
+            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
+         }
+         firstError = false;
+         FileWriter fw = new FileWriter(file, true);
          PrintWriter pw = new PrintWriter(fw);
          e.printStackTrace(pw);
       } catch (IOException openException) {
@@ -165,10 +190,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       String reasoning = "";
 
       for (Condition condition : conditions) {
-         // This will populate the errorMessage in Condition if fails
+         // replace _arg something in the string
          fillConditionWithArgs(condition, nouns);
          try {
-            if (knowledgeBase.conditionFails(condition.getBooleanExpr())) {
+            if (!knowledgeBase.conditionSucceeds(condition.getBooleanExpr())) {
                valid = false;
                reasoning = knowledgeBase.fillQueryString(condition.getFailureMessage());
                break;
@@ -187,11 +212,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
       if (valid) {
          String populatedSuccessMessage = replaceArgsWithNouns(successMessage, nouns);
-         reasoning = knowledgeBase.fillQueryString(populatedSuccessMessage);
 
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
             updateKnowledgeBase(knowledgeUpdate);
          }
+
+         reasoning = knowledgeBase.fillQueryString(populatedSuccessMessage);
+
       }
 
       return new Justification(valid, reasoning);
@@ -241,11 +268,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignAction(gameAction, currentRoom);
 
       if (enhancedGameDesignAction == null) {
-         if (message.equals("")) { // It's an implemented action
+         if (message.equals("")) { // It's not an implemented action
             return "You can't do that right now";
          }
          else { // It's implemented but not designed
-            return message + "Nothing important happens.";
+            return message + " Nothing important happens.";
          }
       }
       Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);

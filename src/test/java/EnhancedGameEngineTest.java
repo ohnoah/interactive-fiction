@@ -2,7 +2,9 @@ import static org.junit.Assert.*;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
@@ -22,15 +24,15 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
       // Create value for action
       List<Condition> conditions = new ArrayList<>();
-      conditions.add(new Condition("world::room = \"place1\"", "You are not in place1 yet, you are in world::room"));
+      conditions.add(new Condition("world::room = \"place1\"", "I believe you are not in place1 yet, you are in world::room."));
       List<KnowledgeUpdate> knowledgeUpdates = new ArrayList<>();
       try {
-         knowledgeUpdates.add(new KnowledgeUpdate("world::random-state = \"very-good\""));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::randomState = \"very-good\""));
          knowledgeUpdates.add(new KnowledgeUpdate("world::numActions = 0"));
-         knowledgeUpdates.add(new KnowledgeUpdate("world::superset-state = \"very-not-good\""));
+         knowledgeUpdates.add(new KnowledgeUpdate("world::supersetState = \"very-not-good\""));
       } catch (KnowledgeException e) {
          e.printStackTrace();
-         return new EnhancedGameEngine();
+         return null;
       }
       EnhancedGameDesignAction enhancedGameDesignAction = new EnhancedGameDesignAction(conditions, "You did action 1 in enhanced.", knowledgeUpdates);
       // Put in maps
@@ -61,24 +63,26 @@ public class EnhancedGameEngineTest {
       List<KnowledgeUpdate> knowledgeUpdates2 = new ArrayList<>();
       // Create key for action
       try {
-         knowledgeUpdates1
-             .add(new KnowledgeUpdate("world::room = \"room2\""));
-         knowledgeUpdates1
-             .add(new KnowledgeUpdate("world::state = \"random\""));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::room = \"room2\""));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::state = \"random\""));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::numActions = 0"));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::randomList = []"));
+         knowledgeUpdates1.add(new KnowledgeUpdate("world::numberList = [3.14, 3.142]"));
 
          // Create value for action
-         conditions2.add(new Condition("world::room = \"room2\"", "You are not in room2 yet, you are in world::room"));
-         knowledgeUpdates2
-             .add(new KnowledgeUpdate("world::numActions += 1"));
+         conditions2.add(new Condition("world::room = \"room2\"", "100% you are not in room2 yet, you are in world::room"));
+         knowledgeUpdates2.add(new KnowledgeUpdate("world::numActions += 1"));
+         knowledgeUpdates2.add(new KnowledgeUpdate("world::randomList += \"banana\""));
+         knowledgeUpdates2.add(new KnowledgeUpdate("world::numberList += world::numActions"));
       } catch (KnowledgeException e) {
          e.printStackTrace();
-         return new EnhancedGameEngine();
+         return null;
       }
 
       EnhancedGameDesignAction enhancedGameDesignAction1 =
-          new EnhancedGameDesignAction(conditions1, "You did action 1", knowledgeUpdates1);
+          new EnhancedGameDesignAction(conditions1, "You did action 1.", knowledgeUpdates1);
       EnhancedGameDesignAction enhancedGameDesignAction2 =
-          new EnhancedGameDesignAction(conditions2, "You did action 2 number world::numActions", knowledgeUpdates2);
+          new EnhancedGameDesignAction(conditions2, "You did action 2 number world::numActions.", knowledgeUpdates2);
 
       enhancedGameEngine.addAction(room, instantiatedGameAction1, enhancedGameDesignAction1);
       enhancedGameEngine.addAction(room2, instantiatedGameAction2, enhancedGameDesignAction2);
@@ -100,7 +104,7 @@ public class EnhancedGameEngineTest {
       ActionFormat actionFormat = new ActionFormat("eat");
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
       String message = enhancedGameEngine.progressStory(instantiatedGameAction);
-      assertEquals(message, "You did action 1");
+      assertEquals("You did action 1 in enhanced.", message);
    }
 
 /*   @Test
@@ -128,11 +132,11 @@ public class EnhancedGameEngineTest {
 
       String messageEat = enhancedGameEngine.progressStory(eatGameAction);
 
-      assertEquals(List.of("You did action 1", "You did action 2"), List.of(messageOpen, messageEat));
+      assertEquals(List.of("You did action 1.", "You did action 2 number 1."), List.of(messageOpen, messageEat));
    }
 
-/*   @Test
-   public void globalStateProgressStoryTwoRoomsTwoActions(){
+   @Test
+   public void numActionsProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
       ActionFormat openActionFormat = new ActionFormat("open");
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
@@ -143,11 +147,43 @@ public class EnhancedGameEngineTest {
 
       enhancedGameEngine.progressStory(eatGameAction);
 
-      Map<String, String> postState = new HashMap<>();
-      postState.put("room", "room2");
-      postState.put("state", "random");
-      boolean validPrecond = enhancedGameEngine.validatePrecondition(postState);
+      String postCondition = "world::numActions = 1";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
-   }*/
+   }
+
+   @Test
+   public void randomListProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
+      ActionFormat openActionFormat = new ActionFormat("open");
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
+      enhancedGameEngine.progressStory(openGameAction);
+
+      ActionFormat eatActionFormat = new ActionFormat("eat");
+      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of("elephant"));
+
+      enhancedGameEngine.progressStory(eatGameAction);
+
+      String postCondition = "world::randomList = [\"banana\"]";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void numberListProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
+      ActionFormat openActionFormat = new ActionFormat("open");
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
+      enhancedGameEngine.progressStory(openGameAction);
+
+      ActionFormat eatActionFormat = new ActionFormat("eat");
+      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of("elephant"));
+
+      enhancedGameEngine.progressStory(eatGameAction);
+
+      String postCondition = "world::numberList = [3.14, 3.142, 1.0]";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
 
 }

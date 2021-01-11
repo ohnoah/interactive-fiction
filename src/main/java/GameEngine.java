@@ -37,6 +37,8 @@ public abstract class GameEngine implements Serializable {
    }
 
    public GameEngine() {
+      this.worldRooms = new ArrayList<>();
+      this.currentRoom = null;
       // very common
       ActionFormat examine = new ActionFormat("examine", null);
       ActionFormat push = new ActionFormat("push", null);
