@@ -152,7 +152,7 @@ public class KnowledgeBase {
       // TODO: If the string is invalid, throw an exception
       try {
          Boolean result = VisitorFactory.evaluateCondition(conditionEvaluationVisitor, expression);
-         System.out.printf("%-70s -> %s | ", expression, result);
+         //System.out.printf("%-70s -> %s | ", expression, result);
          return result;
       } catch (RecognitionException | ParseCancellationException e) {
          throw new ParseCancellationException("Couldn't parse expression" + expression + " ." + e.getMessage());
@@ -232,7 +232,7 @@ public class KnowledgeBase {
          case SUBTRACT:
             Object subtractValue = frameToSet.getFiller(slotToSet);
             if (subtractValue instanceof Double && rhsValue instanceof Double) {
-               result = (Double) subtractValue + (Double) rhsValue;
+               result = (Double) subtractValue - (Double) rhsValue;
             }
             else if(subtractValue instanceof List && rhsValue instanceof String){
                if (isPotentiallyStringList(subtractValue)) {

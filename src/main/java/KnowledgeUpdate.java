@@ -109,6 +109,24 @@ public class KnowledgeUpdate implements Serializable {
       setSettingProperties(updateValue);
    }
 
+   // TODO: Reformat to use objects
+   public KnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
+      this.updateType = knowledgeUpdate.getUpdateType();
+      this.frameToUpdate = knowledgeUpdate.getFrameToUpdate();
+      this.slotToUpdate = knowledgeUpdate.getSlotToUpdate();
+      this.settingType = knowledgeUpdate.getSettingType();
+      if(knowledgeUpdate.getSettingType() == SettingType.CONSTANT){
+         this.updateConstant = knowledgeUpdate.getUpdateConstant();
+      }
+      else if(knowledgeUpdate.getSettingType() == SettingType.FRAME){
+         this.foreignFrame = knowledgeUpdate.getForeignFrame();
+      }
+      else{
+         this.foreignFrame = knowledgeUpdate.getForeignFrame();
+         this.foreignSlot = knowledgeUpdate.getForeignSlot();
+      }
+   }
+
 
    public KnowledgeUpdate(String expr) throws KnowledgeException {
       String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
