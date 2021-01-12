@@ -107,7 +107,7 @@ public class EnhancedGameEngineTest {
           new KnowledgeUpdate("pen::volume := 1"),
           new KnowledgeUpdate("ball::volume := 10"),
           new KnowledgeUpdate("apple::volume := 5")
-       );
+      );
 
       return enhancedGameEngine;
    }
@@ -185,7 +185,7 @@ public class EnhancedGameEngineTest {
 
       enhancedGameEngine.progressStory(eatGameAction);
 
-      String postCondition = "world::randomList = [\"banana\"]";
+      String postCondition = "world::randomList IS [\"banana\"]";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
    }
@@ -202,13 +202,22 @@ public class EnhancedGameEngineTest {
 
       enhancedGameEngine.progressStory(eatGameAction);
 
-      String postCondition = "world::numberList = [3.14, 1.0]";
+      String postCondition = "world::numberList IS [3.14, 1.0]";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
    }
 
    @Test
    public void puttingNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      String message = enhancedGameEngine.progressStory(openGameAction);
+      assertEquals("You pen in the small box. Nothing important happens.", message);
+   }
+
+   @Test
+   public void puttingNoDesignItemInContains() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
       System.out.println(puttingAf);
@@ -220,4 +229,16 @@ public class EnhancedGameEngineTest {
       assertTrue(validPrecond);
    }
 
+   @Test
+   public void puttingNoDesignIsContained() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      System.out.println(puttingAf);
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      enhancedGameEngine.progressStory(openGameAction);
+
+      String postCondition = "pen::isContained";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
 }

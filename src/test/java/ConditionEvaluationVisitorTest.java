@@ -53,24 +53,24 @@ public class ConditionEvaluationVisitorTest {
    }
 
    @Test
-   public void bracketedBoolEqualExpression() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "(1.0 IN [])=FALSE";
+   public void bracketedBoolExpression() throws KnowledgeException, MissingKnowledgeException {
+      String expression = "(1.0 IN [])";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
-      assertTrue(result);
+      assertFalse(result);
    }
 
    @Test
    public void bracketedBoolEqualNotExpression() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "(1.0 IN [])=(NOT TRUE)";
+      String expression = "(1.0 IN []) OR (NOT TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
-      assertTrue(result);
+      assertFalse(result);
    }
 
    @Test
    public void notTrueIsFalse() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "NOT TRUE = FALSE";
+      String expression = "NOT(NOT TRUE OR FALSE)";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
@@ -197,7 +197,7 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void stringListEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "[\"first string,\", \"second string!\", \"THIRD STRING.\"] = [\"first string,\", \"second string!\", \"THIRD STRING.\"]";
+      String expression = "[\"first string,\", \"second string!\", \"THIRD STRING.\"] IS [\"first string,\", \"second string!\", \"THIRD STRING.\"]";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
@@ -205,7 +205,7 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void doubleListEqualitySuccess() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "([123.123, 3.1416, 1, 10.9] = [123.123, 3.1416, 1.0, 10.9])";
+      String expression = "([123.123, 3.1416, 1, 10.9] IS [123.123, 3.1416, 1.0, 10.9])";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
@@ -213,7 +213,7 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void doubleListEqualityFail() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "[123.123, 3.141592, 1, 10.9] = [123.123, 3.1416, 1.0, 10.9]";
+      String expression = "[123.123, 3.141592, 1, 10.9] IS [123.123, 3.1416, 1.0, 10.9]";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
@@ -247,7 +247,7 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void emptyListEqualEmptyListSuccess() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "[] = []";
+      String expression = "[] IS []";
       KnowledgeBase kb = new KnowledgeBase();
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
@@ -326,6 +326,7 @@ public class ConditionEvaluationVisitorTest {
       SpecificFrame s2 = new SpecificFrame("Test92");
       s2.updateFiller("Ural123", 4.5);
       kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
 
       exceptionRule.expect(KnowledgeException.class);
       exceptionRule.expectMessage("Error when parsing expression \"Test92::Ural12 >= 4.0\". Couldn't cast the result of query for frame: Test92, slot: Ural12 - hello - to Double");
@@ -343,6 +344,7 @@ public class ConditionEvaluationVisitorTest {
       SpecificFrame s2 = new SpecificFrame("Test92");
       s2.updateFiller("Ural123", 4.5);
       kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
 
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
@@ -359,6 +361,7 @@ public class ConditionEvaluationVisitorTest {
       SpecificFrame s2 = new SpecificFrame("Test92");
       s2.updateFiller("Ural123456", true);
       kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
 
       Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
@@ -373,11 +376,46 @@ public class ConditionEvaluationVisitorTest {
       s.updateFiller("Ural12345", "hello");
       s.updateFiller("Ural1234567", 4.0);
       SpecificFrame s2 = new SpecificFrame("Test92");
-      s2.updateFiller("Ural123456", -1);
+      s2.updateFiller("Ural123456", -1.012);
       kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
 
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
+   }
+   // TODO : TEST DOUBLE IDENTIFEIR THING MORE THOROUGHLY
+   @Test
+   public void twoIdentifierNonBoolComparatorDoubles() throws KnowledgeException, MissingKnowledgeException {
+      String expression = "Test935::Ural17 > Test92::Banana";
+      KnowledgeBase kb = new KnowledgeBase();
+
+      SpecificFrame s = new SpecificFrame("Test935");
+      s.updateFiller("Ural125", "hello");
+      s.updateFiller("Ural17", 4.0);
+      SpecificFrame s2 = new SpecificFrame("Test92");
+      s2.updateFiller("Banana", -1.0);
+      kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
+
+      Boolean result = produceBooleanResult(kb, expression);
+      assertTrue(result);
+   }
+
+   @Test
+   public void twoIdentifierNonBoolComparatorStrings() throws KnowledgeException, MissingKnowledgeException {
+      String expression = "Test92::Banana < Test935::Ural ";
+      KnowledgeBase kb = new KnowledgeBase();
+
+      SpecificFrame s = new SpecificFrame("Test935");
+      s.updateFiller("Ural", "hello");
+      s.updateFiller("Ural17", 4.0);
+      SpecificFrame s2 = new SpecificFrame("Test92");
+      s2.updateFiller("Banana", "yes");
+      kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
+
+      Boolean result = produceBooleanResult(kb, expression);
+      assertFalse(result);
    }
 
 
