@@ -207,5 +207,13 @@ public class KnowledgeRegexTest {
       assertFalse(Pattern.matches(numberListExpr, string));
    }
 
+   @Test
+   public void frameNameExpr() {
+      String string = "_Banan1";
+      String frameNameExpr = KnowledgeRegex.frameNameExpr;
+
+      assertTrue(Pattern.matches(frameNameExpr, string));
+   }
+
 
 }

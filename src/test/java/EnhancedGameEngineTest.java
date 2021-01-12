@@ -12,7 +12,7 @@ import org.junit.Test;
 public class EnhancedGameEngineTest {
    private static EnhancedGameEngine oneRoomOneAction() {
       Room room = new Room("place1");
-      room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
+      room.setItemsNoAdjectives(Set.of("apple", "banana", "orange"));
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
       enhancedGameEngine.addRoom(room);
@@ -43,9 +43,9 @@ public class EnhancedGameEngineTest {
 
    private static EnhancedGameEngine twoRoomTwoActions() {
       Room room = new Room("place1");
-      room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
+      room.setItemsNoAdjectives(Set.of("apple", "banana", "orange"));
       Room room2 = new Room("room2");
-      room2.setItemsNoAdjectives(List.of("elephant"));
+      room2.setItemsNoAdjectives(Set.of("elephant"));
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
       enhancedGameEngine.addRoom(room);
@@ -74,6 +74,7 @@ public class EnhancedGameEngineTest {
          knowledgeUpdates2.add(new KnowledgeUpdate("world::numActions += 1"));
          knowledgeUpdates2.add(new KnowledgeUpdate("world::randomList += \"banana\""));
          knowledgeUpdates2.add(new KnowledgeUpdate("world::numberList += world::numActions"));
+         knowledgeUpdates2.add(new KnowledgeUpdate("world::numberList -= 3.142"));
       } catch (KnowledgeException e) {
          e.printStackTrace();
          return null;
@@ -90,6 +91,28 @@ public class EnhancedGameEngineTest {
 
    }
 
+
+   private static EnhancedGameEngine puttingNoDesignRoom() throws KnowledgeException {
+      Room room = new Room("Putting Room");
+      room.setItemsNoAdjectives(Set.of("small box", "pen", "apple", "ball"));
+
+      EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
+      enhancedGameEngine.addRoom(room);
+      enhancedGameEngine.setCurrentRoom(room);
+      enhancedGameEngine.updateKnowledgeBase(
+          new KnowledgeUpdate("small-box::isContainer := TRUE"),
+          new KnowledgeUpdate("small-box::contains := []"),
+          new KnowledgeUpdate("small-box::internalVolume := 10"),
+          new KnowledgeUpdate("small-box::volume := 10"),
+          new KnowledgeUpdate("pen::volume := 1"),
+          new KnowledgeUpdate("ball::volume := 10"),
+          new KnowledgeUpdate("apple::volume := 5")
+       );
+
+      return enhancedGameEngine;
+   }
+
+
    @Test
    public void possibleItemNamesWorks() {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
@@ -101,7 +124,7 @@ public class EnhancedGameEngineTest {
    @Test
    public void messageAfterProgressStory() {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
-      ActionFormat actionFormat = new ActionFormat("eat");
+      ActionFormat actionFormat = enhancedGameEngine.findAction("eat").get(0);
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
       String message = enhancedGameEngine.progressStory(instantiatedGameAction);
       assertEquals("You did action 1 in enhanced.", message);
@@ -110,10 +133,10 @@ public class EnhancedGameEngineTest {
    @Test
    public void validateConditionAfterProgressStory() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
-      ActionFormat actionFormat = new ActionFormat("eat");
+      ActionFormat actionFormat = enhancedGameEngine.findAction("eat").get(0);
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
       enhancedGameEngine.progressStory(instantiatedGameAction);
-      String postCondition = "world::randomState = \"very-good\" AND room=\"place1\"";
+      String postCondition = "world::randomState = \"very-good\" AND world::room=\"place1\"";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
    }
@@ -125,7 +148,7 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
       String messageOpen = enhancedGameEngine.progressStory(openGameAction);
 
-      ActionFormat eatActionFormat = new ActionFormat("eat");
+      ActionFormat eatActionFormat = enhancedGameEngine.findAction("eat").get(0);
       InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of("elephant"));
 
       String messageEat = enhancedGameEngine.progressStory(eatGameAction);
@@ -136,7 +159,7 @@ public class EnhancedGameEngineTest {
    @Test
    public void numActionsProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
-      ActionFormat openActionFormat = new ActionFormat("open");
+      ActionFormat openActionFormat = enhancedGameEngine.findAction("open").get(0);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
       enhancedGameEngine.progressStory(openGameAction);
 
@@ -153,7 +176,7 @@ public class EnhancedGameEngineTest {
    @Test
    public void randomListProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
-      ActionFormat openActionFormat = new ActionFormat("open");
+      ActionFormat openActionFormat = enhancedGameEngine.findAction("open").get(0);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
       enhancedGameEngine.progressStory(openGameAction);
 
@@ -170,7 +193,7 @@ public class EnhancedGameEngineTest {
    @Test
    public void numberListProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
-      ActionFormat openActionFormat = new ActionFormat("open");
+      ActionFormat openActionFormat = enhancedGameEngine.findAction("open").get(0);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
       enhancedGameEngine.progressStory(openGameAction);
 
@@ -179,7 +202,20 @@ public class EnhancedGameEngineTest {
 
       enhancedGameEngine.progressStory(eatGameAction);
 
-      String postCondition = "world::numberList = [3.14, 3.142, 1.0]";
+      String postCondition = "world::numberList = [3.14, 1.0]";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      System.out.println(puttingAf);
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      enhancedGameEngine.progressStory(openGameAction);
+
+      String postCondition = "\"pen\" IN small-box::contains";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
    }
