@@ -36,11 +36,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       Condition putConditionIsContainer = new Condition("_arg1::isContainer",
           "You can't do that because _arg1 is not a container.");
       Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
-          "_arg2 is not big enough to contain _arg1.");
+          "_arg1 is not big enough to contain _arg0.");
+      Condition putConditionNotContained = new Condition("NOT _arg0::isContained",
+          "_arg0 is already inside of something.");
       // We can use knowledgeEngine constructs here
 
-      implementedSuccessMessageMap.put(putIn, "You put the smaller _arg0 in _arg1.");
-      implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume));
+      implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
+      implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume, putConditionNotContained));
       // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
       // TODO: and add _arg2 to _arg2's inside field.
       try {
@@ -84,31 +86,30 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
 
-   protected void fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
+   protected Condition fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
       String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns);
       String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns);
-      condition.setBooleanExpr(newBooleanExpr);
-      condition.setFailureMessage(newFailureMessage);
+      return new Condition(newBooleanExpr, newFailureMessage);
    }
 
-   private void fillKnowledgeUpdateWithArgs(KnowledgeUpdate knowledgeUpdate, List<String> nouns) {
-      String frameToUpdate = knowledgeUpdate.getFrameToUpdate();
-      String slotToUpdate = knowledgeUpdate.getSlotToUpdate();
-      knowledgeUpdate.setFrameToUpdate(replaceArgsWithNouns(frameToUpdate, nouns));
-      knowledgeUpdate.setSlotToUpdate(replaceArgsWithNouns(slotToUpdate, nouns));
-      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE) {
-         String foreignFrame = knowledgeUpdate.getForeignFrame();
-         knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
-         String foreignSlot = knowledgeUpdate.getForeignSlot();
-         knowledgeUpdate.setForeignSlot(replaceArgsWithNouns(foreignSlot, nouns));
+   private KnowledgeUpdate fillKnowledgeUpdateWithArgs(KnowledgeUpdate knowledgeUpdate, List<String> nouns) {
+      KnowledgeUpdate newKnowledgeUpdate = new KnowledgeUpdate(knowledgeUpdate);
+      newKnowledgeUpdate.setFrameToUpdate(replaceArgsWithNouns(newKnowledgeUpdate.getFrameToUpdate(), nouns));
+      newKnowledgeUpdate.setSlotToUpdate(replaceArgsWithNouns(newKnowledgeUpdate.getSlotToUpdate(), nouns));
+      if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE) {
+         String foreignFrame = newKnowledgeUpdate.getForeignFrame();
+         newKnowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+         String foreignSlot = newKnowledgeUpdate.getForeignSlot();
+         newKnowledgeUpdate.setForeignSlot(replaceArgsWithNouns(foreignSlot, nouns));
       }
-      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
-         String foreignFrame = knowledgeUpdate.getForeignFrame();
-         knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+      else if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
+         String foreignFrame = newKnowledgeUpdate.getForeignFrame();
+         newKnowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
       }
+      return newKnowledgeUpdate;
    }
 
-   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns){
+   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns) {
       return this.replaceArgsWithNouns(s, nouns, "-");
    }
 
@@ -195,11 +196,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       for (Condition condition : conditions) {
          // replace _arg something in the string
-         fillConditionWithArgs(condition, nouns);
+         Condition populatedCondition = fillConditionWithArgs(condition, nouns);
          try {
-            if (!knowledgeBase.conditionSucceeds(condition.getBooleanExpr())) {
+            if (!knowledgeBase.conditionSucceeds(populatedCondition.getBooleanExpr())) {
                valid = false;
-               reasoning = knowledgeBase.fillQueryString(condition.getFailureMessage());
+               reasoning = knowledgeBase.fillQueryString(populatedCondition.getFailureMessage());
                break;
             }
          } catch (KnowledgeException e) {
@@ -218,8 +219,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          String populatedSuccessMessage = replaceArgsWithNouns(successMessage, nouns, " ");
 
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
-            fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
-            updateSingleKnowledgeBase(knowledgeUpdate);
+            KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
+            updateSingleKnowledgeBase(populatedKnowledgeUpdate);
          }
 
          reasoning = knowledgeBase.fillQueryString(populatedSuccessMessage);
@@ -261,13 +262,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       // if it returns a healthy String message, prepend that and let the GameDesignAction continue
 
       Justification implJust = performImplementedLogic(gameAction);
+      message = implJust.getReasoning();
       if (!implJust.isAccepted()) { // Implemented but fails
-         return message;
+         return implJust.getReasoning();
       }
-      else { // Implemented and accepts or not implemented
-         message = implJust.getReasoning();
-      }
-
       // Then check the GameDesignActions and prepend another message
       EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignAction(gameAction, currentRoom);
 

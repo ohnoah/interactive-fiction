@@ -99,14 +99,18 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
       enhancedGameEngine.addRoom(room);
       enhancedGameEngine.setCurrentRoom(room);
+      // TODO: Look at making defaults for this
       enhancedGameEngine.updateKnowledgeBase(
           new KnowledgeUpdate("small-box::isContainer := TRUE"),
           new KnowledgeUpdate("small-box::contains := []"),
           new KnowledgeUpdate("small-box::internalVolume := 10"),
           new KnowledgeUpdate("small-box::volume := 10"),
           new KnowledgeUpdate("pen::volume := 1"),
+          new KnowledgeUpdate("pen::isContained := FALSE"),
           new KnowledgeUpdate("ball::volume := 10"),
-          new KnowledgeUpdate("apple::volume := 5")
+          new KnowledgeUpdate("ball::isContained := FALSE"),
+          new KnowledgeUpdate("apple::volume := 5"),
+         new KnowledgeUpdate("apple::isContained := FALSE")
       );
 
       return enhancedGameEngine;
@@ -213,14 +217,13 @@ public class EnhancedGameEngineTest {
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
       String message = enhancedGameEngine.progressStory(openGameAction);
-      assertEquals("You pen in the small box. Nothing important happens.", message);
+      assertEquals("You put the pen in the small box. Nothing important happens.", message);
    }
 
    @Test
    public void puttingNoDesignItemInContains() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
-      System.out.println(puttingAf);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
       enhancedGameEngine.progressStory(openGameAction);
 
@@ -233,12 +236,36 @@ public class EnhancedGameEngineTest {
    public void puttingNoDesignIsContained() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
-      System.out.println(puttingAf);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
       enhancedGameEngine.progressStory(openGameAction);
 
       String postCondition = "pen::isContained";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingNoDesignInternalVolume() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      enhancedGameEngine.progressStory(openGameAction);
+
+      String postCondition = "small-box::internalVolume = 9.0";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingSecondItemNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      ActionFormat puttingAf2 = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf2, List.of("apple", "small box"));
+      String messagePen = enhancedGameEngine.progressStory(openGameActionPen);
+      String messageApple = enhancedGameEngine.progressStory(openGameActionApple);
+      assertEquals("You put the pen in the small box. Nothing important happens.", messagePen);
+      assertEquals("You put the apple in the small box. Nothing important happens.", messageApple);
    }
 }
