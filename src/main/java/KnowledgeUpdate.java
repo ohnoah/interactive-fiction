@@ -84,15 +84,17 @@ public class KnowledgeUpdate implements Serializable {
    }
 
    private void setSettingProperties(String updateValue) {
-      this.isConstantUpdate = isConstant(updateValue);
-      if (isConstantUpdate) {
+      if (isConstant(updateValue)) {
+         this.settingType = SettingType.CONSTANT;
          updateConstant = typeConvert(updateValue);
       }
       else {
          if(Pattern.matches(KnowledgeRegex.frameNameExpr, updateValue)){
+            this.settingType = SettingType.FRAME;
             foreignFrame = updateValue;
          }
          else if(Pattern.matches(KnowledgeRegex.knowledgeExpr, updateValue)){
+            this.settingType = SettingType.KNOWLEDGE;
             String[] knowledgeParts = updateValue.split("::");
             foreignFrame = knowledgeParts[0];
             foreignSlot = knowledgeParts[1];
@@ -124,7 +126,6 @@ public class KnowledgeUpdate implements Serializable {
       String stringUpdateType;
       String secondKnowledge;
       if (variableMatcher.matches()) {
-         this.isConstantUpdate = false;
          this.frameToUpdate = variableMatcher.group(1);
          this.slotToUpdate = variableMatcher.group(2);
          stringUpdateType = variableMatcher.group(3);
@@ -136,7 +137,6 @@ public class KnowledgeUpdate implements Serializable {
          );
          Matcher constantMatcher = constant.matcher(expr);
          if (constantMatcher.matches()) {
-            this.isConstantUpdate = true;
             this.frameToUpdate = constantMatcher.group(1);
             this.slotToUpdate = constantMatcher.group(2);
             stringUpdateType = constantMatcher.group(3);
@@ -167,6 +167,18 @@ public class KnowledgeUpdate implements Serializable {
       }
    }
 
+   @Override
+   public String toString() {
+      return "KnowledgeUpdate{" +
+          "updateType=" + updateType +
+          ", settingType=" + settingType +
+          ", frameToUpdate='" + frameToUpdate + '\'' +
+          ", slotToUpdate='" + slotToUpdate + '\'' +
+          ", foreignFrame='" + foreignFrame + '\'' +
+          ", foreignSlot='" + foreignSlot + '\'' +
+          ", updateConstant=" + updateConstant +
+          '}';
+   }
 
    @Override
    public boolean equals(Object o) {
@@ -177,30 +189,17 @@ public class KnowledgeUpdate implements Serializable {
          return false;
       }
       KnowledgeUpdate that = (KnowledgeUpdate) o;
-      return isConstantUpdate() == that.isConstantUpdate() &&
-          getUpdateType() == that.getUpdateType() &&
-          Objects.equals(getUpdateConstant(), that.getUpdateConstant()) &&
+      return getUpdateType() == that.getUpdateType() &&
+          getSettingType() == that.getSettingType() &&
           getFrameToUpdate().equals(that.getFrameToUpdate()) &&
           getSlotToUpdate().equals(that.getSlotToUpdate()) &&
           Objects.equals(getForeignFrame(), that.getForeignFrame()) &&
-          Objects.equals(getForeignSlot(), that.getForeignSlot());
+          Objects.equals(getForeignSlot(), that.getForeignSlot()) &&
+          Objects.equals(getUpdateConstant(), that.getUpdateConstant());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(getUpdateType(), isConstantUpdate(), getUpdateConstant(), getFrameToUpdate(), getSlotToUpdate(), getForeignFrame(), getForeignSlot());
-   }
-
-   @Override
-   public String toString() {
-      return "KnowledgeUpdate{" +
-          "updateType=" + updateType +
-          ", isConstantUpdate=" + isConstantUpdate +
-          ", updateConstant='" + updateConstant + '\'' +
-          ", settingFrameID='" + frameToUpdate + '\'' +
-          ", settingSlot='" + slotToUpdate + '\'' +
-          ", updatingFrameID='" + foreignFrame + '\'' +
-          ", updatingSlot='" + foreignSlot + '\'' +
-          '}';
+      return Objects.hash(getUpdateType(), getSettingType(), getFrameToUpdate(), getSlotToUpdate(), getForeignFrame(), getForeignSlot(), getUpdateConstant());
    }
 }
