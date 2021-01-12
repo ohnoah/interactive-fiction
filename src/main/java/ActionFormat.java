@@ -63,4 +63,12 @@ public class ActionFormat implements Serializable {
    public int hashCode() {
       return Objects.hash(getVerb(), getRegExpr());
    }
+
+   @Override
+   public String toString() {
+      return "ActionFormat{" +
+          "verb='" + verb + '\'' +
+          ", regExpr='" + regExpr + '\'' +
+          '}';
+   }
 }

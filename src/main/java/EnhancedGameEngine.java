@@ -35,7 +35,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
       Condition putConditionIsContainer = new Condition("_arg1::isContainer",
           "You can't do that because _arg1 is not a container");
-      Condition putConditionVolume = new Condition("_arg0::volume <= _arg1:internalVolume",
+      Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
           "_arg2 is not big enough to contain _arg1");
       // We can use knowledgeEngine constructs here
 
@@ -45,8 +45,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       // TODO: and add _arg2 to _arg2's inside field.
       try {
          KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
-         KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += [_arg0::volume]");
-         implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume));
+         KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
+         KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::contained := TRUE");
+         implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
       }
@@ -72,7 +73,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    public void setCurrentRoom(Room newRoom) {
       this.currentRoom = newRoom;
       try {
-         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room := \"%s\"", currentRoom.getName())));
+         this.updateSingleKnowledgeBase(new KnowledgeUpdate(String.format("_world::room := \"%s\"", currentRoom.getName())));
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
       }
@@ -90,12 +91,31 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       condition.setFailureMessage(newFailureMessage);
    }
 
+   private void fillKnowledgeUpdateWithArgs(KnowledgeUpdate knowledgeUpdate, List<String> nouns) {
+      String frameToUpdate = knowledgeUpdate.getFrameToUpdate();
+      String slotToUpdate = knowledgeUpdate.getSlotToUpdate();
+      knowledgeUpdate.setFrameToUpdate(replaceArgsWithNouns(frameToUpdate, nouns));
+      knowledgeUpdate.setSlotToUpdate(replaceArgsWithNouns(slotToUpdate, nouns));
+      if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE){
+         String foreignFrame = knowledgeUpdate.getForeignFrame();
+         knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+
+      }
+      else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
+         String foreignFrame = knowledgeUpdate.getForeignFrame();
+         knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+      }
+      knowledgeUpdate.
+   }
+
+
    protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns) {
       String newString = s;
       for (int i = 0; i < nouns.size(); i++) {
          String argString = "_arg" + i;
+         String nounNoSpaces = nouns.get(i).replace(" ", "-");
          if (newString.contains(argString)) {
-            newString = newString.replaceAll(argString, nouns.get(i));
+            newString = newString.replaceAll(argString, nounNoSpaces);
          }
       }
       return newString;
@@ -106,12 +126,16 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          printToErrorLog("Treating non-setting as setting because this is current room");
       }
       Object moveTo = null;
-      if (knowledgeUpdate.isConstantUpdate()) {
+      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
          moveTo = knowledgeUpdate.getUpdateConstant();
+      }
+      else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
+         // TODO: This case doesn't really make sense
+         moveTo = KnowledgeBase.stripUnderscore(knowledgeUpdate.getForeignFrame());
       }
       else {
          try {
-            moveTo = knowledgeBase.query(knowledgeUpdate.getFrameToUpdate(), knowledgeUpdate.getSlotToUpdate());
+            moveTo = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException | MissingKnowledgeException e) {
             printExceptionToLog(e);
             printToErrorLog("Failed to move room");
@@ -131,7 +155,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
+   private void updateSingleKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       try {
          knowledgeBase.update(knowledgeUpdate);
       } catch (KnowledgeException | MissingKnowledgeException e) {
@@ -144,40 +168,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   private static void printToErrorLog(String s) {
-      try {
-         System.err.println("Writing error string to log");
-         File file = new File(errorLogFName);
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
-
-         Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
-      } catch (IOException e) {
-         System.err.println("Couldn't write to error");
-         System.err.println(s);
-         e.printStackTrace();
-      }
-   }
-
-   private static void printExceptionToLog(Exception e) {
-      try {
-         System.err.println("Writing error to log");
-         File file = new File(errorLogFName);
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
-         FileWriter fw = new FileWriter(file, true);
-         PrintWriter pw = new PrintWriter(fw);
-         e.printStackTrace(pw);
-      } catch (IOException openException) {
-         System.err.println("Couldn't write to error");
-         e.printStackTrace();
-         openException.printStackTrace();
+   public void updateKnowledgeBase(@NotNull KnowledgeUpdate ...knowledgeUpdates) {
+      for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
+         updateSingleKnowledgeBase(knowledgeUpdate);
       }
    }
 
@@ -214,7 +207,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          String populatedSuccessMessage = replaceArgsWithNouns(successMessage, nouns);
 
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
-            updateKnowledgeBase(knowledgeUpdate);
+            fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
+            updateSingleKnowledgeBase(knowledgeUpdate);
          }
 
          reasoning = knowledgeBase.fillQueryString(populatedSuccessMessage);
@@ -223,6 +217,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       return new Justification(valid, reasoning);
    }
+
+
 
 
    private Justification performDesignLogic(@NotNull InstantiatedGameAction instGameAction, @NotNull EnhancedGameDesignAction designAction) {
@@ -300,6 +296,49 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if (!worldRooms.contains(room)) {
          worldRooms.add(room);
          designerActions.putIfAbsent(room, new HashMap<>());
+
+         for(Item i : room.getItems()){
+            knowledgeBase.createSpecificFrame(i);
+         }
       }
    }
+
+   private static void printToErrorLog(String s) {
+      try {
+         System.err.println("Writing error string to log");
+         File file = new File(errorLogFName);
+         file.createNewFile();
+         if (firstError) {
+            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
+         }
+         firstError = false;
+
+         Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);
+      } catch (IOException e) {
+         System.err.println("Couldn't write to error");
+         System.err.println(s);
+         e.printStackTrace();
+      }
+   }
+
+   private static void printExceptionToLog(Exception e) {
+      try {
+         System.err.println("Writing error to log");
+         File file = new File(errorLogFName);
+         file.createNewFile();
+         if (firstError) {
+            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
+         }
+         firstError = false;
+         FileWriter fw = new FileWriter(file, true);
+         PrintWriter pw = new PrintWriter(fw);
+         e.printStackTrace(pw);
+         Files.write(file.toPath(), (e.getMessage() + "\n").getBytes(), StandardOpenOption.APPEND);
+      } catch (IOException openException) {
+         System.err.println("Couldn't write to error");
+         e.printStackTrace();
+         openException.printStackTrace();
+      }
+   }
+
 }

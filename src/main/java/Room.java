@@ -31,8 +31,8 @@ public class Room implements Serializable {
       this.items = new HashSet<>(items);
    }
 
-   public void setItemsNoAdjectives(List<String> items) {
-      this.items = items.stream().map(Item::new).collect(Collectors.toSet());
+   public void setItemsNoAdjectives(Set<String> items) {
+      setItems(items.stream().map(Item::new).collect(Collectors.toSet()));
    }
 
    @Override

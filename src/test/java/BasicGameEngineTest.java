@@ -12,7 +12,7 @@ public class BasicGameEngineTest {
 
    public static BasicGameEngine oneRoomOneAction(){
       Room room = new Room("place1");
-      room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
+      room.setItemsNoAdjectives(Set.of("apple", "banana", "orange"));
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
       basicGameEngine.addRoom(room);
@@ -37,9 +37,9 @@ public class BasicGameEngineTest {
 
    public static BasicGameEngine twoRoomTwoActions(){
       Room room = new Room("place1");
-      room.setItemsNoAdjectives(List.of("apple", "banana", "orange"));
+      room.setItemsNoAdjectives(Set.of("apple", "banana", "orange"));
       Room room2 = new Room("room2");
-      room2.setItemsNoAdjectives(List.of("elephant"));
+      room2.setItemsNoAdjectives(Set.of("elephant"));
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
       basicGameEngine.addRoom(room);

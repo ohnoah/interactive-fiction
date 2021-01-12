@@ -26,6 +26,10 @@ public class KnowledgeBase {
    private String errorHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
 
 
+   private String replaceSpaces(String name){
+      return name.replace(" ", "-");
+   }
+
    public KnowledgeBase() {
       this.genericFrames = new ArrayList<>();
       this.specificFrames = new ArrayList<>();
@@ -52,7 +56,7 @@ public class KnowledgeBase {
       }
    }
 
-   private String stripUnderscore(String s) {
+   public static String stripUnderscore(String s) {
       if (s.charAt(0) == '_') {
          return s.substring(1);
       }
@@ -92,7 +96,6 @@ public class KnowledgeBase {
 
    public String fillQueryString(String failureMessage) {
       // TODO: Replace all possible query strings that start with _ in the strings. Don't replace values
-      System.out.println(failureMessage);
       String valueRegex = KnowledgeRegex.knowledgeExpr;
 
       Pattern valuePattern = Pattern.compile(valueRegex);
@@ -105,6 +108,7 @@ public class KnowledgeBase {
             frameAndSlot = frameAndSlot(match);
          } catch (KnowledgeException e) {
             this.printLogToFile("Failed subsequence match for fillQueryString " + failureMessage);
+            continue;
          }
          int start = valueMatcher.start();
          int end = valueMatcher.end();
@@ -133,7 +137,7 @@ public class KnowledgeBase {
          File file = new File("knowledge-base-error-log.txt");
          file.createNewFile();
          if(firstError) Files.write(file.toPath(), errorHeader.getBytes(), StandardOpenOption.APPEND); firstError = false;
-         Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+         Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);
       } catch (IOException e) {
          System.err.println("Couldn't write to error");
          System.err.println(s);
@@ -148,7 +152,7 @@ public class KnowledgeBase {
       // TODO: If the string is invalid, throw an exception
       try {
          Boolean result = VisitorFactory.evaluateCondition(conditionEvaluationVisitor, expression);
-         System.out.printf("%-70s -> %s\n", expression, result);
+         System.out.printf("%-70s -> %s | ", expression, result);
          return result;
       } catch (RecognitionException | ParseCancellationException e) {
          throw new ParseCancellationException("Couldn't parse expression" + expression + " ." + e.getMessage());
@@ -227,15 +231,23 @@ public class KnowledgeBase {
             if (subtractValue instanceof Double && settingValue instanceof Double) {
                result = (Double) subtractValue + (Double) settingValue;
             }
-            else if (subtractValue instanceof List && settingValue instanceof List) {
-               if (isPotentiallyStringList(subtractValue) && isPotentiallyStringList(settingValue)) {
-                  ((List) subtractValue).removeAll((List) settingValue);
-               }
-               else if (isPotentiallyDoubleList(subtractValue) && isPotentiallyDoubleList(settingValue)) {
-                  ((List) subtractValue).removeAll((List) settingValue);
+            else if(subtractValue instanceof List && settingValue instanceof String){
+               if (isPotentiallyStringList(subtractValue)) {
+                  ((List) subtractValue).remove(settingValue);
                }
                else {
-                  throw new KnowledgeException("Mismatched types when updating with SUB "
+                  throw new KnowledgeException("Mismatched list types when updating with SUB "
+                      + knowledgeUpdate.toString() +
+                      "for currentval: " + subtractValue.toString() + " settingVal: " + settingValue.toString());
+               }
+               result = subtractValue;
+            }
+            else if (subtractValue instanceof List && settingValue instanceof Double) {
+               if (isPotentiallyDoubleList(subtractValue)) {
+                  ((List) subtractValue).remove(settingValue);
+               }
+               else {
+                  throw new KnowledgeException("Mismatched list types when updating with SUB "
                       + knowledgeUpdate.toString() +
                       "for currentval: " + subtractValue.toString() + " settingVal: " + settingValue.toString());
                }
@@ -263,7 +275,7 @@ public class KnowledgeBase {
    }
 
    public Object query(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
-      SpecificFrame frameQueried = findSpecificFrame(frame);
+      SpecificFrame frameQueried = findSpecificFrame(stripUnderscore(frame));
       return frameQueried.getFiller(slot);
    }
 
@@ -341,6 +353,11 @@ public class KnowledgeBase {
       }
    }
 
+   public boolean createSpecificFrame(Item i) {
+      SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(i.getName()));
+      specificFrame.updateFiller("isContainer", false);
+      return this.addSpecificFrame(specificFrame);
+   }
 
    public static void main(String[] args) {
 
@@ -394,4 +411,6 @@ public class KnowledgeBase {
          }
       }
    }
+
+
 }

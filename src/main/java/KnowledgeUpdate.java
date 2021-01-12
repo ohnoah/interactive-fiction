@@ -6,15 +6,38 @@ import java.util.regex.Pattern;
 
 public class KnowledgeUpdate implements Serializable {
    private UpdateType updateType;
-   private boolean isConstantUpdate;
 
-   private Object updateConstant;
+   public void setFrameToUpdate(String frameToUpdate) {
+      this.frameToUpdate = frameToUpdate;
+   }
+
+   public void setSlotToUpdate(String slotToUpdate) {
+      this.slotToUpdate = slotToUpdate;
+   }
+
+   public void setForeignFrame(String foreignFrame) {
+      this.foreignFrame = foreignFrame;
+   }
+
+   public void setForeignSlot(String foreignSlot) {
+      this.foreignSlot = foreignSlot;
+   }
+
+   enum SettingType {
+      CONSTANT,
+      KNOWLEDGE,
+      FRAME
+   }
+   private SettingType settingType;
+
    // LEFT SIDE OF ASSIGNMENT
    private String frameToUpdate;
    private String slotToUpdate;
    // RIGHT SIDE OF ASSIGNMENT
    private String foreignFrame;
    private String foreignSlot;
+   private Object updateConstant;
+
    private static TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
 
    private static Object typeConvert(String expression) {
@@ -25,6 +48,10 @@ public class KnowledgeUpdate implements Serializable {
       return updateType;
    }
 
+
+   public SettingType getSettingType() {
+      return settingType;
+   }
 
    public boolean isConstantUpdate() {
       return isConstantUpdate;
@@ -62,9 +89,14 @@ public class KnowledgeUpdate implements Serializable {
          updateConstant = typeConvert(updateValue);
       }
       else {
-         String[] knowledgeParts = updateValue.split("::");
-         foreignFrame = knowledgeParts[0];
-         foreignSlot = knowledgeParts[1];
+         if(Pattern.matches(KnowledgeRegex.frameNameExpr, updateValue)){
+            foreignFrame = updateValue;
+         }
+         else if(Pattern.matches(KnowledgeRegex.knowledgeExpr, updateValue)){
+            String[] knowledgeParts = updateValue.split("::");
+            foreignFrame = knowledgeParts[0];
+            foreignSlot = knowledgeParts[1];
+         }
       }
    }
 
@@ -85,8 +117,9 @@ public class KnowledgeUpdate implements Serializable {
       String stringExpr = KnowledgeRegex.stringExpr;
       String stringListExpr = KnowledgeRegex.stringListExpr;
       String numberListExpr = KnowledgeRegex.numberListExpr;
+      String frameNameExpr = KnowledgeRegex.frameNameExpr;
 
-      Pattern variable = Pattern.compile(String.format("^%s %s %s$", knowledgeExpr, setTypeExpr, largeCaptureKnowledgeExpr));
+      Pattern variable = Pattern.compile(String.format("^%s %s (%s|%s)$", knowledgeExpr, setTypeExpr, largeCaptureKnowledgeExpr, frameNameExpr));
       Matcher variableMatcher = variable.matcher(expr);
       String stringUpdateType;
       String secondKnowledge;
@@ -99,7 +132,7 @@ public class KnowledgeUpdate implements Serializable {
       }
       else {
          Pattern constant = Pattern.compile(
-             String.format("^%s %s (%s|%s|%s|%s)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
+             String.format("^%s %s (%s|%s|%s|%s|TRUE|FALSE)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
          );
          Matcher constantMatcher = constant.matcher(expr);
          if (constantMatcher.matches()) {
@@ -111,7 +144,7 @@ public class KnowledgeUpdate implements Serializable {
          }
          else {
             // NOTE. Only alphanumeric chars in KnowledgeExpr
-            throw new KnowledgeException("KnowledgeUpdate doesn't follow the setting syntax. " + expr);
+            throw new KnowledgeException("KnowledgeUpdate doesn't follow the setting syntax: " + expr + " .");
          }
       }
       setSettingProperties(secondKnowledge);

@@ -8,9 +8,10 @@ public class InstantiatedGameAction implements Serializable {
    private ActionFormat abstractActionFormat;
    private List<String> arguments;
    public InstantiatedGameAction(ActionFormat actionFormat, List<String> nouns) {
-      abstractActionFormat = actionFormat;
-      arguments = nouns;
+      setAbstractActionFormat(actionFormat);
+      setArguments(nouns);
    }
+   // TODO: Case-sensitivity
    public InstantiatedGameAction(ActionFormat actionFormat) {
       abstractActionFormat = actionFormat;
    }

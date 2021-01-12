@@ -88,4 +88,18 @@ public class KnowledgeUpdateTest {
       KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.SET, "test51", "BananaPhone", "[4.0, 1.2312, 1213123]");
       assertEquals(knowledgeUpdate, knowledgeUpdate1);
    }
+
+   @Test
+   public void stringConstructorRemoveNumberFromList() throws KnowledgeException {
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone -= 4.0");
+      KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.SUBTRACT, "test51", "BananaPhone", "4.0");
+      assertEquals(knowledgeUpdate, knowledgeUpdate1);
+   }
+
+   @Test
+   public void stringConstructorFrame() throws KnowledgeException {
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone3 *= _test251");
+      KnowledgeUpdate knowledgeUpdate1 = new KnowledgeUpdate(UpdateType.MULTIPLY, "test51", "BananaPhone3", "_test251");
+      assertEquals(knowledgeUpdate, knowledgeUpdate1);
+   }
 }

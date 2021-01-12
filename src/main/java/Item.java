@@ -23,7 +23,7 @@ public class Item implements Serializable {
 
    @Override
    public String toString() {
-      return String.format("[%s] %s", adjectives.stream().collect(Collectors.joining(",")), name);
+      return String.format("[%s] %s", String.join(",", adjectives), name);
    }
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives) {
