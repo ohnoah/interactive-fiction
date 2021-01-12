@@ -73,13 +73,6 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code boolcomparatorBooleantype}
-	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code binaryBooleantype}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree
@@ -115,6 +108,13 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBoolBooleantype(SimpleBooleanParser.BoolBooleantypeContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code identifierComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code listComparatorBooleantype}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree
@@ -142,18 +142,6 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBooleantypeExpression(SimpleBooleanParser.BooleantypeExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SimpleBooleanParser#boolcomparator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SimpleBooleanParser#listcomparator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitListcomparator(SimpleBooleanParser.ListcomparatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SimpleBooleanParser#nonboolcomparator}.
 	 * @param ctx the parse tree

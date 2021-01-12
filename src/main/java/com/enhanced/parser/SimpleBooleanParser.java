@@ -17,35 +17,35 @@ public class SimpleBooleanParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		IN=1, AND=2, OR=3, NOT=4, TRUE=5, FALSE=6, GT=7, GE=8, LT=9, LE=10, EQ=11, 
-		LPAREN=12, RPAREN=13, QUOTE=14, STRING=15, DECIMAL=16, IDENTIFIER=17, 
-		BEGL=18, ENDL=19, SEP=20, WS=21;
+		IS=1, IN=2, AND=3, OR=4, NOT=5, TRUE=6, FALSE=7, GT=8, GE=9, LT=10, LE=11, 
+		EQ=12, LPAREN=13, RPAREN=14, QUOTE=15, STRING=16, DECIMAL=17, IDENTIFIER=18, 
+		BEGL=19, ENDL=20, SEP=21, WS=22;
 	public static final int
 		RULE_parse = 0, RULE_list = 1, RULE_stringlist = 2, RULE_numberlist = 3, 
 		RULE_stringelems = 4, RULE_numberelems = 5, RULE_numbertype = 6, RULE_stringtype = 7, 
-		RULE_booleantype = 8, RULE_expression = 9, RULE_boolcomparator = 10, RULE_listcomparator = 11, 
-		RULE_nonboolcomparator = 12, RULE_binary = 13, RULE_bool = 14;
+		RULE_booleantype = 8, RULE_expression = 9, RULE_nonboolcomparator = 10, 
+		RULE_binary = 11, RULE_bool = 12;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"parse", "list", "stringlist", "numberlist", "stringelems", "numberelems", 
-			"numbertype", "stringtype", "booleantype", "expression", "boolcomparator", 
-			"listcomparator", "nonboolcomparator", "binary", "bool"
+			"numbertype", "stringtype", "booleantype", "expression", "nonboolcomparator", 
+			"binary", "bool"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'IN'", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'", "'>'", "'>='", 
-			"'<'", "'<='", "'='", "'('", "')'", "'\"'", null, null, null, "'['", 
-			"']'", "','"
+			null, "'IS'", "'IN'", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'", 
+			"'>'", "'>='", "'<'", "'<='", "'='", "'('", "')'", "'\"'", null, null, 
+			null, "'['", "']'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "IN", "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", "LE", 
-			"EQ", "LPAREN", "RPAREN", "QUOTE", "STRING", "DECIMAL", "IDENTIFIER", 
+			null, "IS", "IN", "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", 
+			"LE", "EQ", "LPAREN", "RPAREN", "QUOTE", "STRING", "DECIMAL", "IDENTIFIER", 
 			"BEGL", "ENDL", "SEP", "WS"
 		};
 	}
@@ -130,9 +130,9 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(30);
+			setState(26);
 			expression();
-			setState(31);
+			setState(27);
 			match(EOF);
 			}
 		}
@@ -178,27 +178,27 @@ public class SimpleBooleanParser extends Parser {
 		ListContext _localctx = new ListContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_list);
 		try {
-			setState(36);
+			setState(32);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(33);
+				setState(29);
 				match(IDENTIFIER);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(34);
+				setState(30);
 				stringlist();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(35);
+				setState(31);
 				numberlist();
 				}
 				break;
@@ -247,19 +247,19 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(38);
+			setState(34);
 			match(BEGL);
-			setState(40);
+			setState(36);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==STRING || _la==IDENTIFIER) {
 				{
-				setState(39);
+				setState(35);
 				stringelems();
 				}
 			}
 
-			setState(42);
+			setState(38);
 			match(ENDL);
 			}
 		}
@@ -306,19 +306,19 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
+			setState(40);
 			match(BEGL);
-			setState(46);
+			setState(42);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DECIMAL || _la==IDENTIFIER) {
 				{
-				setState(45);
+				setState(41);
 				numberelems();
 				}
 			}
 
-			setState(48);
+			setState(44);
 			match(ENDL);
 			}
 		}
@@ -370,21 +370,21 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(50);
+			setState(46);
 			stringtype();
-			setState(55);
+			setState(51);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==SEP) {
 				{
 				{
-				setState(51);
+				setState(47);
 				match(SEP);
-				setState(52);
+				setState(48);
 				stringtype();
 				}
 				}
-				setState(57);
+				setState(53);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -438,21 +438,21 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(58);
+			setState(54);
 			numbertype();
-			setState(63);
+			setState(59);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==SEP) {
 				{
 				{
-				setState(59);
+				setState(55);
 				match(SEP);
-				setState(60);
+				setState(56);
 				numbertype();
 				}
 				}
-				setState(65);
+				setState(61);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -498,7 +498,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(66);
+			setState(62);
 			_la = _input.LA(1);
 			if ( !(_la==DECIMAL || _la==IDENTIFIER) ) {
 			_errHandler.recoverInline(this);
@@ -550,7 +550,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
+			setState(64);
 			_la = _input.LA(1);
 			if ( !(_la==STRING || _la==IDENTIFIER) ) {
 			_errHandler.recoverInline(this);
@@ -625,34 +625,6 @@ public class SimpleBooleanParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitParenBooleanType(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class BoolcomparatorBooleantypeContext extends BooleantypeContext {
-		public BooleantypeContext left;
-		public BoolcomparatorContext op;
-		public BooleantypeContext right;
-		public List<BooleantypeContext> booleantype() {
-			return getRuleContexts(BooleantypeContext.class);
-		}
-		public BooleantypeContext booleantype(int i) {
-			return getRuleContext(BooleantypeContext.class,i);
-		}
-		public BoolcomparatorContext boolcomparator() {
-			return getRuleContext(BoolcomparatorContext.class,0);
-		}
-		public BoolcomparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBoolcomparatorBooleantype(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBoolcomparatorBooleantype(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBoolcomparatorBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -763,18 +735,41 @@ public class SimpleBooleanParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class IdentifierComparatorBooleantypeContext extends BooleantypeContext {
+		public Token left;
+		public NonboolcomparatorContext op;
+		public Token right;
+		public List<TerminalNode> IDENTIFIER() { return getTokens(SimpleBooleanParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(SimpleBooleanParser.IDENTIFIER, i);
+		}
+		public NonboolcomparatorContext nonboolcomparator() {
+			return getRuleContext(NonboolcomparatorContext.class,0);
+		}
+		public IdentifierComparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterIdentifierComparatorBooleantype(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitIdentifierComparatorBooleantype(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitIdentifierComparatorBooleantype(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ListComparatorBooleantypeContext extends BooleantypeContext {
 		public ListContext left;
-		public ListcomparatorContext op;
 		public ListContext right;
+		public TerminalNode IS() { return getToken(SimpleBooleanParser.IS, 0); }
 		public List<ListContext> list() {
 			return getRuleContexts(ListContext.class);
 		}
 		public ListContext list(int i) {
 			return getRuleContext(ListContext.class,i);
-		}
-		public ListcomparatorContext listcomparator() {
-			return getRuleContext(ListcomparatorContext.class,0);
 		}
 		public ListComparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
@@ -872,11 +867,11 @@ public class SimpleBooleanParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(71);
+				setState(67);
 				match(LPAREN);
-				setState(72);
+				setState(68);
 				booleantype(0);
-				setState(73);
+				setState(69);
 				match(RPAREN);
 				}
 				break;
@@ -885,13 +880,26 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new NotBooleanTypeContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(75);
+				setState(71);
 				match(NOT);
-				setState(76);
+				setState(72);
 				booleantype(10);
 				}
 				break;
 			case 3:
+				{
+				_localctx = new IdentifierComparatorBooleantypeContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(73);
+				((IdentifierComparatorBooleantypeContext)_localctx).left = match(IDENTIFIER);
+				setState(74);
+				((IdentifierComparatorBooleantypeContext)_localctx).op = nonboolcomparator();
+				setState(75);
+				((IdentifierComparatorBooleantypeContext)_localctx).right = match(IDENTIFIER);
+				}
+				break;
+			case 4:
 				{
 				_localctx = new StringComparatorBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -904,7 +912,7 @@ public class SimpleBooleanParser extends Parser {
 				((StringComparatorBooleantypeContext)_localctx).right = stringtype();
 				}
 				break;
-			case 4:
+			case 5:
 				{
 				_localctx = new NumberComparatorBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -917,7 +925,7 @@ public class SimpleBooleanParser extends Parser {
 				((NumberComparatorBooleantypeContext)_localctx).right = numbertype();
 				}
 				break;
-			case 5:
+			case 6:
 				{
 				_localctx = new ListComparatorBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -925,12 +933,12 @@ public class SimpleBooleanParser extends Parser {
 				setState(85);
 				((ListComparatorBooleantypeContext)_localctx).left = list();
 				setState(86);
-				((ListComparatorBooleantypeContext)_localctx).op = listcomparator();
+				match(IS);
 				setState(87);
 				((ListComparatorBooleantypeContext)_localctx).right = list();
 				}
 				break;
-			case 6:
+			case 7:
 				{
 				_localctx = new StringInBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -943,7 +951,7 @@ public class SimpleBooleanParser extends Parser {
 				list();
 				}
 				break;
-			case 7:
+			case 8:
 				{
 				_localctx = new NumberInBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -956,7 +964,7 @@ public class SimpleBooleanParser extends Parser {
 				list();
 				}
 				break;
-			case 8:
+			case 9:
 				{
 				_localctx = new BoolBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -965,7 +973,7 @@ public class SimpleBooleanParser extends Parser {
 				bool();
 				}
 				break;
-			case 9:
+			case 10:
 				{
 				_localctx = new IdentifierBooleantypeContext(_localctx);
 				_ctx = _localctx;
@@ -976,49 +984,30 @@ public class SimpleBooleanParser extends Parser {
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(111);
+			setState(107);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(109);
-					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
-					case 1:
-						{
-						_localctx = new BoolcomparatorBooleantypeContext(new BooleantypeContext(_parentctx, _parentState));
-						((BoolcomparatorBooleantypeContext)_localctx).left = _prevctx;
-						pushNewRecursionContext(_localctx, _startState, RULE_booleantype);
-						setState(101);
-						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(102);
-						((BoolcomparatorBooleantypeContext)_localctx).op = boolcomparator();
-						setState(103);
-						((BoolcomparatorBooleantypeContext)_localctx).right = booleantype(10);
-						}
-						break;
-					case 2:
-						{
-						_localctx = new BinaryBooleantypeContext(new BooleantypeContext(_parentctx, _parentState));
-						((BinaryBooleantypeContext)_localctx).left = _prevctx;
-						pushNewRecursionContext(_localctx, _startState, RULE_booleantype);
-						setState(105);
-						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(106);
-						((BinaryBooleantypeContext)_localctx).op = binary();
-						setState(107);
-						((BinaryBooleantypeContext)_localctx).right = booleantype(9);
-						}
-						break;
+					{
+					_localctx = new BinaryBooleantypeContext(new BooleantypeContext(_parentctx, _parentState));
+					((BinaryBooleantypeContext)_localctx).left = _prevctx;
+					pushNewRecursionContext(_localctx, _startState, RULE_booleantype);
+					setState(101);
+					if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
+					setState(102);
+					((BinaryBooleantypeContext)_localctx).op = binary();
+					setState(103);
+					((BinaryBooleantypeContext)_localctx).right = booleantype(9);
 					}
 					} 
 				}
-				setState(113);
+				setState(109);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
 			}
 		}
@@ -1071,92 +1060,8 @@ public class SimpleBooleanParser extends Parser {
 			_localctx = new BooleantypeExpressionContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(114);
+			setState(110);
 			booleantype(0);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class BoolcomparatorContext extends ParserRuleContext {
-		public TerminalNode EQ() { return getToken(SimpleBooleanParser.EQ, 0); }
-		public BoolcomparatorContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_boolcomparator; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBoolcomparator(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBoolcomparator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBoolcomparator(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final BoolcomparatorContext boolcomparator() throws RecognitionException {
-		BoolcomparatorContext _localctx = new BoolcomparatorContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_boolcomparator);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(116);
-			match(EQ);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class ListcomparatorContext extends ParserRuleContext {
-		public TerminalNode EQ() { return getToken(SimpleBooleanParser.EQ, 0); }
-		public ListcomparatorContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_listcomparator; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterListcomparator(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitListcomparator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitListcomparator(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final ListcomparatorContext listcomparator() throws RecognitionException {
-		ListcomparatorContext _localctx = new ListcomparatorContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_listcomparator);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(118);
-			match(EQ);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1197,12 +1102,12 @@ public class SimpleBooleanParser extends Parser {
 
 	public final NonboolcomparatorContext nonboolcomparator() throws RecognitionException {
 		NonboolcomparatorContext _localctx = new NonboolcomparatorContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_nonboolcomparator);
+		enterRule(_localctx, 20, RULE_nonboolcomparator);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120);
+			setState(112);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -1249,12 +1154,12 @@ public class SimpleBooleanParser extends Parser {
 
 	public final BinaryContext binary() throws RecognitionException {
 		BinaryContext _localctx = new BinaryContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_binary);
+		enterRule(_localctx, 22, RULE_binary);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(122);
+			setState(114);
 			_la = _input.LA(1);
 			if ( !(_la==AND || _la==OR) ) {
 			_errHandler.recoverInline(this);
@@ -1301,12 +1206,12 @@ public class SimpleBooleanParser extends Parser {
 
 	public final BoolContext bool() throws RecognitionException {
 		BoolContext _localctx = new BoolContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_bool);
+		enterRule(_localctx, 24, RULE_bool);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(124);
+			setState(116);
 			_la = _input.LA(1);
 			if ( !(_la==TRUE || _la==FALSE) ) {
 			_errHandler.recoverInline(this);
@@ -1339,45 +1244,42 @@ public class SimpleBooleanParser extends Parser {
 	private boolean booleantype_sempred(BooleantypeContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 9);
-		case 1:
 			return precpred(_ctx, 8);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\27\u0081\4\2\t\2"+
-		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
-		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\2\3\3\3"+
-		"\3\3\3\5\3\'\n\3\3\4\3\4\5\4+\n\4\3\4\3\4\3\5\3\5\5\5\61\n\5\3\5\3\5\3"+
-		"\6\3\6\3\6\7\68\n\6\f\6\16\6;\13\6\3\7\3\7\3\7\7\7@\n\7\f\7\16\7C\13\7"+
-		"\3\b\3\b\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3"+
-		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\nf\n"+
-		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\7\np\n\n\f\n\16\ns\13\n\3\13\3\13\3"+
-		"\f\3\f\3\r\3\r\3\16\3\16\3\17\3\17\3\20\3\20\3\20\2\3\22\21\2\4\6\b\n"+
-		"\f\16\20\22\24\26\30\32\34\36\2\7\3\2\22\23\4\2\21\21\23\23\3\2\t\r\3"+
-		"\2\4\5\3\2\7\b\2\u0081\2 \3\2\2\2\4&\3\2\2\2\6(\3\2\2\2\b.\3\2\2\2\n\64"+
-		"\3\2\2\2\f<\3\2\2\2\16D\3\2\2\2\20F\3\2\2\2\22e\3\2\2\2\24t\3\2\2\2\26"+
-		"v\3\2\2\2\30x\3\2\2\2\32z\3\2\2\2\34|\3\2\2\2\36~\3\2\2\2 !\5\24\13\2"+
-		"!\"\7\2\2\3\"\3\3\2\2\2#\'\7\23\2\2$\'\5\6\4\2%\'\5\b\5\2&#\3\2\2\2&$"+
-		"\3\2\2\2&%\3\2\2\2\'\5\3\2\2\2(*\7\24\2\2)+\5\n\6\2*)\3\2\2\2*+\3\2\2"+
-		"\2+,\3\2\2\2,-\7\25\2\2-\7\3\2\2\2.\60\7\24\2\2/\61\5\f\7\2\60/\3\2\2"+
-		"\2\60\61\3\2\2\2\61\62\3\2\2\2\62\63\7\25\2\2\63\t\3\2\2\2\649\5\20\t"+
-		"\2\65\66\7\26\2\2\668\5\20\t\2\67\65\3\2\2\28;\3\2\2\29\67\3\2\2\29:\3"+
-		"\2\2\2:\13\3\2\2\2;9\3\2\2\2<A\5\16\b\2=>\7\26\2\2>@\5\16\b\2?=\3\2\2"+
-		"\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2B\r\3\2\2\2CA\3\2\2\2DE\t\2\2\2E\17\3"+
-		"\2\2\2FG\t\3\2\2G\21\3\2\2\2HI\b\n\1\2IJ\7\16\2\2JK\5\22\n\2KL\7\17\2"+
-		"\2Lf\3\2\2\2MN\7\6\2\2Nf\5\22\n\fOP\5\20\t\2PQ\5\32\16\2QR\5\20\t\2Rf"+
-		"\3\2\2\2ST\5\16\b\2TU\5\32\16\2UV\5\16\b\2Vf\3\2\2\2WX\5\4\3\2XY\5\30"+
-		"\r\2YZ\5\4\3\2Zf\3\2\2\2[\\\5\20\t\2\\]\7\3\2\2]^\5\4\3\2^f\3\2\2\2_`"+
-		"\5\16\b\2`a\7\3\2\2ab\5\4\3\2bf\3\2\2\2cf\5\36\20\2df\7\23\2\2eH\3\2\2"+
-		"\2eM\3\2\2\2eO\3\2\2\2eS\3\2\2\2eW\3\2\2\2e[\3\2\2\2e_\3\2\2\2ec\3\2\2"+
-		"\2ed\3\2\2\2fq\3\2\2\2gh\f\13\2\2hi\5\26\f\2ij\5\22\n\fjp\3\2\2\2kl\f"+
-		"\n\2\2lm\5\34\17\2mn\5\22\n\13np\3\2\2\2og\3\2\2\2ok\3\2\2\2ps\3\2\2\2"+
-		"qo\3\2\2\2qr\3\2\2\2r\23\3\2\2\2sq\3\2\2\2tu\5\22\n\2u\25\3\2\2\2vw\7"+
-		"\r\2\2w\27\3\2\2\2xy\7\r\2\2y\31\3\2\2\2z{\t\4\2\2{\33\3\2\2\2|}\t\5\2"+
-		"\2}\35\3\2\2\2~\177\t\6\2\2\177\37\3\2\2\2\n&*\609Aeoq";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\30y\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\2\3\3\3\3\3\3\5\3#\n\3\3\4\3\4\5\4"+
+		"\'\n\4\3\4\3\4\3\5\3\5\5\5-\n\5\3\5\3\5\3\6\3\6\3\6\7\6\64\n\6\f\6\16"+
+		"\6\67\13\6\3\7\3\7\3\7\7\7<\n\7\f\7\16\7?\13\7\3\b\3\b\3\t\3\t\3\n\3\n"+
+		"\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3"+
+		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\nf\n\n\3\n\3"+
+		"\n\3\n\3\n\7\nl\n\n\f\n\16\no\13\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16"+
+		"\3\16\2\3\22\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\7\3\2\23\24\4\2\22"+
+		"\22\24\24\3\2\n\16\3\2\5\6\3\2\b\t\2{\2\34\3\2\2\2\4\"\3\2\2\2\6$\3\2"+
+		"\2\2\b*\3\2\2\2\n\60\3\2\2\2\f8\3\2\2\2\16@\3\2\2\2\20B\3\2\2\2\22e\3"+
+		"\2\2\2\24p\3\2\2\2\26r\3\2\2\2\30t\3\2\2\2\32v\3\2\2\2\34\35\5\24\13\2"+
+		"\35\36\7\2\2\3\36\3\3\2\2\2\37#\7\24\2\2 #\5\6\4\2!#\5\b\5\2\"\37\3\2"+
+		"\2\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$&\7\25\2\2%\'\5\n\6\2&%\3\2\2\2"+
+		"&\'\3\2\2\2\'(\3\2\2\2()\7\26\2\2)\7\3\2\2\2*,\7\25\2\2+-\5\f\7\2,+\3"+
+		"\2\2\2,-\3\2\2\2-.\3\2\2\2./\7\26\2\2/\t\3\2\2\2\60\65\5\20\t\2\61\62"+
+		"\7\27\2\2\62\64\5\20\t\2\63\61\3\2\2\2\64\67\3\2\2\2\65\63\3\2\2\2\65"+
+		"\66\3\2\2\2\66\13\3\2\2\2\67\65\3\2\2\28=\5\16\b\29:\7\27\2\2:<\5\16\b"+
+		"\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\r\3\2\2\2?=\3\2\2\2@A\t\2"+
+		"\2\2A\17\3\2\2\2BC\t\3\2\2C\21\3\2\2\2DE\b\n\1\2EF\7\17\2\2FG\5\22\n\2"+
+		"GH\7\20\2\2Hf\3\2\2\2IJ\7\7\2\2Jf\5\22\n\fKL\7\24\2\2LM\5\26\f\2MN\7\24"+
+		"\2\2Nf\3\2\2\2OP\5\20\t\2PQ\5\26\f\2QR\5\20\t\2Rf\3\2\2\2ST\5\16\b\2T"+
+		"U\5\26\f\2UV\5\16\b\2Vf\3\2\2\2WX\5\4\3\2XY\7\3\2\2YZ\5\4\3\2Zf\3\2\2"+
+		"\2[\\\5\20\t\2\\]\7\4\2\2]^\5\4\3\2^f\3\2\2\2_`\5\16\b\2`a\7\4\2\2ab\5"+
+		"\4\3\2bf\3\2\2\2cf\5\32\16\2df\7\24\2\2eD\3\2\2\2eI\3\2\2\2eK\3\2\2\2"+
+		"eO\3\2\2\2eS\3\2\2\2eW\3\2\2\2e[\3\2\2\2e_\3\2\2\2ec\3\2\2\2ed\3\2\2\2"+
+		"fm\3\2\2\2gh\f\n\2\2hi\5\30\r\2ij\5\22\n\13jl\3\2\2\2kg\3\2\2\2lo\3\2"+
+		"\2\2mk\3\2\2\2mn\3\2\2\2n\23\3\2\2\2om\3\2\2\2pq\5\22\n\2q\25\3\2\2\2"+
+		"rs\t\4\2\2s\27\3\2\2\2tu\t\5\2\2u\31\3\2\2\2vw\t\6\2\2w\33\3\2\2\2\t\""+
+		"&,\65=em";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

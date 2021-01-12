@@ -136,18 +136,6 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterBinaryBooleantype(SimpleBooleanParser.BinaryBooleantypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -208,6 +196,18 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterListComparatorBooleantype(SimpleBooleanParser.ListComparatorBooleantypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -251,30 +251,6 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBooleantypeExpression(SimpleBooleanParser.BooleantypeExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterListcomparator(SimpleBooleanParser.ListcomparatorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitListcomparator(SimpleBooleanParser.ListcomparatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

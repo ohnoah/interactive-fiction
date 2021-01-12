@@ -41,11 +41,11 @@ stringtype
 booleantype
  : LPAREN booleantype RPAREN #parenBooleanType
  | NOT booleantype #notBooleanType
- | left=booleantype op=boolcomparator right=booleantype #boolcomparatorBooleantype
+ | left=IDENTIFIER op=nonboolcomparator right=IDENTIFIER #identifierComparatorBooleantype
  | left=booleantype op=binary right=booleantype #binaryBooleantype
  | left=stringtype op=nonboolcomparator right=stringtype #stringComparatorBooleantype
  | left=numbertype op=nonboolcomparator right=numbertype #numberComparatorBooleantype
- | left=list op=listcomparator right=list #listComparatorBooleantype
+ | left=list IS right=list #listComparatorBooleantype
  | stringtype IN list #stringInBooleantype
  | numbertype IN list #numberInBooleantype
  | bool #boolBooleantype
@@ -56,13 +56,7 @@ expression
  : booleantype                                  #booleantypeExpression
  ;
 
-boolcomparator
- : EQ
- ;
 
-listcomparator
-  : EQ
-  ;
 
 nonboolcomparator
  : GT | GE | LT | LE | EQ
@@ -76,6 +70,8 @@ bool
  : TRUE | FALSE
  ;
 
+
+IS         : 'IS'  ;
 IN         : 'IN'  ;
 AND        : 'AND' ;
 OR         : 'OR' ;
@@ -92,7 +88,7 @@ RPAREN     : ')' ;
 QUOTE      : '"' ;
 STRING     : ["] [a-zA-Z0-9'!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
-IDENTIFIER : [_]? [a-zA-Z0-9]* [:] [:] [a-zA-Z0-9]* ;
+IDENTIFIER : [_]? ([a-zA-Z0-9-]+) [:] [:] [a-zA-Z0-9]+;
 
 BEGL : '[';
 ENDL : ']';

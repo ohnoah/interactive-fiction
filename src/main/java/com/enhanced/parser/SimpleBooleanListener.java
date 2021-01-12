@@ -112,18 +112,6 @@ public interface SimpleBooleanListener extends ParseTreeListener {
 	 */
 	void exitParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code boolcomparatorBooleantype}
-	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code boolcomparatorBooleantype}
-	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code binaryBooleantype}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree
@@ -184,6 +172,18 @@ public interface SimpleBooleanListener extends ParseTreeListener {
 	 */
 	void exitBoolBooleantype(SimpleBooleanParser.BoolBooleantypeContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code identifierComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code identifierComparatorBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code listComparatorBooleantype}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree
@@ -231,26 +231,6 @@ public interface SimpleBooleanListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBooleantypeExpression(SimpleBooleanParser.BooleantypeExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimpleBooleanParser#boolcomparator}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimpleBooleanParser#boolcomparator}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolcomparator(SimpleBooleanParser.BoolcomparatorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimpleBooleanParser#listcomparator}.
-	 * @param ctx the parse tree
-	 */
-	void enterListcomparator(SimpleBooleanParser.ListcomparatorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimpleBooleanParser#listcomparator}.
-	 * @param ctx the parse tree
-	 */
-	void exitListcomparator(SimpleBooleanParser.ListcomparatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimpleBooleanParser#nonboolcomparator}.
 	 * @param ctx the parse tree
