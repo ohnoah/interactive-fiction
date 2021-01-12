@@ -155,6 +155,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
+   // TODO: This is where we intercept calls and do IF-CHANGED PROCEDURES
    private void updateSingleKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       try {
          knowledgeBase.update(knowledgeUpdate);

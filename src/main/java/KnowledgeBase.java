@@ -134,7 +134,7 @@ public class KnowledgeBase {
    private void printLogToFile(String s) {
       try {
          System.err.println("\n Writing KNOWLEDGEBASE error string to log \n");
-         File file = new File("knowledge-base-error-log.txt");
+         File file = new File("error-knowledgebase-log.txt");
          file.createNewFile();
          if(firstError) Files.write(file.toPath(), errorHeader.getBytes(), StandardOpenOption.APPEND); firstError = false;
          Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);

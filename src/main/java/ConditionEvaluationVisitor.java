@@ -137,15 +137,6 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       return this.visitList(ctx.list()).contains(this.visitNumbertype(ctx.numbertype()));
    }
 
-   @Override
-   public Boolean visitBoolcomparatorBooleantype(SimpleBooleanParser.BoolcomparatorBooleantypeContext ctx) {
-      if (ctx.op.EQ() != null) {
-         Boolean left = (Boolean) this.visit(ctx.left);
-         Boolean right = (Boolean) this.visit(ctx.right);
-         return left.equals(right);
-      }
-      throw new RuntimeKnowledgeException("not implemented: comparator operator " + ctx.op.getText());
-   }
 
    @Override
    public Boolean visitBinaryBooleantype(SimpleBooleanParser.BinaryBooleantypeContext ctx) {
@@ -177,13 +168,58 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
+   public Object visitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx) {
+      // TODO: Change this to a helper function that does query and slot in one go
+      List<String> leftFrameAndSlot = frameAndSlot(ctx.left.getText());
+      List<String> rightFrameAndSlot = frameAndSlot(ctx.right.getText());
+      Object left, right;
+      try {
+         left = knowledgeBase.query(leftFrameAndSlot.get(0), leftFrameAndSlot.get(1));
+         if (left instanceof String) {
+            right = knowledgeBase.queryString(rightFrameAndSlot.get(0), rightFrameAndSlot.get(1));
+         }
+         else if (left instanceof Double) {
+            right = knowledgeBase.queryDouble(rightFrameAndSlot.get(0), rightFrameAndSlot.get(1));
+         }
+         else {
+            throw new RuntimeKnowledgeException();
+         }
+      } catch (KnowledgeException e) {
+         throw new RuntimeKnowledgeException(e.getMessage(), e);
+      } catch (MissingKnowledgeException e) {
+         throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
+      }
+      return super.visitIdentifierComparatorBooleantype(ctx);
+   }
+
+   @Override
    public Boolean visitListComparatorBooleantype(SimpleBooleanParser.ListComparatorBooleantypeContext ctx) {
       return this.visitList(ctx.left).equals(this.visitList(ctx.right));
    }
 
+   private Boolean stringComparatorBooleanType(SimpleBooleanParser.NonboolcomparatorContext op, String left, String right) {
+      if (op.EQ() != null) {
+         return left.equals(right);
+      }
+      else if (op.LE() != null) {
+         return left.compareTo(right) <= 0;
+      }
+      else if (op.GE() != null) {
+         return left.compareTo(right) >= 0;
+      }
+      else if (op.LT() != null) {
+         return left.compareTo(right) < 0;
+      }
+      else if (op.GT() != null) {
+         return left.compareTo(right) > 0;
+      }
+      throw new RuntimeException("not implemented: comparator operator " + op.getText());
+   }
+
    @Override
    public Boolean visitStringComparatorBooleantype(SimpleBooleanParser.StringComparatorBooleantypeContext ctx) {
-      if (ctx.op.EQ() != null) {
+      return stringComparatorBooleanType(ctx.op, asString(ctx.left), asString(ctx.right));
+/*      if (ctx.op.EQ() != null) {
          String left = asString(ctx.left);
          String right = asString(ctx.right);
          return left.equals(right);
@@ -200,7 +236,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       else if (ctx.op.GT() != null) {
          return asString(ctx.left).compareTo(asString(ctx.right)) > 0;
       }
-      throw new RuntimeException("not implemented: comparator operator " + ctx.op.getText());
+      throw new RuntimeException("not implemented: comparator operator " + ctx.op.getText());*/
    }
 
    @Override
