@@ -36,9 +36,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       Condition putConditionIsContainer = new Condition("_arg1::isContainer",
           "You can't do that because _arg1 is not a container.");
       Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
-          "_arg1 is not big enough to contain _arg0.");
+          "The _arg1 is not big enough to contain the _arg0.");
       Condition putConditionNotContained = new Condition("NOT _arg0::isContained",
-          "_arg0 is already inside of something.");
+          "The _arg0 is already inside of something.");
       // We can use knowledgeEngine constructs here
 
       implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
@@ -88,7 +88,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    protected Condition fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
       String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns);
-      String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns);
+      String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns, " ");
       return new Condition(newBooleanExpr, newFailureMessage);
    }
 

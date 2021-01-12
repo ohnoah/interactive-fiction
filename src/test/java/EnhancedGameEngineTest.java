@@ -110,7 +110,7 @@ public class EnhancedGameEngineTest {
           new KnowledgeUpdate("ball::volume := 10"),
           new KnowledgeUpdate("ball::isContained := FALSE"),
           new KnowledgeUpdate("apple::volume := 5"),
-         new KnowledgeUpdate("apple::isContained := FALSE")
+          new KnowledgeUpdate("apple::isContained := FALSE")
       );
 
       return enhancedGameEngine;
@@ -257,6 +257,18 @@ public class EnhancedGameEngineTest {
    }
 
    @Test
+   public void puttingContainedItemNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      ActionFormat puttingAf2 = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      String messagePen = enhancedGameEngine.progressStory(openGameActionPen);
+      String messagePen2 = enhancedGameEngine.progressStory(openGameActionPen);
+      assertEquals("You put the pen in the small box. Nothing important happens.", messagePen);
+      assertEquals("The pen is already inside of something.", messagePen2);
+   }
+
+   @Test
    public void puttingSecondItemNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
@@ -267,5 +279,106 @@ public class EnhancedGameEngineTest {
       String messageApple = enhancedGameEngine.progressStory(openGameActionApple);
       assertEquals("You put the pen in the small box. Nothing important happens.", messagePen);
       assertEquals("You put the apple in the small box. Nothing important happens.", messageApple);
+   }
+
+   @Test
+   public void puttingSecondItemNoDesignInternalVolume() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      ActionFormat puttingAf2 = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf2, List.of("apple", "small box"));
+      enhancedGameEngine.progressStory(openGameActionPen);
+      enhancedGameEngine.progressStory(openGameActionApple);
+      String postCondition = "small-box::internalVolume = 4.0";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingSecondItemNoDesignContains() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      ActionFormat puttingAf2 = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf2, List.of("apple", "small box"));
+      enhancedGameEngine.progressStory(openGameActionPen);
+      enhancedGameEngine.progressStory(openGameActionApple);
+      String postCondition = "\"apple\" IN small-box::contains AND \"pen\" IN small-box::contains";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingSecondItemNoDesignAppleIsContained() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      ActionFormat puttingAf2 = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf2, List.of("apple", "small box"));
+      enhancedGameEngine.progressStory(openGameActionPen);
+      enhancedGameEngine.progressStory(openGameActionApple);
+      String postCondition = "apple::isContained";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingThirdItemNoDesignTooBigMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "small box"));
+      InstantiatedGameAction openGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "small box"));
+      String messagePen = enhancedGameEngine.progressStory(openGameActionPen);
+      String messageApple = enhancedGameEngine.progressStory(openGameActionApple);
+      String messageBall = enhancedGameEngine.progressStory(openGameActionBall);
+      assertEquals("You put the pen in the small box. Nothing important happens.", messagePen);
+      assertEquals("You put the apple in the small box. Nothing important happens.", messageApple);
+      assertEquals("The small box is not big enough to contain the ball.", messageBall);
+   }
+
+   @Test
+   public void puttingThirdItemNoDesignTooBigIsContained() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "small box"));
+      InstantiatedGameAction openGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "small box"));
+      enhancedGameEngine.progressStory(openGameActionPen);
+      enhancedGameEngine.progressStory(openGameActionApple);
+      enhancedGameEngine.progressStory(openGameActionBall);
+      String postCondition = "NOT ball::isContained";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void puttingThirdItemNoDesignTooBigInternalVolume() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "small box"));
+      InstantiatedGameAction openGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "small box"));
+      enhancedGameEngine.progressStory(openGameActionPen);
+      enhancedGameEngine.progressStory(openGameActionApple);
+      enhancedGameEngine.progressStory(openGameActionBall);
+      String postCondition = "small-box::internalVolume = 4.0";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+   @Test
+   public void puttingThirdItemNoDesignTooBigContains() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "small box"));
+      InstantiatedGameAction openGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "small box"));
+      enhancedGameEngine.progressStory(openGameActionPen);
+      enhancedGameEngine.progressStory(openGameActionApple);
+      enhancedGameEngine.progressStory(openGameActionBall);
+      String postCondition = "[\"pen\", \"apple\"] IS small-box::contains";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
    }
 }
