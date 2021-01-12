@@ -168,28 +168,30 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Object visitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx) {
+   public Boolean visitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx) {
       // TODO: Change this to a helper function that does query and slot in one go
       List<String> leftFrameAndSlot = frameAndSlot(ctx.left.getText());
       List<String> rightFrameAndSlot = frameAndSlot(ctx.right.getText());
-      Object left, right;
+      Object left;
       try {
          left = knowledgeBase.query(leftFrameAndSlot.get(0), leftFrameAndSlot.get(1));
          if (left instanceof String) {
-            right = knowledgeBase.queryString(rightFrameAndSlot.get(0), rightFrameAndSlot.get(1));
+            String right = knowledgeBase.queryString(rightFrameAndSlot.get(0), rightFrameAndSlot.get(1));
+            return stringComparatorBooleanType(ctx.op, (String) left, right);
          }
          else if (left instanceof Double) {
-            right = knowledgeBase.queryDouble(rightFrameAndSlot.get(0), rightFrameAndSlot.get(1));
+            Double right = knowledgeBase.queryDouble(rightFrameAndSlot.get(0), rightFrameAndSlot.get(1));
+            return numberComparatorBooleanType(ctx.op, (double) left, right);
          }
          else {
-            throw new RuntimeKnowledgeException();
+            throw new RuntimeKnowledgeException("The left argument " + ctx.left.getText() + "was neither String or Number " +
+                "but the comparator " + ctx.op.getText() + " is only for String and Number types.");
          }
       } catch (KnowledgeException e) {
          throw new RuntimeKnowledgeException(e.getMessage(), e);
       } catch (MissingKnowledgeException e) {
          throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
       }
-      return super.visitIdentifierComparatorBooleantype(ctx);
    }
 
    @Override
@@ -213,7 +215,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       else if (op.GT() != null) {
          return left.compareTo(right) > 0;
       }
-      throw new RuntimeException("not implemented: comparator operator " + op.getText());
+      throw new RuntimeKnowledgeException("not implemented: comparator operator " + op.getText());
    }
 
    @Override
@@ -239,9 +241,29 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       throw new RuntimeException("not implemented: comparator operator " + ctx.op.getText());*/
    }
 
+   private Boolean numberComparatorBooleanType(SimpleBooleanParser.NonboolcomparatorContext op, double left, double right) {
+      if (op.EQ() != null) {
+         return left == (right);
+      }
+      else if (op.LE() != null) {
+         return left <= right;
+      }
+      else if (op.GE() != null) {
+         return left >= right;
+      }
+      else if (op.LT() != null) {
+         return left < right;
+      }
+      else if (op.GT() != null) {
+         return left > right;
+      }
+      throw new RuntimeKnowledgeException("not implemented: number binary comparator " + op.getText());
+   }
+
    @Override
    public Boolean visitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx) {
-      if (ctx.op.EQ() != null) {
+      return numberComparatorBooleanType(ctx.op, asDouble(ctx.left), asDouble(ctx.right));
+/*      if (ctx.op.EQ() != null) {
          return asDouble(ctx.left) == (asDouble(ctx.right));
       }
       else if (ctx.op.LE() != null) {
@@ -256,7 +278,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       else if (ctx.op.GT() != null) {
          return asDouble(ctx.left) > asDouble(ctx.right);
       }
-      throw new RuntimeException("not implemented: binary operator " + ctx.op.getText());
+      throw new RuntimeKnowledgeException("not implemented: binary operator " + ctx.op.getText());*/
    }
 
    @Override

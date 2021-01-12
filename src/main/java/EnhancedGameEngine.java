@@ -34,19 +34,19 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
       Condition putConditionIsContainer = new Condition("_arg1::isContainer",
-          "You can't do that because _arg1 is not a container");
+          "You can't do that because _arg1 is not a container.");
       Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
-          "_arg2 is not big enough to contain _arg1");
+          "_arg2 is not big enough to contain _arg1.");
       // We can use knowledgeEngine constructs here
 
-      implementedSuccessMessageMap.put(putIn, "You put the smaller _arg0 in _arg1");
+      implementedSuccessMessageMap.put(putIn, "You put the smaller _arg0 in _arg1.");
       implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume));
       // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
       // TODO: and add _arg2 to _arg2's inside field.
       try {
          KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
          KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
-         KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::contained := TRUE");
+         KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
          implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
       } catch (KnowledgeException e) {
          printExceptionToLog(e);
@@ -108,12 +108,22 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
+   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns){
+      return this.replaceArgsWithNouns(s, nouns, "-");
+   }
 
-   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns) {
+   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, String spaceReplacer) {
       String newString = s;
       for (int i = 0; i < nouns.size(); i++) {
          String argString = "_arg" + i;
-         String nounNoSpaces = nouns.get(i).replace(" ", "-");
+         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer);
+         if (newString.contains(argString)) {
+            newString = newString.replaceAll(argString, nounNoSpaces);
+         }
+      }
+      for (int i = 0; i < nouns.size(); i++) {
+         String argString = "arg" + i;
+         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer);
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
@@ -205,7 +215,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
       if (valid) {
-         String populatedSuccessMessage = replaceArgsWithNouns(successMessage, nouns);
+         String populatedSuccessMessage = replaceArgsWithNouns(successMessage, nouns, " ");
 
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
             fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
@@ -235,7 +245,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       Justification justification;
       if (implementedConditionsMap.containsKey(actionFormat)) {
          List<Condition> conditions = implementedConditionsMap.get(actionFormat);
-         // TODO: Encapsulate this in a method that can be used in EnhancedGameDesignAction as well
          String successMessage = implementedSuccessMessageMap.get(actionFormat);
          List<KnowledgeUpdate> knowledgeUpdates = implementedKnowledgeUpdateMap.getOrDefault(actionFormat, new ArrayList<>());
          justification = conditionallyPerformAction(conditions, nouns, successMessage, knowledgeUpdates);

@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">8</div>
+<div class="counter">10</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.159s</div>
+<div class="counter">0.177s</div>
 <p>duration</p>
 </div>
 </td>
@@ -51,7 +51,7 @@
 </td>
 <td>
 <div class="infoBox failures" id="successRate">
-<div class="percent">87%</div>
+<div class="percent">90%</div>
 <p>successful</p>
 </div>
 </td>
@@ -79,11 +79,10 @@
 <a name="puttingNoDesignMessage"></a>
 <h3 class="failures">puttingNoDesignMessage</h3>
 <span class="code">
-<pre>java.lang.AssertionError
-	at org.junit.Assert.fail(Assert.java:86)
-	at org.junit.Assert.assertTrue(Assert.java:41)
-	at org.junit.Assert.assertTrue(Assert.java:52)
-	at EnhancedGameEngineTest.puttingNoDesignMessage(EnhancedGameEngineTest.java:220)
+<pre>org.junit.ComparisonFailure: expected:&lt;You p[en in the] small box. Nothing ...&gt; but was:&lt;You p[ut the smaller pen in] small box. Nothing ...&gt;
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at EnhancedGameEngineTest.puttingNoDesignMessage(EnhancedGameEngineTest.java:216)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -147,42 +146,52 @@
 </thead>
 <tr>
 <td class="success">messageAfterProgressStory</td>
-<td class="success">0.005s</td>
+<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">messagesProgressStoryTwoRoomsTwoActions</td>
-<td class="success">0.006s</td>
+<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">numActionsProgressStoryTwoRoomsTwoActions</td>
-<td class="success">0.007s</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">numberListProgressStoryTwoRoomsTwoActions</td>
-<td class="success">0.011s</td>
+<td class="success">0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">possibleItemNamesWorks</td>
-<td class="success">0.003s</td>
+<td class="success">0.005s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">puttingNoDesignIsContained</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">puttingNoDesignItemInContains</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="failures">puttingNoDesignMessage</td>
-<td class="failures">0.015s</td>
+<td class="failures">0.006s</td>
 <td class="failures">failed</td>
 </tr>
 <tr>
 <td class="success">randomListProgressStoryTwoRoomsTwoActions</td>
-<td class="success">0.107s</td>
+<td class="success">0.115s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">validateConditionAfterProgressStory</td>
-<td class="success">0.005s</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -190,15 +199,15 @@
 <div id="tab2" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::randomList = [&quot;banana&quot;]                                         -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::randomState = &quot;very-good&quot; AND world::room=&quot;place1&quot;              -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::numberList = [3.14, 1.0]                                        -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::numActions = 1                                                  -&gt; true | ActionFormat{verb='put', regExpr='put ([\w\s]+) in ([\w\s]+)$'}
-small-box::isContainer                                                 -&gt; true | &quot;pen&quot; IN small-box::contains                                           -&gt; false | </pre>
+<pre>world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::randomList IS [&quot;banana&quot;]                                        -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::randomState = &quot;very-good&quot; AND world::room=&quot;place1&quot;              -&gt; true | ActionFormat{verb='put', regExpr='put ([\w\s]+) in ([\w\s]+)$'}
+small-box::isContainer                                                 -&gt; true | pen::volume &lt;= small-box::internalVolume                               -&gt; true | pen::isContained                                                       -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::numberList IS [3.14, 1.0]                                       -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | ActionFormat{verb='put', regExpr='put ([\w\s]+) in ([\w\s]+)$'}
+small-box::isContainer                                                 -&gt; true | pen::volume &lt;= small-box::internalVolume                               -&gt; true | &quot;pen&quot; IN small-box::contains                                           -&gt; true | world::room = &quot;place1&quot;                                                 -&gt; true | world::room = &quot;room2&quot;                                                  -&gt; true | world::numActions = 1                                                  -&gt; true | small-box::isContainer                                                 -&gt; true | pen::volume &lt;= small-box::internalVolume                               -&gt; true | </pre>
 </span>
 </div>
 <div id="tab3" class="tab">
 <h2>Standard error</h2>
 <span class="code">
-<pre>ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8Writing error to log
-</pre>
+<pre>ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8</pre>
 </span>
 </div>
 </div>
@@ -209,7 +218,7 @@ small-box::isContainer                                                 -&gt; tru
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 5.2.1</a> at 12 Jan 2021, 12:26:18</p>
+<a href="http://www.gradle.org">Gradle 5.2.1</a> at 12 Jan 2021, 16:43:14</p>
 </div>
 </div>
 </body>

@@ -175,16 +175,16 @@ public class KnowledgeBase {
       // TODO: It also needs to notice type failures when using
       // TODO *=, /= on non-numeric
       // TODO: failure mode will be to write the type failure to an error file and ignore the update
-      Object settingValue;
+      Object rhsValue;
       if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT)  {
-         settingValue = knowledgeUpdate.getUpdateConstant();
+         rhsValue = knowledgeUpdate.getUpdateConstant();
       }
       else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
-         settingValue = knowledgeUpdate.getForeignFrame();
+         rhsValue = knowledgeUpdate.getForeignFrame();
       }
       else {
          try {
-            settingValue = this.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
+            rhsValue = this.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException e) {
             throw new KnowledgeException("Couldn't fulfill update with KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
          }
@@ -196,76 +196,76 @@ public class KnowledgeBase {
       Object result = null;
       switch (knowledgeUpdate.getUpdateType()) {
          case SET:
-            result = settingValue;
+            result = rhsValue;
             break;
          case ADD:
             Object addValue = frameToSet.getFiller(slotToSet);
-            if (addValue instanceof Double && settingValue instanceof Double) {
-               result = (Double) addValue + (Double) settingValue;
+            if (addValue instanceof Double && rhsValue instanceof Double) {
+               result = (Double) addValue + (Double) rhsValue;
             }
-            else if (addValue instanceof String && settingValue instanceof String) {
-               result = (String) addValue + (String) settingValue;
+            else if (addValue instanceof String && rhsValue instanceof String) {
+               result = (String) addValue + (String) rhsValue;
             }
-            else if (addValue instanceof List && settingValue instanceof Double) {
+            else if (addValue instanceof List && rhsValue instanceof Double) {
                if (isPotentiallyDoubleList(addValue)) {
-                  ((List) addValue).add(settingValue);
+                  ((List) addValue).add(rhsValue);
                }
                else {
                   throw new KnowledgeException("Mismatched list types when updating with ADD "
                       + knowledgeUpdate.toString() +
-                      "for currentval: " + addValue.toString() + " settingVal: " + settingValue.toString());
+                      "for currentval: " + addValue.toString() + " settingVal: " + rhsValue.toString());
                }
                result = addValue;
             }
-            else if(addValue instanceof List && settingValue instanceof String){
+            else if(addValue instanceof List && rhsValue instanceof String){
                if (isPotentiallyStringList(addValue)) {
-                  ((List) addValue).add(settingValue);
+                  ((List) addValue).add(rhsValue);
                }
                else {
                   throw new KnowledgeException("Mismatched list types when updating with ADD "
                       + knowledgeUpdate.toString() +
-                      "for currentval: " + addValue.toString() + " settingVal: " + settingValue.toString());
+                      "for currentval: " + addValue.toString() + " settingVal: " + rhsValue.toString());
                }
                result = addValue;
             }
             break;
          case SUBTRACT:
             Object subtractValue = frameToSet.getFiller(slotToSet);
-            if (subtractValue instanceof Double && settingValue instanceof Double) {
-               result = (Double) subtractValue + (Double) settingValue;
+            if (subtractValue instanceof Double && rhsValue instanceof Double) {
+               result = (Double) subtractValue + (Double) rhsValue;
             }
-            else if(subtractValue instanceof List && settingValue instanceof String){
+            else if(subtractValue instanceof List && rhsValue instanceof String){
                if (isPotentiallyStringList(subtractValue)) {
-                  ((List) subtractValue).remove(settingValue);
+                  ((List) subtractValue).remove(rhsValue);
                }
                else {
                   throw new KnowledgeException("Mismatched list types when updating with SUB "
                       + knowledgeUpdate.toString() +
-                      "for currentval: " + subtractValue.toString() + " settingVal: " + settingValue.toString());
+                      "for currentval: " + subtractValue.toString() + " settingVal: " + rhsValue.toString());
                }
                result = subtractValue;
             }
-            else if (subtractValue instanceof List && settingValue instanceof Double) {
+            else if (subtractValue instanceof List && rhsValue instanceof Double) {
                if (isPotentiallyDoubleList(subtractValue)) {
-                  ((List) subtractValue).remove(settingValue);
+                  ((List) subtractValue).remove(rhsValue);
                }
                else {
                   throw new KnowledgeException("Mismatched list types when updating with SUB "
                       + knowledgeUpdate.toString() +
-                      "for currentval: " + subtractValue.toString() + " settingVal: " + settingValue.toString());
+                      "for currentval: " + subtractValue.toString() + " settingVal: " + rhsValue.toString());
                }
                result = subtractValue;
             }
             break;
          case MULTIPLY:
             Object multiplyValue = frameToSet.getFiller(slotToSet);
-            if (multiplyValue instanceof Double && settingValue instanceof Double) {
-               result = (Double) multiplyValue * (Double) settingValue;
+            if (multiplyValue instanceof Double && rhsValue instanceof Double) {
+               result = (Double) multiplyValue * (Double) rhsValue;
             }
             else {
                throw new KnowledgeException("Mismatched types when updating with SUB "
                    + knowledgeUpdate.toString() +
-                   "for currentval: " + multiplyValue.toString() + " settingVal: " + settingValue.toString());
+                   "for currentval: " + multiplyValue.toString() + " settingVal: " + rhsValue.toString());
             }
             break;
          default:

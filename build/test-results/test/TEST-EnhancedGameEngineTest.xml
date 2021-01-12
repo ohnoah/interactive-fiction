@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedGameEngineTest" tests="8" skipped="0" failures="1" errors="0" timestamp="2021-01-12T11:26:18" hostname="Noahs-MacBook-Pro.local" time="0.16">
+<testsuite name="EnhancedGameEngineTest" tests="10" skipped="0" failures="1" errors="0" timestamp="2021-01-12T15:43:14" hostname="Noahs-MacBook-Pro.local" time="0.179">
   <properties/>
-  <testcase name="randomListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.107"/>
-  <testcase name="validateConditionAfterProgressStory" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.006"/>
-  <testcase name="numberListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.011"/>
-  <testcase name="messageAfterProgressStory" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="possibleItemNamesWorks" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="numActionsProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.007"/>
-  <testcase name="puttingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.015">
-    <failure message="java.lang.AssertionError" type="java.lang.AssertionError">java.lang.AssertionError
-	at org.junit.Assert.fail(Assert.java:86)
-	at org.junit.Assert.assertTrue(Assert.java:41)
-	at org.junit.Assert.assertTrue(Assert.java:52)
-	at EnhancedGameEngineTest.puttingNoDesignMessage(EnhancedGameEngineTest.java:220)
+  <testcase name="randomListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.115"/>
+  <testcase name="validateConditionAfterProgressStory" classname="EnhancedGameEngineTest" time="0.006"/>
+  <testcase name="puttingNoDesignIsContained" classname="EnhancedGameEngineTest" time="0.008"/>
+  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.008"/>
+  <testcase name="numberListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.009"/>
+  <testcase name="messageAfterProgressStory" classname="EnhancedGameEngineTest" time="0.008"/>
+  <testcase name="possibleItemNamesWorks" classname="EnhancedGameEngineTest" time="0.005"/>
+  <testcase name="puttingNoDesignItemInContains" classname="EnhancedGameEngineTest" time="0.006"/>
+  <testcase name="numActionsProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.006"/>
+  <testcase name="puttingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.006">
+    <failure message="org.junit.ComparisonFailure: expected:&lt;You p[en in the] small box. Nothing ...&gt; but was:&lt;You p[ut the smaller pen in] small box. Nothing ...&gt;" type="org.junit.ComparisonFailure">org.junit.ComparisonFailure: expected:&lt;You p[en in the] small box. Nothing ...&gt; but was:&lt;You p[ut the smaller pen in] small box. Nothing ...&gt;
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at EnhancedGameEngineTest.puttingNoDesignMessage(EnhancedGameEngineTest.java:216)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -63,8 +64,8 @@
 	at java.base/java.lang.Thread.run(Thread.java:834)
 </failure>
   </testcase>
-  <system-out><![CDATA[world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::randomList = ["banana"]                                         -> true | world::room = "place1"                                                 -> true | world::randomState = "very-good" AND world::room="place1"              -> true | world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::numberList = [3.14, 1.0]                                        -> true | world::room = "place1"                                                 -> true | world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::numActions = 1                                                  -> true | ActionFormat{verb='put', regExpr='put ([\w\s]+) in ([\w\s]+)$'}
-small-box::isContainer                                                 -> true | "pen" IN small-box::contains                                           -> false | ]]></system-out>
-  <system-err><![CDATA[ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8Writing error to log
-]]></system-err>
+  <system-out><![CDATA[world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::randomList IS ["banana"]                                        -> true | world::room = "place1"                                                 -> true | world::randomState = "very-good" AND world::room="place1"              -> true | ActionFormat{verb='put', regExpr='put ([\w\s]+) in ([\w\s]+)$'}
+small-box::isContainer                                                 -> true | pen::volume <= small-box::internalVolume                               -> true | pen::isContained                                                       -> true | world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::numberList IS [3.14, 1.0]                                       -> true | world::room = "place1"                                                 -> true | ActionFormat{verb='put', regExpr='put ([\w\s]+) in ([\w\s]+)$'}
+small-box::isContainer                                                 -> true | pen::volume <= small-box::internalVolume                               -> true | "pen" IN small-box::contains                                           -> true | world::room = "place1"                                                 -> true | world::room = "room2"                                                  -> true | world::numActions = 1                                                  -> true | small-box::isContainer                                                 -> true | pen::volume <= small-box::internalVolume                               -> true | ]]></system-out>
+  <system-err><![CDATA[ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8]]></system-err>
 </testsuite>
