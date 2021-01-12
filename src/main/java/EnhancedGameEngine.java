@@ -99,13 +99,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE){
          String foreignFrame = knowledgeUpdate.getForeignFrame();
          knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
-
+         String foreignSlot = knowledgeUpdate.getForeignSlot();
+         knowledgeUpdate.setForeignSlot(replaceArgsWithNouns(foreignSlot, nouns));
       }
       else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
          String foreignFrame = knowledgeUpdate.getForeignFrame();
          knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
       }
-      knowledgeUpdate.
    }
 
 

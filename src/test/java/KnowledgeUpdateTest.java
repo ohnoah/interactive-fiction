@@ -67,8 +67,20 @@ public class KnowledgeUpdateTest {
    @Test
    public void stringConstructorConstantStringListIsConstant() throws KnowledgeException {
       KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := [\"hello, world!\"]");
-      assertTrue(knowledgeUpdate.isConstantUpdate());
+      assertSame(knowledgeUpdate.getSettingType(), KnowledgeUpdate.SettingType.CONSTANT);
    }
+   @Test
+   public void stringConstructorFrameSettingType() throws KnowledgeException {
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := _test251");
+      assertSame(knowledgeUpdate.getSettingType(), KnowledgeUpdate.SettingType.FRAME);
+   }
+
+   @Test
+   public void stringConstructorKnowledgeSettingType() throws KnowledgeException {
+      KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate("_test51::BananaPhone := _test251::pizza");
+      assertSame(knowledgeUpdate.getSettingType(), KnowledgeUpdate.SettingType.KNOWLEDGE);
+   }
+
 
    @Test
    public void stringConstructorConstantStringListValue() throws KnowledgeException {
