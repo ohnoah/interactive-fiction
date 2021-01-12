@@ -16,7 +16,7 @@ public class KnowledgeUpdate implements Serializable {
    }
 
    public void setForeignFrame(String foreignFrame) {
-      this.foreignFrame = foreignFrame;
+      this.foreignFrame = KnowledgeBase.stripUnderscore(foreignFrame);
    }
 
    public void setForeignSlot(String foreignSlot) {
@@ -28,6 +28,7 @@ public class KnowledgeUpdate implements Serializable {
       KNOWLEDGE,
       FRAME
    }
+
    private SettingType settingType;
 
    // LEFT SIDE OF ASSIGNMENT
@@ -53,9 +54,6 @@ public class KnowledgeUpdate implements Serializable {
       return settingType;
    }
 
-   public boolean isConstantUpdate() {
-      return isConstantUpdate;
-   }
 
    public Object getUpdateConstant() {
       return updateConstant;
@@ -78,9 +76,10 @@ public class KnowledgeUpdate implements Serializable {
    }
 
    private boolean isConstant(String secondOperand) {
-      Pattern p = Pattern.compile(KnowledgeRegex.knowledgeExpr);
-      Matcher m = p.matcher(secondOperand);
-      return !m.matches();
+      return Pattern.matches(
+          String.format("%s|%s|%s|%s|TRUE|FALSE",
+              KnowledgeRegex.stringExpr, KnowledgeRegex.numberExpr, KnowledgeRegex.numberListExpr, KnowledgeRegex.stringListExpr),
+          secondOperand);
    }
 
    private void setSettingProperties(String updateValue) {
@@ -89,11 +88,11 @@ public class KnowledgeUpdate implements Serializable {
          updateConstant = typeConvert(updateValue);
       }
       else {
-         if(Pattern.matches(KnowledgeRegex.frameNameExpr, updateValue)){
+         if (Pattern.matches(KnowledgeRegex.frameNameExpr, updateValue)) {
             this.settingType = SettingType.FRAME;
             foreignFrame = updateValue;
          }
-         else if(Pattern.matches(KnowledgeRegex.knowledgeExpr, updateValue)){
+         else if (Pattern.matches(KnowledgeRegex.knowledgeExpr, updateValue)) {
             this.settingType = SettingType.KNOWLEDGE;
             String[] knowledgeParts = updateValue.split("::");
             foreignFrame = knowledgeParts[0];
@@ -163,7 +162,7 @@ public class KnowledgeUpdate implements Serializable {
             updateType = UpdateType.MULTIPLY;
             break;
          default:
-            throw new KnowledgeException("Wrong setting type");
+            throw new KnowledgeException("Wrong UPDATEtype");
       }
    }
 

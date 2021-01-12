@@ -96,13 +96,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       String slotToUpdate = knowledgeUpdate.getSlotToUpdate();
       knowledgeUpdate.setFrameToUpdate(replaceArgsWithNouns(frameToUpdate, nouns));
       knowledgeUpdate.setSlotToUpdate(replaceArgsWithNouns(slotToUpdate, nouns));
-      if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE){
+      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE) {
          String foreignFrame = knowledgeUpdate.getForeignFrame();
          knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
          String foreignSlot = knowledgeUpdate.getForeignSlot();
          knowledgeUpdate.setForeignSlot(replaceArgsWithNouns(foreignSlot, nouns));
       }
-      else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
+      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
          String foreignFrame = knowledgeUpdate.getForeignFrame();
          knowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
       }
@@ -129,9 +129,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
          moveTo = knowledgeUpdate.getUpdateConstant();
       }
-      else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
+      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
          // TODO: This case doesn't really make sense
-         moveTo = KnowledgeBase.stripUnderscore(knowledgeUpdate.getForeignFrame());
+         moveTo = (knowledgeUpdate.getForeignFrame());
       }
       else {
          try {
@@ -168,7 +168,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   public void updateKnowledgeBase(@NotNull KnowledgeUpdate ...knowledgeUpdates) {
+   public void updateKnowledgeBase(@NotNull KnowledgeUpdate... knowledgeUpdates) {
       for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
          updateSingleKnowledgeBase(knowledgeUpdate);
       }
@@ -217,8 +217,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       return new Justification(valid, reasoning);
    }
-
-
 
 
    private Justification performDesignLogic(@NotNull InstantiatedGameAction instGameAction, @NotNull EnhancedGameDesignAction designAction) {
@@ -297,7 +295,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          worldRooms.add(room);
          designerActions.putIfAbsent(room, new HashMap<>());
 
-         for(Item i : room.getItems()){
+         for (Item i : room.getItems()) {
             knowledgeBase.createSpecificFrame(i);
          }
       }

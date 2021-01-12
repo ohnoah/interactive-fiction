@@ -176,8 +176,11 @@ public class KnowledgeBase {
       // TODO *=, /= on non-numeric
       // TODO: failure mode will be to write the type failure to an error file and ignore the update
       Object settingValue;
-      if (knowledgeUpdate.isConstantUpdate()) {
+      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT)  {
          settingValue = knowledgeUpdate.getUpdateConstant();
+      }
+      else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
+         settingValue = knowledgeUpdate.getForeignFrame();
       }
       else {
          try {
