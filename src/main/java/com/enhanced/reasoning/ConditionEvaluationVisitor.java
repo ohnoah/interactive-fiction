@@ -1,9 +1,6 @@
 package com.enhanced.reasoning;
 
-import com.enhanced.reasoning.exceptions.KnowledgeException;
-import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
-import com.enhanced.reasoning.exceptions.RuntimeKnowledgeException;
-import com.enhanced.reasoning.exceptions.RuntimeMissingException;
+import com.enhanced.reasoning.exceptions.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.enhanced.parser.SimpleBooleanParser;
