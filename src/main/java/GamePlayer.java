@@ -172,11 +172,7 @@ public class GamePlayer extends JFrame {
    }
 
    public static void main(final String[] args) {
-      Runnable runner = new Runnable() {
-         public void run() {
-            new GamePlayer();
-         }
-      };
+      Runnable runner = GamePlayer::new;
       EventQueue.invokeLater(runner);
    }
 
