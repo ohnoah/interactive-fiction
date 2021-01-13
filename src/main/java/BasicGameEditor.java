@@ -450,11 +450,7 @@ public class BasicGameEditor extends JFrame {
 */
 
    public static void main(final String[] args) {
-      Runnable runner = new Runnable() {
-         public void run() {
-            new BasicGameEditor();
-         }
-      };
+      Runnable runner = BasicGameEditor::new;
       EventQueue.invokeLater(runner);
    }
 }

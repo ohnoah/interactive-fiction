@@ -468,11 +468,7 @@ public class EnhancedGameEditor extends JFrame {
    }
 
    public static void main(final String[] args) {
-      Runnable runner = new Runnable() {
-         public void run() {
-            new EnhancedGameEditor();
-         }
-      };
+      Runnable runner = EnhancedGameEditor::new;
       EventQueue.invokeLater(runner);
    }
 }
