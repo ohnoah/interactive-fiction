@@ -34,6 +34,10 @@ public abstract class GameEngine implements Serializable {
           .collect(Collectors.toList());
    }
 
+   public int getNumRooms(){
+      return worldRooms.size();
+   }
+
    public final List<ActionFormat> getPossibleActionFormats() {
       List<ActionFormat> actionFormats = new ArrayList<>();
       actionFormats.addAll(this.possibleActionFormats);

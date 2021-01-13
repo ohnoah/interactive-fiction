@@ -51,9 +51,6 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       actionsInRoom.put(triggeringAction, effectAction);
    }
 
-   public int getNumRooms() {
-      return worldRooms.size();
-   }
 
 
 
