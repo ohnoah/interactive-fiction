@@ -1,3 +1,5 @@
+package com.nlp;
+
 public class FailedParseException extends Exception{
 
    public FailedParseException(){

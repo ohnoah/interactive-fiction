@@ -1,3 +1,6 @@
+package com.enhanced.reasoning;
+
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +11,7 @@ public class SpecificFrame {
 
    @Override
    public String toString() {
-      return "SpecificFrame{" +
+      return "com.enhanced.reasoning.SpecificFrame{" +
           "id='" + id + '\'' +
           '}';
    }
@@ -51,7 +54,7 @@ public class SpecificFrame {
          return slots.get(slotName);
       }
       else {
-         String missingString = String.format("Item: %s doesn't have a \"%s\".", this.getId(), slotName);
+         String missingString = String.format("com.shared.Item: %s doesn't have a \"%s\".", this.getId(), slotName);
          throw new MissingKnowledgeException(missingString, missingString);
       }
    }

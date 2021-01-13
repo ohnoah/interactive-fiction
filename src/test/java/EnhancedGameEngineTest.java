@@ -1,10 +1,17 @@
 import static org.junit.Assert.*;
 
 
+import com.enhanced.EnhancedGameDesignAction;
+import com.enhanced.reasoning.Condition;
+import com.enhanced.reasoning.KnowledgeUpdate;
+import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
+import com.shared.Room;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
@@ -93,7 +100,7 @@ public class EnhancedGameEngineTest {
 
 
    private static EnhancedGameEngine puttingNoDesignRoom() throws KnowledgeException {
-      Room room = new Room("Putting Room");
+      Room room = new Room("Putting com.shared.Room");
       room.setItemsNoAdjectives(Set.of("small box", "pen", "apple", "ball"));
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
@@ -383,6 +390,8 @@ public class EnhancedGameEngineTest {
    }
 
 
+
+
    @Test
    public void puttingRemovingNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
@@ -393,5 +402,30 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.progressStory(putGameAction);
       String message = enhancedGameEngine.progressStory(removeGameAction);
       assertEquals("You removed the pen from the small box. Nothing important happens.", message);
+   }
+
+
+   @Test
+   public void puttingRemovingNoDesignCondition() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction putGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      ActionFormat removeAf = enhancedGameEngine.findAction("remove").get(0);
+      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(removeAf, List.of("pen", "small box"));
+      enhancedGameEngine.progressStory(putGameAction);
+      String message = enhancedGameEngine.progressStory(removeGameAction);
+      String postCondition = "small-box::internalVolume = 10.0 AND small-box::contains IS [] AND NOT pen::isContained";
+      boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
+      assertTrue(validPrecond);
+   }
+
+   @Test
+   public void removingNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat removeAf = enhancedGameEngine.findAction("remove").get(0);
+      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(removeAf, List.of("pen", "small box"));
+      enhancedGameEngine.progressStory(removeGameAction);
+      String message = enhancedGameEngine.progressStory(removeGameAction);
+      assertEquals("The pen is not inside of anything.", message);
    }
 }

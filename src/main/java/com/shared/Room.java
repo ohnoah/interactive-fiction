@@ -1,5 +1,6 @@
+package com.shared;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class Room implements Serializable {
 
    @Override
    public String toString() {
-      return "Room{" +
+      return "com.shared.Room{" +
           "name='" + name + '\'' +
           ", items=" + items +
           '}';

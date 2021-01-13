@@ -1,3 +1,6 @@
+package com.enhanced.reasoning;
+
+import com.enhanced.reasoning.exceptions.KnowledgeException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -23,7 +26,7 @@ public class KnowledgeUpdate implements Serializable {
       this.foreignSlot = foreignSlot;
    }
 
-   enum SettingType {
+   public enum SettingType {
       CONSTANT,
       KNOWLEDGE,
       FRAME
@@ -161,7 +164,7 @@ public class KnowledgeUpdate implements Serializable {
          }
          else {
             // NOTE. Only alphanumeric chars in KnowledgeExpr
-            throw new KnowledgeException("KnowledgeUpdate doesn't follow the setting syntax: " + expr + " .");
+            throw new KnowledgeException("com.enhanced.reasoning.KnowledgeUpdate doesn't follow the setting syntax: " + expr + " .");
          }
       }
       setSettingProperties(secondKnowledge);
@@ -186,7 +189,7 @@ public class KnowledgeUpdate implements Serializable {
 
    @Override
    public String toString() {
-      return "KnowledgeUpdate{" +
+      return "com.enhanced.reasoning.KnowledgeUpdate{" +
           "updateType=" + updateType +
           ", settingType=" + settingType +
           ", frameToUpdate='" + frameToUpdate + '\'' +

@@ -1,4 +1,9 @@
-import com.enhanced.parser.SimpleBooleanLexer;
+package com.enhanced.reasoning;
+
+import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import com.enhanced.reasoning.exceptions.RuntimeKnowledgeException;
+import com.enhanced.reasoning.exceptions.RuntimeMissingException;
 import java.util.ArrayList;
 import java.util.List;
 import com.enhanced.parser.SimpleBooleanParser;
@@ -278,7 +283,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       else if (ctx.op.GT() != null) {
          return asDouble(ctx.left) > asDouble(ctx.right);
       }
-      throw new RuntimeKnowledgeException("not implemented: binary operator " + ctx.op.getText());*/
+      throw new com.enhanced.reasoning.exceptions.RuntimeKnowledgeException("not implemented: binary operator " + ctx.op.getText());*/
    }
 
    @Override

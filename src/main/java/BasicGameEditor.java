@@ -1,3 +1,9 @@
+import com.basic.BasicGameDesignAction;
+import com.basic.BasicGameEditState;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
+import com.shared.Room;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -31,7 +37,7 @@ public class BasicGameEditor extends JFrame {
    private boolean saved = false;
 
 
-   private GameEditState gameEditState = GameEditState.OPEN;
+   private BasicGameEditState basicGameEditState = BasicGameEditState.OPEN;
    // Game Editing State variables to store progress
    private Room roomToAdd;
    private Room roomForAction;
@@ -180,7 +186,7 @@ public class BasicGameEditor extends JFrame {
    }
 
    // TODO: The behaviour here will depend on the implementation of GameEngine
-   // TODO: Current idea just extend BasicGameDesignAction and check instanceof in switch
+   // TODO: Current idea just extend com.basic.BasicGameDesignAction and check instanceof in switch
    private void editGame(String cmd, String sofar) {
       String output = null;
       switch (cmd) {
@@ -206,10 +212,10 @@ public class BasicGameEditor extends JFrame {
          case "stop":
             output = "";
             resetAdditions();
-            gameEditState = GameEditState.OPEN;
+            basicGameEditState = BasicGameEditState.OPEN;
             break;
          default:
-            switch (gameEditState) {
+            switch (basicGameEditState) {
                case OPEN:
                   switch (cmd) {
                      case "play":
@@ -219,15 +225,15 @@ public class BasicGameEditor extends JFrame {
                         break;
                      case "add room":
                         output = "What should the room be called?";
-                        gameEditState = GameEditState.ROOM_NAME;
+                        basicGameEditState = BasicGameEditState.ROOM_NAME;
                         break;
                      case "add action":
                         output = "In what room?";
-                        gameEditState = GameEditState.ACTION_ROOM;
+                        basicGameEditState = BasicGameEditState.ACTION_ROOM;
                         break;
                      case "save":
                         output = "Saving your game. What file-name do you want it to have?";
-                        gameEditState = GameEditState.SAVE_FILENAME;
+                        basicGameEditState = BasicGameEditState.SAVE_FILENAME;
                         break;
                      default:
                         output = "That isn't a recognized command";
@@ -254,7 +260,7 @@ public class BasicGameEditor extends JFrame {
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);
                   if (matchingRooms.size() > 0) {
                      output = "There is already a room by that name. Try again.";
-                     gameEditState = GameEditState.OPEN;
+                     basicGameEditState = BasicGameEditState.OPEN;
                   } else if (cmd.length() == 0) {
                      output = "Please enter a name with more than one character";
                   } else {
@@ -262,7 +268,7 @@ public class BasicGameEditor extends JFrame {
                      output = String.format("Adding room %s. What items do you want to add? " +
                          "Enter this as a comma-separated list with adjectives space-separated in square brackets" +
                          " i.e. \"bear [furry big brown], bread [fluffy], pizza\".", cmd);
-                     gameEditState = GameEditState.ROOM_ITEMS;
+                     basicGameEditState = BasicGameEditState.ROOM_ITEMS;
                   }
                   break;
                case ROOM_ITEMS:
@@ -292,7 +298,7 @@ public class BasicGameEditor extends JFrame {
                            output += " I've set this as the starting room as well.";
                         }
                         resetAdditions();
-                        gameEditState = GameEditState.OPEN;
+                        basicGameEditState = BasicGameEditState.OPEN;
                      }
                   } else {
                      output = "Invalid specification. Try to use the form " +
@@ -309,7 +315,7 @@ public class BasicGameEditor extends JFrame {
                      roomForAction = matchedRooms.get(0);
                      output = "With what trigger word? Enter this as a verb e.g. \"open\". " +
                          "To see a list of the possible trigger words type \"list\" ";
-                     gameEditState = GameEditState.ACTION_TRIGGER;
+                     basicGameEditState = BasicGameEditState.ACTION_TRIGGER;
                   }
                   break;
                case ACTION_TRIGGER:
@@ -321,14 +327,14 @@ public class BasicGameEditor extends JFrame {
                      for (int i = 0; i < actionFormats.size(); i++) {
                         output += String.format("(%d) %s \n", i, actionFormats.get(i).getRegExpr());
                      }
-                     gameEditState = GameEditState.ACTION_TRIGGER_CLARIFY;
+                     basicGameEditState = BasicGameEditState.ACTION_TRIGGER_CLARIFY;
                   } else if (actionFormats.size() == 1) {
                      ActionFormat actionFormat = actionFormats.get(0);
                      instantiatedGameAction = new InstantiatedGameAction(actionFormat);
                      output = "Enter the items that this action should act upon as a " +
                          "comma-separated list e.g. \"apple,banana,pear\".";
                      actionFormats = null;
-                     gameEditState = GameEditState.ACTION_ARGS;
+                     basicGameEditState = BasicGameEditState.ACTION_ARGS;
                   } else {
                      output = "Couldn't find a trigger word with that name. To see a list of " +
                          "the possible trigger words type \"list\"";
@@ -345,7 +351,7 @@ public class BasicGameEditor extends JFrame {
                         output = "Enter the items that this action should act upon as a " +
                             "comma-separated list e.g. \"apple,banana,pear\".";
                         actionFormats = null;
-                        gameEditState = GameEditState.ACTION_ARGS;
+                        basicGameEditState = BasicGameEditState.ACTION_ARGS;
                      }
                   } catch (NumberFormatException e) {
                      output = "Non-integer entered to choose among the above options.";
@@ -364,7 +370,7 @@ public class BasicGameEditor extends JFrame {
                         instantiatedGameAction.setArguments(splitArgs);
                         output = "Enter the preconditions on the global state for this action " +
                             "e.g. \"room=First room,player=yellow\".";
-                        gameEditState = GameEditState.ACTION_PRE;
+                        basicGameEditState = BasicGameEditState.ACTION_PRE;
                      } else {
                         output = "One or more of those items is not in the room. Try again.";
                      }
@@ -377,7 +383,7 @@ public class BasicGameEditor extends JFrame {
                      effectAction.setPreconditions(splitPreconds);
                      output = "Enter the effect on the global state for this action " +
                          "e.g. \"room=room2,player=red\".";
-                     gameEditState = GameEditState.ACTION_POST;
+                     basicGameEditState = BasicGameEditState.ACTION_POST;
                   } catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each key of the world state" +
                          " by a \",\" and the key and the value by a \"=\" with no excess spaces";
@@ -388,7 +394,7 @@ public class BasicGameEditor extends JFrame {
                      Map<String, String> splitPostconds = stringToMap(cmd);
                      effectAction.setUpdateState(splitPostconds);
                      output = "Enter the message to display to the user after taking this action.";
-                     gameEditState = GameEditState.ACTION_MSG;
+                     basicGameEditState = BasicGameEditState.ACTION_MSG;
                   } catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each key of the world state" +
                          " by a \",\" and the key and the value by a \"=\" with no excess spaces";
@@ -399,7 +405,7 @@ public class BasicGameEditor extends JFrame {
                   gameEngine.addAction(roomForAction, instantiatedGameAction, effectAction);
                   resetAdditions();
                   output = "Great. Adding your new action to the game";
-                  gameEditState = GameEditState.OPEN;
+                  basicGameEditState = BasicGameEditState.OPEN;
                   break;
                default:
                   output = "Invalid game-developing state. Consult the game developer.";
@@ -421,12 +427,12 @@ public class BasicGameEditor extends JFrame {
 
 /*
    public String processCmd(String cmd) {
-      List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
-      List<Item> possibleItems = gameEngine.possibleItems();
-      InstantiatedGameAction gameAction = null;
+      List<com.shared.ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
+      List<com.shared.Item> possibleItems = gameEngine.possibleItems();
+      com.shared.InstantiatedGameAction gameAction = null;
       try {
          gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItems);
-      } catch (FailedParseException e) {
+      } catch (com.nlp.FailedParseException e) {
          return e.getMessage();
       }
       String gameMessage = gameEngine.progressStory(gameAction);

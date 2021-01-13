@@ -1,5 +1,10 @@
+package com.enhanced.reasoning;
+
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
+import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import com.shared.Item;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -171,7 +176,7 @@ public class KnowledgeBase {
 
    public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException, MissingKnowledgeException {
       // TODO: Use a method on the knowledgeBase to update it. This method needs to understand
-      // TODO: the engineering of the KnowledgeUpdate
+      // TODO: the engineering of the com.enhanced.reasoning.KnowledgeUpdate
       // TODO: It also needs to notice type failures when using
       // TODO *=, /= on non-numeric
       // TODO: failure mode will be to write the type failure to an error file and ignore the update
@@ -186,7 +191,7 @@ public class KnowledgeBase {
          try {
             rhsValue = this.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException e) {
-            throw new KnowledgeException("Couldn't fulfill update with KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
+            throw new KnowledgeException("Couldn't fulfill update with com.enhanced.reasoning.KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
          }
       }
       SpecificFrame frameToSet = this.findSpecificFrameAlways(knowledgeUpdate.getFrameToUpdate());

@@ -1,6 +1,8 @@
 import static org.junit.Assert.*;
 
 
+import com.enhanced.reasoning.TypeConvertVisitor;
+import com.enhanced.reasoning.VisitorFactory;
 import java.util.List;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Rule;

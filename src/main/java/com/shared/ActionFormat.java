@@ -1,3 +1,5 @@
+package com.shared;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -66,7 +68,7 @@ public class ActionFormat implements Serializable {
 
    @Override
    public String toString() {
-      return "ActionFormat{" +
+      return "com.shared.ActionFormat{" +
           "verb='" + verb + '\'' +
           ", regExpr='" + regExpr + '\'' +
           '}';

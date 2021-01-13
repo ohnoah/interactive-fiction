@@ -1,6 +1,10 @@
 import static org.junit.Assert.*;
 
 
+import com.nlp.FailedParseException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import java.util.ArrayList;
 import java.util.HashSet;

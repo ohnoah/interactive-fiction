@@ -1,3 +1,5 @@
+package com.enhanced.reasoning.exceptions;
+
 public class MissingKnowledgeException extends Exception {
    public String getMissingString() {
       return missingString;

@@ -1,12 +1,9 @@
-import com.enhanced.parser.SimpleBooleanLexer;
-import com.enhanced.parser.SimpleBooleanParser;
+package com.enhanced.reasoning;
+
 import com.enhanced.typeconverter.ConstantsBaseVisitor;
-import com.enhanced.typeconverter.ConstantsLexer;
 import com.enhanced.typeconverter.ConstantsParser;
 import java.util.ArrayList;
 import java.util.List;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {

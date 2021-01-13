@@ -1,4 +1,12 @@
-import com.enhanced.ThrowingErrorListener;
+package com.enhanced.reasoning;
+
+import com.enhanced.reasoning.ConditionEvaluationVisitor;
+import com.enhanced.reasoning.TypeConvertVisitor;
+import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import com.enhanced.reasoning.exceptions.RuntimeKnowledgeException;
+import com.enhanced.reasoning.exceptions.RuntimeMissingException;
+import com.enhanced.reasoning.ThrowingErrorListener;
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
 import com.enhanced.typeconverter.ConstantsLexer;

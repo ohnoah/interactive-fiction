@@ -1,4 +1,6 @@
-public enum GameEditState {
+package com.basic;
+
+public enum BasicGameEditState {
    OPEN,
    SAVE_FILENAME,
    ROOM_NAME,

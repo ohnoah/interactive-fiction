@@ -1,3 +1,16 @@
+import com.enhanced.EnhancedGameDesignAction;
+import com.enhanced.reasoning.Condition;
+import com.enhanced.reasoning.Justification;
+import com.enhanced.reasoning.KnowledgeBase;
+import com.enhanced.reasoning.KnowledgeUpdate;
+import com.enhanced.reasoning.UpdateType;
+import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import com.enhanced.reasoning.SpecificFrame;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
+import com.shared.Room;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,7 +56,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
       implementedConditionsMap.put(putIn, List.of(putConditionIsContainer, putConditionVolume, putConditionNotContained));
-      // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
+      // TODO: Create com.enhanced.reasoning.KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
       // TODO: and add _arg2 to _arg2's inside field.
       try {
          KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
@@ -56,9 +69,12 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
 
-      Condition removeConditionIsContained = new Condition("_arg0::isContained", "_arg0 is not inside of anything");
-      Condition removeConditionIsContainer = new Condition("_arg1::isContainer", "_arg0 is not inside of _arg1");
-      Condition removeConditionContains = new Condition("_arg0 IN _arg1::contains", "_arg0 is not inside of _arg1");
+      Condition removeConditionIsContained = new Condition("_arg0::isContained",
+          "The _arg0 is not inside of anything.");
+      Condition removeConditionIsContainer = new Condition("_arg1::isContainer",
+          "The _arg0 is not inside of the _arg1.");
+      Condition removeConditionContains = new Condition("_arg0 IN _arg1::contains",
+          "The _arg0 is not inside of the _arg1");
 
       implementedConditionsMap.put(remove, List.of(removeConditionIsContained, removeConditionIsContainer, removeConditionContains));
       implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
@@ -289,13 +305,21 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return justification;
    }
 
+   private static String capitalize(String s){
+      if(s.length() > 0) {
+         return s.substring(0, 1).toUpperCase() + s.substring(1);
+      }
+      else{
+         return s;
+      }
+   }
    @Override
    public String progressStory(@NotNull InstantiatedGameAction gameAction) {
       String message = "";
       // if it returns a healthy String message, prepend that and let the GameDesignAction continue
 
       Justification implJust = performImplementedLogic(gameAction);
-      message = implJust.getReasoning();
+      message = capitalize(implJust.getReasoning());
       if (!implJust.isAccepted()) { // Implemented but fails
          return implJust.getReasoning();
       }
@@ -311,7 +335,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
       Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);
-      message += designJust.getReasoning();
+      message += capitalize(designJust.getReasoning());
       return message;
    }
 

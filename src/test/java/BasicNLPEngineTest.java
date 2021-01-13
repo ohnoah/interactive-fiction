@@ -1,6 +1,9 @@
 import static org.junit.Assert.*;
 
 
+import com.nlp.FailedParseException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
 import java.util.ArrayList;
 import java.util.List;
 import net.sf.extjwnl.JWNLException;

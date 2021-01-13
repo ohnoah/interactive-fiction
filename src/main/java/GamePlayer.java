@@ -1,3 +1,7 @@
+import com.nlp.FailedParseException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;

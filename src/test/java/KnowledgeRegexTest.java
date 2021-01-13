@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 
-import com.android.aapt.Resources;
+import com.enhanced.reasoning.KnowledgeRegex;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,3 +1,5 @@
+package com.enhanced.reasoning;
+
 import java.util.Objects;
 
 public class Condition {

@@ -1,3 +1,7 @@
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
+import com.shared.Room;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

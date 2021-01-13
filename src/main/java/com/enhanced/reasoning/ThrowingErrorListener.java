@@ -1,4 +1,4 @@
-package com.enhanced;
+package com.enhanced.reasoning;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;

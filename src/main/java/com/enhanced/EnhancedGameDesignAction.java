@@ -1,8 +1,11 @@
+package com.enhanced;
+
+import com.enhanced.reasoning.Condition;
+import com.enhanced.reasoning.KnowledgeUpdate;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 public class EnhancedGameDesignAction implements Serializable {
    // These all need to be true for the action to go ahead
@@ -15,6 +18,7 @@ public class EnhancedGameDesignAction implements Serializable {
    // Frame-name -> slot-name -> new filler value
    private List<KnowledgeUpdate> updateState;
 
+
    public EnhancedGameDesignAction(List<Condition> preconditions, String message, List<KnowledgeUpdate> updateState) {
       this.preconditions = new ArrayList<>(preconditions);
       this.message = message;
@@ -25,6 +29,13 @@ public class EnhancedGameDesignAction implements Serializable {
 
    }
 
+   public void setPreconditions(List<Condition> preconditions) {
+      this.preconditions = new ArrayList<>(preconditions);
+   }
+
+   public void setUpdateState(List<KnowledgeUpdate> updateState) {
+      this.updateState = new ArrayList<>(updateState);
+   }
 
    public List<Condition> getPreconditions() {
       return new ArrayList<>(preconditions);
@@ -41,4 +52,25 @@ public class EnhancedGameDesignAction implements Serializable {
    public void setMessage(String message) {
       this.message = message;
    }
+
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      EnhancedGameDesignAction that = (EnhancedGameDesignAction) o;
+      return getPreconditions().equals(that.getPreconditions()) &&
+          getMessage().equals(that.getMessage()) &&
+          getUpdateState().equals(that.getUpdateState());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(getPreconditions(), getMessage(), getUpdateState());
+   }
+
 }

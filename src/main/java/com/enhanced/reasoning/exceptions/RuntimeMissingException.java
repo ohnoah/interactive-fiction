@@ -1,3 +1,5 @@
+package com.enhanced.reasoning.exceptions;
+
 public class RuntimeMissingException extends RuntimeException {
    public String getMissingString() {
       return missingString;
