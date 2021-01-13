@@ -55,6 +55,21 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
 
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
+
+      Condition removeConditionIsContained = new Condition("_arg0::isContained", "_arg0 is not inside of anything");
+      Condition removeConditionIsContainer = new Condition("_arg1::isContainer", "_arg0 is not inside of _arg1");
+      Condition removeConditionContains = new Condition("_arg0 IN _arg1::contains", "_arg0 is not inside of _arg1");
+
+      implementedConditionsMap.put(remove, List.of(removeConditionIsContained, removeConditionIsContainer, removeConditionContains));
+      implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
+      try {
+         KnowledgeUpdate removePlusVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
+         KnowledgeUpdate removeContains = new KnowledgeUpdate("_arg1::contains -= _arg0");
+         KnowledgeUpdate removeContained = new KnowledgeUpdate("_arg0::isContained := FALSE");
+         implementedKnowledgeUpdateMap.put(remove, List.of(removePlusVolume, removeContains, removeContained));
+      } catch (KnowledgeException e) {
+         printExceptionToLog(e);
+      }
    }
 
 
@@ -87,7 +102,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
 
    protected Condition fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
-      String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns);
+      String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns, "-", "\"");
       String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns, " ");
       return new Condition(newBooleanExpr, newFailureMessage);
    }
@@ -110,21 +125,39 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns) {
-      return this.replaceArgsWithNouns(s, nouns, "-");
+      return this.replaceArgsWithNouns(s, nouns, "-", "");
    }
 
-   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, String spaceReplacer) {
+   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, @NotNull String spaceReplacer) {
+      return this.replaceArgsWithNouns(s, nouns, spaceReplacer, "");
+   }
+
+   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, String spaceReplacer, String quotation) {
       String newString = s;
       for (int i = 0; i < nouns.size(); i++) {
+         String argString = "_arg" + i + "::";
+         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer) + "::";
+         if (newString.contains(argString)) {
+            newString = newString.replaceAll(argString, nounNoSpaces);
+         }
+      }
+      for (int i = 0; i < nouns.size(); i++) {
+         String argString = "arg" + i + "::";
+         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer) + "::";
+         if (newString.contains(argString)) {
+            newString = newString.replaceAll(argString, nounNoSpaces);
+         }
+      }
+      for (int i = 0; i < nouns.size(); i++) {
          String argString = "_arg" + i;
-         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer);
+         String nounNoSpaces = quotation + nouns.get(i).replace(" ", spaceReplacer) + quotation;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
       }
       for (int i = 0; i < nouns.size(); i++) {
          String argString = "arg" + i;
-         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer);
+         String nounNoSpaces = quotation + nouns.get(i).replace(" ", spaceReplacer) + quotation;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }

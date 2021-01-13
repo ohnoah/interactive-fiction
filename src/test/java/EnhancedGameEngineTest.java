@@ -381,4 +381,17 @@ public class EnhancedGameEngineTest {
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
    }
+
+
+   @Test
+   public void puttingRemovingNoDesignMessage() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
+      ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction putGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "small box"));
+      ActionFormat removeAf = enhancedGameEngine.findAction("remove").get(0);
+      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(removeAf, List.of("pen", "small box"));
+      enhancedGameEngine.progressStory(putGameAction);
+      String message = enhancedGameEngine.progressStory(removeGameAction);
+      assertEquals("You removed the pen from the small box. Nothing important happens.", message);
+   }
 }
