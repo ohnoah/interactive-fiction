@@ -1,6 +1,11 @@
 import static org.junit.Assert.*;
 
 
+import com.basic.BasicGameDesignAction;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
+import com.shared.Room;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

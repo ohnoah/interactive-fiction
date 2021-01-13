@@ -1,6 +1,10 @@
 import static org.junit.Assert.*;
 
 
+import com.enhanced.reasoning.KnowledgeBase;
+import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import com.enhanced.reasoning.SpecificFrame;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -269,7 +273,7 @@ public class ConditionEvaluationVisitorTest {
       assertFalse(result);
    }
 
-   // Interactions with KnowledgeBase
+   // Interactions with com.enhanced.reasoning.KnowledgeBase
    @Test
    public void failedUnderscoreIdentifierThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "_test::test IN  [] ";
@@ -298,7 +302,7 @@ public class ConditionEvaluationVisitorTest {
       kb.addSpecificFrame(new SpecificFrame("Test491"));
 
       exceptionRule.expect(MissingKnowledgeException.class);
-      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". Item: Test491 doesn't have a \"Apple\"");
+      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". com.shared.Item: Test491 doesn't have a \"Apple\"");
       Boolean result = produceBooleanResult(kb, expression);
    }
 

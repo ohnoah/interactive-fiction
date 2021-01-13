@@ -1,3 +1,7 @@
+import com.nlp.FailedParseException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -135,6 +139,6 @@ public class BasicNLPEngine extends NLPEngine {
 
 
 /*      BasicNLPEngine basicNLPEngine = new BasicNLPEngine();
-      InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
+      com.shared.InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
    }
 }

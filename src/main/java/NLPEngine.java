@@ -1,3 +1,7 @@
+import com.nlp.FailedParseException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
 import java.util.List;
 import java.util.Set;
 

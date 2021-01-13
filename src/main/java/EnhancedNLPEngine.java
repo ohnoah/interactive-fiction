@@ -1,3 +1,7 @@
+import com.nlp.FailedParseException;
+import com.shared.ActionFormat;
+import com.shared.InstantiatedGameAction;
+import com.shared.Item;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -84,9 +88,9 @@ public class EnhancedNLPEngine extends NLPEngine {
    }
 
    //TODO: with wordnet synonyms
-   // TODO: Throw FailedParseException if item not in this room is given
+   // TODO: Throw com.nlp.FailedParseException if item not in this room is given
    // Returns a list of synonym-replaced String item names for "nouns" corresponding in-game items
-   // If fails, throw a FailedParseException. This can be either because adjectives don't match
+   // If fails, throw a com.nlp.FailedParseException. This can be either because adjectives don't match
    // or because there are no in-game items with that name.
    protected List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
                                                     Set<Item> possibleItems) throws FailedParseException {
