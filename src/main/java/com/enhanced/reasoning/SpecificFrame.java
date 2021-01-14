@@ -9,13 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class SpecificFrame {
 
-   @Override
-   public String toString() {
-      return "com.enhanced.reasoning.SpecificFrame{" +
-          "id='" + id + '\'' +
-          '}';
-   }
-
    private String id;
    // TODO: Maybe just change to this to be <String, Object>
    private Map<String, Object> slots;
@@ -78,5 +71,14 @@ public class SpecificFrame {
          }
       }
       parents.add(parent);
+   }
+
+   @Override
+   public String toString() {
+      return "SpecificFrame{" +
+          "id='" + id + '\'' +
+          ", slots=" + slots +
+          ", parents=" + parents +
+          '}';
    }
 }

@@ -20,6 +20,10 @@ public class GenericFrame {
       this.slots.putAll(slots);
    }
 
+   public void addSlot(String slot, Object filler) {
+      this.slots.put(slot, filler);
+   }
+
    public String getId() {
       return id;
    }
@@ -28,4 +32,11 @@ public class GenericFrame {
       return new HashMap<>(slots);
    }
 
+   @Override
+   public String toString() {
+      return "GenericFrame{" +
+          "id='" + id + '\'' +
+          ", slots=" + slots +
+          '}';
+   }
 }
