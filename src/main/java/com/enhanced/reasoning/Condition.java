@@ -1,8 +1,9 @@
 package com.enhanced.reasoning;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Condition {
+public class Condition implements Serializable {
 
 
    private String booleanExpr;

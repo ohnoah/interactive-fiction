@@ -1,9 +1,10 @@
 package com.enhanced.reasoning;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
-public class Justification {
+public class Justification implements Serializable {
    private boolean accepted;
    private String reasoning;
 
