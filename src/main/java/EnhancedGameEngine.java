@@ -89,6 +89,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       this.knowledgeBase.addSpecificFrame(worldFrame);
    }
 
+   public KnowledgeBase getKnowledgeBase() {
+      return knowledgeBase;
+   }
+
+
    @Override
    public Set<Item> possibleItems() {
       return currentRoom.getItems();
@@ -395,4 +400,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
+   @Override
+   public String toString() {
+      return "EnhancedGameEngine{" +
+          "designerActions=" + designerActions +
+          ", knowledgeBase=" + knowledgeBase +
+          ", worldRooms=" + worldRooms +
+          ", currentRoom=" + currentRoom +
+          '}';
+   }
 }

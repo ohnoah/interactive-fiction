@@ -1,8 +1,13 @@
 import com.enhanced.EnhancedGameDesignAction;
 import com.enhanced.EnhancedGameEditState;
 import com.enhanced.reasoning.Condition;
+import com.enhanced.reasoning.GenericFrame;
+import com.enhanced.reasoning.KnowledgeBase;
 import com.enhanced.reasoning.KnowledgeRegex;
 import com.enhanced.reasoning.KnowledgeUpdate;
+import com.enhanced.reasoning.SpecificFrame;
+import com.enhanced.reasoning.TypeConvertVisitor;
+import com.enhanced.reasoning.VisitorFactory;
 import com.enhanced.reasoning.exceptions.KnowledgeException;
 import com.shared.*;
 import java.io.FileOutputStream;
@@ -22,6 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.plaf.ActionMapUIResource;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 /**
  * BasicGameEditor
@@ -33,6 +39,7 @@ import javax.swing.plaf.ActionMapUIResource;
 public class EnhancedGameEditor extends JFrame {
    private static final String programName = "IF Basic Game Editor";
    private EnhancedGameEngine gameEngine = new EnhancedGameEngine();
+   private KnowledgeBase knowledgeBase = this.gameEngine.getKnowledgeBase();
    private boolean saved = false;
 
 
@@ -43,6 +50,11 @@ public class EnhancedGameEditor extends JFrame {
    private InstantiatedGameAction instantiatedGameAction;
    private EnhancedGameDesignAction effectAction;
    private List<ActionFormat> actionFormats;
+   // Enhanced
+   private List<SpecificFrame> specificFrames;
+   private SpecificFrame child;
+   private GenericFrame parent;
+   private List<GenericFrame> genericFrames;
 
 
    private JTextField input;
@@ -231,6 +243,9 @@ public class EnhancedGameEditor extends JFrame {
                output = "No room has been selected for adding an action to";
             }
             break;
+         case "print knowledge":
+            output = knowledgeBase.toString();
+            break;
          case "stop":
             output = "";
             resetAdditions();
@@ -251,6 +266,12 @@ public class EnhancedGameEditor extends JFrame {
                      case "save":
                         output = "Saving your game. What file-name do you want it to have?";
                         enhancedGameEditState = EnhancedGameEditState.SAVE_FILENAME;
+                        break;
+                     case "edit knowledge":
+                        output = String.format("%s is the state of your current KnowledgeBase. " +
+                            "Type \"fillers\" to update SpecificFrame values or \"parents\" " +
+                            "to update and inherit with Generic Frames", knowledgeBase.toString());
+                        enhancedGameEditState = EnhancedGameEditState.EDIT_KNOWLEDGE;
                         break;
                      default:
                         output = "That isn't a recognized command";
@@ -449,6 +470,84 @@ public class EnhancedGameEditor extends JFrame {
                   output = "Great. Adding your new action to the game";
                   enhancedGameEditState = EnhancedGameEditState.OPEN;
                   break;
+               case EDIT_KNOWLEDGE:
+                  if (cmd.equals("fillers")) {
+                     enhancedGameEditState = EnhancedGameEditState.FILLERS;
+                  }
+                  else if (cmd.equals("parents")) {
+                     specificFrames = knowledgeBase.getSpecificFrames();
+                     StringBuilder outputBuilder = new StringBuilder();
+                     for (int i = 0; i < specificFrames.size(); i++) {
+                        outputBuilder.append(String.format("(%d) %s \n", i, specificFrames.get(i).getId()));
+                     }
+                     output = outputBuilder.toString();
+                     output += "are the current Specific Frames. Enter the name of the one you wish to add a parent to";
+                     enhancedGameEditState = EnhancedGameEditState.PARENTS_OPEN;
+                  }
+                  else {
+                     output = "Invalid choice. Enter \"parents\" or \"fillers\"";
+                  }
+                  break;
+               case FILLERS:
+                  break;
+               case PARENTS_CHILD:
+                  child = findSpecificFrameByName(specificFrames, cmd);
+                  if (child == null) {
+                     output = "That is not a valid name. Enter the id of one of the items you have created that were listed above.";
+                  }
+                  else {
+                     StringBuilder outputBuilder = new StringBuilder();
+                     genericFrames = knowledgeBase.getGenericFrames();
+                     for (int i = 0; i < genericFrames.size(); i++) {
+                        outputBuilder.append(String.format("(%d) %s \n", i, genericFrames.get(i).getId()));
+                     }
+                     output = outputBuilder.toString();
+                     output += "are your current generic frames. Enter \"new\" " +
+                         "if you wish to create a new parent or the name of a current Generic Frame if you wish to add one as the parent of " + child.getId();
+                     enhancedGameEditState = EnhancedGameEditState.PARENTS_OPEN;
+                  }
+                  break;
+               case PARENTS_OPEN:
+                  if (cmd.equals("new")) {
+                     output = "Time to create a new Generic Frame. Type the id/name of the Generic Frame first. Remember, this needs to be unique.";
+                     enhancedGameEditState = EnhancedGameEditState.PARENTS_NEW_NAME;
+                  }
+                  else {
+                     parent = findGenericFrameByName(genericFrames, cmd);
+                     if (parent == null) {
+                        output = "That is not a valid name. Enter the id of one of the Generic Frames you have created that were listed above or \"new\".";
+                     }
+                  }
+                  break;
+               case PARENTS_NEW_NAME:
+                  if (findGenericFrameByName(knowledgeBase.getGenericFrames(), cmd) != null) {
+                     output = "That Generic Frame name already exists. Try again.";
+                  }
+                  else {
+                     parent = new GenericFrame(cmd);
+                     enhancedGameEditState = EnhancedGameEditState.PARENTS_NEW_SLOTS;
+                  }
+                  break;
+               case PARENTS_NEW_SLOTS:
+                  try {
+                     Map<String, String> slotMap = stringToMap(cmd);
+                     TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
+                     for (Map.Entry<String, String> entry : slotMap.entrySet()) {
+                        String slot = entry.getKey();
+                        String filler = entry.getValue();
+                        Object objFiller = VisitorFactory.typeConvert(typeConvertVisitor, filler);
+                        parent.addSlot(slot, objFiller);
+                     }
+                     child.addParent(parent);
+                     output = String.format("Added the new Generic Frame %s as a parent of %s", parent.getId(), child.getId());
+                  } catch (IndexOutOfBoundsException e) {
+                     output = "Malformed string. Remember to separate each slot and filler pair" +
+                         " by a \",\" and the slot and the filler by a \"=\" with no excess spaces";
+                  } catch (ParseCancellationException e) {
+                     output = "Malformed filler value for string " + e.getMessage()
+                         + ". Fillers can only be strings, numbers and lists of strings or numbers";
+                  }
+                  break;
                default:
                   output = "Invalid game-developing state. Consult the game developer.";
                   break;
@@ -458,6 +557,14 @@ public class EnhancedGameEditor extends JFrame {
 
       writeToTerminal(cmd, sofar, output);
 
+   }
+
+   private GenericFrame findGenericFrameByName(List<GenericFrame> frames, String name) {
+      return frames.stream().filter(f -> f.getId().equals(name)).findAny().orElse(null);
+   }
+
+   private SpecificFrame findSpecificFrameByName(List<SpecificFrame> frames, String name) {
+      return frames.stream().filter(f -> f.getId().equals(name)).findAny().orElse(null);
    }
 
    private void center() {

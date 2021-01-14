@@ -35,6 +35,14 @@ public class KnowledgeBase {
       return name.replace(" ", "-");
    }
 
+   public List<SpecificFrame> getSpecificFrames() {
+      return new ArrayList<>(specificFrames);
+   }
+
+   public List<GenericFrame> getGenericFrames() {
+      return new ArrayList<>(genericFrames);
+   }
+
    public KnowledgeBase() {
       this.genericFrames = new ArrayList<>();
       this.specificFrames = new ArrayList<>();
@@ -307,6 +315,14 @@ public class KnowledgeBase {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
              ", slot: %s - %s - to Double", frame, slot, queryResult.toString()));
       }
+   }
+
+   @Override
+   public String toString() {
+      return "KnowledgeBase{" +
+          "genericFrames=" + genericFrames +
+          ", specificFrames=" + specificFrames +
+          '}';
    }
 
    public Boolean queryBoolean(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
