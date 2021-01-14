@@ -2,11 +2,12 @@ package com.enhanced.reasoning;
 
 import com.enhanced.typeconverter.ConstantsBaseVisitor;
 import com.enhanced.typeconverter.ConstantsParser;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> {
+public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> implements Serializable {
    @Override
    public Object visitBoolExpression(ConstantsParser.BoolExpressionContext ctx) {
       return this.visitBool(ctx.bool());

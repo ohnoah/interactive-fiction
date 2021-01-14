@@ -1,16 +1,16 @@
 package com.enhanced.reasoning;
 
 import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
-public class SpecificFrame {
+public class SpecificFrame implements Serializable {
 
    private String id;
-   // TODO: Maybe just change to this to be <String, Object>
    private Map<String, Object> slots;
    private List<GenericFrame> parents;
 

@@ -1,6 +1,7 @@
 package com.enhanced.reasoning;
 
 import com.enhanced.reasoning.exceptions.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import com.enhanced.parser.SimpleBooleanParser;
@@ -11,7 +12,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jetbrains.annotations.NotNull;
 
 
-public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
+public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object> implements Serializable {
 
    private KnowledgeBase knowledgeBase;
 

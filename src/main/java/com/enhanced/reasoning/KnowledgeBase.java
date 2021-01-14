@@ -7,6 +7,7 @@ import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
 import com.shared.Item;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("ALL")
-public class KnowledgeBase {
+public class KnowledgeBase implements Serializable {
 
    private List<GenericFrame> genericFrames;
    private List<SpecificFrame> specificFrames;

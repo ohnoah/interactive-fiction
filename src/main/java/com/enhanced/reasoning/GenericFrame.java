@@ -1,10 +1,11 @@
 package com.enhanced.reasoning;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
-public class GenericFrame {
+public class GenericFrame implements Serializable {
 
    private String id;
 

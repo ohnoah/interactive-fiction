@@ -1,6 +1,8 @@
 package com.enhanced.reasoning;
 
-public class KnowledgeRegex {
+import java.io.Serializable;
+
+public class KnowledgeRegex implements Serializable {
 
 
    // TODO: Test these

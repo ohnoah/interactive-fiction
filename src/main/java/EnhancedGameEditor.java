@@ -177,6 +177,10 @@ public class EnhancedGameEditor extends JFrame {
       roomForAction = null;
       effectAction = null;
       actionFormats = null;
+      specificFrames = null;
+      genericFrames = null;
+      child = null;
+      parent = null;
    }
 
    public static <T> boolean hasDuplicate(Iterable<T> all) {
@@ -517,6 +521,12 @@ public class EnhancedGameEditor extends JFrame {
                      if (parent == null) {
                         output = "That is not a valid name. Enter the id of one of the Generic Frames you have created that were listed above or \"new\".";
                      }
+                     else{
+                        child.addParent(parent);
+                        output = String.format("Added Generic Frame %s as a parent of %s", parent.getId(), child.getId());
+                        resetAdditions();
+                        enhancedGameEditState = EnhancedGameEditState.OPEN;
+                     }
                   }
                   break;
                case PARENTS_NEW_NAME:
@@ -540,6 +550,8 @@ public class EnhancedGameEditor extends JFrame {
                      }
                      child.addParent(parent);
                      output = String.format("Added the new Generic Frame %s as a parent of %s", parent.getId(), child.getId());
+                     resetAdditions();
+                     enhancedGameEditState = EnhancedGameEditState.OPEN;
                   } catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each slot and filler pair" +
                          " by a \",\" and the slot and the filler by a \"=\" with no excess spaces";

@@ -18,5 +18,4 @@ public enum EnhancedGameEditState {
    PARENTS_OPEN,
    PARENTS_NEW_NAME,
    PARENTS_NEW_SLOTS,
-   PARENTS_INHERIT
 }
