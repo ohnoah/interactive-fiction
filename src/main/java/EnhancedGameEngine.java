@@ -148,8 +148,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       this.knowledgeBase = new KnowledgeBase();
       SpecificFrame worldFrame = new SpecificFrame("world");
       worldFrame.updateFiller("room", "");
-      worldFrame.updateFiller("inventory", "[]");
-      worldFrame.updateFiller("liftingPower", "100.0");
+      worldFrame.updateFiller("inventory", new ArrayList<>());
+      worldFrame.updateFiller("liftingPower", 100.0);
       this.knowledgeBase.addSpecificFrame(worldFrame);
 
       // ADD parents here
@@ -158,17 +158,17 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          GenericFrame container = new GenericFrame("container");
          GenericFrame massive = new GenericFrame("massive");
          GenericFrame voluminous = new GenericFrame("voluminous");
-         nonContainer.addSlots(Map.of("isContained", "FALSE",
-             "isContainer", "FALSE"
+         nonContainer.addSlots(Map.of("isContained", false,
+             "isContainer", false
          ));
-         container.addSlots(Map.of("isContained", "FALSE",
-             "isContainer", "TRUE",
-             "volume", "50.0",
-             "internalVolume", "50.0",
+         container.addSlots(Map.of("isContained", false,
+             "isContainer", true,
+             "volume", 50.0,
+             "internalVolume", 50.0,
              "contains", "[]"
          ));
-         massive.addSlot("mass", "50.0");
-         voluminous.addSlot("volume", "50.0");
+         massive.addSlot("mass", 50.0);
+         voluminous.addSlot("volume", 50.0);
          knowledgeBase.addGenericFrame(nonContainer);
          knowledgeBase.addGenericFrame(container);
          knowledgeBase.addGenericFrame(massive);

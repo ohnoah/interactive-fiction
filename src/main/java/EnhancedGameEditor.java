@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.plaf.ActionMapUIResource;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * BasicGameEditor
@@ -250,6 +251,11 @@ public class EnhancedGameEditor extends JFrame {
             output = "Select a text file with commands to build a new game.";
             enhancedGameEditState = EnhancedGameEditState.LOAD;
             break;
+         case "clear":
+            output = "Cleared your status.";
+            gameEngine = new EnhancedGameEngine();
+            resetAdditions();
+            break;
          case "list":
             output = gameEngine.getPossibleActionFormats().stream()
                 .map(ActionFormat::getVerb).collect(Collectors.joining(","));
@@ -329,17 +335,17 @@ public class EnhancedGameEditor extends JFrame {
                            writeToTerminal(res.get(0), res.get(1), res.get(2));
                         }
                         myReader.close();
+                        enhancedGameEditState = EnhancedGameEditState.OPEN;
                         return res;
                      } catch (FileNotFoundException e) {
                         System.err.println("Couldn't open the load file");
                         e.printStackTrace();
+                        output = "Try again. Invalid File name.";
                      }
-                     output = "Loaded your game.";
                   }
                   else{
                      output = "Invalid file name";
                   }
-                  enhancedGameEditState = EnhancedGameEditState.OPEN;
                   break;
                case ROOM_NAME:
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);
@@ -383,7 +389,8 @@ public class EnhancedGameEditor extends JFrame {
                         }
                         roomToAdd.setItems(items);
                         gameEngine.addRoom(roomToAdd);
-                        output = String.format("Great. Added a room called \"%s\" with items \"%s\"."
+                        output = String.format("Great. Added a room called \"%s\" with items \"%s\". " +
+                                "Remember to add volumes using the \"edit knowledge -> fillers\" command for them to work properly with containers."
                             , roomToAdd.getName(), String.join(",", names));
                         if (gameEngine.getNumRooms() == 1) {
                            gameEngine.setCurrentRoom(roomToAdd);
@@ -532,19 +539,19 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case EDIT_KNOWLEDGE:
                   if (cmd.equals("fillers")) {
-                     output = "Update the fillers of the current SpecificFrames " + knowledgeBase.getSpecificFrames().stream().map(SpecificFrame::getId).collect(Collectors.joining(",")) +
+                     output = "Update the fillers of the current SpecificFrames " + knowledgeBase.getSpecificFrames().values().toString() +
                          " with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
                      enhancedGameEditState = EnhancedGameEditState.FILLERS;
                   }
                   else if (cmd.equals("parents")) {
-                     specificFrames = knowledgeBase.getSpecificFrames();
+                     specificFrames = new ArrayList<>(knowledgeBase.getSpecificFrames().values());
                      StringBuilder outputBuilder = new StringBuilder();
                      for (int i = 0; i < specificFrames.size(); i++) {
                         outputBuilder.append(String.format("(%d) %s \n", i, specificFrames.get(i).getId()));
                      }
                      output = outputBuilder.toString();
                      output += "are the current Specific Frames. Enter the name of the one you wish to add a parent to";
-                     enhancedGameEditState = EnhancedGameEditState.PARENTS_OPEN;
+                     enhancedGameEditState = EnhancedGameEditState.PARENTS_CHILD;
                   }
                   else {
                      output = "Invalid choice. Enter \"parents\" or \"fillers\"";
@@ -572,17 +579,17 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   else {
                      StringBuilder outBuilder = new StringBuilder();
-                     genericFrames = knowledgeBase.getGenericFrames();
+                     genericFrames = new ArrayList<>(knowledgeBase.getGenericFrames().values());
                      for (int i = 0; i < genericFrames.size(); i++) {
                         outBuilder.append(String.format("(%d) %s \n", i, genericFrames.get(i).getId()));
                      }
                      output = outBuilder.toString();
                      output += "are your current generic frames. Enter \"new\" " +
                          "if you wish to create a new parent or the name of a current Generic Frame if you wish to add one as the parent of " + child.getId();
-                     enhancedGameEditState = EnhancedGameEditState.PARENTS_OPEN;
+                     enhancedGameEditState = EnhancedGameEditState.PARENTS_PARENT;
                   }
                   break;
-               case PARENTS_OPEN:
+               case PARENTS_PARENT:
                   if (cmd.equals("new")) {
                      output = "Time to create a new Generic Frame. Type the id/name of the Generic Frame first. Remember, this needs to be unique.";
                      enhancedGameEditState = EnhancedGameEditState.PARENTS_NEW_NAME;
@@ -601,7 +608,7 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   break;
                case PARENTS_NEW_NAME:
-                  if (findGenericFrameByName(knowledgeBase.getGenericFrames(), cmd) != null) {
+                  if (knowledgeBase.getGenericFrames().getOrDefault(cmd, null) != null) {
                      output = "That Generic Frame name already exists. Try again.";
                   }
                   else {
@@ -641,11 +648,11 @@ public class EnhancedGameEditor extends JFrame {
 
    }
 
-   private GenericFrame findGenericFrameByName(List<GenericFrame> frames, String name) {
+   private GenericFrame findGenericFrameByName(@NotNull List<GenericFrame> frames, String name) {
       return frames.stream().filter(f -> f.getId().equals(name)).findAny().orElse(null);
    }
 
-   private SpecificFrame findSpecificFrameByName(List<SpecificFrame> frames, String name) {
+   private SpecificFrame findSpecificFrameByName(@NotNull List<SpecificFrame> frames, String name) {
       return frames.stream().filter(f -> f.getId().equals(name)).findAny().orElse(null);
    }
 

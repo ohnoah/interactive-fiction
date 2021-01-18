@@ -17,7 +17,7 @@ public enum EnhancedGameEditState implements Serializable {
    EDIT_KNOWLEDGE,
    FILLERS,
    PARENTS_CHILD,
-   PARENTS_OPEN,
+   PARENTS_PARENT,
    PARENTS_NEW_NAME,
    PARENTS_NEW_SLOTS,
    LOAD

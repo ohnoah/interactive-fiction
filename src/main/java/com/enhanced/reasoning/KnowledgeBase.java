@@ -12,8 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,16 +40,16 @@ public class KnowledgeBase implements Serializable {
    }
 
    public Map<String, SpecificFrame> getSpecificFrames() {
-      return new HashMap<>(specificFrames);
+      return new LinkedHashMap<>(specificFrames);
    }
 
    public Map<String, GenericFrame> getGenericFrames() {
-      return new HashMap<>(genericFrames);
+      return new LinkedHashMap<>(genericFrames);
    }
 
    public KnowledgeBase() {
-      this.genericFrames = new HashMap<>();
-      this.specificFrames = new HashMap<>();
+      this.genericFrames = new LinkedHashMap<>();
+      this.specificFrames = new LinkedHashMap<>();
       conditionEvaluationVisitor = new ConditionEvaluationVisitor(this);
    }
 

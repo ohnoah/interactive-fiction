@@ -30,8 +30,19 @@ world::key := TRUE, world::room := "Room 1"
 Good work man.
 
 edit knowledge
-fillers
-pen::isContained := FALSE, box::isContained := FALSE, bucket::isContained := FALSE, bucket::isContainer := TRUE, box::isContainer := TRUE, bucket::contains := [], box::contains := [], jar::isContainer := TRUE, jar::contains := [], jar::isContained := FALSE, keys::isContained := FALSE, mouse::isContained := FALSE, mouse::isContainer := FALSE, pen::isContainer := FALSE, keys::isContainer := FALSE
+parents
+bucket
+container
+
+edit knowledge
+parents
+jar
+container
+
+edit knowledge
+parents
+box
+container
 
 edit knowledge
 fillers

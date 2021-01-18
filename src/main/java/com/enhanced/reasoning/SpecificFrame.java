@@ -61,14 +61,14 @@ public class SpecificFrame implements Serializable {
    }
 
 
-   // Whatever is in the slots map takes precedence over inheritance that is added
+
+   // WARNING: Whatever is in the slots map DOES NOT take precedence over inheritance that is added
+   // WARNING: Precedence is given to the latest added parent
    public void addParent(@NotNull GenericFrame parent) {
       for (Map.Entry<String, Object> entry : parent.getSlots().entrySet()) {
          String slotName = entry.getKey();
          Object filler = entry.getValue();
-         if (!slots.containsKey(slotName)) {
-            updateFiller(slotName, filler);
-         }
+         updateFiller(slotName, filler);
       }
       parents.add(parent);
    }
@@ -78,7 +78,6 @@ public class SpecificFrame implements Serializable {
       return "SpecificFrame{" +
           "id='" + id + '\'' +
           ", slots=" + slots +
-          ", parents=" + parents +
           '}';
    }
 }
