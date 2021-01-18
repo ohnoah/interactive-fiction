@@ -45,61 +45,100 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       --------
        */
 
+      {
+         ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
+         Condition putConditionNotContained0 = new Condition("NOT _arg0::isContained",
+             "The _arg0 is already inside of something.");
+         Condition putConditionIsContainer = new Condition("_arg1::isContainer",
+             "You can't do that because _arg1 is not a container.");
+         Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
+             "The _arg1 is not big enough to contain the _arg0.");
+         Condition putConditionNotContained1 = new Condition("NOT _arg1::isContained",
+             "You can't do that because _arg1 is inside of something.");
+         // We can use knowledgeEngine constructs here
 
-      ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
-      Condition putConditionNotContained0 = new Condition("NOT _arg0::isContained",
-          "The _arg0 is already inside of something.");
-      Condition putConditionIsContainer = new Condition("_arg1::isContainer",
-          "You can't do that because _arg1 is not a container.");
-      Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
-          "The _arg1 is not big enough to contain the _arg0.");
-      Condition putConditionNotContained1 = new Condition("NOT _arg1::isContained",
-          "You can't do that because _arg1 is inside of something.");
-      // We can use knowledgeEngine constructs here
-
-      implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1. ");
-      implementedConditionsMap.put(putIn, List.of(putConditionNotContained0, putConditionIsContainer, putConditionVolume, putConditionNotContained1));
-      // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
-      // TODO: and add _arg2 to _arg2's inside field.
-      try {
-         KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
-         KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
-         KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
-         implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
-      } catch (KnowledgeException e) {
-         printExceptionToLog(e);
+         implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1. ");
+         implementedConditionsMap.put(putIn, List.of(putConditionNotContained0, putConditionIsContainer, putConditionVolume, putConditionNotContained1));
+         // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
+         // TODO: and add _arg2 to _arg2's inside field.
+         try {
+            KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
+            KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
+            KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
+            implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
+         } catch (KnowledgeException e) {
+            printExceptionToLog(e);
+         }
       }
 
       /* REMOVE
       --------
        */
 
-      ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
+      {
+         ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
 
-      Condition removeConditionIsContained0 = new Condition("_arg0::isContained",
-          "The _arg0 is not inside of anything.");
-      Condition removeConditionIsContained1 = new Condition("NOT _arg1::isContained",
-          "The _arg1 is inside of anything so you can't remove _arg0 from it.");
-      Condition removeConditionIsContainer = new Condition("_arg1::isContainer",
-          "The _arg0 is not inside of the _arg1 because _arg1 doesn't have things inside of it.");
-      Condition removeConditionContains = new Condition("_arg0 IN _arg1::contains",
-          "The _arg0 is not inside of the _arg1");
+         Condition removeConditionIsContained0 = new Condition("_arg0::isContained",
+             "The _arg0 is not inside of anything.");
+         Condition removeConditionIsContained1 = new Condition("NOT _arg1::isContained",
+             "The _arg1 is inside of anything so you can't remove _arg0 from it.");
+         Condition removeConditionIsContainer = new Condition("_arg1::isContainer",
+             "The _arg0 is not inside of the _arg1 because _arg1 doesn't have things inside of it.");
+         Condition removeConditionContains = new Condition("_arg0 IN _arg1::contains",
+             "The _arg0 is not inside of the _arg1");
 
-      implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionIsContained1, removeConditionIsContainer, removeConditionContains));
-      implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
-      try {
-         KnowledgeUpdate removePlusVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
-         KnowledgeUpdate removeContains = new KnowledgeUpdate("_arg1::contains -= _arg0");
-         KnowledgeUpdate removeContained = new KnowledgeUpdate("_arg0::isContained := FALSE");
-         implementedKnowledgeUpdateMap.put(remove, List.of(removePlusVolume, removeContains, removeContained));
-      } catch (KnowledgeException e) {
-         printExceptionToLog(e);
+         implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionIsContained1, removeConditionIsContainer, removeConditionContains));
+         implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
+         try {
+            KnowledgeUpdate removePlusVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
+            KnowledgeUpdate removeContains = new KnowledgeUpdate("_arg1::contains -= _arg0");
+            KnowledgeUpdate removeContained = new KnowledgeUpdate("_arg0::isContained := FALSE");
+            implementedKnowledgeUpdateMap.put(remove, List.of(removePlusVolume, removeContains, removeContained));
+         } catch (KnowledgeException e) {
+            printExceptionToLog(e);
+         }
       }
 
-      /* STATES OF MATTER
+      /* TAKE
       --------
        */
 
+      {
+         ActionFormat take = new ActionFormat("take", null);
+         // TODO: States of matter here
+         Condition takeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+             "The _arg0 is too heavy for you to carry.");
+         implementedConditionsMap.put(take, List.of(takeConditionMass));
+         implementedSuccessMessageMap.put(take, "You take _arg0.");
+      }
+
+
+      /* PUSH
+      --------
+      */
+      {
+         ActionFormat push = new ActionFormat("push", null);
+         Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+             "The _arg0 is too heavy for you to push.");
+         implementedConditionsMap.put(push, List.of(pushConditionMass));
+         implementedSuccessMessageMap.put(push, "You push _arg0.");
+      }
+      /* PULL
+      --------
+
+      */
+      {
+         ActionFormat pull = new ActionFormat("pull", null);
+         Condition pullConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+             "The _arg0 is too heavy for you to pull.");
+         implementedConditionsMap.put(pull, List.of(pullConditionMass));
+         implementedSuccessMessageMap.put(pull, "You pull _arg0.");
+      }
+
+      /* DROP
+      --------
+       */
+      ActionFormat drop = new ActionFormat("drop", null);
    }
 
 
@@ -109,12 +148,69 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       this.knowledgeBase = new KnowledgeBase();
       SpecificFrame worldFrame = new SpecificFrame("world");
       worldFrame.updateFiller("room", "");
+      worldFrame.updateFiller("inventory", "[]");
+      worldFrame.updateFiller("liftingPower", "100.0");
       this.knowledgeBase.addSpecificFrame(worldFrame);
 
       // ADD parents here
-      GenericFrame nonContainer = new GenericFrame("nonContainer");
-      GenericFrame container = new GenericFrame("nonContainer");
+      {
+         GenericFrame nonContainer = new GenericFrame("nonContainer");
+         GenericFrame container = new GenericFrame("container");
+         GenericFrame massive = new GenericFrame("massive");
+         GenericFrame voluminous = new GenericFrame("voluminous");
+         nonContainer.addSlots(Map.of("isContained", "FALSE",
+             "isContainer", "FALSE"
+         ));
+         container.addSlots(Map.of("isContained", "FALSE",
+             "isContainer", "TRUE",
+             "volume", "50.0",
+             "internalVolume", "50.0",
+             "contains", "[]"
+         ));
+         massive.addSlot("mass", "50.0");
+         voluminous.addSlot("volume", "50.0");
+         knowledgeBase.addGenericFrame(nonContainer);
+         knowledgeBase.addGenericFrame(container);
+         knowledgeBase.addGenericFrame(massive);
+         knowledgeBase.addGenericFrame(voluminous);
+      }
 
+   }
+
+   private String notDesignedImplementedFollow(String message) {
+      if (message.contains("You take")) {
+         return message.substring(0, message.length() - 1) + " but nothing interesting happens so you quickly drop it.";
+      }
+      else if (message.contains("You pull") || message.contains("You push")) {
+         return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you put it back";
+      }
+      return message + " Nothing important happens.";
+   }
+
+   @Override
+   public String progressStory(@NotNull InstantiatedGameAction gameAction) {
+      String message = "";
+      // if it returns a healthy String message, prepend that and let the GameDesignAction continue
+
+      Justification implJust = performImplementedLogic(gameAction);
+      message = capitalize(implJust.getReasoning());
+      if (!implJust.isAccepted()) { // Implemented but fails
+         return implJust.getReasoning();
+      }
+      // Then check the GameDesignActions and prepend another message
+      EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignAction(gameAction, currentRoom);
+
+      if (enhancedGameDesignAction == null) {
+         if (message.equals("")) { // It's not an implemented action
+            return "You can't do that right now";
+         }
+         else { // It's implemented but not designed
+            return notDesignedImplementedFollow(message);
+         }
+      }
+      Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);
+      message += capitalize(designJust.getReasoning());
+      return message;
    }
 
    public KnowledgeBase getKnowledgeBase() {
@@ -130,10 +226,12 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       Set<Item> possibleItems = new HashSet<>(currentRoom.getItems());
       List<String> inventory = null;
       try {
-         inventory = knowledgeBase.queryStringList("gamePlayer", "inventory");
+         inventory = knowledgeBase.queryStringList("world", "inventory");
          Map<String, Item> globalItems = this.globalItems();
          Set<Item> inventoryItems = inventory.stream().map(s -> globalItems.getOrDefault(s, null)).collect(Collectors.toSet());
-         if(inventoryItems.contains(null)) printToErrorLog("Null in inventory items");
+         if (inventoryItems.contains(null)) {
+            printToErrorLog("Null in inventory items");
+         }
          possibleItems.addAll(inventoryItems);
 
       } catch (KnowledgeException | MissingKnowledgeException e) {
@@ -226,7 +324,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
          printToErrorLog("Treating non-setting as setting because this is current room");
       }
-      Object moveTo = null;
+      Object moveTo;
       if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
          moveTo = knowledgeUpdate.getUpdateConstant();
       }
@@ -354,31 +452,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   @Override
-   public String progressStory(@NotNull InstantiatedGameAction gameAction) {
-      String message = "";
-      // if it returns a healthy String message, prepend that and let the GameDesignAction continue
-
-      Justification implJust = performImplementedLogic(gameAction);
-      message = capitalize(implJust.getReasoning());
-      if (!implJust.isAccepted()) { // Implemented but fails
-         return implJust.getReasoning();
-      }
-      // Then check the GameDesignActions and prepend another message
-      EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignAction(gameAction, currentRoom);
-
-      if (enhancedGameDesignAction == null) {
-         if (message.equals("")) { // It's not an implemented action
-            return "You can't do that right now";
-         }
-         else { // It's implemented but not designed
-            return message + " Nothing important happens.";
-         }
-      }
-      Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);
-      message += capitalize(designJust.getReasoning());
-      return message;
-   }
 
    protected EnhancedGameDesignAction getGameDesignAction(InstantiatedGameAction gameAction, Room currentRoom) {
       if (designerActions.containsKey(currentRoom)) {
@@ -402,7 +475,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          designerActions.putIfAbsent(room, new HashMap<>());
 
          for (Item i : room.getItems()) {
-            knowledgeBase.createSpecificFrame(i);
+            knowledgeBase.createSpecificFrame(i, "nonContainer", "massive");
          }
       }
    }

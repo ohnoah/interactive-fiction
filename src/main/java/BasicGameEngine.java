@@ -77,7 +77,7 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
 
    @Override
-   public String progressStory(InstantiatedGameAction gameAction) {
+   public String progressStory(@NotNull InstantiatedGameAction gameAction) {
 
       Room currentRoom = getCurrentRoom();
 
