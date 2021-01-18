@@ -299,9 +299,6 @@ public class BasicGameEditor extends JFrame {
                      else if (names.contains("world")) {
                         output = "The word \"world\" is reserved";
                      }
-                     else if(names.contains("gamePlayer")){
-                        output = "The word \"gamePlayer\" is reserved";
-                     }
                      else {
                         Set<Item> items = new HashSet<>();
                         for (int i = 0; i < names.size(); i++) {

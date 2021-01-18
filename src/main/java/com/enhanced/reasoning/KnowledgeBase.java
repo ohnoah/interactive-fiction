@@ -13,7 +13,9 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.antlr.v4.runtime.CharStreams;
@@ -27,47 +29,47 @@ public class KnowledgeBase implements Serializable {
 
    private static final long serialVersionUID = -3641841224766299640L;
 
-   private List<GenericFrame> genericFrames;
-   private List<SpecificFrame> specificFrames;
+   private Map<String, GenericFrame> genericFrames;
+   private Map<String, SpecificFrame> specificFrames;
    private ConditionEvaluationVisitor conditionEvaluationVisitor;
    private boolean firstError = true;
    private String errorHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
 
 
-   private String replaceSpaces(String name){
+   private String replaceSpaces(String name) {
       return name.replace(" ", "-");
    }
 
-   public List<SpecificFrame> getSpecificFrames() {
-      return new ArrayList<>(specificFrames);
+   public Map<String, SpecificFrame> getSpecificFrames() {
+      return new HashMap<>(specificFrames);
    }
 
-   public List<GenericFrame> getGenericFrames() {
-      return new ArrayList<>(genericFrames);
+   public Map<String, GenericFrame> getGenericFrames() {
+      return new HashMap<>(genericFrames);
    }
 
    public KnowledgeBase() {
-      this.genericFrames = new ArrayList<>();
-      this.specificFrames = new ArrayList<>();
+      this.genericFrames = new HashMap<>();
+      this.specificFrames = new HashMap<>();
       conditionEvaluationVisitor = new ConditionEvaluationVisitor(this);
    }
 
    public boolean addGenericFrame(GenericFrame g) {
-      if (!this.genericFrames.contains(g)) {
-         this.genericFrames.add(g);
+      if (!this.genericFrames.containsValue(g)) {
+         this.genericFrames.put(g.getId(), g);
          return true;
       }
-      else{
+      else {
          return false;
       }
    }
 
    public boolean addSpecificFrame(SpecificFrame s) {
-      if (!this.specificFrames.contains(s)) {
-         this.specificFrames.add(s);
+      if (!this.specificFrames.containsValue(s)) {
+         this.specificFrames.put(s.getId(), s);
          return true;
       }
-      else{
+      else {
          return false;
       }
    }
@@ -102,9 +104,11 @@ public class KnowledgeBase implements Serializable {
    }
 
    private static String queryResultToString(Object queryResult) {
-      if(queryResult instanceof Double) {
+      if (queryResult instanceof Double) {
          double num = (double) queryResult;
-         if ((int) num == num) return Integer.toString((int) num); //for you, StackOverflowException
+         if ((int) num == num) {
+            return Integer.toString((int) num); //for you, StackOverflowException
+         }
          return String.valueOf(num); //and for you, Christian Kuetbach
       }
       return queryResult.toString();
@@ -152,7 +156,10 @@ public class KnowledgeBase implements Serializable {
          System.err.println("\n Writing KNOWLEDGEBASE error string to log \n");
          File file = new File("error-knowledgebase-log.txt");
          file.createNewFile();
-         if(firstError) Files.write(file.toPath(), errorHeader.getBytes(), StandardOpenOption.APPEND); firstError = false;
+         if (firstError) {
+            Files.write(file.toPath(), errorHeader.getBytes(), StandardOpenOption.APPEND);
+         }
+         firstError = false;
          Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);
       } catch (IOException e) {
          System.err.println("Couldn't write to error");
@@ -176,13 +183,16 @@ public class KnowledgeBase implements Serializable {
    }
 
    private SpecificFrame findSpecificFrameAlways(String frameId) {
-      return this.specificFrames.stream().filter(frame -> frame.getId().equals(frameId)).findAny().orElse(new SpecificFrame(frameId));
-
+      return this.specificFrames.getOrDefault(frameId, new SpecificFrame(frameId));
    }
 
    private SpecificFrame findSpecificFrame(String frameId) throws KnowledgeException {
-      return this.specificFrames.stream().filter(frame -> frame.getId().equals(frameId)).findAny()
-          .orElseThrow(() -> new KnowledgeException(String.format("Frame: %s doesn't exist", frameId)));
+      if (this.specificFrames.containsKey(frameId)) {
+         return this.specificFrames.get(frameId);
+      }
+      else {
+         throw new KnowledgeException(String.format("Frame: %s doesn't exist", frameId));
+      }
    }
 
    public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException, MissingKnowledgeException {
@@ -192,10 +202,10 @@ public class KnowledgeBase implements Serializable {
       // TODO *=, /= on non-numeric
       // TODO: failure mode will be to write the type failure to an error file and ignore the update
       Object rhsValue;
-      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT)  {
+      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
          rhsValue = knowledgeUpdate.getUpdateConstant();
       }
-      else if(knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME){
+      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
          rhsValue = knowledgeUpdate.getForeignFrame();
       }
       else {
@@ -233,7 +243,7 @@ public class KnowledgeBase implements Serializable {
                }
                result = addValue;
             }
-            else if(addValue instanceof List && rhsValue instanceof String){
+            else if (addValue instanceof List && rhsValue instanceof String) {
                if (isPotentiallyStringList(addValue)) {
                   ((List) addValue).add(rhsValue);
                }
@@ -250,7 +260,7 @@ public class KnowledgeBase implements Serializable {
             if (subtractValue instanceof Double && rhsValue instanceof Double) {
                result = (Double) subtractValue - (Double) rhsValue;
             }
-            else if(subtractValue instanceof List && rhsValue instanceof String){
+            else if (subtractValue instanceof List && rhsValue instanceof String) {
                if (isPotentiallyStringList(subtractValue)) {
                   ((List) subtractValue).remove(rhsValue);
                }
@@ -287,7 +297,9 @@ public class KnowledgeBase implements Serializable {
          default:
             throw new KnowledgeException("Not implemented KnowledgeUpdateType " + knowledgeUpdate.toString());
       }
-      if(result == null) throw new KnowledgeException("Result is somehow null" + knowledgeUpdate.toString());
+      if (result == null) {
+         throw new KnowledgeException("Result is somehow null" + knowledgeUpdate.toString());
+      }
       frameToSet.updateFiller(slotToSet, result);
 
 
@@ -380,30 +392,20 @@ public class KnowledgeBase implements Serializable {
       }
    }
 
-   public boolean createSpecificFrame(Item i) {
+   public boolean createSpecificFrame(Item i, String... gs) {
       SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(i.getName()));
-      specificFrame.updateFiller("isContainer", false);
+      for (String g : gs) {
+         if(genericFrames.containsKey(g)) {
+            specificFrame.addParent(genericFrames.get(g));
+         }
+         else{
+            printLogToFile("No such parent " + g);
+         }
+      }
       return this.addSpecificFrame(specificFrame);
    }
 
    public static void main(String[] args) {
-
-/*      Map<String, Object> variables = new HashMap<String, Object>() {{
-         put("A", true);
-         put("a", true);
-         put("B", false);
-         put("b", false);
-         put("C", 42.0);
-         put("c", 42.0);
-         put("D", -999.0);
-         put("d", -1999.0);
-         put("E", 42.001);
-         put("e", 142.001);
-         put("F", 42.001);
-         put("f", 42.001);
-         put("G", -1.0);
-         put("g", -1.0);
-      }};*/
 
       String[] expressions = {
           "1 = 2",
