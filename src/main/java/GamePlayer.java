@@ -42,7 +42,7 @@ public class GamePlayer extends JFrame {
 
 
    private static final String progname = "IF Game Player";
-   private NLPEngine nlpEngine = new BasicNLPEngine();
+   private NLPEngine nlpEngine = new EnhancedNLPEngine();
    private GameEngine gameEngine = null;
 
 
@@ -154,7 +154,7 @@ public class GamePlayer extends JFrame {
       setLocation((screen.width - d.width) / 2, (screen.height - d.height) / 2);
    }
 
-   public String processCmd(String cmd) {
+   private String processCmd(String cmd) {
       if(cmd.equals("quit")){
          System.exit(0);
       }

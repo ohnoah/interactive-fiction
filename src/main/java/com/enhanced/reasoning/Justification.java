@@ -5,6 +5,8 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 public class Justification implements Serializable {
+   private static final long serialVersionUID = -9190147440653104665L;
+
    private boolean accepted;
    private String reasoning;
 

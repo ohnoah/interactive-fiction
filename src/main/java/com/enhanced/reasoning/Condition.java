@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Condition implements Serializable {
 
 
+   private static final long serialVersionUID = -6394061643748528447L;
    private String booleanExpr;
    private String failureMessage;
 
@@ -37,6 +38,7 @@ public class Condition implements Serializable {
       return getBooleanExpr().equals(condition.getBooleanExpr()) &&
           getFailureMessage().equals(condition.getFailureMessage());
    }
+
    public Condition(String booleanExpr) {
       this.booleanExpr = booleanExpr;
       this.failureMessage = "You can't do that right now.";

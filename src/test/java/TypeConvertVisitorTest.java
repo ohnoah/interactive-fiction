@@ -2,7 +2,7 @@ import static org.junit.Assert.*;
 
 
 import com.enhanced.reasoning.TypeConvertVisitor;
-import com.enhanced.reasoning.VisitorFactory;
+import com.enhanced.reasoning.VisitorHelper;
 import java.util.List;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Rule;
@@ -13,7 +13,7 @@ public class TypeConvertVisitorTest {
 
    private Object produceResult(String expression) {
       TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
-      return VisitorFactory.typeConvert(typeConvertVisitor, expression);
+      return VisitorHelper.typeConvert(typeConvertVisitor, expression);
    }
 
    @Test

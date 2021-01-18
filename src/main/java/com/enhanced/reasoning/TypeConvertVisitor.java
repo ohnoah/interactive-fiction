@@ -66,8 +66,8 @@ public class TypeConvertVisitor extends ConstantsBaseVisitor<Object> implements 
       String expression = "[1,2,3.1]";
       String expression2 = "\"I like pizza.\"";
       TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
-      Object result = VisitorFactory.typeConvert(typeConvertVisitor, expression);
-      Object result2 = VisitorFactory.typeConvert(typeConvertVisitor, expression2);
+      Object result = VisitorHelper.typeConvert(typeConvertVisitor, expression);
+      Object result2 = VisitorHelper.typeConvert(typeConvertVisitor, expression2);
       System.out.printf("%-70s -> %s\n", expression, result);
       System.out.printf("%-70s -> %s\n", expression2, result2);
    }

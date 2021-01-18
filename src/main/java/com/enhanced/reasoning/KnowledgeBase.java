@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("ALL")
 public class KnowledgeBase implements Serializable {
 
+   private static final long serialVersionUID = -3641841224766299640L;
+
    private List<GenericFrame> genericFrames;
    private List<SpecificFrame> specificFrames;
    private ConditionEvaluationVisitor conditionEvaluationVisitor;
@@ -165,7 +167,7 @@ public class KnowledgeBase implements Serializable {
       // TODO: gets values from the Frames
       // TODO: If the string is invalid, throw an exception
       try {
-         Boolean result = VisitorFactory.evaluateCondition(conditionEvaluationVisitor, expression);
+         Boolean result = VisitorHelper.evaluateCondition(conditionEvaluationVisitor, expression);
          //System.out.printf("%-70s -> %s | ", expression, result);
          return result;
       } catch (RecognitionException | ParseCancellationException e) {
@@ -200,7 +202,7 @@ public class KnowledgeBase implements Serializable {
          try {
             rhsValue = this.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException e) {
-            throw new KnowledgeException("Couldn't fulfill update with com.enhanced.reasoning.KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
+            throw new KnowledgeException("Couldn't fulfill update with KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
          }
       }
       SpecificFrame frameToSet = this.findSpecificFrameAlways(knowledgeUpdate.getFrameToUpdate());

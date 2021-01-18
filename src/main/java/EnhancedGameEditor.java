@@ -2,14 +2,17 @@ import com.enhanced.EnhancedGameDesignAction;
 import com.enhanced.EnhancedGameEditState;
 import com.enhanced.reasoning.Condition;
 import com.enhanced.reasoning.GenericFrame;
+import com.enhanced.reasoning.Justification;
 import com.enhanced.reasoning.KnowledgeBase;
 import com.enhanced.reasoning.KnowledgeRegex;
 import com.enhanced.reasoning.KnowledgeUpdate;
 import com.enhanced.reasoning.SpecificFrame;
 import com.enhanced.reasoning.TypeConvertVisitor;
-import com.enhanced.reasoning.VisitorFactory;
+import com.enhanced.reasoning.VisitorHelper;
 import com.enhanced.reasoning.exceptions.KnowledgeException;
 import com.shared.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +41,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
  * (c) GPLv3
  */
 public class EnhancedGameEditor extends JFrame {
-   private static final String programName = "IF Basic Game Editor";
+   private static final String programName = "IF ENHANCED EDITOR";
    private EnhancedGameEngine gameEngine = new EnhancedGameEngine();
    private KnowledgeBase knowledgeBase = this.gameEngine.getKnowledgeBase();
    private boolean saved = false;
@@ -69,8 +73,7 @@ public class EnhancedGameEditor extends JFrame {
       SwingUtilities.replaceUIActionMap(input, actionMap);
       SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
       input.setEditable(true);
-      history.setText(">");
-
+      history.setText("Welcome to the enhanced IF game editor \n> ");
       setSize(600, 600);
       setLocation(100, 100);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,13 +111,11 @@ public class EnhancedGameEditor extends JFrame {
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText().trim();
             String sofar = history.getText();
-            // TODO: If game editing mode, process numbered CLI
-            // Maybe use a variable indicating initialized progress
-/*            if (playingGame) {
-               writeToTerminal(cmd, sofar, processCmd(cmd));
-            } else {*/
-            editGame(cmd, sofar);
-            /*            }*/
+            List<String> res = editGame(cmd, sofar);
+            String cmdRet = res.get(0);
+            String sofarRet = res.get(1);
+            String outputRet = res.get(2);
+            writeToTerminal(cmdRet, sofarRet, outputRet);
          }
       });
       actionMap.put("backspace", new AbstractAction() {
@@ -183,7 +184,7 @@ public class EnhancedGameEditor extends JFrame {
       parent = null;
    }
 
-   public static <T> boolean hasDuplicate(Iterable<T> all) {
+   private static <T> boolean hasDuplicate(Iterable<T> all) {
       Set<T> set = new HashSet<T>();
       // Set#add returns false if the set does not change, which
       // indicates that a duplicate element has been added.
@@ -193,6 +194,16 @@ public class EnhancedGameEditor extends JFrame {
          }
       }
       return false;
+   }
+
+   private static Justification validNames(List<String> names) {
+      for (String name : names) {
+         name = name.replace(' ', '-');
+         if (!(name.length() > 0 && name.charAt(0) != '_' && !name.contains("-") && !name.contains(" ") && Pattern.matches(KnowledgeRegex.frameNameExpr, name))) {
+            return new Justification(false, String.format("%s is not a valid name. It should only contain letters and numbers", name.replace('-', ' ')));
+         }
+      }
+      return new Justification(true, "");
    }
 
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
@@ -206,7 +217,7 @@ public class EnhancedGameEditor extends JFrame {
                String name = m.group(1);
                String adjectiveSlots = m.group(2);
                names.add(name);
-               adjectives.add(Arrays.asList(adjectiveSlots.split(" ")).stream()
+               adjectives.add(Arrays.stream(adjectiveSlots.split(" "))
                    .map(String::trim).collect(Collectors.toSet()));
             }
             else {
@@ -223,7 +234,7 @@ public class EnhancedGameEditor extends JFrame {
 
    // TODO: The behaviour here will depend on the implementation of GameEngine
    // TODO: Current idea just extend com.basic.EnhancedGameDesignAction and check instanceof in switch
-   private void editGame(String cmd, String sofar) {
+   private List<String> editGame(String cmd, String sofar) {
       String output = null;
       switch (cmd) {
          case "quit":
@@ -234,6 +245,10 @@ public class EnhancedGameEditor extends JFrame {
             else {
                System.exit(0);
             }
+            break;
+         case "load":
+            output = "Select a text file with commands to build a new game.";
+            enhancedGameEditState = EnhancedGameEditState.LOAD;
             break;
          case "list":
             output = gameEngine.getPossibleActionFormats().stream()
@@ -298,6 +313,34 @@ public class EnhancedGameEditor extends JFrame {
                      i.printStackTrace();
                   }
                   break;
+               case LOAD:
+                  if(cmd.length() > 0){
+                     String fn = cmd;
+                     fn = fn.endsWith(".txt") ? fn : fn + ".txt";
+                     List<String> res = List.of("load", ">", "");
+                     try {
+                        File myObj = new File(fn);
+                        Scanner myReader = new Scanner(myObj);
+                        enhancedGameEditState = EnhancedGameEditState.OPEN;
+                        while (myReader.hasNextLine()) {
+                           String line = myReader.nextLine().trim();
+                           String runningSofar = history.getText();
+                           res = editGame(line, runningSofar);
+                           writeToTerminal(res.get(0), res.get(1), res.get(2));
+                        }
+                        myReader.close();
+                        return res;
+                     } catch (FileNotFoundException e) {
+                        System.err.println("Couldn't open the load file");
+                        e.printStackTrace();
+                     }
+                     output = "Loaded your game.";
+                  }
+                  else{
+                     output = "Invalid file name";
+                  }
+                  enhancedGameEditState = EnhancedGameEditState.OPEN;
+                  break;
                case ROOM_NAME:
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);
                   if (matchingRooms.size() > 0) {
@@ -320,10 +363,14 @@ public class EnhancedGameEditor extends JFrame {
                   List<String> names = new ArrayList<>();
                   List<Set<String>> adjectives = new ArrayList<>();
                   boolean validText = itemNamesAndAdjectives(cmd, names, adjectives);
+                  Justification j = validNames(names);
 
                   if (validText) {
                      if (hasDuplicate(names)) {
                         output = "Items can not have the same name. Try again.";
+                     }
+                     else if (!j.isAccepted()) {
+                        output = j.getReasoning();
                      }
                      else if (names.contains("world")) {
                         output = "The word \"world\" is reserved";
@@ -337,8 +384,7 @@ public class EnhancedGameEditor extends JFrame {
                         roomToAdd.setItems(items);
                         gameEngine.addRoom(roomToAdd);
                         output = String.format("Great. Added a room called \"%s\" with items \"%s\"."
-                            , roomToAdd.getName(), names.stream()
-                                .collect(Collectors.joining(",")));
+                            , roomToAdd.getName(), String.join(",", names));
                         if (gameEngine.getNumRooms() == 1) {
                            gameEngine.setCurrentRoom(roomToAdd);
                            output += " I've set this as the starting room as well.";
@@ -350,7 +396,7 @@ public class EnhancedGameEditor extends JFrame {
                   else {
                      output = "Invalid specification. Try to use the form " +
                          "\"name1 [adj1 adj2 ... adjn]\" for each item or just \"name2\" without" +
-                         "adjectives";
+                         "adjectives. Remember, item names don't contain spaces";
                   }
                   break;
                case ACTION_ROOM:
@@ -372,9 +418,11 @@ public class EnhancedGameEditor extends JFrame {
                      output = "There are multiple actions with that trigger word but different " +
                          "sentence structures. Enter the index of the one you meant.";
                      output += "\n";
+                     StringBuilder outBuilder = new StringBuilder(output);
                      for (int i = 0; i < actionFormats.size(); i++) {
-                        output += String.format("(%d) %s \n", i, actionFormats.get(i).getRegExpr());
+                        outBuilder.append(String.format("(%d) %s \n", i, actionFormats.get(i).getRegExpr()));
                      }
+                     output = outBuilder.toString();
                      enhancedGameEditState = EnhancedGameEditState.ACTION_TRIGGER_CLARIFY;
                   }
                   else if (actionFormats.size() == 1) {
@@ -432,18 +480,25 @@ public class EnhancedGameEditor extends JFrame {
                case ACTION_PRE:
                   try {
                      effectAction = new EnhancedGameDesignAction();
-                     List<String> splitPreconds = splitByCommaAndTrim(cmd);
-                     List<Condition> preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
-                     int indexNull = preConds.indexOf(null);
-                     if (indexNull != -1) {
-                        output = String.format("Invalid condition \"%s\"", splitPreconds.get(indexNull));
+                     List<Condition> preConds;
+                     if(cmd.equals("")){
+                        preConds = new ArrayList<>();
                      }
                      else {
-                        effectAction.setPreconditions(preConds);
-                        output = "Enter the updates to the knowledgebase as comma-separated KnowledgeUpdate strings" +
-                            "e.g. \"world::numDoors += 1, box::contains = [\"apple\"]\".";
-                        enhancedGameEditState = EnhancedGameEditState.ACTION_POST;
+                        List<String> splitPreconds = splitByCommaAndTrim(cmd);
+                        preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
+                        int indexNull = preConds.indexOf(null);
+                        if (indexNull != -1) {
+                           output = String.format("Invalid condition \"%s\". Remember the pipe symbol and error message.", splitPreconds.get(indexNull));
+                        }
+                        else {
+                           effectAction.setPreconditions(preConds);
+                           output = "Enter the updates to the knowledgebase as comma-separated KnowledgeUpdate strings" +
+                               "e.g. \"world::numDoors += 1, box::contains = [\"apple\"]\".";
+                           enhancedGameEditState = EnhancedGameEditState.ACTION_POST;
+                        }
                      }
+
                   } catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each condition string " +
                          " by a \",\"";
@@ -451,6 +506,7 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case ACTION_POST:
                   try {
+                     // TODO: accept empty string
                      List<String> splitPostconds = splitByCommaAndTrim(cmd);
                      List<KnowledgeUpdate> postConds = splitPostconds.stream().map(this::stringToKnowledgeUpdate).collect(Collectors.toList());
                      int indexNull = postConds.indexOf(null);
@@ -476,6 +532,8 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case EDIT_KNOWLEDGE:
                   if (cmd.equals("fillers")) {
+                     output = "Update the fillers of the current SpecificFrames " + knowledgeBase.getSpecificFrames().stream().map(SpecificFrame::getId).collect(Collectors.joining(",")) +
+                         " with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
                      enhancedGameEditState = EnhancedGameEditState.FILLERS;
                   }
                   else if (cmd.equals("parents")) {
@@ -493,6 +551,19 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   break;
                case FILLERS:
+                  List<String> knowledgeUpdates = splitByCommaAndTrim(cmd);
+                  StringBuilder outputBuilder = new StringBuilder();
+                  for(String s : knowledgeUpdates){
+                     try {
+                        KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate(s);
+                        gameEngine.updateKnowledgeBase(knowledgeUpdate);
+                     } catch (KnowledgeException e) {
+                        outputBuilder.append(String.format("Didn't complete update \"%s\" because it has an invalid form %s.\n", s, e.getMessage()));
+                     }
+                  }
+                  output = outputBuilder.toString();
+                  output += "Type \"edit knowledge\" again if you want to continue updating or use other commands to continue building the game";
+                  enhancedGameEditState = EnhancedGameEditState.OPEN;
                   break;
                case PARENTS_CHILD:
                   child = findSpecificFrameByName(specificFrames, cmd);
@@ -500,12 +571,12 @@ public class EnhancedGameEditor extends JFrame {
                      output = "That is not a valid name. Enter the id of one of the items you have created that were listed above.";
                   }
                   else {
-                     StringBuilder outputBuilder = new StringBuilder();
+                     StringBuilder outBuilder = new StringBuilder();
                      genericFrames = knowledgeBase.getGenericFrames();
                      for (int i = 0; i < genericFrames.size(); i++) {
-                        outputBuilder.append(String.format("(%d) %s \n", i, genericFrames.get(i).getId()));
+                        outBuilder.append(String.format("(%d) %s \n", i, genericFrames.get(i).getId()));
                      }
-                     output = outputBuilder.toString();
+                     output = outBuilder.toString();
                      output += "are your current generic frames. Enter \"new\" " +
                          "if you wish to create a new parent or the name of a current Generic Frame if you wish to add one as the parent of " + child.getId();
                      enhancedGameEditState = EnhancedGameEditState.PARENTS_OPEN;
@@ -521,7 +592,7 @@ public class EnhancedGameEditor extends JFrame {
                      if (parent == null) {
                         output = "That is not a valid name. Enter the id of one of the Generic Frames you have created that were listed above or \"new\".";
                      }
-                     else{
+                     else {
                         child.addParent(parent);
                         output = String.format("Added Generic Frame %s as a parent of %s", parent.getId(), child.getId());
                         resetAdditions();
@@ -545,7 +616,7 @@ public class EnhancedGameEditor extends JFrame {
                      for (Map.Entry<String, String> entry : slotMap.entrySet()) {
                         String slot = entry.getKey();
                         String filler = entry.getValue();
-                        Object objFiller = VisitorFactory.typeConvert(typeConvertVisitor, filler);
+                        Object objFiller = VisitorHelper.typeConvert(typeConvertVisitor, filler);
                         parent.addSlot(slot, objFiller);
                      }
                      child.addParent(parent);
@@ -566,8 +637,7 @@ public class EnhancedGameEditor extends JFrame {
             }
       }
 
-
-      writeToTerminal(cmd, sofar, output);
+      return List.of(cmd, sofar, output);
 
    }
 

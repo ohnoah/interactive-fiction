@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GenericFrame implements Serializable {
 
+   private static final long serialVersionUID = -3480563600103315438L;
    private String id;
 
 
