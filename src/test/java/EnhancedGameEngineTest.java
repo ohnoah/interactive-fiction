@@ -100,7 +100,7 @@ public class EnhancedGameEngineTest {
 
 
    private static EnhancedGameEngine puttingNoDesignRoom() throws KnowledgeException {
-      Room room = new Room("Putting com.shared.Room");
+      Room room = new Room("Putting Room");
       room.setItemsNoAdjectives(Set.of("small box", "pen", "apple", "ball"));
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();

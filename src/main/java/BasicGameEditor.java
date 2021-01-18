@@ -450,12 +450,12 @@ public class BasicGameEditor extends JFrame {
 
 /*
    public String processCmd(String cmd) {
-      List<com.shared.ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
-      List<com.shared.Item> possibleItems = gameEngine.possibleItems();
-      com.shared.InstantiatedGameAction gameAction = null;
+      List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
+      List<Item> possibleItems = gameEngine.possibleItems();
+      InstantiatedGameAction gameAction = null;
       try {
          gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItems);
-      } catch (com.nlp.FailedParseException e) {
+      } catch (FailedParseException e) {
          return e.getMessage();
       }
       String gameMessage = gameEngine.progressStory(gameAction);

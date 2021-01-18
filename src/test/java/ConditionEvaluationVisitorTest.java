@@ -302,7 +302,7 @@ public class ConditionEvaluationVisitorTest {
       kb.addSpecificFrame(new SpecificFrame("Test491"));
 
       exceptionRule.expect(MissingKnowledgeException.class);
-      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". com.shared.Item: Test491 doesn't have a \"Apple\"");
+      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". Item: Test491 doesn't have a \"Apple\"");
       Boolean result = produceBooleanResult(kb, expression);
    }
 
@@ -327,7 +327,7 @@ public class ConditionEvaluationVisitorTest {
 
       SpecificFrame s = new SpecificFrame("Test92");
       s.updateFiller("Ural12", "hello");
-      SpecificFrame s2 = new SpecificFrame("Test92");
+      SpecificFrame s2 = new SpecificFrame("Tt923");
       s2.updateFiller("Ural123", 4.5);
       kb.addSpecificFrame(s);
       kb.addSpecificFrame(s2);

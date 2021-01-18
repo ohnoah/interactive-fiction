@@ -38,7 +38,7 @@ public class Room implements Serializable {
 
    @Override
    public String toString() {
-      return "com.shared.Room{" +
+      return "Room{" +
           "name='" + name + '\'' +
           ", items=" + items +
           '}';

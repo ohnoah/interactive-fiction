@@ -68,7 +68,7 @@ public class ActionFormat implements Serializable {
 
    @Override
    public String toString() {
-      return "com.shared.ActionFormat{" +
+      return "ActionFormat{" +
           "verb='" + verb + '\'' +
           ", regExpr='" + regExpr + '\'' +
           '}';
