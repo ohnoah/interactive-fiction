@@ -1,6 +1,8 @@
 package com.enhanced;
 
-public enum EnhancedGameEditState {
+import java.io.Serializable;
+
+public enum EnhancedGameEditState implements Serializable {
    OPEN,
    SAVE_FILENAME,
    ROOM_NAME,
@@ -18,4 +20,5 @@ public enum EnhancedGameEditState {
    PARENTS_OPEN,
    PARENTS_NEW_NAME,
    PARENTS_NEW_SLOTS,
+   LOAD
 }

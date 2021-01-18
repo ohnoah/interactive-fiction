@@ -8,7 +8,7 @@ import com.enhanced.typeconverter.ConstantsParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-public class VisitorFactory {
+public class VisitorHelper {
    public static Object typeConvert(TypeConvertVisitor typeConvertVisitor, String expression) {
       ConstantsLexer lexer = new ConstantsLexer(CharStreams.fromString(expression));
       lexer.removeErrorListeners();

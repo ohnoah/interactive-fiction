@@ -47,7 +47,7 @@ public class SpecificFrame implements Serializable {
          return slots.get(slotName);
       }
       else {
-         String missingString = String.format("com.shared.Item: %s doesn't have a \"%s\".", this.getId(), slotName);
+         String missingString = String.format("Item: %s doesn't have a \"%s\".", this.getId(), slotName);
          throw new MissingKnowledgeException(missingString, missingString);
       }
    }

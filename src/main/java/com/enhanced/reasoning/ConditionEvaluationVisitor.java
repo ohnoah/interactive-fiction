@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object> implements Serializable {
 
+   private static final long serialVersionUID = -4122568509603815191L;
    private KnowledgeBase knowledgeBase;
 
    public ConditionEvaluationVisitor(@NotNull KnowledgeBase knowledgeBase) {

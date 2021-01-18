@@ -173,6 +173,24 @@ public class EnhancedNLPEngineTest {
       assertEquals(wantedArr, outArguments);
    }
 
+
+   @Test
+   public void parsePutSpaceNoun() throws FailedParseException {
+      // open the door
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
+      String verb = "put";
+      String noun1 = "pen";
+      String noun2 = "box";
+      Item pen = new Item("pen");
+      Item smallBox = new Item("box");
+      possibleActionFormats.add((new EnhancedGameEngine()).findAction("put").get(0));
+      InstantiatedGameAction instantiatedGameAction =
+          enhancedNLPEngine.parse(String.format("%s the %s in the %s", verb, noun1, noun2), possibleActionFormats, Set.of(pen, smallBox));
+      List<String> wantedArr = List.of(noun1, noun2);
+      List<String> outArguments = instantiatedGameAction.getArguments();
+      assertEquals(wantedArr, outArguments);
+   }
+
    @Test
    public void parseVerbSimpleWithExtraStuffAfter() throws FailedParseException {
       // Maybe destroy the cave with grace

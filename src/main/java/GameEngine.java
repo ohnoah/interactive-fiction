@@ -39,9 +39,7 @@ public abstract class GameEngine implements Serializable {
    }
 
    public final List<ActionFormat> getPossibleActionFormats() {
-      List<ActionFormat> actionFormats = new ArrayList<>();
-      actionFormats.addAll(this.possibleActionFormats);
-      return actionFormats;
+      return new ArrayList<>(this.possibleActionFormats);
    }
 
    public GameEngine() {

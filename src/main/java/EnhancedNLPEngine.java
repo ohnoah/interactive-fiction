@@ -66,7 +66,8 @@ public class EnhancedNLPEngine extends NLPEngine {
       if (actionFormat == null) {
          // I DONT UNDERSTAND THAT
          throw new FailedParseException(String.format("Can't understand the verb: %s", verb));
-      } else {
+      }
+      else {
          findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
       }
 
@@ -92,11 +93,12 @@ public class EnhancedNLPEngine extends NLPEngine {
    // Returns a list of synonym-replaced String item names for "nouns" corresponding in-game items
    // If fails, throw a com.nlp.FailedParseException. This can be either because adjectives don't match
    // or because there are no in-game items with that name.
+   // TODO: To support multiple same-name items, need to change this to longest match and potentially return errors
    protected List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
                                                     Set<Item> possibleItems) throws FailedParseException {
       List<String> matchingGameItemNames = new ArrayList<>();
       nounLoop:
-      for (int i = 0; i<nouns.size(); i++) {
+      for (int i = 0; i < nouns.size(); i++) {
          String noun = nouns.get(i);
          for (Item item : possibleItems) {
             String itemName = item.getName();
@@ -104,7 +106,8 @@ public class EnhancedNLPEngine extends NLPEngine {
                if (adjectivesMatch(adjectives.get(i), item.getAdjectives())) {
                   matchingGameItemNames.add(itemName);
                   continue nounLoop;
-               } else {
+               }
+               else {
                   String missingItems = adjectives.get(i).stream()
                       .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
                   throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
@@ -113,8 +116,15 @@ public class EnhancedNLPEngine extends NLPEngine {
          }
          for (Item item : possibleItems) {
             if (item.getSynonyms().contains(noun)) {
-               matchingGameItemNames.add(item.getName());
-               continue nounLoop;
+               if (adjectivesMatch(adjectives.get(i), item.getAdjectives())) {
+                  matchingGameItemNames.add(item.getName());
+                  continue nounLoop;
+               }
+               else {
+                  String missingItems = adjectives.get(i).stream()
+                      .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
+                  throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
+               }
             }
          }
          throw new FailedParseException(String.format("There is no %s in your environment.", noun));
@@ -140,7 +150,8 @@ public class EnhancedNLPEngine extends NLPEngine {
                String matchingGroup = m.group(i);
                appendMatchingGroupNoun(nouns, adjectives, document, matchingGroup, actionToTake);
             }
-         } else {
+         }
+         else {
             throw new FailedParseException("Argument structure after the verb was wrong.");
          }
       }
@@ -154,7 +165,7 @@ public class EnhancedNLPEngine extends NLPEngine {
             if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
                currentAdjectives.add(tok.word());
             }
-            if (tag.equals("NN")) {
+            if (isNoun(tag)) {
                adjectives.add(currentAdjectives);
                noun = tok.word();
                nouns.add(noun);
@@ -171,9 +182,14 @@ public class EnhancedNLPEngine extends NLPEngine {
       int i = s.indexOf("-");
       if (i == -1) {
          return s;
-      } else {
+      }
+      else {
          return s.substring(0, i);
       }
+   }
+
+   private boolean isNoun(String tag){
+      return tag.equals("NN") || tag.equals("NNS") || tag.equals("NNP") || tag.equals("NNPS");
    }
 
    // TODO: How does this work if there is a "-" in the sentence
@@ -194,14 +210,14 @@ public class EnhancedNLPEngine extends NLPEngine {
          if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
             currentAdjectives.add(tok.word());
          }
-         if (tag.equals("NN")) {
+         if (isNoun(tag)) {
             adjectives.add(currentAdjectives);
             noun = tok.word();
             nouns.add(noun);
             return;
          }
       }
-      throw new FailedParseException(String.format("Couldn't find any item in %s", matchingGroup));
+      throw new FailedParseException(String.format("Couldn't find any item in words: %s", matchingGroup));
    }
 
    // This fails for e.g. TURN it ON, TURN the box
@@ -221,7 +237,7 @@ public class EnhancedNLPEngine extends NLPEngine {
       for (int i = 0; i < document.tokens().size(); i++) {
          CoreLabel tok = document.tokens().get(i);
          String tag = tok.tag();
-         if (tag.equals("VB")) {
+         if (tag.equals("VB") || tag.equals("VBN") || tag.equals("VBG") || tag.equals("VBP") || tag.equals("VBZ")) {
             verb = tok.word();
             if (i != document.tokens().size() - 1) {
                CoreLabel nextToken = document.tokens().get(i + 1);
@@ -261,11 +277,13 @@ public class EnhancedNLPEngine extends NLPEngine {
             System.out.println(node.label());
             if (node.label().toString().equals("VP")) {
                System.out.println("HELLO");
-            } else {
+            }
+            else {
                System.out.println("FAIL");
             }
          }
-      } else {
+      }
+      else {
          System.err.println("not 1 length");
       }
 

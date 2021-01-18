@@ -70,6 +70,6 @@ public class Room implements Serializable {
    }
 
    public boolean validItems(List<String> items) {
-      return items.stream().allMatch(x -> this.items.contains(x));
+      return this.items.stream().map(Item::getName).collect(Collectors.toList()).containsAll(items);
    }
 }

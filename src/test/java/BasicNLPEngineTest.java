@@ -36,6 +36,13 @@ public class BasicNLPEngineTest {
    }
 
    @Test
+   public void findNounsFindsUnarySpaceNoun() throws JWNLException, FailedParseException {
+      ActionFormat actionFormat = new ActionFormat("open", null);
+      List<String> doorArr = List.of("door");
+      assertEquals(doorArr, basicNLPEngine.findNouns("open big door", actionFormat));
+   }
+
+   @Test
    public void findNounsFindsUnaryDefiniteNoun() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("examine", null);
       List<String> breadArr = List.of("bread");
@@ -63,10 +70,10 @@ public class BasicNLPEngineTest {
    public void whenNoMatchingGameVerbThrowFailedParseException() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
       exceptionRule.expectMessage("No matching game verb");
-      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
       possibleActionFormats.add(new ActionFormat("ski", null));
       possibleActionFormats.add(new ActionFormat("fly", null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("eat steak"), possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse("eat steak", possibleActionFormats, null);
 
    }
    // TODO: Check other exceptions here
@@ -74,7 +81,7 @@ public class BasicNLPEngineTest {
    @Test
    public void parseVerbSimpleTwoWords() throws FailedParseException {
       // take dog
-      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
       String verb = "take";
       String noun = "dog";
       possibleActionFormats.add(new ActionFormat(verb, null));
@@ -100,9 +107,22 @@ public class BasicNLPEngineTest {
    }
 
    @Test
+   public void parseNounWithSpace() throws FailedParseException {
+      // open the door
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
+      String verb = "open";
+      String noun = "door";
+      possibleActionFormats.add(new ActionFormat(verb, null));
+      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the big %s", verb, noun), possibleActionFormats, null);
+      List<String> wantedArr = List.of(noun);
+      List<String> outArguments = instantiatedGameAction.getArguments();
+      assertEquals(wantedArr, outArguments);
+   }
+
+   @Test
    public void parseVerbSimpleWithExtraStuffAfter() throws FailedParseException {
       // Maybe destroy the cave with grace
-      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
       String verb = "destroy";
       String noun = "cave";
       possibleActionFormats.add(new ActionFormat(verb, null));
@@ -115,7 +135,7 @@ public class BasicNLPEngineTest {
    @Test
    public void parseNounSimpleWithExtraStuffAfter() throws FailedParseException {
       // Maybe destroy the cave with grace
-      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
       String verb = "destroy";
       String noun = "cave";
       possibleActionFormats.add(new ActionFormat(verb, null));

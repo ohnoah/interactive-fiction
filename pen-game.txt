@@ -1,0 +1,42 @@
+add room
+Room 1
+pen [yellow], box [orange], ball [green], bucket [blue]
+add room
+Room 2
+keys, mouse [blue small], jar
+add action
+Room 1
+put
+0
+pen, box
+TRUE|""
+world::random := 1
+Great. You put the pen in the box in _world::room.
+
+add action
+Room 1
+push
+ball
+_pen IN box::contains|You haven't done what you need with the pen., _box IN bucket::contains|You haven't done the bucket thing.
+world::room := "Room 2"
+Well done. Leaving room.
+
+add action
+Room 2
+push
+keys
+TRUE|""
+world::key := TRUE, world::room := "Room 1"
+Good work man.
+
+edit knowledge
+fillers
+pen::isContained := FALSE, box::isContained := FALSE, bucket::isContained := FALSE, bucket::isContainer := TRUE, box::isContainer := TRUE, bucket::contains := [], box::contains := [], jar::isContainer := TRUE, jar::contains := [], jar::isContained := FALSE, keys::isContained := FALSE, mouse::isContained := FALSE, mouse::isContainer := FALSE, pen::isContainer := FALSE, keys::isContainer := FALSE
+
+edit knowledge
+fillers
+pen::volume := 1, box::volume := 10, box::internalVolume := 10, bucket::volume := 20, bucket::internalVolume := 20, mouse::volume := 3, ball::volume := 10, keys::volume := 5, jar::volume := 10, jar::internalVolume := 10
+
+edit knowledge
+fillers
+world::key := FALSE

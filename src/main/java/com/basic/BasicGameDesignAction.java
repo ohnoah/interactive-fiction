@@ -6,6 +6,8 @@ import java.util.Map;
 
 // TODO: This is really a com.basic.BasicGameDesignAction and need to allow for ANTLR stuff with enhanced game engine
 public class BasicGameDesignAction implements Serializable {
+   private static final long serialVersionUID = -4706216167250700984L;
+
    private Map<String, String> preconditions;
    private String message;
    private Map<String, String> updateState;

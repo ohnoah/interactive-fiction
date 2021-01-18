@@ -148,7 +148,8 @@ public class BasicGameEditor extends JFrame {
          splitMap = splitByComma.stream()
              .map(s -> s.split("="))
              .collect(Collectors.toMap(split -> split[0], split -> split[1]));
-      } else {
+      }
+      else {
          splitMap = new HashMap<>();
       }
       return splitMap;
@@ -187,10 +188,12 @@ public class BasicGameEditor extends JFrame {
                names.add(name);
                adjectives.add(Arrays.asList(adjectiveSlots.split(" ")).stream()
                    .map(String::trim).collect(Collectors.toSet()));
-            } else {
+            }
+            else {
                return false;
             }
-         } else {
+         }
+         else {
             names.add(clause);
             adjectives.add(new HashSet<>());
          }
@@ -207,7 +210,8 @@ public class BasicGameEditor extends JFrame {
             if (!saved) {
                output = "Warning: you have not saved your progress. If you still want to quit type quit again.";
                saved = true;
-            } else {
+            }
+            else {
                System.exit(0);
             }
             break;
@@ -218,7 +222,8 @@ public class BasicGameEditor extends JFrame {
          case "list items":
             if (roomForAction != null) {
                output = roomForAction.getItems().stream().map(Item::toString).collect(Collectors.joining(","));
-            } else {
+            }
+            else {
                output = "No room has been selected for adding an action to";
             }
             break;
@@ -269,9 +274,11 @@ public class BasicGameEditor extends JFrame {
                   if (matchingRooms.size() > 0) {
                      output = "There is already a room by that name. Try again.";
                      basicGameEditState = BasicGameEditState.OPEN;
-                  } else if (cmd.length() == 0) {
+                  }
+                  else if (cmd.length() == 0) {
                      output = "Please enter a name with more than one character";
-                  } else {
+                  }
+                  else {
                      roomToAdd = new Room(cmd);
                      output = String.format("Adding room %s. What items do you want to add? " +
                          "Enter this as a comma-separated list with adjectives space-separated in square brackets" +
@@ -288,9 +295,14 @@ public class BasicGameEditor extends JFrame {
                   if (validText) {
                      if (hasDuplicate(names)) {
                         output = "Items can not have the same name. Try again.";
-                     } else if (names.contains("world")) {
+                     }
+                     else if (names.contains("world")) {
                         output = "The word \"world\" is reserved";
-                     } else {
+                     }
+                     else if(names.contains("gamePlayer")){
+                        output = "The word \"gamePlayer\" is reserved";
+                     }
+                     else {
                         Set<Item> items = new HashSet<>();
                         for (int i = 0; i < names.size(); i++) {
                            Item item = new Item(names.get(i), adjectives.get(i));
@@ -299,8 +311,7 @@ public class BasicGameEditor extends JFrame {
                         roomToAdd.setItems(items);
                         gameEngine.addRoom(roomToAdd);
                         output = String.format("Great. Added a room called \"%s\" with items \"%s\"."
-                            , roomToAdd.getName(), names.stream()
-                                .collect(Collectors.joining(",")));
+                            , roomToAdd.getName(), String.join(",", names));
                         if (gameEngine.getNumRooms() == 1) {
                            gameEngine.setCurrentRoom(roomToAdd);
                            output += " I've set this as the starting room as well.";
@@ -308,7 +319,8 @@ public class BasicGameEditor extends JFrame {
                         resetAdditions();
                         basicGameEditState = BasicGameEditState.OPEN;
                      }
-                  } else {
+                  }
+                  else {
                      output = "Invalid specification. Try to use the form " +
                          "\"name1 [adj1 adj2 ... adjn]\" for each item or just \"name2\" without" +
                          "adjectives";
@@ -319,7 +331,8 @@ public class BasicGameEditor extends JFrame {
                   if (matchedRooms.size() < 1) {
                      output = "Couldn't find a room with that name. Try again or add it " +
                          "using \"add room\" after writing \"stop\".";
-                  } else {
+                  }
+                  else {
                      roomForAction = matchedRooms.get(0);
                      output = "With what trigger word? Enter this as a verb e.g. \"open\". " +
                          "To see a list of the possible trigger words type \"list\" ";
@@ -336,14 +349,16 @@ public class BasicGameEditor extends JFrame {
                         output += String.format("(%d) %s \n", i, actionFormats.get(i).getRegExpr());
                      }
                      basicGameEditState = BasicGameEditState.ACTION_TRIGGER_CLARIFY;
-                  } else if (actionFormats.size() == 1) {
+                  }
+                  else if (actionFormats.size() == 1) {
                      ActionFormat actionFormat = actionFormats.get(0);
                      instantiatedGameAction = new InstantiatedGameAction(actionFormat);
                      output = "Enter the items that this action should act upon as a " +
                          "comma-separated list e.g. \"apple,banana,pear\".";
                      actionFormats = null;
                      basicGameEditState = BasicGameEditState.ACTION_ARGS;
-                  } else {
+                  }
+                  else {
                      output = "Couldn't find a trigger word with that name. To see a list of " +
                          "the possible trigger words type \"list\"";
                   }
@@ -353,7 +368,8 @@ public class BasicGameEditor extends JFrame {
                      int index = Integer.parseInt(cmd);
                      if (index >= actionFormats.size() || index < 0) {
                         output = "That index was not one of the ones displayed.";
-                     } else {
+                     }
+                     else {
                         ActionFormat actionFormat = actionFormats.get(index);
                         instantiatedGameAction = new InstantiatedGameAction(actionFormat);
                         output = "Enter the items that this action should act upon as a " +
@@ -372,14 +388,16 @@ public class BasicGameEditor extends JFrame {
                   if (givenArgs != numArgs) {
                      output = String.format("Incorrect argument list. You need to enter " +
                          "exactly %d argument(s).", numArgs);
-                  } else {
+                  }
+                  else {
                      boolean validItems = roomForAction.validItems(splitArgs);
                      if (validItems) {
                         instantiatedGameAction.setArguments(splitArgs);
                         output = "Enter the preconditions on the global state for this action " +
                             "e.g. \"room=First room,player=yellow\".";
                         basicGameEditState = BasicGameEditState.ACTION_PRE;
-                     } else {
+                     }
+                     else {
                         output = "One or more of those items is not in the room. Try again.";
                      }
                   }

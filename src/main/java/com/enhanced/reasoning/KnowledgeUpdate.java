@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 
 public class KnowledgeUpdate implements Serializable {
+
+   private static final long serialVersionUID = -2764187795027231102L;
    private UpdateType updateType;
 
    public void setFrameToUpdate(String frameToUpdate) {
@@ -45,7 +47,7 @@ public class KnowledgeUpdate implements Serializable {
    private static TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
 
    private static Object typeConvert(String expression) {
-      return VisitorFactory.typeConvert(typeConvertVisitor, expression);
+      return VisitorHelper.typeConvert(typeConvertVisitor, expression);
    }
 
    public UpdateType getUpdateType() {

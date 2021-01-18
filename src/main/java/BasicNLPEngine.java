@@ -56,13 +56,13 @@ public class BasicNLPEngine extends NLPEngine {
          }
          IndexWord iw = null;
          iw = d.getIndexWord(POS.NOUN, word);
-         if (iw == null) { // not a noun
-            continue;
-         } else {
+         if (iw != null) {
             String lemma = iw.getLemma();
             nouns.add(lemma.trim());
             break;
          }
+         // not a noun
+
       }
    }
 

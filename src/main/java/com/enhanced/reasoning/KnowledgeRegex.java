@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class KnowledgeRegex implements Serializable {
 
 
+   private static final long serialVersionUID = 1218079511357784575L;
    // TODO: Test these
 
    public static String knowledgeExpr;
@@ -15,8 +16,10 @@ public class KnowledgeRegex implements Serializable {
    public static String stringListExpr;
    public static String numberListExpr;
    public static String largeCaptureKnowledgeExpr;
+   public static String loneFrameNameExpr;
    static {
-      frameNameExpr = "_?([a-zA-Z0-9]+)";
+      frameNameExpr = "_?([a-zA-Z0-9-]+)";
+      loneFrameNameExpr = "_([a-zA-Z0-9-]+)(?!::)";
       knowledgeExpr = "_?([a-zA-Z0-9-]+)::([a-zA-Z0-9]+)";
       largeCaptureKnowledgeExpr = "_?([a-zA-Z0-9-]+::[a-zA-Z0-9]+)";
       numberExpr = "-?[0-9]+(?:\\.[0-9]+)?";
