@@ -55,10 +55,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
              "The _arg1 is not big enough to contain the _arg0.");
          Condition putConditionNotContained1 = new Condition("NOT _arg1::isContained",
              "You can't do that because _arg1 is inside of something.");
+         Condition putConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+             "The _arg0 is too heavy for you to put in _arg1.");
          // We can use knowledgeEngine constructs here
 
-         implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1. ");
-         implementedConditionsMap.put(putIn, List.of(putConditionNotContained0, putConditionIsContainer, putConditionVolume, putConditionNotContained1));
+         implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
+         implementedConditionsMap.put(putIn, List.of(putConditionNotContained0,
+             putConditionIsContainer, putConditionVolume,
+             putConditionNotContained1, putConditionMass));
          // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
          // TODO: and add _arg2 to _arg2's inside field.
          try {
@@ -84,10 +88,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
              "The _arg1 is inside of anything so you can't remove _arg0 from it.");
          Condition removeConditionIsContainer = new Condition("_arg1::isContainer",
              "The _arg0 is not inside of the _arg1 because _arg1 doesn't have things inside of it.");
-         Condition removeConditionContains = new Condition("_arg0 IN _arg1::contains",
+         Condition removeConditionContains = new Condition("\"_arg0\" IN _arg1::contains",
              "The _arg0 is not inside of the _arg1");
+         Condition removeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+             "The _arg0 is too heavy for you to remove from _arg1.");
 
-         implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionIsContained1, removeConditionIsContainer, removeConditionContains));
+         implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionIsContained1,
+             removeConditionIsContainer, removeConditionContains, removeConditionMass));
          implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
          try {
             KnowledgeUpdate removePlusVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
@@ -106,9 +113,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       {
          ActionFormat take = new ActionFormat("take", null);
          // TODO: States of matter here
+         Condition takeConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is too heavy for you to carry.");
          Condition takeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
              "The _arg0 is too heavy for you to carry.");
-         implementedConditionsMap.put(take, List.of(takeConditionMass));
+         implementedConditionsMap.put(take, List.of(takeConditionNotContained, takeConditionMass));
          implementedSuccessMessageMap.put(take, "You take _arg0.");
       }
 
@@ -118,14 +127,15 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       */
       {
          ActionFormat push = new ActionFormat("push", null);
+         Condition pushConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is too heavy for you to carry.");
          Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
              "The _arg0 is too heavy for you to push.");
-         implementedConditionsMap.put(push, List.of(pushConditionMass));
+         implementedConditionsMap.put(push, List.of(pushConditionNotContained, pushConditionMass));
          implementedSuccessMessageMap.put(push, "You push _arg0.");
       }
       /* PULL
       --------
-
       */
       {
          ActionFormat pull = new ActionFormat("pull", null);
@@ -256,9 +266,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
 
    protected Condition fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
-      String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns, "-", "\"");
+      String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns, "-", "");
       String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns, " ");
-      newBooleanExpr = newBooleanExpr.replaceAll(KnowledgeRegex.loneFrameNameExpr, "\"$1\"");
+      /*newBooleanExpr = newBooleanExpr.replaceAll(KnowledgeRegex.loneFrameNameExpr, "\"$1\"");*/
       return new Condition(newBooleanExpr, newFailureMessage);
    }
 
@@ -275,6 +285,12 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       else if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
          String foreignFrame = newKnowledgeUpdate.getForeignFrame();
          newKnowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+      }
+      else if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
+         Object updateConstant = newKnowledgeUpdate.getUpdateConstant();
+         if (updateConstant instanceof String) {
+            newKnowledgeUpdate.setUpdateConstant(replaceArgsWithNouns((String) updateConstant, nouns));
+         }
       }
       return newKnowledgeUpdate;
    }

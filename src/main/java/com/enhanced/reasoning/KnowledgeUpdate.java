@@ -42,6 +42,8 @@ public class KnowledgeUpdate implements Serializable {
    // RIGHT SIDE OF ASSIGNMENT
    private String foreignFrame;
    private String foreignSlot;
+
+
    private Object updateConstant;
 
    private static TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
@@ -50,6 +52,9 @@ public class KnowledgeUpdate implements Serializable {
       return VisitorHelper.typeConvert(typeConvertVisitor, expression);
    }
 
+   public void setUpdateConstant(Object updateConstant) {
+      this.updateConstant = updateConstant;
+   }
    public UpdateType getUpdateType() {
       return updateType;
    }
