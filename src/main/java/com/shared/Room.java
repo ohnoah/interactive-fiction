@@ -72,4 +72,12 @@ public class Room implements Serializable {
    public boolean validItems(List<String> items) {
       return this.items.stream().map(Item::getName).collect(Collectors.toList()).containsAll(items);
    }
+
+   public void addItem(Item item) {
+      this.items.add(item);
+   }
+
+   public boolean removeItem(Item itemInRoom) {
+      return this.items.remove(itemInRoom);
+   }
 }

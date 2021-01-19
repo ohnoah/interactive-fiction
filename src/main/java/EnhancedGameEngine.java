@@ -2,6 +2,7 @@ import com.enhanced.EnhancedGameDesignAction;
 import com.enhanced.reasoning.*;
 import com.enhanced.reasoning.exceptions.*;
 import com.shared.*;
+import gherkin.lexer.Kn;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private static boolean firstError = true;
    private static String errorLogHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
    private static String errorLogFName = "error-log-game.txt";
+   private Map<String, Item> inventoryItems;
 
    static {
       // Initialize maps for implementedLogic
@@ -41,7 +43,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       implementedSuccessMessageMap = new HashMap<>();
       implementedKnowledgeUpdateMap = new HashMap<>();
 
-      /* PUT
+      /* PUT IN
       --------
        */
 
@@ -56,7 +58,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          Condition putConditionNotContained1 = new Condition("NOT _arg1::isContained",
              "You can't do that because _arg1 is inside of something.");
          Condition putConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to put in _arg1.");
+             "The _arg0 is too heavy for you to put in the _arg1.");
          // We can use knowledgeEngine constructs here
 
          implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
@@ -75,6 +77,22 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
 
+
+      /* PUT ON
+      --------
+       */
+      {
+         ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
+         Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't push the _arg0 because it's not solid.");
+         Condition pushConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is too heavy for you to carry.");
+         Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+             "The _arg0 is too heavy for you to push.");
+         implementedConditionsMap.put(putOn, List.of(pushConditionSolid, pushConditionNotContained, pushConditionMass));
+         implementedSuccessMessageMap.put(putOn, "You push the _arg0.");
+      }
+
       /* REMOVE
       --------
        */
@@ -84,16 +102,18 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
          Condition removeConditionIsContained0 = new Condition("_arg0::isContained",
              "The _arg0 is not inside of anything.");
+         Condition removeConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't remove the _arg0 because it's not solid.");
          Condition removeConditionIsContained1 = new Condition("NOT _arg1::isContained",
-             "The _arg1 is inside of anything so you can't remove _arg0 from it.");
+             "The _arg1 is inside of something so you can't remove _arg0 from it.");
          Condition removeConditionIsContainer = new Condition("_arg1::isContainer",
              "The _arg0 is not inside of the _arg1 because _arg1 doesn't have things inside of it.");
          Condition removeConditionContains = new Condition("\"_arg0\" IN _arg1::contains",
              "The _arg0 is not inside of the _arg1");
          Condition removeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to remove from _arg1.");
+             "The _arg0 is too heavy for you to remove from the _arg1.");
 
-         implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionIsContained1,
+         implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionSolid, removeConditionIsContained1,
              removeConditionIsContainer, removeConditionContains, removeConditionMass));
          implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
          try {
@@ -112,13 +132,24 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       {
          ActionFormat take = new ActionFormat("take", null);
-         // TODO: States of matter here
+         Condition takeConditionTaken = new Condition("NOT \"_arg0\" IN world::inventory",
+             "You can't take the _arg0 because it's not solid.");
+         Condition takeConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't take the _arg0 because it's not solid.");
+         Condition takeConditionIsTakeable = new Condition("_arg0::isTakeable",
+             "You can't take the _arg0 right now.");
          Condition takeConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is too heavy for you to carry.");
+             "The _arg0 is inside of something else.");
          Condition takeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
              "The _arg0 is too heavy for you to carry.");
-         implementedConditionsMap.put(take, List.of(takeConditionNotContained, takeConditionMass));
-         implementedSuccessMessageMap.put(take, "You take _arg0.");
+         implementedConditionsMap.put(take, List.of(takeConditionTaken, takeConditionSolid, takeConditionIsTakeable, takeConditionNotContained, takeConditionMass));
+         implementedSuccessMessageMap.put(take, "You take the _arg0.");
+         try {
+            KnowledgeUpdate takeInventory = new KnowledgeUpdate("world::inventory += _arg0");
+            implementedKnowledgeUpdateMap.put(take, List.of(takeInventory));
+         } catch (KnowledgeException e) {
+            printExceptionToLog(e);
+         }
       }
 
 
@@ -127,28 +158,46 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       */
       {
          ActionFormat push = new ActionFormat("push", null);
+         Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't push the _arg0 because it's not solid.");
          Condition pushConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is too heavy for you to carry.");
+             "The _arg0 is inside of something else.");
          Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
              "The _arg0 is too heavy for you to push.");
-         implementedConditionsMap.put(push, List.of(pushConditionNotContained, pushConditionMass));
-         implementedSuccessMessageMap.put(push, "You push _arg0.");
+         implementedConditionsMap.put(push, List.of(pushConditionSolid, pushConditionNotContained, pushConditionMass));
+         implementedSuccessMessageMap.put(push, "You push the _arg0.");
       }
       /* PULL
       --------
       */
       {
          ActionFormat pull = new ActionFormat("pull", null);
+         Condition pullConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't pull the _arg0 because it's not solid.");
+         Condition pullConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is inside of something else.");
          Condition pullConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
              "The _arg0 is too heavy for you to pull.");
-         implementedConditionsMap.put(pull, List.of(pullConditionMass));
-         implementedSuccessMessageMap.put(pull, "You pull _arg0.");
+         implementedConditionsMap.put(pull, List.of(pullConditionSolid, pullConditionNotContained, pullConditionMass));
+         implementedSuccessMessageMap.put(pull, "You pull the _arg0.");
       }
 
       /* DROP
       --------
        */
-      ActionFormat drop = new ActionFormat("drop", null);
+      {
+         ActionFormat drop = new ActionFormat("drop", null);
+         Condition dropConditionTaken = new Condition("NOT \"_arg0\" IN world::inventory",
+             "You can't drop the _arg0 because you haven't picked it up.");
+         implementedConditionsMap.put(drop, List.of(dropConditionTaken));
+         implementedSuccessMessageMap.put(drop, "You drop the _arg0.");
+         try {
+            KnowledgeUpdate dropInventory = new KnowledgeUpdate("world::inventory -= _arg0");
+            implementedKnowledgeUpdateMap.put(drop, List.of(dropInventory));
+         } catch (KnowledgeException e) {
+            printExceptionToLog(e);
+         }
+      }
    }
 
 
@@ -156,6 +205,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       super();
       this.designerActions = new HashMap<>();
       this.knowledgeBase = new KnowledgeBase();
+      this.inventoryItems = new HashMap<>();
       SpecificFrame worldFrame = new SpecificFrame("world");
       worldFrame.updateFiller("room", "");
       worldFrame.updateFiller("inventory", new ArrayList<>());
@@ -168,8 +218,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          GenericFrame container = new GenericFrame("container");
          GenericFrame massive = new GenericFrame("massive");
          GenericFrame voluminous = new GenericFrame("voluminous");
+         // DEFAULT
          nonContainer.addSlots(Map.of("isContained", false,
-             "isContainer", false
+             "isContainer", false,
+             "state", "solid",
+             "isTakeable", false
          ));
          container.addSlots(Map.of("isContained", false,
              "isContainer", true,
@@ -189,10 +242,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    private String notDesignedImplementedFollow(String message) {
       if (message.contains("You take")) {
-         return message.substring(0, message.length() - 1) + " but nothing interesting happens so you quickly drop it.";
+         return message.substring(0, message.length() - 1) + " but nothing interesting happens so you return it.";
       }
       else if (message.contains("You pull") || message.contains("You push")) {
-         return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you put it back";
+         return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you put it back.";
       }
       return message + " Nothing important happens.";
    }
@@ -234,20 +287,20 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    @Override
    public Set<Item> possibleItems() {
       Set<Item> possibleItems = new HashSet<>(currentRoom.getItems());
-      List<String> inventory = null;
-      try {
+/*      try {
          inventory = knowledgeBase.queryStringList("world", "inventory");
          Map<String, Item> globalItems = this.globalItems();
          Set<Item> inventoryItems = inventory.stream().map(s -> globalItems.getOrDefault(s, null)).collect(Collectors.toSet());
          if (inventoryItems.contains(null)) {
             printToErrorLog("Null in inventory items");
-         }
-         possibleItems.addAll(inventoryItems);
+         }*/
+      possibleItems.addAll(this.inventoryItems.values());
 
-      } catch (KnowledgeException | MissingKnowledgeException e) {
+  /*    } catch (KnowledgeException | MissingKnowledgeException e) {
          printToErrorLog("This should never happen because inventory is always defined.");
          printExceptionToLog(e);
       }
+   */
       return possibleItems;
    }
 
@@ -382,6 +435,61 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
           knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "room")) {
          updateRoomWithKnowledgeUpdate(knowledgeUpdate);
       }
+
+      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
+          knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "inventory")) {
+         updateInventoryWithKnowledgeUpdate(knowledgeUpdate);
+      }
+   }
+
+   private void updateInventoryWithKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
+      Object item;
+      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
+         item = knowledgeUpdate.getUpdateConstant();
+      }
+      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
+         item = (knowledgeUpdate.getForeignFrame());
+      }
+      else {
+         try {
+            item = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
+         } catch (KnowledgeException | MissingKnowledgeException e) {
+            printExceptionToLog(e);
+            printToErrorLog("Failed to move room");
+            return;
+         }
+      }
+      Item itemInRoom;
+      if (item instanceof String) {
+         if (knowledgeUpdate.getUpdateType() == UpdateType.ADD) {
+            itemInRoom = currentRoom.getItems().stream().filter(i -> i.getName().equals(item)).findAny().orElse(null);
+            if (itemInRoom == null) {
+               printToErrorLog(item + " is an invalid item that was attempted to be removed from inventory or added to.");
+               return;
+            }
+            this.inventoryItems.put(itemInRoom.getName(), itemInRoom);
+            currentRoom.removeItem(itemInRoom);
+         }
+         else if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
+            Item returned = this.inventoryItems.remove(item);
+            if (returned != null) {
+               currentRoom.addItem(returned);
+            }
+            else {
+               printToErrorLog("Tried to remove item not in inventory");
+            }
+         }
+         else{
+            printToErrorLog("Wrong Update type when updating items for world");
+         }
+      }
+      else {
+         printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+             " failed due to wrong type of item");
+         return;
+      }
+
+
    }
 
    public void updateKnowledgeBase(@NotNull KnowledgeUpdate... knowledgeUpdates) {

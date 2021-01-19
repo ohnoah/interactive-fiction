@@ -61,7 +61,7 @@ public abstract class GameEngine implements Serializable {
       ActionFormat climb = new ActionFormat("climb", null);
       ActionFormat drink = new ActionFormat("drink", null);
       ActionFormat wave = new ActionFormat("wave", null);
-      ActionFormat fill = new ActionFormat("fill", null);
+      ActionFormat fill = new ActionFormat("fill", null); // TODO: potentially transfer
       ActionFormat wear = new ActionFormat("wear", null);
       ActionFormat smell = new ActionFormat("smell", null);
       ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
