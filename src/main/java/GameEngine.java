@@ -15,6 +15,11 @@ public abstract class GameEngine implements Serializable {
    private static final long serialVersionUID = 7461911140383910005L;
    private List<ActionFormat> possibleActionFormats;
    protected List<Room> worldRooms;
+
+   public Room getCurrentRoom() {
+      return currentRoom;
+   }
+
    protected Room currentRoom;
 
    protected boolean moveRoom(String roomName) {
@@ -63,7 +68,6 @@ public abstract class GameEngine implements Serializable {
       ActionFormat climb = new ActionFormat("climb");
       ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");
       ActionFormat wave = new ActionFormat("wave");
-/*      ActionFormat fill = new ActionFormat("fill"); // TODO: potentially transfer*/
       ActionFormat wear = new ActionFormat("wear");
       ActionFormat smell = new ActionFormat("smell");
       ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");

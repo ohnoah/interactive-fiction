@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,10 @@ public class KnowledgeBase implements Serializable {
    }
 
    public String fillQueryString(String failureMessage) {
+      return fillQueryString(failureMessage, null);
+   }
+
+   public String fillQueryString(String failureMessage, List<String> nounsToFill) {
       // TODO: Replace all possible query strings that start with _ in the strings. Don't replace values
       String valueRegex = KnowledgeRegex.knowledgeExpr;
 
@@ -126,7 +131,11 @@ public class KnowledgeBase implements Serializable {
          List<String> frameAndSlot = null;
          try {
             frameAndSlot = frameAndSlot(match);
-         } catch (KnowledgeException e) {
+            if (nounsToFill != null && !nounsToFill.contains(frameAndSlot.get(0))) {
+               continue;
+            }
+         }
+         catch (KnowledgeException e) {
             this.printLogToFile("Failed subsequence match for fillQueryString " + failureMessage);
             continue;
          }
@@ -135,7 +144,8 @@ public class KnowledgeBase implements Serializable {
          try {
             Object queryResult = this.query(frameAndSlot.get(0), frameAndSlot.get(1));
             halfway = halfway.substring(0, start) + queryResultToString(queryResult) + halfway.substring(end);
-         } catch (MissingKnowledgeException | KnowledgeException e) {
+         }
+         catch (MissingKnowledgeException | KnowledgeException e) {
             this.printLogToFile("Couldn't query in fillQueryString for " + frameAndSlot.get(0) + frameAndSlot.get(1));
             this.printLogToFile(e.getMessage());
             halfway = halfway;
@@ -164,7 +174,8 @@ public class KnowledgeBase implements Serializable {
          Boolean result = VisitorHelper.evaluateCondition(conditionEvaluationVisitor, expression);
          //System.out.printf("%-70s -> %s | ", expression, result);
          return result;
-      } catch (RecognitionException | ParseCancellationException e) {
+      }
+      catch (RecognitionException | ParseCancellationException e) {
          throw new ParseCancellationException("Couldn't parse expression" + expression + " ." + e.getMessage());
       }
    }
@@ -182,12 +193,7 @@ public class KnowledgeBase implements Serializable {
       }
    }
 
-   public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException, MissingKnowledgeException {
-      // TODO: Use a method on the knowledgeBase to update it. This method needs to understand
-      // TODO: the engineering of the com.enhanced.reasoning.KnowledgeUpdate
-      // TODO: It also needs to notice type failures when using
-      // TODO *=, /= on non-numeric
-      // TODO: failure mode will be to write the type failure to an error file and ignore the update
+   public Object knowledgeUpdateUpdateValue(KnowledgeUpdate knowledgeUpdate) throws MissingKnowledgeException, KnowledgeException {
       Object rhsValue;
       if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
          rhsValue = knowledgeUpdate.getUpdateConstant();
@@ -198,10 +204,22 @@ public class KnowledgeBase implements Serializable {
       else {
          try {
             rhsValue = this.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             throw new KnowledgeException("Couldn't fulfill update with KnowledgeUpdate: " + knowledgeUpdate.toString() + e.getMessage());
          }
       }
+      return rhsValue;
+   }
+
+   public void update(KnowledgeUpdate knowledgeUpdate) throws KnowledgeException, MissingKnowledgeException {
+      // TODO: Use a method on the knowledgeBase to update it. This method needs to understand
+      // TODO: the engineering of the com.enhanced.reasoning.KnowledgeUpdate
+      // TODO: It also needs to notice type failures when using
+      // TODO *=, /= on non-numeric
+      // TODO: failure mode will be to write the type failure to an error file and ignore the update
+      Object rhsValue = knowledgeUpdateUpdateValue(knowledgeUpdate);
+
       SpecificFrame frameToSet = this.findSpecificFrameAlways(knowledgeUpdate.getFrameToUpdate());
       String slotToSet = knowledgeUpdate.getSlotToUpdate();
 
@@ -416,17 +434,23 @@ public class KnowledgeBase implements Serializable {
             SimpleBooleanParser parser = new SimpleBooleanParser(new CommonTokenStream(lexer));
             Object result = new ConditionEvaluationVisitor(new KnowledgeBase()).visit(parser.parse());
             System.out.printf("%-70s -> %s\n", expression, result);
-         } catch (RecognitionException e) {
+         }
+         catch (RecognitionException e) {
             System.out.println("Couldn't parse");
             e.printStackTrace();
-         } catch (NullPointerException e) {
+         }
+         catch (NullPointerException e) {
             System.out.println("Null pointer expection. Probably due to invalid syntax " + e.getMessage());
             throw e;
-         } catch (RuntimeException e) {
+         }
+         catch (RuntimeException e) {
             System.out.println("Invalid syntax " + e.getMessage());
          }
       }
    }
 
 
+   public SpecificFrame removeSpecificFrame(String itemName) {
+      return this.specificFrames.remove(itemName);
+   }
 }

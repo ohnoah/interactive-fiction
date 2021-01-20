@@ -3,16 +3,7 @@ import com.enhanced.FileErrorHandler;
 import com.enhanced.reasoning.*;
 import com.enhanced.reasoning.exceptions.*;
 import com.shared.*;
-import gherkin.lexer.Kn;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,40 +30,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       this.inventoryItems = new HashMap<>();
       SpecificFrame worldFrame = new SpecificFrame("world");
       worldFrame.updateFiller("room", "");
+      worldFrame.updateFiller("items", new ArrayList<>());
       worldFrame.updateFiller("inventory", new ArrayList<>());
       worldFrame.updateFiller("liftingPower", 100.0);
       this.knowledgeBase.addSpecificFrame(worldFrame);
 
-      // ADD parents here
-      {
-/*         GenericFrame nonContainer = new GenericFrame("nonContainer");
-         GenericFrame container = new GenericFrame("container");
-         GenericFrame massive = new GenericFrame("massive");
-         GenericFrame voluminous = new GenericFrame("voluminous");
-         GenericFrame takeable = new GenericFrame("takeable");
-         // DEFAULT
-         nonContainer.addSlots(Map.of("isContained", false,
-             "isContainer", false,
-             "state", "solid",
-             "isTakeable", false
-         ));
-         container.addSlots(Map.of("isContained", false,
-             "isContainer", true,
-             "volume", 50.0,
-             "internalVolume", 50.0,
-             "contains", new ArrayList<>()
-         ));
-         massive.addSlot("mass", 50.0);
-         voluminous.addSlot("volume", 50.0);
-         takeable.addSlot("isTakeable", true);*/
-         for(GenericFrame g : ImplementedActionLogic.defaultGenericFrames){
-            knowledgeBase.addGenericFrame(g);
-         }
-/*         knowledgeBase.addGenericFrame(nonContainer);
-         knowledgeBase.addGenericFrame(container);
-         knowledgeBase.addGenericFrame(massive);
-         knowledgeBase.addGenericFrame(voluminous);
-         knowledgeBase.addGenericFrame(takeable);*/
+      for (GenericFrame g : ImplementedActionLogic.defaultGenericFrames) {
+         knowledgeBase.addGenericFrame(g);
       }
 
    }
@@ -94,6 +58,12 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    public Justification progressStory(@NotNull InstantiatedGameAction gameAction) {
       String message = "";
       // if it returns a healthy String message, prepend that and let the GameDesignAction continue
+      Set<String> possibleItemNames = this.possibleItemNames();
+      for (String argument : gameAction.getArguments()) {
+         if (!possibleItemNames.contains(argument)) {
+            return new Justification(false, String.format("There is no %s in your environment.", argument));
+         }
+      }
 
       Justification implJust = performImplementedLogic(gameAction);
       message = capitalize(implJust.getReasoning());
@@ -128,16 +98,21 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    public Set<Item> possibleItems() {
       Set<Item> possibleItems = new HashSet<>(currentRoom.getItems());
       possibleItems.addAll(this.inventoryItems.values());
-
-
       return possibleItems;
+   }
+
+   private Set<String> possibleItemNames(){
+      Set<Item> possibleItems = this.possibleItems();
+      Set<String> possibleItemNames = possibleItems.stream().map(Item::getName).collect(Collectors.toSet());
+      return possibleItemNames;
    }
 
    public void setCurrentRoom(Room newRoom) {
       this.currentRoom = newRoom;
       try {
          this.updateSingleKnowledgeBase(new KnowledgeUpdate(String.format("_world::room := \"%s\"", currentRoom.getName())));
-      } catch (KnowledgeException e) {
+      }
+      catch (KnowledgeException e) {
          FileErrorHandler.printExceptionToLog(e);
       }
    }
@@ -222,22 +197,15 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
          FileErrorHandler.printToErrorLog("Treating non-setting as setting because this is current room");
       }
+
       Object moveTo;
-      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
-         moveTo = knowledgeUpdate.getUpdateConstant();
+      try {
+         moveTo = knowledgeBase.knowledgeUpdateUpdateValue(knowledgeUpdate);
       }
-      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
-         // TODO: This case doesn't really make sense
-         moveTo = (knowledgeUpdate.getForeignFrame());
-      }
-      else {
-         try {
-            moveTo = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
-         } catch (KnowledgeException | MissingKnowledgeException e) {
-            FileErrorHandler.printExceptionToLog(e);
-            FileErrorHandler.printToErrorLog("Failed to move room");
-            return;
-         }
+      catch (MissingKnowledgeException | KnowledgeException e) {
+         FileErrorHandler.printExceptionToLog(e);
+         FileErrorHandler.printToErrorLog("Failed to move room");
+         return;
       }
       if (moveTo instanceof String) {
          boolean success = moveRoom((String) moveTo);
@@ -256,7 +224,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private void updateSingleKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       try {
          knowledgeBase.update(knowledgeUpdate);
-      } catch (KnowledgeException | MissingKnowledgeException e) {
+      }
+      catch (KnowledgeException | MissingKnowledgeException e) {
          FileErrorHandler.printExceptionToLog(e);
          return;
       }
@@ -269,38 +238,123 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
           knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "inventory")) {
          updateInventoryWithKnowledgeUpdate(knowledgeUpdate);
       }
+
+      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
+          knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "items")) {
+         updateItemsWithKnowledgeUpdate(knowledgeUpdate);
+      }
+   }
+
+   private void updateItemsWithKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
+      Object itemName = null;
+      try {
+         itemName = knowledgeBase.knowledgeUpdateUpdateValue(knowledgeUpdate);
+      }
+      catch (MissingKnowledgeException | KnowledgeException e) {
+         FileErrorHandler.printExceptionToLog(e);
+         FileErrorHandler.printToErrorLog("Couldn't get update value from knowledge update when updating items");
+         return;
+      }
+
+      Item itemInRoom;
+      if (itemName instanceof String) {
+         List<Item> containsItems = new ArrayList<>();
+         try {
+            Map<String, Item> globalItems = this.globalItems();
+            containsItems = knowledgeBase.queryStringList((String) itemName, "contains")
+                .stream().map(globalItems::get).collect(Collectors.toList());
+         }
+         catch (KnowledgeException e) {
+            FileErrorHandler.printExceptionToLog(e);
+         }
+         catch (MissingKnowledgeException ignored) {
+         }
+         if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
+            String finalItemName = (String) itemName;
+            // try to remove from room
+            itemInRoom = currentRoom.getItems().stream().filter(i -> i.getName().equals(finalItemName)).findAny().orElse(null);
+            boolean validItem = currentRoom.removeItem(itemInRoom);
+            // try to remove from inventory
+            Item returned = this.inventoryItems.remove(itemName);
+            if (returned == null && !validItem) {
+               FileErrorHandler.printToErrorLog(itemName + " is an invalid item that was attempted to be removed from the world.");
+               return;
+            }
+            knowledgeBase.removeSpecificFrame((String) itemName);
+            for (Item i : containsItems) {
+               if (i == null) {
+                  FileErrorHandler.printToErrorLog("Bad item in contains list when removing from world.");
+               }
+               this.removeItem(i); // Contained items can be anywhere
+               knowledgeBase.removeSpecificFrame(i.getName());
+            }
+         }
+         else {
+            FileErrorHandler.printToErrorLog("Wrong Update type when updating items for world " + knowledgeUpdate.toString());
+         }
+      }
+      else {
+         FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+             " failed due to wrong type of item");
+         return;
+      }
+   }
+
+   private void removeItem(Item i) {
+      for (Room r : this.worldRooms) {
+         if (r.getItems().contains(i)) {
+            r.removeItem(i);
+         }
+      }
    }
 
    private void updateInventoryWithKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
-      Object item;
-      if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
-         item = knowledgeUpdate.getUpdateConstant();
+      Object itemName;
+      try {
+         itemName = knowledgeBase.knowledgeUpdateUpdateValue(knowledgeUpdate);
       }
-      else if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
-         item = (knowledgeUpdate.getForeignFrame());
-      }
-      else {
-         try {
-            item = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
-         } catch (KnowledgeException | MissingKnowledgeException e) {
-            FileErrorHandler.printExceptionToLog(e);
-            FileErrorHandler.printToErrorLog("Failed to add inventory or subtract");
-            return;
-         }
+      catch (KnowledgeException | MissingKnowledgeException e) {
+         FileErrorHandler.printExceptionToLog(e);
+         FileErrorHandler.printToErrorLog("Failed to add inventory or subtract");
+         return;
       }
       Item itemInRoom;
-      if (item instanceof String) {
+      if (itemName instanceof String) {
+         List<Item> containsItems = new ArrayList<>();
+         try {
+            Map<String, Item> globalItems = this.globalItems();
+            containsItems = knowledgeBase.queryStringList((String) itemName, "contains")
+                .stream().map(globalItems::get).collect(Collectors.toList());
+         }
+         catch (KnowledgeException e) {
+            FileErrorHandler.printExceptionToLog(e);
+         }
+         catch (MissingKnowledgeException ignored) {
+         }
          if (knowledgeUpdate.getUpdateType() == UpdateType.ADD) {
-            itemInRoom = currentRoom.getItems().stream().filter(i -> i.getName().equals(item)).findAny().orElse(null);
+            Object finalItemName = itemName;
+            itemInRoom = currentRoom.getItems().stream().filter(i -> i.getName().equals(finalItemName)).findAny().orElse(null);
             if (itemInRoom == null) {
-               FileErrorHandler.printToErrorLog(item + " is an invalid item that was attempted to be removed from inventory or added to.");
+               FileErrorHandler.printToErrorLog(itemName + " is an invalid item that was attempted to be removed from inventory or added to.");
                return;
             }
             this.inventoryItems.put(itemInRoom.getName(), itemInRoom);
             currentRoom.removeItem(itemInRoom);
+            for (Item i : containsItems) {
+               if (i == null) {
+                  FileErrorHandler.printToErrorLog("Bad item in contains list");
+               }
+               this.removeItem(i);
+            }
          }
          else if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
-            Item returned = this.inventoryItems.remove(item);
+            Item returned = this.inventoryItems.remove(itemName);
+            for (Item i : containsItems) {
+               if (i == null) {
+                  FileErrorHandler.printToErrorLog("Bad item in contains list");
+               }
+               currentRoom.addItem(i);
+            }
             if (returned != null) {
                currentRoom.addItem(returned);
             }
@@ -318,13 +372,27 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          return;
       }
 
-
    }
 
    public void updateKnowledgeBase(@NotNull KnowledgeUpdate... knowledgeUpdates) {
       for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
          updateSingleKnowledgeBase(knowledgeUpdate);
       }
+   }
+
+
+   public List<String> getItemToDeleteFromKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
+      List<String> deleteList = new ArrayList<>();
+      if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT && knowledgeUpdate.getFrameToUpdate().equals("world") && knowledgeUpdate.getSlotToUpdate().equals("items")) {
+         try {
+            return List.of((String) knowledgeBase.knowledgeUpdateUpdateValue(knowledgeUpdate));
+         }
+         catch (ClassCastException | KnowledgeException | MissingKnowledgeException e) {
+            FileErrorHandler.printToErrorLog("Tried to get item to delete from knowledge update but failed");
+            FileErrorHandler.printExceptionToLog(e);
+         }
+      }
+      return deleteList;
    }
 
    protected Justification conditionallyPerformAction(@NotNull List<Condition> conditions,
@@ -343,12 +411,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
                reasoning = knowledgeBase.fillQueryString(populatedCondition.getFailureMessage());
                break;
             }
-         } catch (ParseCancellationException | KnowledgeException e) {
+         }
+         catch (ParseCancellationException | KnowledgeException e) {
             valid = false;
             reasoning = "There was an error behind the scenes. Try performing another action.";
             FileErrorHandler.printExceptionToLog(e);
             break;
-         } catch (MissingKnowledgeException e) {
+         }
+         catch (MissingKnowledgeException e) {
             valid = false;
             reasoning = e.getMissingString();
             FileErrorHandler.printExceptionToLog(e);
@@ -356,14 +426,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
       if (valid) {
-         String populatedSuccessMessage = replaceArgsWithNouns(successMessage, nouns, " ");
-
+         reasoning = replaceArgsWithNouns(successMessage, nouns, " ");
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
             KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
+            reasoning = knowledgeBase.fillQueryString(reasoning, getItemToDeleteFromKnowledgeUpdate(populatedKnowledgeUpdate));
             updateSingleKnowledgeBase(populatedKnowledgeUpdate);
          }
 
-         reasoning = knowledgeBase.fillQueryString(populatedSuccessMessage);
+         reasoning = knowledgeBase.fillQueryString(reasoning);
 
       }
 

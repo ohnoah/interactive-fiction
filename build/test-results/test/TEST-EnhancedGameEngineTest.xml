@@ -1,49 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedGameEngineTest" tests="44" skipped="0" failures="0" errors="0" timestamp="2021-01-20T17:13:37" hostname="Noahs-MacBook-Pro.local" time="0.518">
+<testsuite name="EnhancedGameEngineTest" tests="54" skipped="0" failures="0" errors="0" timestamp="2021-01-20T21:37:05" hostname="Noahs-MacBook-Pro.local" time="0.467">
   <properties/>
-  <testcase name="randomListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.194"/>
-  <testcase name="listenToItem" classname="EnhancedGameEngineTest" time="0.012"/>
-  <testcase name="puttingThirdItemNoDesignTooBigInternalVolume" classname="EnhancedGameEngineTest" time="0.035"/>
-  <testcase name="cantExamineContainedItem" classname="EnhancedGameEngineTest" time="0.06"/>
-  <testcase name="puttingSecondItemNoDesignAppleIsContained" classname="EnhancedGameEngineTest" time="0.021"/>
-  <testcase name="puttingSecondItemNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.009"/>
-  <testcase name="validateConditionAfterProgressStory" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="putOnHeavyItem" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="puttingSecondItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.006"/>
-  <testcase name="puttingThirdItemNoDesignTooBigContains" classname="EnhancedGameEngineTest" time="0.008"/>
+  <testcase name="randomListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.216"/>
+  <testcase name="listenToItem" classname="EnhancedGameEngineTest" time="0.032"/>
+  <testcase name="puttingThirdItemNoDesignTooBigInternalVolume" classname="EnhancedGameEngineTest" time="0.02"/>
+  <testcase name="cantExamineContainedItem" classname="EnhancedGameEngineTest" time="0.01"/>
+  <testcase name="drinkCoke" classname="EnhancedGameEngineTest" time="0.013"/>
+  <testcase name="puttingSecondItemNoDesignAppleIsContained" classname="EnhancedGameEngineTest" time="0.007"/>
+  <testcase name="transferCokeToBucketPostCondBottle" classname="EnhancedGameEngineTest" time="0.008"/>
+  <testcase name="transferCokeToBucketPostCondBucket" classname="EnhancedGameEngineTest" time="0.007"/>
+  <testcase name="puttingSecondItemNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.011"/>
+  <testcase name="validateConditionAfterProgressStory" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="putOnHeavyItem" classname="EnhancedGameEngineTest" time="0.006"/>
+  <testcase name="transferCokeBeforeDrinkDrinkingFails" classname="EnhancedGameEngineTest" time="0.007"/>
+  <testcase name="puttingSecondItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="puttingThirdItemNoDesignTooBigContains" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="eatCokeFails" classname="EnhancedGameEngineTest" time="0.004"/>
   <testcase name="puttingThirdItemNoDesignTooBigMessage" classname="EnhancedGameEngineTest" time="0.006"/>
-  <testcase name="searchItem" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="takingHeavyItem" classname="EnhancedGameEngineTest" time="0.028"/>
-  <testcase name="puttingNoDesignIsContained" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="puttingThirdItemNoDesignTooBigIsContained" classname="EnhancedGameEngineTest" time="0.006"/>
-  <testcase name="puttingSecondItemNoDesignContains" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="turnItem" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="takingLightItem" classname="EnhancedGameEngineTest" time="0.006"/>
-  <testcase name="takingTwice" classname="EnhancedGameEngineTest" time="0.005"/>
+  <testcase name="transferCokeToBucket" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="searchItem" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="drinkBananaFails" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="takingHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="puttingNoDesignIsContained" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="puttingThirdItemNoDesignTooBigIsContained" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="puttingSecondItemNoDesignContains" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="turnItem" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="takingLightItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="takingTwice" classname="EnhancedGameEngineTest" time="0.004"/>
   <testcase name="puttingNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="puttingRemovingNoDesignCondition" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="pushingHeavyItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="numberListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="examineItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="pushingDesignedItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="pushingLightItem" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="puttingRemovingNoDesignCondition" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="pushingHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="numberListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="examineItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="pushingDesignedItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="pushingLightItem" classname="EnhancedGameEngineTest" time="0.003"/>
   <testcase name="puttingContainedItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="transferCokeAfterDrinkFails" classname="EnhancedGameEngineTest" time="0.003"/>
   <testcase name="pullDesignedItem" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="messageAfterProgressStory" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="putInHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="messageAfterProgressStory" classname="EnhancedGameEngineTest" time="0.001"/>
+  <testcase name="drinkPenInContainerFails" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="putInHeavyItem" classname="EnhancedGameEngineTest" time="0.002"/>
   <testcase name="pullHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="takingMovingRoomsDropping" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="possibleItemNamesWorks" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="droppingItemThatYouDontHaveFails" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="takingMovingRoomsDropping" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="possibleItemNamesWorks" classname="EnhancedGameEngineTest" time="0.001"/>
+  <testcase name="eatBanana" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="droppingItemThatYouDontHaveFails" classname="EnhancedGameEngineTest" time="0.002"/>
   <testcase name="puttingNoDesignItemInContains" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="takingDesignedItem" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="cantTurnContainedItem" classname="EnhancedGameEngineTest" time="0.005"/>
+  <testcase name="takingDesignedItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="cantTurnContainedItem" classname="EnhancedGameEngineTest" time="0.003"/>
   <testcase name="pullLightItem" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="puttingRemovingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="numActionsProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="cantSearchContainedItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="removingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="puttingRemovingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="numActionsProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.001"/>
+  <testcase name="cantSearchContainedItem" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="removingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.001"/>
   <testcase name="puttingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8]]></system-err>
