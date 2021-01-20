@@ -1,4 +1,5 @@
 import com.enhanced.EnhancedGameDesignAction;
+import com.enhanced.FileErrorHandler;
 import com.enhanced.reasoning.*;
 import com.enhanced.reasoning.exceptions.*;
 import com.shared.*;
@@ -25,27 +26,27 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine implements Serializable {
-   private static final long serialVersionUID = 945796226650933506L;
+   private static final long serialVersionUID = -6641823063075230452L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
    // Implemented actions stuff
-   private static Map<ActionFormat, List<Condition>> implementedConditionsMap;
+/*   private static Map<ActionFormat, List<Condition>> implementedConditionsMap;
    private static Map<ActionFormat, String> implementedSuccessMessageMap;
-   private static Map<ActionFormat, List<KnowledgeUpdate>> implementedKnowledgeUpdateMap;
-   private static boolean firstError = true;
+   private static Map<ActionFormat, List<KnowledgeUpdate>> implementedKnowledgeUpdateMap;*/
+/*   private static boolean firstError = true;
    private static String errorLogHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
-   private static String errorLogFName = "error-log-game.txt";
+   private static String errorLogFName = "error-log-game.txt";*/
    private Map<String, Item> inventoryItems;
 
-   static {
+/*   static {
       // Initialize maps for implementedLogic
       implementedConditionsMap = new HashMap<>();
       implementedSuccessMessageMap = new HashMap<>();
       implementedKnowledgeUpdateMap = new HashMap<>();
 
-      /* PUT IN
+      *//* PUT IN
       --------
-       */
+       *//*
 
       {
          ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
@@ -73,14 +74,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
             implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
          } catch (KnowledgeException e) {
-            printExceptionToLog(e);
+            FileErrorHandler.printExceptionToLog(e);
          }
       }
 
 
-      /* PUT ON
+      *//* PUT ON
       --------
-       */
+       *//*
       {
          ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
          Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
@@ -93,9 +94,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          implementedSuccessMessageMap.put(putOn, "You push the _arg0.");
       }
 
-      /* REMOVE
+      *//* REMOVE
       --------
-       */
+       *//*
 
       {
          ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
@@ -122,13 +123,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             KnowledgeUpdate removeContained = new KnowledgeUpdate("_arg0::isContained := FALSE");
             implementedKnowledgeUpdateMap.put(remove, List.of(removePlusVolume, removeContains, removeContained));
          } catch (KnowledgeException e) {
-            printExceptionToLog(e);
+            FileErrorHandler.printExceptionToLog(e);
          }
       }
 
-      /* TAKE
+      *//* TAKE
       --------
-       */
+       *//*
 
       {
          ActionFormat take = new ActionFormat("take", null);
@@ -148,14 +149,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             KnowledgeUpdate takeInventory = new KnowledgeUpdate("world::inventory += _arg0");
             implementedKnowledgeUpdateMap.put(take, List.of(takeInventory));
          } catch (KnowledgeException e) {
-            printExceptionToLog(e);
+            FileErrorHandler.printExceptionToLog(e);
          }
       }
 
 
-      /* PUSH
+      *//* PUSH
       --------
-      */
+      *//*
       {
          ActionFormat push = new ActionFormat("push", null);
          Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
@@ -167,9 +168,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          implementedConditionsMap.put(push, List.of(pushConditionSolid, pushConditionNotContained, pushConditionMass));
          implementedSuccessMessageMap.put(push, "You push the _arg0.");
       }
-      /* PULL
+      *//* PULL
       --------
-      */
+      *//*
       {
          ActionFormat pull = new ActionFormat("pull", null);
          Condition pullConditionSolid = new Condition("_arg0::state = \"solid\"",
@@ -182,9 +183,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          implementedSuccessMessageMap.put(pull, "You pull the _arg0.");
       }
 
-      /* DROP
+      *//* DROP
       --------
-       */
+       *//*
       {
          ActionFormat drop = new ActionFormat("drop", null);
          Condition dropConditionTaken = new Condition("\"_arg0\" IN world::inventory",
@@ -195,13 +196,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             KnowledgeUpdate dropInventory = new KnowledgeUpdate("world::inventory -= _arg0");
             implementedKnowledgeUpdateMap.put(drop, List.of(dropInventory));
          } catch (KnowledgeException e) {
-            printExceptionToLog(e);
+            FileErrorHandler.printExceptionToLog(e);
          }
       }
 
-      /* TURN
+      *//* TURN
       --------
-       */
+       *//*
       {
          ActionFormat turn = new ActionFormat("turn", null);
          Condition turnConditionNotContained = new Condition("NOT _arg0::isContained",
@@ -212,9 +213,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          implementedSuccessMessageMap.put(turn, "You turn the _arg0.");
       }
       
-      /* search
+      *//* search
       --------
-       */
+       *//*
       {
          ActionFormat search = new ActionFormat("search", null);
          Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
@@ -225,9 +226,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          implementedSuccessMessageMap.put(search, "You search the _arg0.");
       }
 
-      /* search
+      *//* search
       --------
-       */
+       *//*
       {
          ActionFormat search = new ActionFormat("search", null);
          Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
@@ -239,7 +240,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
       
 
-   }
+   }*/
 
 
    public EnhancedGameEngine() {
@@ -333,13 +334,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          Map<String, Item> globalItems = this.globalItems();
          Set<Item> inventoryItems = inventory.stream().map(s -> globalItems.getOrDefault(s, null)).collect(Collectors.toSet());
          if (inventoryItems.contains(null)) {
-            printToErrorLog("Null in inventory items");
+            FileErrorHandler.printToErrorLog("Null in inventory items");
          }*/
       possibleItems.addAll(this.inventoryItems.values());
 
   /*    } catch (KnowledgeException | MissingKnowledgeException e) {
-         printToErrorLog("This should never happen because inventory is always defined.");
-         printExceptionToLog(e);
+         FileErrorHandler.printToErrorLog("This should never happen because inventory is always defined.");
+         FileErrorHandler.printExceptionToLog(e);
       }
    */
       return possibleItems;
@@ -350,7 +351,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       try {
          this.updateSingleKnowledgeBase(new KnowledgeUpdate(String.format("_world::room := \"%s\"", currentRoom.getName())));
       } catch (KnowledgeException e) {
-         printExceptionToLog(e);
+         FileErrorHandler.printExceptionToLog(e);
       }
    }
 
@@ -432,7 +433,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    private void updateRoomWithKnowledgeUpdate(@NotNull KnowledgeUpdate knowledgeUpdate) {
       if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
-         printToErrorLog("Treating non-setting as setting because this is current room");
+         FileErrorHandler.printToErrorLog("Treating non-setting as setting because this is current room");
       }
       Object moveTo;
       if (knowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
@@ -446,20 +447,20 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          try {
             moveTo = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException | MissingKnowledgeException e) {
-            printExceptionToLog(e);
-            printToErrorLog("Failed to move room");
+            FileErrorHandler.printExceptionToLog(e);
+            FileErrorHandler.printToErrorLog("Failed to move room");
             return;
          }
       }
       if (moveTo instanceof String) {
          boolean success = moveRoom((String) moveTo);
          if (!success) {
-            printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+            FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
                 " failed due to non-existent room name");
          }
       }
       else {
-         printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+         FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
              " failed due to wrong type in room");
       }
    }
@@ -469,7 +470,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       try {
          knowledgeBase.update(knowledgeUpdate);
       } catch (KnowledgeException | MissingKnowledgeException e) {
-         printExceptionToLog(e);
+         FileErrorHandler.printExceptionToLog(e);
          return;
       }
       if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
@@ -495,8 +496,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          try {
             item = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException | MissingKnowledgeException e) {
-            printExceptionToLog(e);
-            printToErrorLog("Failed to add inventory or subtract");
+            FileErrorHandler.printExceptionToLog(e);
+            FileErrorHandler.printToErrorLog("Failed to add inventory or subtract");
             return;
          }
       }
@@ -505,7 +506,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          if (knowledgeUpdate.getUpdateType() == UpdateType.ADD) {
             itemInRoom = currentRoom.getItems().stream().filter(i -> i.getName().equals(item)).findAny().orElse(null);
             if (itemInRoom == null) {
-               printToErrorLog(item + " is an invalid item that was attempted to be removed from inventory or added to.");
+               FileErrorHandler.printToErrorLog(item + " is an invalid item that was attempted to be removed from inventory or added to.");
                return;
             }
             this.inventoryItems.put(itemInRoom.getName(), itemInRoom);
@@ -517,15 +518,15 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
                currentRoom.addItem(returned);
             }
             else {
-               printToErrorLog("Tried to remove item not in inventory");
+               FileErrorHandler.printToErrorLog("Tried to remove item not in inventory");
             }
          }
-         else{
-            printToErrorLog("Wrong Update type when updating items for world");
+         else {
+            FileErrorHandler.printToErrorLog("Wrong Update type when updating items for world");
          }
       }
       else {
-         printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
+         FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
              " failed due to wrong type of item");
          return;
       }
@@ -558,12 +559,12 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          } catch (ParseCancellationException | KnowledgeException e) {
             valid = false;
             reasoning = "There was an error behind the scenes. Try performing another action.";
-            printExceptionToLog(e);
+            FileErrorHandler.printExceptionToLog(e);
             break;
          } catch (MissingKnowledgeException e) {
             valid = false;
             reasoning = e.getMissingString();
-            printExceptionToLog(e);
+            FileErrorHandler.printExceptionToLog(e);
             break;
          }
       }
@@ -596,10 +597,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       // If action is implemented
       List<String> nouns = gameAction.getArguments();
       Justification justification;
-      if (implementedConditionsMap.containsKey(actionFormat)) {
-         List<Condition> conditions = implementedConditionsMap.get(actionFormat);
-         String successMessage = implementedSuccessMessageMap.get(actionFormat);
-         List<KnowledgeUpdate> knowledgeUpdates = implementedKnowledgeUpdateMap.getOrDefault(actionFormat, new ArrayList<>());
+      if (ImplementedActionLogic.implementedConditionsMap.containsKey(actionFormat)) {
+         List<Condition> conditions = ImplementedActionLogic.implementedConditionsMap.get(actionFormat);
+         String successMessage = ImplementedActionLogic.implementedSuccessMessageMap.get(actionFormat);
+         List<KnowledgeUpdate> knowledgeUpdates = ImplementedActionLogic.implementedKnowledgeUpdateMap.getOrDefault(actionFormat, new ArrayList<>());
          justification = conditionallyPerformAction(conditions, nouns, successMessage, knowledgeUpdates);
       }
       else {
@@ -645,43 +646,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   private static void printToErrorLog(String s) {
-      try {
-         System.err.println("Writing error string to log");
-         File file = new File(errorLogFName);
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
-
-         Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);
-      } catch (IOException e) {
-         System.err.println("Couldn't write to error");
-         System.err.println(s);
-         e.printStackTrace();
-      }
-   }
-
-   private static void printExceptionToLog(Exception e) {
-      try {
-         System.err.println("Writing error to log");
-         File file = new File(errorLogFName);
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
-         FileWriter fw = new FileWriter(file, true);
-         PrintWriter pw = new PrintWriter(fw);
-         e.printStackTrace(pw);
-         Files.write(file.toPath(), (e.getMessage() + "\n").getBytes(), StandardOpenOption.APPEND);
-      } catch (IOException openException) {
-         System.err.println("Couldn't write to error");
-         e.printStackTrace();
-         openException.printStackTrace();
-      }
-   }
 
    @Override
    public String toString() {
@@ -696,8 +660,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    public boolean addParent(String child, String parent) {
       Map<String, SpecificFrame> specificFrameMap = this.knowledgeBase.getSpecificFrames();
       Map<String, GenericFrame> genericFrameMap = this.knowledgeBase.getGenericFrames();
-      if(specificFrameMap.containsKey(child)){
-         if(genericFrameMap.containsKey(parent)){
+      if (specificFrameMap.containsKey(child)) {
+         if (genericFrameMap.containsKey(parent)) {
             specificFrameMap.get(child).addParent(genericFrameMap.get(parent));
             return true;
          }

@@ -1,3 +1,4 @@
+import com.enhanced.FileErrorHandler;
 import com.nlp.FailedParseException;
 import com.shared.ActionFormat;
 import com.shared.InstantiatedGameAction;
@@ -49,7 +50,7 @@ public class GamePlayer extends JFrame {
    private JTextField input;
    private JTextArea history;
 
-   private void initializeJFrame(ActionMap actionMap){
+   private void initializeJFrame(ActionMap actionMap) {
       InputMap keyMap = new ComponentInputMap(input);
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
@@ -95,11 +96,11 @@ public class GamePlayer extends JFrame {
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText().trim();
             String sofar = history.getText();
-            if(gameEngine != null) {
+            if (gameEngine != null) {
                writeToTerminal(cmd, sofar, processCmd(cmd));
             }
-            else{
-               if(isReadableFile(cmd)){
+            else {
+               if (isReadableFile(cmd)) {
                   try {
                      FileInputStream fileIn = new FileInputStream(cmd);
                      ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -108,6 +109,7 @@ public class GamePlayer extends JFrame {
                      fileIn.close();
                      history.setText("> ");
                      input.setText("");
+                     FileErrorHandler.firstError = true;
                   } catch (IOException i) {
                      writeToTerminal(cmd, sofar, "Something went wrong when opening the file. Try again.");
                      i.printStackTrace();
@@ -116,7 +118,7 @@ public class GamePlayer extends JFrame {
                      c.printStackTrace();
                   }
                }
-               else{
+               else {
                   writeToTerminal(cmd, sofar, "That isn't a valid readable file in your file system. Try again.");
                }
             }
@@ -132,7 +134,7 @@ public class GamePlayer extends JFrame {
             input.setText(cmd);
          }
       });
-      
+
       initializeJFrame(actionMap);
 
    }
@@ -155,7 +157,7 @@ public class GamePlayer extends JFrame {
    }
 
    private String processCmd(String cmd) {
-      if(cmd.equals("quit")){
+      if (cmd.equals("quit")) {
          System.exit(0);
       }
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();

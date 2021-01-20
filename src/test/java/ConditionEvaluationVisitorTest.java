@@ -107,7 +107,7 @@ public class ConditionEvaluationVisitorTest {
       assertTrue(result);
    }
 
-      @Test
+   @Test
    public void stringInequalitySuccess() throws KnowledgeException, MissingKnowledgeException {
       String expression = "\"aaa!!!\" > \"bbbAAA\"";
       KnowledgeBase kb = new KnowledgeBase();
@@ -316,7 +316,8 @@ public class ConditionEvaluationVisitorTest {
       kb.addSpecificFrame(s);
 
       exceptionRule.expect(KnowledgeException.class);
-      exceptionRule.expectMessage("Error when parsing expression \"Test91::Ural1 = \"banana\"\". Couldn't cast the result of query for frame: Test91, slot: Ural1 - true - to String");
+      exceptionRule.expectMessage("Error when parsing expression \"Test91::Ural1 = \"banana\"\"." +
+          " Couldn't cast the result of query for frame: Test91, slot: Ural1 - true (java.lang.Boolean) - to String");
       Boolean result = produceBooleanResult(kb, expression);
    }
 
@@ -333,7 +334,7 @@ public class ConditionEvaluationVisitorTest {
       kb.addSpecificFrame(s2);
 
       exceptionRule.expect(KnowledgeException.class);
-      exceptionRule.expectMessage("Error when parsing expression \"Test92::Ural12 >= 4.0\". Couldn't cast the result of query for frame: Test92, slot: Ural12 - hello - to Double");
+      exceptionRule.expectMessage("Error when parsing expression \"Test92::Ural12 >= 4.0\". Couldn't cast the result of query for frame: Test92, slot: Ural12 - hello (java.lang.String) - to Double");
       Boolean result = produceBooleanResult(kb, expression);
    }
 
@@ -387,6 +388,7 @@ public class ConditionEvaluationVisitorTest {
       Boolean result = produceBooleanResult(kb, expression);
       assertTrue(result);
    }
+
    // TODO : TEST DOUBLE IDENTIFEIR THING MORE THOROUGHLY
    @Test
    public void twoIdentifierNonBoolComparatorDoubles() throws KnowledgeException, MissingKnowledgeException {
