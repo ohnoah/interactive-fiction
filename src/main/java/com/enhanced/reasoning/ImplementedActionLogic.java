@@ -224,7 +224,7 @@ public class ImplementedActionLogic implements Serializable {
       {
          ActionFormat turn = new ActionFormat("turn", null);
          Condition turnConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is inside of something else.");
+             "You can't turn the _arg0 because it is inside of something else.");
          Condition turnConditionSolid = new Condition("_arg0::state = \"solid\"",
              "You can't turn the _arg0 because it's not solid.");
          implementedConditionsMap.put(turn, List.of(turnConditionNotContained, turnConditionSolid));
@@ -237,7 +237,7 @@ public class ImplementedActionLogic implements Serializable {
       {
          ActionFormat search = new ActionFormat("search", null);
          Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is inside of something else.");
+             "You can't search the _arg0 because it is inside of something else.");
          Condition searchConditionSolid = new Condition("_arg0::state = \"solid\"",
              "You can't search the _arg0 because it's not solid.");
          implementedConditionsMap.put(search, List.of(searchConditionNotContained, searchConditionSolid));
@@ -273,11 +273,15 @@ public class ImplementedActionLogic implements Serializable {
       GenericFrame massive = new GenericFrame("massive");
       GenericFrame voluminous = new GenericFrame("voluminous");
       GenericFrame takeable = new GenericFrame("takeable");
+      GenericFrame edible = new GenericFrame("edible");
+      GenericFrame drinkable = new GenericFrame("drinkable");
       // DEFAULT
       nonContainer.addSlots(Map.of("isContained", false,
           "isContainer", false,
           "state", "solid",
-          "isTakeable", false
+          "isTakeable", false,
+          "isEdible", false,
+          "isDrinkable", false
       ));
       container.addSlots(Map.of("isContained", false,
           "isContainer", true,
@@ -288,7 +292,9 @@ public class ImplementedActionLogic implements Serializable {
       massive.addSlot("mass", 50.0);
       voluminous.addSlot("volume", 50.0);
       takeable.addSlot("isTakeable", true);
-      defaultGenericFrames = List.of(nonContainer, container, massive, voluminous, takeable);
+      edible.addSlots(Map.of("isEdible", true));
+      drinkable.addSlots(Map.of("isDrinkable", true));
+      defaultGenericFrames = List.of(nonContainer, container, massive, voluminous, takeable, edible, drinkable);
    }
 
 }

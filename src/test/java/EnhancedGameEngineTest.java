@@ -115,7 +115,7 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
 
       Room room1 = new Room("Taking Room");
-      room1.setItemsNoAdjectives(Set.of("box", "bucket", "pen", "apple", "ball"));
+      room1.setItemsNoAdjectives(Set.of("box", "banana", "bucket", "pen", "apple", "ball"));
 
       enhancedGameEngine.addRoom(room1);
       enhancedGameEngine.setCurrentRoom(room1);
@@ -155,6 +155,7 @@ public class EnhancedGameEngineTest {
       boolean worked5 = enhancedGameEngine.addParent("box", "takeable");
       boolean worked6 = enhancedGameEngine.addParent("mouse", "takeable");
       boolean worked7 = enhancedGameEngine.addParent("keys", "takeable");
+      boolean worked8 = enhancedGameEngine.addParent("banana", "edible");
       assert (worked && worked1 && worked2 && worked3 && worked4 && worked5 && worked6 && worked7);
 
       enhancedGameEngine.updateKnowledgeBase(
@@ -688,6 +689,93 @@ public class EnhancedGameEngineTest {
       assertEquals("The bucket is too heavy for you to put on the box.", message);
       assertFalse(justification.isAccepted());
    }
-   // TODO: Test EAT, DRINK, TRANSFER, TURN; SEARCH, EXAMINE, LISTEN TO
+
+   @Test
+   public void turnItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat turn = enhancedGameEngine.findAction("turn").get(0);
+      InstantiatedGameAction putOnGameAction = new InstantiatedGameAction(turn, List.of("box"));
+      Justification justification = enhancedGameEngine.progressStory(putOnGameAction);
+      String message = justification.getReasoning();
+      assertEquals("You turn the box. Nothing important happens.", message);
+      assertTrue(justification.isAccepted());
+   }
+
+   @Test
+   public void cantTurnContainedItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat turn = enhancedGameEngine.findAction("turn").get(0);
+      ActionFormat putIn = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction putInGameAction = new InstantiatedGameAction(putIn, List.of("ball", "box"));
+      InstantiatedGameAction turnGameAction = new InstantiatedGameAction(turn, List.of("ball"));
+      Justification justification1 = enhancedGameEngine.progressStory(putInGameAction);
+      Justification justification2 = enhancedGameEngine.progressStory(turnGameAction);
+      String message = justification2.getReasoning();
+      assertEquals("You can't turn the ball because it is inside of something else.", message);
+      assertFalse(justification2.isAccepted());
+   }
+
+   @Test
+   public void examineItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat examineAction = enhancedGameEngine.findAction("examine").get(0);
+      InstantiatedGameAction examineGameAction = new InstantiatedGameAction(examineAction, List.of("box"));
+      Justification justification = enhancedGameEngine.progressStory(examineGameAction);
+      String message = justification.getReasoning();
+      assertEquals("You examine the box but find nothing of interest.", message);
+      assertTrue(justification.isAccepted());
+   }
+
+   @Test
+   public void cantExamineContainedItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat examine = enhancedGameEngine.findAction("examine").get(0);
+      ActionFormat putIn = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction putInGameAction = new InstantiatedGameAction(putIn, List.of("ball", "box"));
+      InstantiatedGameAction turnGameAction = new InstantiatedGameAction(examine, List.of("ball"));
+      Justification justification1 = enhancedGameEngine.progressStory(putInGameAction);
+      Justification justification2 = enhancedGameEngine.progressStory(turnGameAction);
+      String message = justification2.getReasoning();
+      assertEquals("You can't examine the ball because it is inside of something else.", message);
+      assertFalse(justification2.isAccepted());
+   }
+
+   @Test
+   public void searchItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat searchAction = enhancedGameEngine.findAction("search").get(0);
+      InstantiatedGameAction searchGameAction = new InstantiatedGameAction(searchAction, List.of("box"));
+      Justification justification = enhancedGameEngine.progressStory(searchGameAction);
+      String message = justification.getReasoning();
+      assertEquals("You search the box but find nothing of interest.", message);
+      assertTrue(justification.isAccepted());
+   }
+
+   @Test
+   public void cantSearchContainedItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat search = enhancedGameEngine.findAction("search").get(0);
+      ActionFormat putIn = enhancedGameEngine.findAction("put").get(0);
+      InstantiatedGameAction putInGameAction = new InstantiatedGameAction(putIn, List.of("ball", "box"));
+      InstantiatedGameAction turnGameAction = new InstantiatedGameAction(search, List.of("ball"));
+      Justification justification1 = enhancedGameEngine.progressStory(putInGameAction);
+      Justification justification2 = enhancedGameEngine.progressStory(turnGameAction);
+      String message = justification2.getReasoning();
+      assertEquals("You can't search the ball because it is inside of something else.", message);
+      assertFalse(justification2.isAccepted());
+   }
+
+   @Test
+   public void listenToItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat listen = enhancedGameEngine.findAction("listen").get(0);
+      InstantiatedGameAction listenGameAction = new InstantiatedGameAction(listen, List.of("box"));
+      Justification justification = enhancedGameEngine.progressStory(listenGameAction);
+      String message = justification.getReasoning();
+      assertEquals("You listen to the box but hear nothing of interest.", message);
+      assertTrue(justification.isAccepted());
+   }
+
+   // TODO: Test EAT, DRINK, TRANSFER
 
 }
