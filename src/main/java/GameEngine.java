@@ -61,7 +61,7 @@ public abstract class GameEngine implements Serializable {
       // you could also try
       ActionFormat eat = new ActionFormat("eat");
       ActionFormat climb = new ActionFormat("climb");
-      ActionFormat drink = new ActionFormat("drink");
+      ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");
       ActionFormat wave = new ActionFormat("wave");
 /*      ActionFormat fill = new ActionFormat("fill"); // TODO: potentially transfer*/
       ActionFormat wear = new ActionFormat("wear");
