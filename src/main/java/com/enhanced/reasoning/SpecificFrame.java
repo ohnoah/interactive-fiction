@@ -56,7 +56,12 @@ public class SpecificFrame implements Serializable {
    }
 
    public void updateFiller(@NotNull String slotName, @NotNull Object filler) {
-      slots.put(slotName, filler);
+      if (filler instanceof List) { // List is the only mutable type we store and must take precautions here
+         this.slots.put(slotName, new ArrayList<>((List) filler));
+      }
+      else {
+         this.slots.put(slotName, filler);
+      }
    }
 
 

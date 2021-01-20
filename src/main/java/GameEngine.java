@@ -1,3 +1,4 @@
+import com.enhanced.reasoning.Justification;
 import com.shared.ActionFormat;
 import com.shared.InstantiatedGameAction;
 import com.shared.Item;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class GameEngine implements Serializable {
 
+   private static final long serialVersionUID = 7461911140383910005L;
    private List<ActionFormat> possibleActionFormats;
    protected List<Room> worldRooms;
    protected Room currentRoom;
@@ -61,7 +63,7 @@ public abstract class GameEngine implements Serializable {
       ActionFormat climb = new ActionFormat("climb");
       ActionFormat drink = new ActionFormat("drink");
       ActionFormat wave = new ActionFormat("wave");
-      ActionFormat fill = new ActionFormat("fill"); // TODO: potentially transfer
+/*      ActionFormat fill = new ActionFormat("fill"); // TODO: potentially transfer*/
       ActionFormat wear = new ActionFormat("wear");
       ActionFormat smell = new ActionFormat("smell");
       ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
@@ -72,14 +74,15 @@ public abstract class GameEngine implements Serializable {
       ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
       // Noah's own
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
+      ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
 
       this.possibleActionFormats = List.of(examine, push, take, pull, drop, turn, open, feel, putIn,
-          putOn, eat, climb, drink, wave, fill, wear, smell, listenTo, breakIt, burn, enter, search, unlockWith, remove);
+          putOn, eat, climb, drink, wave, /*fill,*/ wear, smell, listenTo, breakIt, burn, enter, search, unlockWith, remove, transfer);
    }
 
    public abstract Set<Item> possibleItems();
 
-   public abstract String progressStory(@NotNull InstantiatedGameAction gameAction);
+   public abstract Justification progressStory(@NotNull InstantiatedGameAction gameAction);
 
    public List<ActionFormat> findAction(@NotNull String trigger) {
       return possibleActionFormats.stream()

@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 
 
 import com.basic.BasicGameDesignAction;
+import com.enhanced.reasoning.Justification;
 import com.shared.ActionFormat;
 import com.shared.InstantiatedGameAction;
 import com.shared.Item;
@@ -88,8 +89,10 @@ public class BasicGameEngineTest {
       BasicGameEngine basicGameEngine = oneRoomOneAction();
       ActionFormat actionFormat = new ActionFormat("eat");
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
-      String message = basicGameEngine.progressStory(instantiatedGameAction);
+      Justification justification = basicGameEngine.progressStory(instantiatedGameAction);
+      String message = justification.getReasoning();
       assertEquals(message, "You did action 1");
+      assertTrue(justification.isAccepted());
    }
    @Test
    public void validatePreconditionAfterProgressStory(){
@@ -109,14 +112,17 @@ public class BasicGameEngineTest {
       BasicGameEngine basicGameEngine = twoRoomTwoActions();
       ActionFormat openActionFormat = new ActionFormat("open");
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
-      String messageOpen = basicGameEngine.progressStory(openGameAction);
+      Justification justificationOpen = basicGameEngine.progressStory(openGameAction);
+      String messageOpen = justificationOpen.getReasoning();
 
       ActionFormat eatActionFormat = new ActionFormat("eat");
       InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of("elephant"));
 
-      String messageEat = basicGameEngine.progressStory(eatGameAction);
+      Justification justificationEat = basicGameEngine.progressStory(eatGameAction);
+      String messageEat = justificationEat.getReasoning();
 
       assertEquals(List.of("You did action 1", "You did action 2"), List.of(messageOpen, messageEat));
+      assertTrue(justificationOpen.isAccepted()); assertTrue(justificationEat.isAccepted());
    }
 
    @Test

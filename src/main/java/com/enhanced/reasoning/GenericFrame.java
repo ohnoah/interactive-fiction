@@ -1,7 +1,9 @@
 package com.enhanced.reasoning;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +21,9 @@ public class GenericFrame implements Serializable {
    }
 
    public void addSlots(Map<String, Object> slots) {
-      this.slots.putAll(slots);
+      for (Map.Entry<String, Object> entry : slots.entrySet()) {
+         this.slots.put(entry.getKey(), entry.getValue());
+      }
    }
 
    public void addSlot(String slot, Object filler) {

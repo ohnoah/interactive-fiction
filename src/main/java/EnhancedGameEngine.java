@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine implements Serializable {
+
    private static final long serialVersionUID = -6641823063075230452L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
@@ -44,7 +45,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       // ADD parents here
       {
-         GenericFrame nonContainer = new GenericFrame("nonContainer");
+/*         GenericFrame nonContainer = new GenericFrame("nonContainer");
          GenericFrame container = new GenericFrame("container");
          GenericFrame massive = new GenericFrame("massive");
          GenericFrame voluminous = new GenericFrame("voluminous");
@@ -63,12 +64,15 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          ));
          massive.addSlot("mass", 50.0);
          voluminous.addSlot("volume", 50.0);
-         takeable.addSlot("isTakeable", true);
-         knowledgeBase.addGenericFrame(nonContainer);
+         takeable.addSlot("isTakeable", true);*/
+         for(GenericFrame g : ImplementedActionLogic.defaultGenericFrames){
+            knowledgeBase.addGenericFrame(g);
+         }
+/*         knowledgeBase.addGenericFrame(nonContainer);
          knowledgeBase.addGenericFrame(container);
          knowledgeBase.addGenericFrame(massive);
          knowledgeBase.addGenericFrame(voluminous);
-         knowledgeBase.addGenericFrame(takeable);
+         knowledgeBase.addGenericFrame(takeable);*/
       }
 
    }
@@ -80,33 +84,36 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       else if (message.contains("You listen")) {
          return message.substring(0, message.length() - 1) + " but hear nothing of interest.";
       }
+      else if (message.contains("You examine") || message.contains("You search")) {
+         return message.substring(0, message.length() - 1) + " but find nothing of interest.";
+      }
       return message + " Nothing important happens.";
    }
 
    @Override
-   public String progressStory(@NotNull InstantiatedGameAction gameAction) {
+   public Justification progressStory(@NotNull InstantiatedGameAction gameAction) {
       String message = "";
       // if it returns a healthy String message, prepend that and let the GameDesignAction continue
 
       Justification implJust = performImplementedLogic(gameAction);
       message = capitalize(implJust.getReasoning());
       if (!implJust.isAccepted()) { // Implemented but fails
-         return implJust.getReasoning();
+         return implJust;
       }
       // Then check the GameDesignActions and prepend another message
       EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignAction(gameAction, currentRoom);
 
       if (enhancedGameDesignAction == null) {
          if (message.equals("")) { // It's not an implemented action
-            return "You can't do that right now";
+            return new Justification(false, "You can't do that right now");
          }
-         else { // It's implemented but not designed
-            return notDesignedImplementedFollow(message);
+         else { // It's implemented and succeeds but not designed
+            return new Justification(true, notDesignedImplementedFollow(message));
          }
       }
       Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);
       message += capitalize(designJust.getReasoning());
-      return message.trim();
+      return new Justification(true, message.trim());
    }
 
    public KnowledgeBase getKnowledgeBase() {

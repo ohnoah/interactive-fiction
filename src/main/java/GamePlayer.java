@@ -1,4 +1,5 @@
 import com.enhanced.FileErrorHandler;
+import com.enhanced.reasoning.Justification;
 import com.nlp.FailedParseException;
 import com.shared.ActionFormat;
 import com.shared.InstantiatedGameAction;
@@ -168,7 +169,8 @@ public class GamePlayer extends JFrame {
       } catch (FailedParseException e) {
          return e.getMessage();
       }
-      String gameMessage = gameEngine.progressStory(gameAction);
+      Justification justification = gameEngine.progressStory(gameAction);
+      String gameMessage = justification.getReasoning();
 
       return gameMessage;
    }
