@@ -77,6 +77,9 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       if (message.contains("You pull") || message.contains("You push")) {
          return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you put it back.";
       }
+      else if (message.contains("You listen")) {
+         return message.substring(0, message.length() - 1) + " but hear nothing of interest.";
+      }
       return message + " Nothing important happens.";
    }
 
