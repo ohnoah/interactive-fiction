@@ -14,18 +14,23 @@ public class FileErrorHandler {
    private static String errorLogHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
    private static String errorLogFName = "error-log.txt";
 
+   private static File loadFile() throws IOException {
+      System.err.println("----------Writing error to log-----------");
+      System.err.println("-----------------------------------------");
+      System.err.println("-----------------------------------------");
+      System.err.println("-----------------------------------------");
+      File file = new File(errorLogFName);
+      file.createNewFile();
+      if (firstError) {
+         Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
+      }
+      firstError = false;
+      return file;
+   }
+
    public static void printExceptionToLog(Exception e) {
       try {
-         System.err.println("----------Writing error to log-----------");
-         System.err.println("-----------------------------------------");
-         System.err.println("-----------------------------------------");
-         System.err.println("-----------------------------------------");
-         File file = new File(errorLogFName);
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
+         File file = loadFile();
          FileWriter fw = new FileWriter(file, true);
          PrintWriter pw = new PrintWriter(fw);
          e.printStackTrace(pw);
@@ -37,19 +42,10 @@ public class FileErrorHandler {
       }
    }
 
+
    public static void printToErrorLog(String s) {
       try {
-         System.err.println("----------Writing error to log-----------");
-         System.err.println("-----------------------------------------");
-         System.err.println("-----------------------------------------");
-         System.err.println("-----------------------------------------");
-         File file = new File(errorLogFName);
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorLogHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
-
+         File file = loadFile();
          Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);
       } catch (IOException e) {
          System.err.println("Couldn't write to error");
