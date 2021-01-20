@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 
 import com.enhanced.EnhancedGameDesignAction;
 import com.enhanced.reasoning.Condition;
+import com.enhanced.reasoning.Justification;
 import com.enhanced.reasoning.KnowledgeUpdate;
 import com.enhanced.reasoning.exceptions.KnowledgeException;
 import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
@@ -186,8 +187,10 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
       ActionFormat actionFormat = enhancedGameEngine.findAction("eat").get(0);
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of("apple"));
-      String message = enhancedGameEngine.progressStory(instantiatedGameAction);
+      Justification justification = enhancedGameEngine.progressStory(instantiatedGameAction);
+      String message = justification.getReasoning();
       assertEquals("You did action 1 in enhanced.", message);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
@@ -206,14 +209,18 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
       ActionFormat openActionFormat = new ActionFormat("open");
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of("banana"));
-      String messageOpen = enhancedGameEngine.progressStory(openGameAction);
+      Justification justificationOpen = enhancedGameEngine.progressStory(openGameAction);
+      String messageOpen = justificationOpen.getReasoning();
 
       ActionFormat eatActionFormat = enhancedGameEngine.findAction("eat").get(0);
       InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of("elephant"));
 
-      String messageEat = enhancedGameEngine.progressStory(eatGameAction);
+      Justification justificationEat = enhancedGameEngine.progressStory(eatGameAction);
+      String messageEat = justificationEat.getReasoning();
 
       assertEquals(List.of("You did action 1.", "You did action 2 number 1."), List.of(messageOpen, messageEat));
+      assertTrue(justificationOpen.isAccepted());
+      assertTrue(justificationEat.isAccepted());
    }
 
    @Test
@@ -272,8 +279,10 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
-      String message = enhancedGameEngine.progressStory(openGameAction);
+      Justification justification = enhancedGameEngine.progressStory(openGameAction);
+      String message = justification.getReasoning();
       assertEquals("You put the pen in the box. Nothing important happens.", message);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
@@ -317,10 +326,14 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
       InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
-      String messagePen = enhancedGameEngine.progressStory(openGameActionPen);
-      String messagePen2 = enhancedGameEngine.progressStory(openGameActionPen);
+      Justification justificationPen = enhancedGameEngine.progressStory(openGameActionPen);
+      Justification justificationPen2 = enhancedGameEngine.progressStory(openGameActionPen);
+      String messagePen = justificationPen.getReasoning();
+      String messagePen2 = justificationPen2.getReasoning();
       assertEquals("You put the pen in the box. Nothing important happens.", messagePen);
       assertEquals("The pen is already inside of something.", messagePen2);
+      assertTrue(justificationPen.isAccepted());
+      assertFalse(justificationPen2.isAccepted());
    }
 
    @Test
@@ -330,10 +343,14 @@ public class EnhancedGameEngineTest {
       ActionFormat puttingAf2 = enhancedGameEngine.findAction("put").get(0);
       InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
       InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf2, List.of("apple", "box"));
-      String messagePen = enhancedGameEngine.progressStory(openGameActionPen);
-      String messageApple = enhancedGameEngine.progressStory(openGameActionApple);
+      Justification justificationPen = enhancedGameEngine.progressStory(openGameActionPen);
+      String messagePen = justificationPen.getReasoning();
+      Justification justificationApple = enhancedGameEngine.progressStory(openGameActionApple);
+      String messageApple = justificationApple.getReasoning();
       assertEquals("You put the pen in the box. Nothing important happens.", messagePen);
       assertEquals("You put the apple in the box. Nothing important happens.", messageApple);
+      assertTrue(justificationPen.isAccepted());
+      assertTrue(justificationApple.isAccepted());
    }
 
    @Test
@@ -385,24 +402,30 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
       InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "box"));
       InstantiatedGameAction openGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "box"));
-      String messagePen = enhancedGameEngine.progressStory(openGameActionPen);
-      String messageApple = enhancedGameEngine.progressStory(openGameActionApple);
-      String messageBall = enhancedGameEngine.progressStory(openGameActionBall);
+      Justification justificationPen = enhancedGameEngine.progressStory(openGameActionPen);
+      String messagePen = justificationPen.getReasoning();
+      Justification justificationApple = enhancedGameEngine.progressStory(openGameActionApple);
+      String messageApple = justificationApple.getReasoning();
+      Justification justificationBall = enhancedGameEngine.progressStory(openGameActionBall);
+      String messageBall = justificationBall.getReasoning();
       assertEquals("You put the pen in the box. Nothing important happens.", messagePen);
       assertEquals("You put the apple in the box. Nothing important happens.", messageApple);
       assertEquals("The box is not big enough to contain the ball.", messageBall);
+      assertTrue(justificationPen.isAccepted());
+      assertTrue(justificationApple.isAccepted());
+      assertFalse(justificationBall.isAccepted());
    }
 
    @Test
    public void puttingThirdItemNoDesignTooBigIsContained() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = puttingNoDesignRoom();
       ActionFormat puttingAf = enhancedGameEngine.findAction("put").get(0);
-      InstantiatedGameAction openGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
-      InstantiatedGameAction openGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "box"));
-      InstantiatedGameAction openGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "box"));
-      enhancedGameEngine.progressStory(openGameActionPen);
-      enhancedGameEngine.progressStory(openGameActionApple);
-      enhancedGameEngine.progressStory(openGameActionBall);
+      InstantiatedGameAction putGameActionPen = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
+      InstantiatedGameAction putGameActionApple = new InstantiatedGameAction(puttingAf, List.of("apple", "box"));
+      InstantiatedGameAction putGameActionBall = new InstantiatedGameAction(puttingAf, List.of("ball", "box"));
+      enhancedGameEngine.progressStory(putGameActionPen);
+      enhancedGameEngine.progressStory(putGameActionApple);
+      enhancedGameEngine.progressStory(putGameActionBall);
       String postCondition = "NOT ball::isContained";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
@@ -447,8 +470,10 @@ public class EnhancedGameEngineTest {
       ActionFormat removeAf = enhancedGameEngine.findAction("remove").get(0);
       InstantiatedGameAction removeGameAction = new InstantiatedGameAction(removeAf, List.of("pen", "box"));
       enhancedGameEngine.progressStory(putGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(removeGameAction);
+      String message = justification.getReasoning();
       assertEquals("You removed the pen from the box. Nothing important happens.", message);
+      assertTrue(justification.isAccepted());
    }
 
 
@@ -459,8 +484,8 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction putGameAction = new InstantiatedGameAction(puttingAf, List.of("pen", "box"));
       ActionFormat removeAf = enhancedGameEngine.findAction("remove").get(0);
       InstantiatedGameAction removeGameAction = new InstantiatedGameAction(removeAf, List.of("pen", "box"));
-      enhancedGameEngine.progressStory(putGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      String putMessage = enhancedGameEngine.progressStory(putGameAction).getReasoning();
+      String removeMessage = enhancedGameEngine.progressStory(removeGameAction).getReasoning();
       String postCondition = "box::internalVolume = 10.0 AND box::contains IS [] AND NOT pen::isContained";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
@@ -472,8 +497,10 @@ public class EnhancedGameEngineTest {
       ActionFormat removeAf = enhancedGameEngine.findAction("remove").get(0);
       InstantiatedGameAction removeGameAction = new InstantiatedGameAction(removeAf, List.of("pen", "box"));
       enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(removeGameAction);
+      String message = justification.getReasoning();
       assertEquals("The pen is not inside of anything.", message);
+      assertFalse(justification.isAccepted());
    }
 
    @Test
@@ -485,8 +512,10 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.progressStory(takeGameAction);
       assert (enhancedGameEngine.conditionSucceeds("\"pen\" IN world::inventory"));
 
-      String message = enhancedGameEngine.progressStory(takeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(takeGameAction);
+      String message = justification.getReasoning();
       assertEquals("The pen is already on your person.", message);
+      assertFalse(justification.isAccepted());
    }
 
    @Test
@@ -496,8 +525,10 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("pen"));
       assert (enhancedGameEngine.conditionSucceeds("NOT \"pen\" IN world::inventory"));
 
-      String message = enhancedGameEngine.progressStory(takeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(takeGameAction);
+      String message = justification.getReasoning();
       assertEquals("You take the pen. Nothing important happens.", message);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
@@ -505,8 +536,10 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat take = enhancedGameEngine.findAction("take").get(0);
       InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("ball"));
-      String message = enhancedGameEngine.progressStory(takeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(takeGameAction);
+      String message = justification.getReasoning();
       assertEquals("You take the ball. Well done. You did it.", message);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
@@ -514,8 +547,10 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat take = enhancedGameEngine.findAction("take").get(0);
       InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("box"));
-      String message = enhancedGameEngine.progressStory(takeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(takeGameAction);
+      String message = justification.getReasoning();
       assertEquals("The box is too heavy for you to carry.", message);
+      assertFalse(justification.isAccepted());
    }
 
    @Test
@@ -523,18 +558,25 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat take = enhancedGameEngine.findAction("take").get(0);
       InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("ball"));
-      String message = enhancedGameEngine.progressStory(takeGameAction);
+      Justification justification = enhancedGameEngine.progressStory(takeGameAction);
+      String message = justification.getReasoning();
       assertEquals("You take the ball. Well done. You did it.", message);
       assertFalse(enhancedGameEngine.findRoom("Taking Room").get(0).getItems().contains(new Item("ball")));
+      assertTrue(justification.isAccepted());
 
       ActionFormat open = enhancedGameEngine.findAction("open").get(0);
       InstantiatedGameAction moveRoomAction = new InstantiatedGameAction(open, List.of("ball"));
-      String message2 = enhancedGameEngine.progressStory(moveRoomAction);
+      Justification justification2 = enhancedGameEngine.progressStory(moveRoomAction);
+      String message2 = justification2.getReasoning();
+      assertTrue(justification2.isAccepted());
 
       assertEquals("Well done. You did it.", message2);
       ActionFormat drop = enhancedGameEngine.findAction("drop").get(0);
       InstantiatedGameAction dropAction = new InstantiatedGameAction(drop, List.of("ball"));
-      String message3 = enhancedGameEngine.progressStory(dropAction);
+      Justification justification3 = enhancedGameEngine.progressStory(dropAction);
+      String message3 = justification3.getReasoning();
+      assertTrue(justification3.isAccepted());
+
       assertEquals("You drop the ball next to you. Nothing important happens.", message3);
       assertFalse(enhancedGameEngine.findRoom("Taking Room").get(0).getItems().contains(new Item("ball")));
       assertTrue(enhancedGameEngine.findRoom("Other Room").get(0).getItems().contains(new Item("ball")));
@@ -546,7 +588,8 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat drop = enhancedGameEngine.findAction("drop").get(0);
       InstantiatedGameAction dropAction = new InstantiatedGameAction(drop, List.of("pen"));
-      String message = enhancedGameEngine.progressStory(dropAction);
+      Justification justification = enhancedGameEngine.progressStory(dropAction);
+      String message = justification.getReasoning();
       assertEquals("You can't drop the pen because you haven't picked it up.", message);
    }
 
@@ -555,30 +598,36 @@ public class EnhancedGameEngineTest {
    public void pushingLightItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat push = enhancedGameEngine.findAction("push").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(push, List.of("pen"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction pushGameAction = new InstantiatedGameAction(push, List.of("pen"));
+      enhancedGameEngine.progressStory(pushGameAction);
+      Justification justification = enhancedGameEngine.progressStory(pushGameAction);
+      String message = justification.getReasoning();
       assertEquals("You push the pen slightly but nothing interesting happens so you put it back.", message);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
    public void pushingHeavyItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat push = enhancedGameEngine.findAction("push").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(push, List.of("box"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction pushGameAction = new InstantiatedGameAction(push, List.of("box"));
+      enhancedGameEngine.progressStory(pushGameAction);
+      Justification justification = enhancedGameEngine.progressStory(pushGameAction);
+      String message = justification.getReasoning();
       assertEquals("The box is too heavy for you to push.", message);
+      assertFalse(justification.isAccepted());
    }
 
    @Test
    public void pushingDesignedItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat push = enhancedGameEngine.findAction("push").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(push, List.of("ball"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction pushGameAction = new InstantiatedGameAction(push, List.of("ball"));
+      enhancedGameEngine.progressStory(pushGameAction);
+      Justification justification = enhancedGameEngine.progressStory(pushGameAction);
+      String message = justification.getReasoning();
       assertEquals("You push the ball. Well done. You did it.", message);
+      assertTrue(justification.isAccepted());
    }
 
 
@@ -586,30 +635,35 @@ public class EnhancedGameEngineTest {
    public void pullLightItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat pull = enhancedGameEngine.findAction("pull").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(pull, List.of("pen"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction pullGameAction = new InstantiatedGameAction(pull, List.of("pen"));
+      enhancedGameEngine.progressStory(pullGameAction);
+      Justification justification = enhancedGameEngine.progressStory(pullGameAction);
+      String message = justification.getReasoning();
       assertEquals("You pull the pen slightly but nothing interesting happens so you put it back.", message);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
    public void pullHeavyItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat pull = enhancedGameEngine.findAction("pull").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(pull, List.of("box"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction pullGameAction = new InstantiatedGameAction(pull, List.of("box"));
+      Justification justification = enhancedGameEngine.progressStory(pullGameAction);
+      String message = justification.getReasoning();
       assertEquals("The box is too heavy for you to pull.", message);
+      assertFalse(justification.isAccepted());
    }
+
 
    @Test
    public void pullDesignedItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat pull = enhancedGameEngine.findAction("pull").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(pull, List.of("ball"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction pullGameAction = new InstantiatedGameAction(pull, List.of("ball"));
+      Justification justification = enhancedGameEngine.progressStory(pullGameAction);
+      String message = justification.getReasoning();
       assertEquals("You pull the ball. Well done. You did it.", message);
+      assertTrue(justification.isAccepted());
    }
 
 
@@ -617,20 +671,23 @@ public class EnhancedGameEngineTest {
    public void putInHeavyItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat putIn = enhancedGameEngine.findAction("put").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(putIn, List.of("bucket", "box"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction putInGameAction = new InstantiatedGameAction(putIn, List.of("bucket", "box"));
+      Justification justification = enhancedGameEngine.progressStory(putInGameAction);
+      String message = justification.getReasoning();
       assertEquals("The bucket is too heavy for you to put in the box.", message);
+      assertFalse(justification.isAccepted());
    }
 
    @Test
    public void putOnHeavyItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat putOn = enhancedGameEngine.findAction("put").get(1);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(putOn, List.of("bucket", "box"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction putOnGameAction = new InstantiatedGameAction(putOn, List.of("bucket", "box"));
+      Justification justification = enhancedGameEngine.progressStory(putOnGameAction);
+      String message = justification.getReasoning();
       assertEquals("The bucket is too heavy for you to put on the box.", message);
+      assertFalse(justification.isAccepted());
    }
+   // TODO: Test EAT, DRINK, TRANSFER, TURN; SEARCH, EXAMINE, LISTEN TO
 
 }

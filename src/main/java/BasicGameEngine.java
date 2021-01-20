@@ -1,4 +1,5 @@
 import com.basic.BasicGameDesignAction;
+import com.enhanced.reasoning.Justification;
 import com.shared.InstantiatedGameAction;
 import com.shared.Item;
 import com.shared.Room;
@@ -77,26 +78,25 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
 
    @Override
-   public String progressStory(@NotNull InstantiatedGameAction gameAction) {
+   public Justification progressStory(@NotNull InstantiatedGameAction gameAction) {
 
       Room currentRoom = getCurrentRoom();
 
       BasicGameDesignAction designAction = getGameDesignAction(gameAction, currentRoom);
       if (designAction == null) {
-         return "You can't do that right now";
+         return new Justification(false, "You can't do that right now");
       }
-      Map<String, String> wantedGlobalState = new HashMap<>();
-      wantedGlobalState.putAll(designAction.getPreconditions());
+      Map<String, String> wantedGlobalState = new HashMap<>(designAction.getPreconditions());
 
       boolean preCondSatisfied = validatePrecondition(wantedGlobalState);
       if (!preCondSatisfied) {
-         return "You can't do that yet";
+         return new Justification(false, "You can't do that yet");
       }
       String message = designAction.getMessage();
 
       updateWorldState(designAction);
 
-      return message;
+      return new Justification(true, message);
 
    }
 
