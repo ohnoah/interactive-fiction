@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="KnowledgeUpdateTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2021-01-20T12:26:41" hostname="Noahs-MacBook-Pro.local" time="0.076">
+  <properties/>
+  <testcase name="stringConstructorConstantStringListSuccess" classname="KnowledgeUpdateTest" time="0.052"/>
+  <testcase name="stringConstructorFrameSettingType" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorConstantStringListValue" classname="KnowledgeUpdateTest" time="0.002"/>
+  <testcase name="stringConstructorRemoveNumberFromList" classname="KnowledgeUpdateTest" time="0.002"/>
+  <testcase name="stringConstructorConstantStringListIsConstant" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorConstantDoubleSuccess" classname="KnowledgeUpdateTest" time="0.002"/>
+  <testcase name="stringConstructorConstantStringSuccess" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorConstantNumberSuccess" classname="KnowledgeUpdateTest" time="0.003"/>
+  <testcase name="stringConstructorUpdateTypeMultiply" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorConstantNumberListValue" classname="KnowledgeUpdateTest" time="0.002"/>
+  <testcase name="stringConstructorUpdateTypeAdd" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorUpdateTypeSet" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorFrame" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorKnowledgeSettingType" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorConstantDoubleValue" classname="KnowledgeUpdateTest" time="0.001"/>
+  <testcase name="stringConstructorConstantStringValue" classname="KnowledgeUpdateTest" time="0.002"/>
+  <testcase name="stringConstructorUpdateTypeSubtract" classname="KnowledgeUpdateTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8]]></system-err>
+</testsuite>

@@ -1,5 +1,6 @@
 package com.enhanced.reasoning;
 
+import com.enhanced.FileErrorHandler;
 import com.enhanced.parser.SimpleBooleanLexer;
 import com.enhanced.parser.SimpleBooleanParser;
 import com.enhanced.reasoning.exceptions.KnowledgeException;
@@ -151,20 +152,7 @@ public class KnowledgeBase implements Serializable {
    }
 
    private void printLogToFile(String s) {
-      try {
-         System.err.println("\n Writing KNOWLEDGEBASE error string to log \n");
-         File file = new File("error-knowledgebase-log.txt");
-         file.createNewFile();
-         if (firstError) {
-            Files.write(file.toPath(), errorHeader.getBytes(), StandardOpenOption.APPEND);
-         }
-         firstError = false;
-         Files.write(file.toPath(), (s + "\n").getBytes(), StandardOpenOption.APPEND);
-      } catch (IOException e) {
-         System.err.println("Couldn't write to error");
-         System.err.println(s);
-         e.printStackTrace();
-      }
+      FileErrorHandler.printToErrorLog("\n Writing KNOWLEDGEBASE error string to log \n" + s);
    }
 
 
