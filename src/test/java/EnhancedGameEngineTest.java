@@ -97,17 +97,13 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.addRoom(room);
       enhancedGameEngine.setCurrentRoom(room);
       // TODO: Look at making defaults for this
+      enhancedGameEngine.addParent("box", "container");
       enhancedGameEngine.updateKnowledgeBase(
-          new KnowledgeUpdate("box::isContainer := TRUE"),
-          new KnowledgeUpdate("box::contains := []"),
           new KnowledgeUpdate("box::internalVolume := 10"),
           new KnowledgeUpdate("box::volume := 10"),
           new KnowledgeUpdate("pen::volume := 1"),
-          new KnowledgeUpdate("pen::isContained := FALSE"),
           new KnowledgeUpdate("ball::volume := 10"),
-          new KnowledgeUpdate("ball::isContained := FALSE"),
-          new KnowledgeUpdate("apple::volume := 5"),
-          new KnowledgeUpdate("apple::isContained := FALSE")
+          new KnowledgeUpdate("apple::volume := 5")
       );
 
       return enhancedGameEngine;
@@ -115,12 +111,17 @@ public class EnhancedGameEngineTest {
 
 
    private EnhancedGameEngine takingPushingPullingRoom() throws KnowledgeException {
-      Room room = new Room("Taking Room");
-      room.setItemsNoAdjectives(Set.of("box", "bucket", "pen", "apple", "ball"));
-
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
-      enhancedGameEngine.addRoom(room);
-      enhancedGameEngine.setCurrentRoom(room);
+
+      Room room1 = new Room("Taking Room");
+      room1.setItemsNoAdjectives(Set.of("box", "bucket", "pen", "apple", "ball"));
+
+      enhancedGameEngine.addRoom(room1);
+      enhancedGameEngine.setCurrentRoom(room1);
+
+      Room room2 = new Room("Other Room");
+      room2.setItemsNoAdjectives(Set.of("mouse", "keys", "water"));
+      enhancedGameEngine.addRoom(room2);
 
       {
          List<Condition> conditions = List.of(new Condition("TRUE", ""));
@@ -130,25 +131,34 @@ public class EnhancedGameEngineTest {
          EnhancedGameDesignAction enhancedGameDesignAction =
              new EnhancedGameDesignAction(conditions, message, knowledgeUpdates);
          InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(new ActionFormat("take"), List.of("ball"));
-         enhancedGameEngine.addAction(room, instantiatedGameAction, enhancedGameDesignAction);
+         enhancedGameEngine.addAction(room1, instantiatedGameAction, enhancedGameDesignAction);
          InstantiatedGameAction instantiatedGameAction1 = new InstantiatedGameAction(new ActionFormat("push"), List.of("ball"));
-         enhancedGameEngine.addAction(room, instantiatedGameAction1, enhancedGameDesignAction);
+         enhancedGameEngine.addAction(room1, instantiatedGameAction1, enhancedGameDesignAction);
 
          InstantiatedGameAction instantiatedGameAction2 = new InstantiatedGameAction(new ActionFormat("pull"), List.of("ball"));
-         enhancedGameEngine.addAction(room, instantiatedGameAction2, enhancedGameDesignAction);
+         enhancedGameEngine.addAction(room1, instantiatedGameAction2, enhancedGameDesignAction);
+
+         List<KnowledgeUpdate> moveRoomUpdate = List.of(new KnowledgeUpdate("world::room := \"Other Room\""));
+         EnhancedGameDesignAction enhancedGameDesignActionMove =
+             new EnhancedGameDesignAction(conditions, message, moveRoomUpdate);
+         InstantiatedGameAction instantiatedGameAction3 = new InstantiatedGameAction(new ActionFormat("open"), List.of("ball"));
+         enhancedGameEngine.addAction(room1, instantiatedGameAction3, enhancedGameDesignActionMove);
       }
 
 
-
-
+      boolean worked = enhancedGameEngine.addParent("box", "container");
+      boolean worked1 = enhancedGameEngine.addParent("bucket", "container");
+      boolean worked2 = enhancedGameEngine.addParent("pen", "takeable");
+      boolean worked3 = enhancedGameEngine.addParent("ball", "takeable");
+      boolean worked4 = enhancedGameEngine.addParent("apple", "takeable");
+      boolean worked5 = enhancedGameEngine.addParent("box", "takeable");
+      boolean worked6 = enhancedGameEngine.addParent("mouse", "takeable");
+      boolean worked7 = enhancedGameEngine.addParent("keys", "takeable");
+      assert (worked && worked1 && worked2 && worked3 && worked4 && worked5 && worked6 && worked7);
 
       enhancedGameEngine.updateKnowledgeBase(
-          new KnowledgeUpdate("bucket::isContainer := TRUE"),
-          new KnowledgeUpdate("bucket::contains := []"),
           new KnowledgeUpdate("bucket::internalVolume := 5"),
           new KnowledgeUpdate("bucket::volume := 5"),
-          new KnowledgeUpdate("box::isContainer := TRUE"),
-          new KnowledgeUpdate("box::contains := []"),
           new KnowledgeUpdate("box::internalVolume := 10"),
           new KnowledgeUpdate("box::volume := 10"),
           new KnowledgeUpdate("pen::volume := 1"),
@@ -157,7 +167,7 @@ public class EnhancedGameEngineTest {
           new KnowledgeUpdate("apple::mass := 10"),
           new KnowledgeUpdate("pen::mass := 1"),
           new KnowledgeUpdate("box::mass := 110"),
-         new KnowledgeUpdate("bucket::mass := 105")
+          new KnowledgeUpdate("bucket::mass := 105")
       );
 
       return enhancedGameEngine;
@@ -467,35 +477,79 @@ public class EnhancedGameEngineTest {
    }
 
    @Test
-   public void takingLightItem() throws KnowledgeException {
+   public void takingTwice() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat take = enhancedGameEngine.findAction("take").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(take, List.of("pen"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
-      assertEquals("You take the pen but nothing interesting happens so you return it.", message);
+      InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("pen"));
+      assert (enhancedGameEngine.conditionSucceeds("NOT \"pen\" IN world::inventory"));
+      enhancedGameEngine.progressStory(takeGameAction);
+      assert (enhancedGameEngine.conditionSucceeds("\"pen\" IN world::inventory"));
+
+      String message = enhancedGameEngine.progressStory(takeGameAction);
+      assertEquals("The pen is already on your person.", message);
    }
 
-
    @Test
-   public void takingHeavyItem() throws KnowledgeException {
+   public void takingLightItem() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat take = enhancedGameEngine.findAction("take").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(take, List.of("box"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
-      assertEquals("The box is too heavy for you to carry.", message);
+      InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("pen"));
+      assert (enhancedGameEngine.conditionSucceeds("NOT \"pen\" IN world::inventory"));
+
+      String message = enhancedGameEngine.progressStory(takeGameAction);
+      assertEquals("You take the pen. Nothing important happens.", message);
    }
 
    @Test
    public void takingDesignedItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat take = enhancedGameEngine.findAction("take").get(0);
-      InstantiatedGameAction removeGameAction = new InstantiatedGameAction(take, List.of("ball"));
-      enhancedGameEngine.progressStory(removeGameAction);
-      String message = enhancedGameEngine.progressStory(removeGameAction);
+      InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("ball"));
+      String message = enhancedGameEngine.progressStory(takeGameAction);
       assertEquals("You take the ball. Well done. You did it.", message);
    }
+
+   @Test
+   public void takingHeavyItem() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat take = enhancedGameEngine.findAction("take").get(0);
+      InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("box"));
+      String message = enhancedGameEngine.progressStory(takeGameAction);
+      assertEquals("The box is too heavy for you to carry.", message);
+   }
+
+   @Test
+   public void takingMovingRoomsDropping() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat take = enhancedGameEngine.findAction("take").get(0);
+      InstantiatedGameAction takeGameAction = new InstantiatedGameAction(take, List.of("ball"));
+      String message = enhancedGameEngine.progressStory(takeGameAction);
+      assertEquals("You take the ball. Well done. You did it.", message);
+      assertFalse(enhancedGameEngine.findRoom("Taking Room").get(0).getItems().contains(new Item("ball")));
+
+      ActionFormat open = enhancedGameEngine.findAction("open").get(0);
+      InstantiatedGameAction moveRoomAction = new InstantiatedGameAction(open, List.of("ball"));
+      String message2 = enhancedGameEngine.progressStory(moveRoomAction);
+
+      assertEquals("Well done. You did it.", message2);
+      ActionFormat drop = enhancedGameEngine.findAction("drop").get(0);
+      InstantiatedGameAction dropAction = new InstantiatedGameAction(drop, List.of("ball"));
+      String message3 = enhancedGameEngine.progressStory(dropAction);
+      assertEquals("You drop the ball next to you. Nothing important happens.", message3);
+      assertFalse(enhancedGameEngine.findRoom("Taking Room").get(0).getItems().contains(new Item("ball")));
+      assertTrue(enhancedGameEngine.findRoom("Other Room").get(0).getItems().contains(new Item("ball")));
+      assertTrue(enhancedGameEngine.conditionSucceeds("NOT \"ball\" IN world::inventory"));
+   }
+
+   @Test
+   public void droppingItemThatYouDontHaveFails() throws KnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
+      ActionFormat drop = enhancedGameEngine.findAction("drop").get(0);
+      InstantiatedGameAction dropAction = new InstantiatedGameAction(drop, List.of("pen"));
+      String message = enhancedGameEngine.progressStory(dropAction);
+      assertEquals("You can't drop the pen because you haven't picked it up.", message);
+   }
+
 
    @Test
    public void pushingLightItem() throws KnowledgeException {
@@ -579,4 +633,4 @@ public class EnhancedGameEngineTest {
       assertEquals("The bucket is too heavy for you to put on the box.", message);
    }
 
-   }
+}

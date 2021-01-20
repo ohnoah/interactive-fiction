@@ -1,92 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedGameEngineTest" tests="34" skipped="0" failures="1" errors="0" timestamp="2021-01-18T17:28:35" hostname="Noahs-MacBook-Pro.local" time="0.264">
+<testsuite name="EnhancedGameEngineTest" tests="37" skipped="0" failures="0" errors="0" timestamp="2021-01-20T11:57:49" hostname="Noahs-MacBook-Pro.local" time="0.267">
   <properties/>
-  <testcase name="randomListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.113"/>
-  <testcase name="puttingThirdItemNoDesignTooBigInternalVolume" classname="EnhancedGameEngineTest" time="0.013"/>
-  <testcase name="puttingSecondItemNoDesignAppleIsContained" classname="EnhancedGameEngineTest" time="0.008"/>
-  <testcase name="puttingSecondItemNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.007"/>
-  <testcase name="validateConditionAfterProgressStory" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="putOnHeavyItem" classname="EnhancedGameEngineTest" time="0.007">
-    <failure message="org.junit.ComparisonFailure: expected:&lt;[The bucket is too heavy for you to put on the box.]&gt; but was:&lt;[You can't do that right now]&gt;" type="org.junit.ComparisonFailure">org.junit.ComparisonFailure: expected:&lt;[The bucket is too heavy for you to put on the box.]&gt; but was:&lt;[You can't do that right now]&gt;
-	at org.junit.Assert.assertEquals(Assert.java:115)
-	at org.junit.Assert.assertEquals(Assert.java:144)
-	at EnhancedGameEngineTest.putOnHeavyItem(EnhancedGameEngineTest.java:579)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:110)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:38)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:62)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
-	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:118)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:175)
-	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:157)
-	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:404)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:63)
-	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:46)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
-	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55)
-	at java.base/java.lang.Thread.run(Thread.java:834)
-</failure>
-  </testcase>
-  <testcase name="puttingSecondItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.01"/>
+  <testcase name="randomListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.119"/>
+  <testcase name="puttingThirdItemNoDesignTooBigInternalVolume" classname="EnhancedGameEngineTest" time="0.014"/>
+  <testcase name="puttingSecondItemNoDesignAppleIsContained" classname="EnhancedGameEngineTest" time="0.006"/>
+  <testcase name="puttingSecondItemNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.005"/>
+  <testcase name="validateConditionAfterProgressStory" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="putOnHeavyItem" classname="EnhancedGameEngineTest" time="0.006"/>
+  <testcase name="puttingSecondItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.005"/>
   <testcase name="puttingThirdItemNoDesignTooBigContains" classname="EnhancedGameEngineTest" time="0.006"/>
-  <testcase name="puttingThirdItemNoDesignTooBigMessage" classname="EnhancedGameEngineTest" time="0.005"/>
+  <testcase name="puttingThirdItemNoDesignTooBigMessage" classname="EnhancedGameEngineTest" time="0.004"/>
   <testcase name="takingHeavyItem" classname="EnhancedGameEngineTest" time="0.005"/>
-  <testcase name="puttingNoDesignIsContained" classname="EnhancedGameEngineTest" time="0.008"/>
-  <testcase name="puttingThirdItemNoDesignTooBigIsContained" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="puttingSecondItemNoDesignContains" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="takingLightItem" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="puttingNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="puttingRemovingNoDesignCondition" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="puttingNoDesignIsContained" classname="EnhancedGameEngineTest" time="0.009"/>
+  <testcase name="puttingThirdItemNoDesignTooBigIsContained" classname="EnhancedGameEngineTest" time="0.005"/>
+  <testcase name="puttingSecondItemNoDesignContains" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="takingLightItem" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="takingTwice" classname="EnhancedGameEngineTest" time="0.009"/>
+  <testcase name="puttingNoDesignInternalVolume" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="puttingRemovingNoDesignCondition" classname="EnhancedGameEngineTest" time="0.003"/>
   <testcase name="pushingHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
   <testcase name="numberListProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.004"/>
   <testcase name="pushingDesignedItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="pushingLightItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="puttingContainedItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="pullDesignedItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="messageAfterProgressStory" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="putInHeavyItem" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="pullHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="possibleItemNamesWorks" classname="EnhancedGameEngineTest" time="0.004"/>
-  <testcase name="puttingNoDesignItemInContains" classname="EnhancedGameEngineTest" time="0.003"/>
-  <testcase name="takingDesignedItem" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="pushingLightItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="puttingContainedItemNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="pullDesignedItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="messageAfterProgressStory" classname="EnhancedGameEngineTest" time="0.001"/>
+  <testcase name="putInHeavyItem" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="pullHeavyItem" classname="EnhancedGameEngineTest" time="0.004"/>
+  <testcase name="takingMovingRoomsDropping" classname="EnhancedGameEngineTest" time="0.003"/>
+  <testcase name="possibleItemNamesWorks" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="droppingItemThatYouDontHaveFails" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="puttingNoDesignItemInContains" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="takingDesignedItem" classname="EnhancedGameEngineTest" time="0.003"/>
   <testcase name="pullLightItem" classname="EnhancedGameEngineTest" time="0.002"/>
   <testcase name="puttingRemovingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
   <testcase name="numActionsProgressStoryTwoRoomsTwoActions" classname="EnhancedGameEngineTest" time="0.002"/>
-  <testcase name="removingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
+  <testcase name="removingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.001"/>
   <testcase name="puttingNoDesignMessage" classname="EnhancedGameEngineTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8]]></system-err>

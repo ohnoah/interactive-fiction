@@ -43,7 +43,6 @@ public class SpecificFrame implements Serializable {
 
    public Object getFiller(String slotName) throws MissingKnowledgeException {
       if (slots.containsKey(slotName)) {
-         // TODO: DO type inference here and return as the right type
          return slots.get(slotName);
       }
       else {
@@ -70,6 +69,7 @@ public class SpecificFrame implements Serializable {
          Object filler = entry.getValue();
          updateFiller(slotName, filler);
       }
+      parents.remove(parent);
       parents.add(parent);
    }
 
