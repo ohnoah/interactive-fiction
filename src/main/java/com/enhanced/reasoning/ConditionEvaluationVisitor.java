@@ -133,12 +133,16 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
    @Override
    public Boolean visitStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx) {
-      return this.visitList(ctx.list()).contains(this.visitStringtype(ctx.stringtype()));
+      List<?> list = this.visitList(ctx.list());
+      String s = this.visitStringtype(ctx.stringtype());
+      return list.contains(s);
    }
 
    @Override
    public Boolean visitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx) {
-      return this.visitList(ctx.list()).contains(this.visitNumbertype(ctx.numbertype()));
+      List<?> list = this.visitList(ctx.list());
+      Double s = this.visitNumbertype(ctx.numbertype());
+      return list.contains(s);
    }
 
 

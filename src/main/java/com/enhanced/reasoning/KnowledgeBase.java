@@ -40,11 +40,11 @@ public class KnowledgeBase implements Serializable {
    }
 
    public Map<String, SpecificFrame> getSpecificFrames() {
-      return new LinkedHashMap<>(specificFrames);
+      return specificFrames;
    }
 
    public Map<String, GenericFrame> getGenericFrames() {
-      return new LinkedHashMap<>(genericFrames);
+      return genericFrames;
    }
 
    public KnowledgeBase() {
@@ -316,7 +316,7 @@ public class KnowledgeBase implements Serializable {
       }
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
-             ", slot: %s - %s - to String", frame, slot, queryResult.toString()));
+             ", slot: %s - %s (%s) - to String", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
 
@@ -327,7 +327,7 @@ public class KnowledgeBase implements Serializable {
       }
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
-             ", slot: %s - %s - to Double", frame, slot, queryResult.toString()));
+             ", slot: %s - %s (%s) - to Double", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
 
@@ -346,7 +346,7 @@ public class KnowledgeBase implements Serializable {
       }
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
-             ", slot: %s - %s - to Boolean", frame, slot, queryResult.toString()));
+             ", slot: %s - %s (%s) - to Boolean", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
 
@@ -365,7 +365,7 @@ public class KnowledgeBase implements Serializable {
       }
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
-             ", slot: %s - %s - to List<Double>", frame, slot, queryResult.toString()));
+             ", slot: %s - %s (%s) - to List<Double>", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
 
@@ -376,7 +376,7 @@ public class KnowledgeBase implements Serializable {
       }
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
-             ", slot: %s - %s - to List<?>", frame, slot, queryResult.toString()));
+             ", slot: %s - %s (%s) - to List<?>", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
 
@@ -387,17 +387,17 @@ public class KnowledgeBase implements Serializable {
       }
       else {
          throw new KnowledgeException(String.format("Couldn't cast the result of query for frame: %s" +
-             ", slot: %s - %s - to List<String>", frame, slot, queryResult.toString()));
+             ", slot: %s - %s (%s) - to List<String>", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
 
    public boolean createSpecificFrame(Item i, String... gs) {
       SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(i.getName()));
       for (String g : gs) {
-         if(genericFrames.containsKey(g)) {
+         if (genericFrames.containsKey(g)) {
             specificFrame.addParent(genericFrames.get(g));
          }
-         else{
+         else {
             printLogToFile("No such parent " + g);
          }
       }

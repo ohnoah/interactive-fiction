@@ -626,6 +626,7 @@ public class EnhancedGameEditor extends JFrame {
                         Object objFiller = VisitorHelper.typeConvert(typeConvertVisitor, filler);
                         parent.addSlot(slot, objFiller);
                      }
+                     knowledgeBase.addGenericFrame(parent);
                      child.addParent(parent);
                      output = String.format("Added the new Generic Frame %s as a parent of %s", parent.getId(), child.getId());
                      resetAdditions();

@@ -84,11 +84,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       {
          ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
          Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't push the _arg0 because it's not solid.");
+             "You can't put the _arg0 anywhere because it's not solid.");
          Condition pushConditionNotContained = new Condition("NOT _arg0::isContained",
              "The _arg0 is too heavy for you to carry.");
          Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to push.");
+             "The _arg0 is too heavy for you to put on the _arg1.");
          implementedConditionsMap.put(putOn, List.of(pushConditionSolid, pushConditionNotContained, pushConditionMass));
          implementedSuccessMessageMap.put(putOn, "You push the _arg0.");
       }
@@ -132,8 +132,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       {
          ActionFormat take = new ActionFormat("take", null);
-         Condition takeConditionTaken = new Condition("NOT \"_arg0\" IN world::inventory",
-             "You can't take the _arg0 because it's not solid.");
+         Condition takeConditionTaken = new Condition("NOT (\"_arg0\" IN world::inventory)",
+             "The _arg0 is already on your person.");
          Condition takeConditionSolid = new Condition("_arg0::state = \"solid\"",
              "You can't take the _arg0 because it's not solid.");
          Condition takeConditionIsTakeable = new Condition("_arg0::isTakeable",
@@ -187,10 +187,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
        */
       {
          ActionFormat drop = new ActionFormat("drop", null);
-         Condition dropConditionTaken = new Condition("NOT \"_arg0\" IN world::inventory",
+         Condition dropConditionTaken = new Condition("\"_arg0\" IN world::inventory",
              "You can't drop the _arg0 because you haven't picked it up.");
          implementedConditionsMap.put(drop, List.of(dropConditionTaken));
-         implementedSuccessMessageMap.put(drop, "You drop the _arg0.");
+         implementedSuccessMessageMap.put(drop, "You drop the _arg0 next to you.");
          try {
             KnowledgeUpdate dropInventory = new KnowledgeUpdate("world::inventory -= _arg0");
             implementedKnowledgeUpdateMap.put(drop, List.of(dropInventory));
@@ -198,6 +198,47 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             printExceptionToLog(e);
          }
       }
+
+      /* TURN
+      --------
+       */
+      {
+         ActionFormat turn = new ActionFormat("turn", null);
+         Condition turnConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is inside of something else.");
+         Condition turnConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't turn the _arg0 because it's not solid.");
+         implementedConditionsMap.put(turn, List.of(turnConditionNotContained, turnConditionSolid));
+         implementedSuccessMessageMap.put(turn, "You turn the _arg0.");
+      }
+      
+      /* search
+      --------
+       */
+      {
+         ActionFormat search = new ActionFormat("search", null);
+         Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is inside of something else.");
+         Condition searchConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't search the _arg0 because it's not solid.");
+         implementedConditionsMap.put(search, List.of(searchConditionNotContained, searchConditionSolid));
+         implementedSuccessMessageMap.put(search, "You search the _arg0.");
+      }
+
+      /* search
+      --------
+       */
+      {
+         ActionFormat search = new ActionFormat("search", null);
+         Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
+             "The _arg0 is inside of something else.");
+         Condition searchConditionSolid = new Condition("_arg0::state = \"solid\"",
+             "You can't search the _arg0 because it's not solid.");
+         implementedConditionsMap.put(search, List.of(searchConditionNotContained, searchConditionSolid));
+         implementedSuccessMessageMap.put(search, "You search the _arg0.");
+      }
+      
+
    }
 
 
@@ -218,6 +259,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          GenericFrame container = new GenericFrame("container");
          GenericFrame massive = new GenericFrame("massive");
          GenericFrame voluminous = new GenericFrame("voluminous");
+         GenericFrame takeable = new GenericFrame("takeable");
          // DEFAULT
          nonContainer.addSlots(Map.of("isContained", false,
              "isContainer", false,
@@ -228,23 +270,22 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
              "isContainer", true,
              "volume", 50.0,
              "internalVolume", 50.0,
-             "contains", "[]"
+             "contains", new ArrayList<>()
          ));
          massive.addSlot("mass", 50.0);
          voluminous.addSlot("volume", 50.0);
+         takeable.addSlot("isTakeable", true);
          knowledgeBase.addGenericFrame(nonContainer);
          knowledgeBase.addGenericFrame(container);
          knowledgeBase.addGenericFrame(massive);
          knowledgeBase.addGenericFrame(voluminous);
+         knowledgeBase.addGenericFrame(takeable);
       }
 
    }
 
    private String notDesignedImplementedFollow(String message) {
-      if (message.contains("You take")) {
-         return message.substring(0, message.length() - 1) + " but nothing interesting happens so you return it.";
-      }
-      else if (message.contains("You pull") || message.contains("You push")) {
+      if (message.contains("You pull") || message.contains("You push")) {
          return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you put it back.";
       }
       return message + " Nothing important happens.";
@@ -273,7 +314,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
       Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);
       message += capitalize(designJust.getReasoning());
-      return message;
+      return message.trim();
    }
 
    public KnowledgeBase getKnowledgeBase() {
@@ -455,7 +496,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             item = knowledgeBase.query(knowledgeUpdate.getForeignFrame(), knowledgeUpdate.getForeignSlot());
          } catch (KnowledgeException | MissingKnowledgeException e) {
             printExceptionToLog(e);
-            printToErrorLog("Failed to move room");
+            printToErrorLog("Failed to add inventory or subtract");
             return;
          }
       }
@@ -650,5 +691,18 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
           ", worldRooms=" + worldRooms +
           ", currentRoom=" + currentRoom +
           '}';
+   }
+
+   public boolean addParent(String child, String parent) {
+      Map<String, SpecificFrame> specificFrameMap = this.knowledgeBase.getSpecificFrames();
+      Map<String, GenericFrame> genericFrameMap = this.knowledgeBase.getGenericFrames();
+      if(specificFrameMap.containsKey(child)){
+         if(genericFrameMap.containsKey(parent)){
+            specificFrameMap.get(child).addParent(genericFrameMap.get(parent));
+            return true;
+         }
+         return false;
+      }
+      return false;
    }
 }
