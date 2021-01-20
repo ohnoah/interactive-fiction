@@ -29,6 +29,10 @@ public class ImplementedActionLogic {
              "The _arg0 is already inside of something.");
          Condition putConditionIsContainer = new Condition("_arg1::isContainer",
              "You can't do that because _arg1 is not a container.");
+         Condition putConditionArg0SolidOrLiquid = new Condition("_arg0::state = \"solid\" OR _arg0::state = \"liquid\"",
+             "You can't put the _arg0 anywhere because it's not solid or liquid.");
+         Condition putConditionArg1SolidOrLiquid = new Condition("_arg1::state = \"solid\" OR _arg1::state = \"liquid\"",
+             "You can't put _arg0 in _arg1 because _arg1 isn't solid or liquid.");
          Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
              "The _arg1 is not big enough to contain the _arg0.");
          Condition putConditionNotContained1 = new Condition("NOT _arg1::isContained",
@@ -39,10 +43,8 @@ public class ImplementedActionLogic {
 
          implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
          implementedConditionsMap.put(putIn, List.of(putConditionNotContained0,
-             putConditionIsContainer, putConditionVolume,
-             putConditionNotContained1, putConditionMass));
-         // TODO: Create KnowledgeUpdate to subtract from the internalVolume, add _arg1 to _arg2's contains
-         // TODO: and add _arg2 to _arg2's inside field.
+             putConditionIsContainer, putConditionArg0SolidOrLiquid, putConditionArg1SolidOrLiquid,
+             putConditionVolume, putConditionNotContained1, putConditionMass));
          try {
             KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
             KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
@@ -59,14 +61,16 @@ public class ImplementedActionLogic {
     */
       {
          ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
-         Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't put the _arg0 anywhere because it's not solid.");
-         Condition pushConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is too heavy for you to carry.");
-         Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
+         Condition putConditionNotContained = new Condition("NOT _arg0::isContained",
+             "You can't put the _arg0 on _arg1 because _arg0 is inside of something.");
+         Condition putConditionArg0SolidOrLiquid = new Condition("_arg0::state = \"solid\" OR _arg0::state = \"liquid\"",
+             "You can't put the _arg0 anywhere because it's not solid or liquid.");
+         Condition putConditionArg1Solid = new Condition("_arg0::state = \"solid\"",
+             "You can't put _arg0 on the _arg1 because _arg1 is not solid.");
+         Condition putConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
              "The _arg0 is too heavy for you to put on the _arg1.");
-         implementedConditionsMap.put(putOn, List.of(pushConditionSolid, pushConditionNotContained, pushConditionMass));
-         implementedSuccessMessageMap.put(putOn, "You push the _arg0.");
+         implementedConditionsMap.put(putOn, List.of(putConditionNotContained, putConditionArg0SolidOrLiquid, putConditionArg1Solid, putConditionMass));
+         implementedSuccessMessageMap.put(putOn, "You put the _arg0 on the _arg1.");
       }
 
       /* REMOVE
@@ -201,21 +205,15 @@ public class ImplementedActionLogic {
          implementedSuccessMessageMap.put(search, "You search the _arg0.");
       }
 
-   /* search
-   --------
-    */
+      /* LISTEN TO
+      --------
+       */
       {
-         ActionFormat search = new ActionFormat("search", null);
-         Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is inside of something else.");
-         Condition searchConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't search the _arg0 because it's not solid.");
-         implementedConditionsMap.put(search, List.of(searchConditionNotContained, searchConditionSolid));
-         implementedSuccessMessageMap.put(search, "You search the _arg0.");
+         ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
+         implementedConditionsMap.put(listenTo, List.of());
+         implementedSuccessMessageMap.put(listenTo, "You listen to the _arg0.");
       }
    }
-
-
 
 
 }
