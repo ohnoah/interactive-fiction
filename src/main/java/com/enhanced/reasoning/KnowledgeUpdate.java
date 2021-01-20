@@ -2,6 +2,8 @@ package com.enhanced.reasoning;
 
 import com.enhanced.reasoning.exceptions.KnowledgeException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +29,7 @@ public class KnowledgeUpdate implements Serializable {
    public void setForeignSlot(String foreignSlot) {
       this.foreignSlot = foreignSlot;
    }
+
 
    public enum SettingType {
       CONSTANT,

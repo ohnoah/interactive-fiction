@@ -55,7 +55,8 @@ public class ImplementedActionLogic implements Serializable {
             KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
             KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
             implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             FileErrorHandler.printExceptionToLog(e);
          }
       }
@@ -106,7 +107,8 @@ public class ImplementedActionLogic implements Serializable {
             KnowledgeUpdate removeContains = new KnowledgeUpdate("_arg1::contains -= _arg0");
             KnowledgeUpdate removeContained = new KnowledgeUpdate("_arg0::isContained := FALSE");
             implementedKnowledgeUpdateMap.put(remove, List.of(removePlusVolume, removeContains, removeContained));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             FileErrorHandler.printExceptionToLog(e);
          }
       }
@@ -139,7 +141,8 @@ public class ImplementedActionLogic implements Serializable {
             KnowledgeUpdate transferAddVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
             KnowledgeUpdate transferMinusVolume = new KnowledgeUpdate("_arg2::internalVolume -= _arg0::volume");
             implementedKnowledgeUpdateMap.put(transfer, List.of(transferAddVolume, transferContainsArg1, transferContainsArg2, transferContained, transferMinusVolume));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             FileErrorHandler.printExceptionToLog(e);
          }
       }
@@ -166,7 +169,8 @@ public class ImplementedActionLogic implements Serializable {
          try {
             KnowledgeUpdate takeInventory = new KnowledgeUpdate("world::inventory += _arg0");
             implementedKnowledgeUpdateMap.put(take, List.of(takeInventory));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             FileErrorHandler.printExceptionToLog(e);
          }
       }
@@ -213,7 +217,8 @@ public class ImplementedActionLogic implements Serializable {
          try {
             KnowledgeUpdate dropInventory = new KnowledgeUpdate("world::inventory -= _arg0");
             implementedKnowledgeUpdateMap.put(drop, List.of(dropInventory));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             FileErrorHandler.printExceptionToLog(e);
          }
       }
@@ -265,6 +270,51 @@ public class ImplementedActionLogic implements Serializable {
       }
 
 
+      /* EAT
+      --------
+       */
+      {
+         ActionFormat eat = new ActionFormat("eat");
+         Condition eatConditionEdible = new Condition("_arg0::isEdible",
+             "You can't do that because the _arg0 is not edible.");
+         Condition eatConditionNotContained = new Condition("NOT _arg0::isContained",
+             "You can't eat the _arg0 because it is inside of something else.");
+         implementedConditionsMap.put(eat, List.of(eatConditionEdible, eatConditionNotContained));
+         implementedSuccessMessageMap.put(eat, "You eat up the _arg0. It tastes _arg0::taste.");
+         try {
+            KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= _arg0");
+            implementedKnowledgeUpdateMap.put(eat, List.of(deleteItem));
+         }
+         catch (KnowledgeException e) {
+            FileErrorHandler.printExceptionToLog(e);
+         }
+      }
+
+      /* DRINK
+      --------
+       */
+      {
+         ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");
+         Condition drinkConditionNotContained = new Condition("NOT _arg1::isContained",
+             "The _arg1 is inside of something so you can't drink the _arg0 from it.");
+         Condition drinkInContainer = new Condition("_arg1::isContainer AND \"_arg0\" IN _arg1::contains",
+             "You can't do that because the _arg0 is not in the _arg1.");
+         Condition drinkConditionLiquid = new Condition("_arg0::state = \"liquid\"",
+             "You can't drink the _arg0 because it's not liquid.");
+         Condition drinkConditionDrinkable = new Condition("_arg0::isDrinkable",
+             "You can't do that because the _arg0 is not drinkable.");
+         implementedConditionsMap.put(drink, List.of(drinkConditionNotContained, drinkInContainer, drinkConditionLiquid, drinkConditionDrinkable));
+         implementedSuccessMessageMap.put(drink, "You drink the _arg0. It tastes _arg0::taste.");
+         try {
+            KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= _arg0");
+            implementedKnowledgeUpdateMap.put(drink, List.of(deleteItem));
+         }
+         catch (KnowledgeException e) {
+            FileErrorHandler.printExceptionToLog(e);
+         }
+      }
+
+
    }
 
    static {
@@ -292,8 +342,8 @@ public class ImplementedActionLogic implements Serializable {
       massive.addSlot("mass", 50.0);
       voluminous.addSlot("volume", 50.0);
       takeable.addSlot("isTakeable", true);
-      edible.addSlots(Map.of("isEdible", true));
-      drinkable.addSlots(Map.of("isDrinkable", true));
+      edible.addSlots(Map.of("isEdible", true, "taste", "uninteresting"));
+      drinkable.addSlots(Map.of("isDrinkable", true, "state", "liquid", "taste", "uninteresting", "volume", 50.0));
       defaultGenericFrames = List.of(nonContainer, container, massive, voluminous, takeable, edible, drinkable);
    }
 

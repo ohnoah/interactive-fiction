@@ -252,7 +252,7 @@ public class EnhancedNLPEngine extends NLPEngine {
    }
 
    public static void main(String[] args) {
-      // set up pipeline properties
+/*      // set up pipeline properties
       Properties props = new Properties();
       props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse");
       // use faster shift reduce parser
@@ -305,7 +305,7 @@ public class EnhancedNLPEngine extends NLPEngine {
                  new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key")));
       } catch (FailedParseException e) {
          e.printStackTrace();
-      }
+      }*/
    }
 
    public CoreDocument generateCoreDocumentFromString(String rawCommand, String annotatorsProperty) {
