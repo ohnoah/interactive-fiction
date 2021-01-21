@@ -1,10 +1,10 @@
 import static org.junit.Assert.*;
 
 
-import com.enhanced.reasoning.KnowledgeBase;
-import com.enhanced.reasoning.exceptions.KnowledgeException;
-import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
-import com.enhanced.reasoning.SpecificFrame;
+import com.intfic.game.enhanced.reasoning.KnowledgeBase;
+import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
+import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
+import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -273,7 +273,7 @@ public class ConditionEvaluationVisitorTest {
       assertFalse(result);
    }
 
-   // Interactions with com.enhanced.reasoning.KnowledgeBase
+   // Interactions with com.interactivefiction.game.enhanced.reasoning.KnowledgeBase
    @Test
    public void failedUnderscoreIdentifierThrowsException() throws KnowledgeException, MissingKnowledgeException {
       String expression = "_test::test IN  [] ";

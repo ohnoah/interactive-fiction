@@ -1,10 +1,12 @@
 import static org.junit.Assert.*;
 
 
-import com.nlp.FailedParseException;
-import com.shared.ActionFormat;
-import com.shared.InstantiatedGameAction;
-import com.shared.Item;
+import com.intfic.game.enhanced.EnhancedGameEngine;
+import com.intfic.nlp.EnhancedNLPEngine;
+import com.intfic.nlp.FailedParseException;
+import com.intfic.game.shared.ActionFormat;
+import com.intfic.game.shared.InstantiatedGameAction;
+import com.intfic.game.shared.Item;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import java.util.ArrayList;
 import java.util.HashSet;
