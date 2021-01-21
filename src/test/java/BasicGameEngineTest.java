@@ -1,12 +1,13 @@
 import static org.junit.Assert.*;
 
 
-import com.basic.BasicGameDesignAction;
-import com.enhanced.reasoning.Justification;
-import com.shared.ActionFormat;
-import com.shared.InstantiatedGameAction;
-import com.shared.Item;
-import com.shared.Room;
+import com.intfic.game.basic.BasicGameEngine;
+import com.intfic.game.basic.BasicGameDesignAction;
+import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.shared.ActionFormat;
+import com.intfic.game.shared.InstantiatedGameAction;
+import com.intfic.game.shared.Item;
+import com.intfic.game.shared.Room;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

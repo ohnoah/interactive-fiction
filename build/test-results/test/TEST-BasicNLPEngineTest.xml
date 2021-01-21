@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="BasicNLPEngineTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2021-01-21T12:23:26" hostname="Noahs-MacBook-Pro.local" time="6.798">
+  <properties/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="1.072"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="BasicNLPEngineTest" time="0.284"/>
+  <testcase name="findVerbFindsUnaryEat" classname="BasicNLPEngineTest" time="0.339"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="BasicNLPEngineTest" time="0.302"/>
+  <testcase name="parseNounWithSpace" classname="BasicNLPEngineTest" time="0.451"/>
+  <testcase name="findNounsFindsUnarySpaceNoun" classname="BasicNLPEngineTest" time="0.265"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="BasicNLPEngineTest" time="0.734"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="BasicNLPEngineTest" time="0.68"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="BasicNLPEngineTest" time="0.87"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="BasicNLPEngineTest" time="0.763"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="0.747"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="BasicNLPEngineTest" time="0.284"/>
+  <system-out><![CDATA[Setting it up!
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

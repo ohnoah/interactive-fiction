@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 
+import com.intfic.game.basic.BasicGameEditor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

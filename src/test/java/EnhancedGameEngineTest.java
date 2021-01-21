@@ -1,16 +1,17 @@
 import static org.junit.Assert.*;
 
 
-import com.enhanced.EnhancedGameDesignAction;
-import com.enhanced.reasoning.Condition;
-import com.enhanced.reasoning.Justification;
-import com.enhanced.reasoning.KnowledgeUpdate;
-import com.enhanced.reasoning.exceptions.KnowledgeException;
-import com.enhanced.reasoning.exceptions.MissingKnowledgeException;
-import com.shared.ActionFormat;
-import com.shared.InstantiatedGameAction;
-import com.shared.Item;
-import com.shared.Room;
+import com.intfic.game.enhanced.EnhancedGameEngine;
+import com.intfic.game.enhanced.EnhancedGameDesignAction;
+import com.intfic.game.enhanced.reasoning.Condition;
+import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
+import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
+import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
+import com.intfic.game.shared.ActionFormat;
+import com.intfic.game.shared.InstantiatedGameAction;
+import com.intfic.game.shared.Item;
+import com.intfic.game.shared.Room;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -99,7 +100,7 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.setCurrentRoom(room);
       // TODO: Look at making defaults for this
       enhancedGameEngine.addParent("box", "container");
-      enhancedGameEngine.updateKnowledgeBase(
+      enhancedGameEngine.updateKnowledgeBaseMultiple(
           new KnowledgeUpdate("box::internalVolume := 10"),
           new KnowledgeUpdate("box::volume := 10"),
           new KnowledgeUpdate("pen::volume := 1"),
@@ -160,7 +161,7 @@ public class EnhancedGameEngineTest {
       boolean worked10 = enhancedGameEngine.addParent("bottle", "container");
       assert (worked && worked1 && worked2 && worked3 && worked4 && worked5 && worked6 && worked7 && worked8 && worked9 && worked10);
 
-      enhancedGameEngine.updateKnowledgeBase(
+      enhancedGameEngine.updateKnowledgeBaseMultiple(
           new KnowledgeUpdate("bucket::internalVolume := 5"),
           new KnowledgeUpdate("bucket::volume := 5"),
           new KnowledgeUpdate("box::internalVolume := 10"),

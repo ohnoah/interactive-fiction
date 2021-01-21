@@ -1,9 +1,9 @@
 import static org.junit.Assert.*;
 
 
-import com.enhanced.reasoning.KnowledgeUpdate;
-import com.enhanced.reasoning.UpdateType;
-import com.enhanced.reasoning.exceptions.KnowledgeException;
+import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
+import com.intfic.game.enhanced.reasoning.updates.UpdateType;
+import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import java.util.List;
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 
-import com.enhanced.reasoning.KnowledgeRegex;
+import com.intfic.game.enhanced.reasoning.KnowledgeRegex;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +20,7 @@ public class KnowledgeRegexTest {
       String frame = "frame";
       String slot = "slot";
       String test = frame + "::" + slot;
-      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
 
       assertTrue(Pattern.matches(knowledgeExpr, test));
    }
@@ -31,7 +31,7 @@ public class KnowledgeRegexTest {
       String frame = "frame";
       String slot = "slot";
       String test = frame + "::" + slot;
-      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
       System.out.println(knowledgeExpr);
       List<String> expectedList = List.of(frame, slot);
 
@@ -48,7 +48,7 @@ public class KnowledgeRegexTest {
       String frame = "frame01";
       String slot = "sl12o2t";
       String test = "_" + frame + "::" + slot;
-      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
 
       assertTrue(Pattern.matches(knowledgeExpr, test));
    }
@@ -59,7 +59,7 @@ public class KnowledgeRegexTest {
       String frame = "frame01";
       String slot = "sl12o2t";
       String test = "_" + frame + "::" + slot;
-      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
       List<String> expectedList = List.of(frame, slot);
 
       Pattern p = Pattern.compile(knowledgeExpr);
@@ -72,7 +72,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testJustFrameDoesntMatchKnowledge() {
       String frame = "_frame";
-      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
 
       assertFalse(Pattern.matches(knowledgeExpr, frame));
    }
@@ -81,7 +81,7 @@ public class KnowledgeRegexTest {
    public void testFrameAndColonsDontMatchKnowledge() {
       String frame = "_frame";
       String test = frame + "::";
-      String knowledgeExpr = KnowledgeRegex.knowledgeExpr;
+      String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
 
       assertFalse(Pattern.matches(knowledgeExpr, test));
    }
@@ -90,7 +90,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testFrameMatches() {
       String frame = "frame01";
-      String frameExpr = KnowledgeRegex.frameNameExpr;
+      String frameExpr = KnowledgeRegex.FRAME_NAME_EXPR;
 
       assertTrue(Pattern.matches(frameExpr, frame));
    }
@@ -98,7 +98,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testIntegerNumberMatches() {
       String number = "469";
-      String numberExpr = KnowledgeRegex.numberExpr;
+      String numberExpr = KnowledgeRegex.NUMBER_EXPR;
 
       assertTrue(Pattern.matches(numberExpr, number));
    }
@@ -106,7 +106,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testDecimalNumberMatches() {
       String number = "1859.134913";
-      String numberExpr = KnowledgeRegex.numberExpr;
+      String numberExpr = KnowledgeRegex.NUMBER_EXPR;
 
       assertTrue(Pattern.matches(numberExpr, number));
    }
@@ -114,7 +114,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testStartingDotDoesntMatch() {
       String number = ".213";
-      String numberExpr = KnowledgeRegex.numberExpr;
+      String numberExpr = KnowledgeRegex.NUMBER_EXPR;
 
       assertFalse(Pattern.matches(numberExpr, number));
    }
@@ -122,7 +122,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testEmptyStringMatches() {
       String string = "\"\"";
-      String stringExpr = KnowledgeRegex.stringExpr;
+      String stringExpr = KnowledgeRegex.STRING_EXPR;
 
       assertTrue(Pattern.matches(stringExpr, string));
    }
@@ -130,7 +130,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testFilledStringMatches() {
       String string = "\" I love pizza. Do you like it? I am also empty-minded and funny. My age is 20. \"";
-      String stringExpr = KnowledgeRegex.stringExpr;
+      String stringExpr = KnowledgeRegex.STRING_EXPR;
 
       assertTrue(Pattern.matches(stringExpr, string));
    }
@@ -138,7 +138,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testEmptyStringList() {
       String string = "[]";
-      String stringListExpr = KnowledgeRegex.stringListExpr;
+      String stringListExpr = KnowledgeRegex.STRING_LIST_EXPR;
 
       assertTrue(Pattern.matches(stringListExpr, string));
    }
@@ -146,7 +146,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testOneItemStringList() {
       String string = "[\"banana!\"]";
-      String stringListExpr = KnowledgeRegex.stringListExpr;
+      String stringListExpr = KnowledgeRegex.STRING_LIST_EXPR;
 
       assertTrue(Pattern.matches(stringListExpr, string));
    }
@@ -154,7 +154,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testThreeItemStringList() {
       String string = "[\"banana!\", \"?!.\", \"pizza amd bamama\"]";
-      String stringListExpr = KnowledgeRegex.stringListExpr;
+      String stringListExpr = KnowledgeRegex.STRING_LIST_EXPR;
 
       assertTrue(Pattern.matches(stringListExpr, string));
    }
@@ -162,7 +162,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testStringListDoesntMatchDoubleList() {
       String string = "[4.0, 1, 6]";
-      String stringListExpr = KnowledgeRegex.stringListExpr;
+      String stringListExpr = KnowledgeRegex.STRING_LIST_EXPR;
 
       assertFalse(Pattern.matches(stringListExpr, string));
    }
@@ -170,7 +170,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testStringListDoesntMatchString() {
       String string = "\"banana\"";
-      String stringListExpr = KnowledgeRegex.stringListExpr;
+      String stringListExpr = KnowledgeRegex.STRING_LIST_EXPR;
 
       assertFalse(Pattern.matches(stringListExpr, string));
    }
@@ -178,7 +178,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testEmptyNumberList() {
       String string = "[]";
-      String numberListExpr = KnowledgeRegex.numberListExpr;
+      String numberListExpr = KnowledgeRegex.NUMBER_LIST_EXPR;
 
       assertTrue(Pattern.matches(numberListExpr, string));
    }
@@ -186,7 +186,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testSingleNumberList() {
       String string = "[1.042134]";
-      String numberListExpr = KnowledgeRegex.numberListExpr;
+      String numberListExpr = KnowledgeRegex.NUMBER_LIST_EXPR;
 
       assertTrue(Pattern.matches(numberListExpr, string));
    }
@@ -194,7 +194,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testTripleNumberList() {
       String string = "[1.042134, 1, 21039123]";
-      String numberListExpr = KnowledgeRegex.numberListExpr;
+      String numberListExpr = KnowledgeRegex.NUMBER_LIST_EXPR;
 
       assertTrue(Pattern.matches(numberListExpr, string));
    }
@@ -202,7 +202,7 @@ public class KnowledgeRegexTest {
    @Test
    public void testNumberListNoMatchDouble() {
       String string = "1.04213";
-      String numberListExpr = KnowledgeRegex.numberListExpr;
+      String numberListExpr = KnowledgeRegex.NUMBER_LIST_EXPR;
 
       assertFalse(Pattern.matches(numberListExpr, string));
    }
@@ -210,7 +210,7 @@ public class KnowledgeRegexTest {
    @Test
    public void frameNameExpr() {
       String string = "_Banan1";
-      String frameNameExpr = KnowledgeRegex.frameNameExpr;
+      String frameNameExpr = KnowledgeRegex.FRAME_NAME_EXPR;
 
       assertTrue(Pattern.matches(frameNameExpr, string));
    }
