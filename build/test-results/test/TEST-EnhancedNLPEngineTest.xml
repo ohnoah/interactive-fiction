@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedNLPEngineTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2021-01-21T12:23:33" hostname="Noahs-MacBook-Pro.local" time="1.546">
+<testsuite name="EnhancedNLPEngineTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2021-01-21T12:43:21" hostname="Noahs-MacBook-Pro.local" time="1.47">
   <properties/>
-  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="1.409"/>
-  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.022"/>
-  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.02"/>
-  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.015"/>
+  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="1.385"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.006"/>
+  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.014"/>
+  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.01"/>
   <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.003"/>
-  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.006"/>
-  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.034"/>
-  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.004"/>
-  <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.001"/>
+  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.002"/>
+  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.018"/>
+  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.005"/>
+  <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.0"/>
   <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.002"/>
-  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.005"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.003"/>
   <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.002"/>
-  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.008"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.005"/>
   <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.003"/>
-  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.003"/>
-  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.001"/>
-  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.004"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.002"/>
+  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.0"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.002"/>
   <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.002"/>
   <system-out><![CDATA[Setting it up!
 destroy	VB

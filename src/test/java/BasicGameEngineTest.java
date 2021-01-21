@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.basic.BasicGameDesignAction;
-import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;

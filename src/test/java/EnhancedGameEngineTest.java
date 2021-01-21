@@ -3,8 +3,8 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.enhanced.EnhancedGameDesignAction;
-import com.intfic.game.enhanced.reasoning.Condition;
-import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;

@@ -2,7 +2,7 @@ package com.intfic;
 
 import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.FileErrorHandler;
-import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.nlp.EnhancedNLPEngine;
 import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;

@@ -1,8 +1,8 @@
 package com.intfic.game.enhanced;
 
-import com.intfic.game.enhanced.reasoning.Condition;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
-import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.enhanced.reasoning.KnowledgeBase;
 import com.intfic.game.enhanced.reasoning.KnowledgeRegex;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
