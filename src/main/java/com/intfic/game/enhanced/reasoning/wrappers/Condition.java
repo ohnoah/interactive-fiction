@@ -1,4 +1,4 @@
-package com.intfic.game.enhanced.reasoning;
+package com.intfic.game.enhanced.reasoning.wrappers;
 
 import java.io.Serializable;
 import java.util.Objects;

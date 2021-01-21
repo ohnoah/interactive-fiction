@@ -1,7 +1,7 @@
 package com.intfic.game.basic;
 
 import com.intfic.game.shared.GameEngine;
-import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;

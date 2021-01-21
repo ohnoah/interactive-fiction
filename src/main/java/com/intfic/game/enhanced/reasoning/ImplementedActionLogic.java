@@ -3,6 +3,7 @@ package com.intfic.game.enhanced.reasoning;
 import com.intfic.game.enhanced.FileErrorHandler;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.shared.ActionFormat;
 import java.io.Serializable;

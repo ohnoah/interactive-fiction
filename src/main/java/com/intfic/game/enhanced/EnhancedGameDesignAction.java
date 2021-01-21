@@ -1,6 +1,6 @@
 package com.intfic.game.enhanced;
 
-import com.intfic.game.enhanced.reasoning.Condition;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import java.io.Serializable;
 import java.util.ArrayList;

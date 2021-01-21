@@ -1,6 +1,6 @@
 package com.intfic.game.shared;
 
-import com.intfic.game.enhanced.reasoning.Justification;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public abstract class GameEngine implements Serializable {
 
    protected Room currentRoom;
 
-   protected boolean moveRoom(String roomName) {
+   public boolean moveRoom(String roomName) {
       List<Room> matched = findRoom(roomName);
       if (matched.size() >= 1) {
          currentRoom = matched.get(0);

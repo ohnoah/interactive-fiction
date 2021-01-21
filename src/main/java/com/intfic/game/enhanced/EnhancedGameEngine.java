@@ -1,5 +1,9 @@
 package com.intfic.game.enhanced;
 
+import com.intfic.game.enhanced.reasoning.updates.DefaultUpdateStrategy;
+import com.intfic.game.enhanced.reasoning.updates.UpdateStrategy;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.reasoning.*;
 import com.intfic.game.enhanced.reasoning.error.*;
@@ -25,6 +29,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private static final long serialVersionUID = -6641823063075230452L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
+   private UpdateStrategy updateStrategy = new DefaultUpdateStrategy();
 
 
    private Map<String, Item> inventoryItems;
@@ -204,114 +209,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return newString;
    }
 
-   private void updateRoomWithKnowledgeUpdate(@NotNull KnowledgeUpdate knowledgeUpdate) {
-      if (!knowledgeUpdate.getUpdateType().equals(UpdateType.SET)) {
-         FileErrorHandler.printToErrorLog("Treating non-setting as setting because this is current room");
-      }
-
-      Object moveTo;
-      try {
-         moveTo = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
-      }
-      catch (MissingKnowledgeException | KnowledgeException e) {
-         FileErrorHandler.printExceptionToLog(e);
-         FileErrorHandler.printToErrorLog("Failed to move room");
-         return;
-      }
-      if (moveTo instanceof String) {
-         boolean success = moveRoom((String) moveTo);
-         if (!success) {
-            FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
-                " failed due to non-existent room name");
-         }
-      }
-      else {
-         FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
-             " failed due to wrong type in room");
-      }
-   }
 
    // TODO: This is where we intercept calls and do IF-CHANGED PROCEDURES
    private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
-      try {
-         knowledgeBase.update(knowledgeUpdate);
-      }
-      catch (KnowledgeException | MissingKnowledgeException e) {
-         FileErrorHandler.printExceptionToLog(e);
-         return;
-      }
-      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
-          knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "room")) {
-         updateRoomWithKnowledgeUpdate(knowledgeUpdate);
-      }
-
-
-      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
-          knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "inventory")) {
-         updateInventoryWithKnowledgeUpdate(knowledgeUpdate);
-      }
-
-      if (knowledgeBase.frameNameEquals(knowledgeUpdate.getFrameToUpdate(), "world") &&
-          knowledgeBase.frameNameEquals(knowledgeUpdate.getSlotToUpdate(), "items")) {
-         updateItemsWithKnowledgeUpdate(knowledgeUpdate);
-      }
+      this.updateStrategy.updateKnowledgeBase(this, knowledgeUpdate);
    }
 
-   private void updateItemsWithKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
-      Object itemName = null;
-      try {
-         itemName = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
-      }
-      catch (MissingKnowledgeException | KnowledgeException e) {
-         FileErrorHandler.printExceptionToLog(e);
-         FileErrorHandler.printToErrorLog("Couldn't get update value from knowledge update when updating items");
-         return;
-      }
 
-      Item itemInRoom;
-      if (itemName instanceof String) {
-         List<Item> containsItems = new ArrayList<>();
-         try {
-            Map<String, Item> globalItems = this.globalItems();
-            containsItems = knowledgeBase.queryStringList((String) itemName, "contains")
-                .stream().map(globalItems::get).collect(Collectors.toList());
-         }
-         catch (KnowledgeException e) {
-            FileErrorHandler.printExceptionToLog(e);
-         }
-         catch (MissingKnowledgeException ignored) {
-         }
-         if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
-            String finalItemName = (String) itemName;
-            // try to remove from room
-            itemInRoom = getCurrentRoom().getItems().stream().filter(i -> i.getName().equals(finalItemName)).findAny().orElse(null);
-            boolean validItem = getCurrentRoom().removeItem(itemInRoom);
-            // try to remove from inventory
-            Item returned = this.getInventoryItems().remove(itemName);
-            if (returned == null && !validItem) {
-               FileErrorHandler.printToErrorLog(itemName + " is an invalid item that was attempted to be removed from the world.");
-               return;
-            }
-            knowledgeBase.removeSpecificFrame((String) itemName);
-            for (Item i : containsItems) {
-               if (i == null) {
-                  FileErrorHandler.printToErrorLog("Bad item in contains list when removing from world.");
-               }
-               this.removeItem(i); // Contained items can be anywhere
-               knowledgeBase.removeSpecificFrame(i.getName());
-            }
-         }
-         else {
-            FileErrorHandler.printToErrorLog("Wrong Update type when updating items for world " + knowledgeUpdate.toString());
-         }
-      }
-      else {
-         FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
-             " failed due to wrong type of item");
-      }
-   }
-
-   private void removeItem(Item i) {
+   public void removeItem(Item i) {
       for (Room r : this.worldRooms) {
          if (r.getItems().contains(i)) {
             r.removeItem(i);
@@ -319,70 +224,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   private void updateInventoryWithKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
-      Object itemName;
-      try {
-         itemName = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
-      }
-      catch (KnowledgeException | MissingKnowledgeException e) {
-         FileErrorHandler.printExceptionToLog(e);
-         FileErrorHandler.printToErrorLog("Failed to add inventory or subtract");
-         return;
-      }
-      Item itemInRoom;
-      if (itemName instanceof String) {
-         List<Item> containsItems = new ArrayList<>();
-         try {
-            Map<String, Item> globalItems = this.globalItems();
-            containsItems = knowledgeBase.queryStringList((String) itemName, "contains")
-                .stream().map(globalItems::get).collect(Collectors.toList());
-         }
-         catch (KnowledgeException e) {
-            FileErrorHandler.printExceptionToLog(e);
-         }
-         catch (MissingKnowledgeException ignored) {
-         }
-         if (knowledgeUpdate.getUpdateType() == UpdateType.ADD) {
-            Object finalItemName = itemName;
-            itemInRoom = this.getCurrentRoom().getItems().stream().filter(i -> i.getName().equals(finalItemName)).findAny().orElse(null);
-            if (itemInRoom == null) {
-               FileErrorHandler.printToErrorLog(itemName + " is an invalid item that was attempted to be removed from inventory or added to.");
-               return;
-            }
-            this.inventoryItems.put(itemInRoom.getName(), itemInRoom);
-            this.getCurrentRoom().removeItem(itemInRoom);
-            for (Item i : containsItems) {
-               if (i == null) {
-                  FileErrorHandler.printToErrorLog("Bad item in contains list");
-               }
-               this.removeItem(i);
-            }
-         }
-         else if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
-            Item returned = this.inventoryItems.remove(itemName);
-            for (Item i : containsItems) {
-               if (i == null) {
-                  FileErrorHandler.printToErrorLog("Bad item in contains list");
-               }
-               this.getCurrentRoom().addItem(i);
-            }
-            if (returned != null) {
-               this.getCurrentRoom().addItem(returned);
-            }
-            else {
-               FileErrorHandler.printToErrorLog("Tried to remove item not in inventory");
-            }
-         }
-         else {
-            FileErrorHandler.printToErrorLog("Wrong Update type when updating items for world");
-         }
-      }
-      else {
-         FileErrorHandler.printToErrorLog("updateKnowledgeBase call for " + knowledgeUpdate.toString() +
-             " failed due to wrong type of item");
-      }
-
-   }
 
    public void updateKnowledgeBaseMultiple(@NotNull KnowledgeUpdate... knowledgeUpdates) {
       for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
