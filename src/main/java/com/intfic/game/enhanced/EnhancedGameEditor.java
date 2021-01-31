@@ -67,12 +67,10 @@ public class EnhancedGameEditor extends JFrame {
 
 
    private void initializeJFrame(ActionMap actionMap) {
-      InputMap keyMap = new ComponentInputMap(input);
+      InputMap keyMap = input.getInputMap();
+      input.getActionMap().put("enter", actionMap.get("enter"));
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
 
-      SwingUtilities.replaceUIActionMap(input, actionMap);
-      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
       input.setEditable(true);
       history.setText("Welcome to the enhanced IF game editor \n> ");
       setSize(600, 600);
