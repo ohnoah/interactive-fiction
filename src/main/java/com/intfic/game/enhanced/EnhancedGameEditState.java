@@ -5,6 +5,7 @@ import java.io.Serializable;
 public enum EnhancedGameEditState implements Serializable {
    OPEN,
    SAVE_FILENAME,
+   START_MESSAGE,
    ROOM_NAME,
    ROOM_ITEMS,
    ACTION_ROOM,
