@@ -113,7 +113,8 @@ public class GamePlayer extends JFrame {
                      gameEngine = (GameEngine) in.readObject();
                      in.close();
                      fileIn.close();
-                     history.setText("> ");
+                     String startMessage = gameEngine.getStartMessage() != null ? gameEngine.getStartMessage() : "";
+                     history.setText(startMessage + "\n" + "> ");
                      input.setText("");
                      FileErrorHandler.firstError = true;
                   } catch (IOException i) {
