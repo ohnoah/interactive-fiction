@@ -10,15 +10,25 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class GameEngine implements Serializable {
 
-   private static final long serialVersionUID = 7461911140383910005L;
+   private static final long serialVersionUID = 3557779271951435981L;
    private List<ActionFormat> possibleActionFormats;
    protected List<Room> worldRooms;
+   private String startMessage;
+   protected Room currentRoom;
+
+   public String getStartMessage() {
+      return startMessage;
+   }
+
+   public void setStartMessage(String startMessage) {
+      this.startMessage = startMessage;
+   }
+
 
    public Room getCurrentRoom() {
       return currentRoom;
    }
 
-   protected Room currentRoom;
 
    public boolean moveRoom(String roomName) {
       List<Room> matched = findRoom(roomName);
@@ -39,7 +49,7 @@ public abstract class GameEngine implements Serializable {
           .collect(Collectors.toList());
    }
 
-   public int getNumRooms(){
+   public int getNumRooms() {
       return worldRooms.size();
    }
 
@@ -47,7 +57,7 @@ public abstract class GameEngine implements Serializable {
       return new ArrayList<>(this.possibleActionFormats);
    }
 
-   public void addActionFormat(ActionFormat af){
+   public void addActionFormat(ActionFormat af) {
       this.possibleActionFormats.add(af);
    }
 

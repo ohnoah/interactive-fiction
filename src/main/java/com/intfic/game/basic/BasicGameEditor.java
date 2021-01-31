@@ -248,6 +248,10 @@ public class BasicGameEditor extends JFrame {
                         output = "Saving your game. What file-name do you want it to have?";
                         basicGameEditState = BasicGameEditState.SAVE_FILENAME;
                         break;
+                     case "start message":
+                        output = "What start message do you want the player to see when they start a new game?";
+                        basicGameEditState = BasicGameEditState.START_MESSAGE;
+                        break;
                      default:
                         output = "That isn't a recognized command";
                         break;
@@ -268,6 +272,10 @@ public class BasicGameEditor extends JFrame {
                   } catch (IOException i) {
                      i.printStackTrace();
                   }
+                  break;
+               case START_MESSAGE:
+                  gameEngine.setStartMessage(cmd);
+                  output = String.format("Setting your start message %s", cmd);
                   break;
                case ROOM_NAME:
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);

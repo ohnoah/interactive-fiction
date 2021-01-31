@@ -271,6 +271,10 @@ public class EnhancedGameEditor extends JFrame {
          case "print knowledge":
             output = knowledgeBase.toString();
             break;
+         case "start message":
+            output = "What start message do you want the player to see when they start a new game?";
+            enhancedGameEditState = EnhancedGameEditState.START_MESSAGE;
+            break;
          case "stop":
             output = "";
             resetAdditions();
@@ -346,6 +350,11 @@ public class EnhancedGameEditor extends JFrame {
                   else{
                      output = "Invalid file name";
                   }
+                  break;
+               case START_MESSAGE:
+                  gameEngine.setStartMessage(cmd);
+                  output = String.format("Setting your start message %s", cmd);
+                  enhancedGameEditState = EnhancedGameEditState.OPEN;
                   break;
                case ROOM_NAME:
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);
