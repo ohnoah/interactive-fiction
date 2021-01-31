@@ -57,12 +57,14 @@ public class GamePlayer extends JFrame {
    private JTextArea history;
 
    private void initializeJFrame(ActionMap actionMap) {
-      InputMap keyMap = new ComponentInputMap(input);
+      InputMap keyMap = input.getInputMap();
+      input.getActionMap().put("enter", actionMap.get("enter"));
+     /* InputMap keyMap = new ComponentInputMap(input);*/
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
+    /*  keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");*/
 
-      SwingUtilities.replaceUIActionMap(input, actionMap);
-      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
+      /*SwingUtilities.replaceUIActionMap(input, actionMap);*/
+   /*   SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);*/
       input.setEditable(true);
       history.setText("Please enter the file-name of the game you wish to play \n>");
 
@@ -80,7 +82,7 @@ public class GamePlayer extends JFrame {
       this.getContentPane().add(mainPanel);
 
       input = new JTextField(80);
-      // TODO: Need to make this not-writeable
+      System.out.println(this.input.getCaret());
       history = new JTextArea();
       history.setEditable(false);
       history.setLineWrap(true);
@@ -117,11 +119,13 @@ public class GamePlayer extends JFrame {
                      history.setText(startMessage + "\n" + "> ");
                      input.setText("");
                      FileErrorHandler.firstError = true;
-                  } catch (IOException i) {
+                  }
+                  catch (IOException i) {
                      writeToTerminal(cmd, sofar, "Something went wrong when opening the file. Try again.");
                      i.printStackTrace();
-                  } catch (ClassNotFoundException c) {
-                     writeToTerminal(cmd, sofar, "Couldn't find the com.interactivefiction.GameEngine class.");
+                  }
+                  catch (ClassNotFoundException c) {
+                     writeToTerminal(cmd, sofar, "Couldn't find the GameEngine class.");
                      c.printStackTrace();
                   }
                }
@@ -129,16 +133,6 @@ public class GamePlayer extends JFrame {
                   writeToTerminal(cmd, sofar, "That isn't a valid readable file in your file system. Try again.");
                }
             }
-         }
-      });
-      actionMap.put("backspace", new AbstractAction() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            String cmd = input.getText();
-            if (cmd.length() > 0) {
-               cmd = cmd.substring(0, cmd.length() - 1);
-            }
-            input.setText(cmd);
          }
       });
 
@@ -172,7 +166,8 @@ public class GamePlayer extends JFrame {
       InstantiatedGameAction gameAction = null;
       try {
          gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItems);
-      } catch (FailedParseException e) {
+      }
+      catch (FailedParseException e) {
          return e.getMessage();
       }
       Justification justification = gameEngine.progressStory(gameAction);

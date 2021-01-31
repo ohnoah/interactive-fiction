@@ -64,12 +64,9 @@ public class BasicGameEditor extends JFrame {
 
 
    private void initializeJFrame(ActionMap actionMap) {
-      InputMap keyMap = new ComponentInputMap(input);
+      InputMap keyMap = input.getInputMap();
+      input.getActionMap().put("enter", actionMap.get("enter"));
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");
-
-      SwingUtilities.replaceUIActionMap(input, actionMap);
-      SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
       input.setEditable(true);
       history.setText(">");
 
@@ -269,7 +266,8 @@ public class BasicGameEditor extends JFrame {
                      fileOut.close();
                      output = String.format("Saved your game to disk with name: %s.", fileName);
                      saved = true;
-                  } catch (IOException i) {
+                  }
+                  catch (IOException i) {
                      i.printStackTrace();
                   }
                   break;
@@ -382,7 +380,8 @@ public class BasicGameEditor extends JFrame {
                         actionFormats = null;
                         basicGameEditState = BasicGameEditState.ACTION_ARGS;
                      }
-                  } catch (NumberFormatException e) {
+                  }
+                  catch (NumberFormatException e) {
                      output = "Non-integer entered to choose among the above options.";
                   }
                   break;
@@ -415,7 +414,8 @@ public class BasicGameEditor extends JFrame {
                      output = "Enter the effect on the global state for this action " +
                          "e.g. \"room=room2,player=red\".";
                      basicGameEditState = BasicGameEditState.ACTION_POST;
-                  } catch (IndexOutOfBoundsException e) {
+                  }
+                  catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each key of the world state" +
                          " by a \",\" and the key and the value by a \"=\" with no excess spaces";
                   }
@@ -426,7 +426,8 @@ public class BasicGameEditor extends JFrame {
                      effectAction.setUpdateState(splitPostconds);
                      output = "Enter the message to display to the user after taking this action.";
                      basicGameEditState = BasicGameEditState.ACTION_MSG;
-                  } catch (IndexOutOfBoundsException e) {
+                  }
+                  catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each key of the world state" +
                          " by a \",\" and the key and the value by a \"=\" with no excess spaces";
                   }
