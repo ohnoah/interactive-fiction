@@ -152,7 +152,7 @@ public class EnhancedNLPEngine extends NLPEngine {
       }
       // Or just find the noun
       else {
-         String noun = null;
+         String noun;
          Set<String> currentAdjectives = new HashSet<>();
          for (CoreLabel tok : document.tokens()) {
             String tag = tok.tag();
@@ -228,7 +228,7 @@ public class EnhancedNLPEngine extends NLPEngine {
 
    // TODO: Think about ignoring everyhing after found
    public String findVerb(CoreDocument document) throws FailedParseException {
-      String verb = null;
+      String verb;
       for (int i = 0; i < document.tokens().size(); i++) {
          CoreLabel tok = document.tokens().get(i);
          String tag = tok.tag();
@@ -243,7 +243,7 @@ public class EnhancedNLPEngine extends NLPEngine {
             return verb;
          }
       }
-      throw new FailedParseException("Can't find a verb");
+      throw new FailedParseException("Can't find a command verb in the input.");
    }
 
    public static void main(String[] args) {

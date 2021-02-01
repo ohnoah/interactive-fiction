@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="BasicGameEditorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2021-01-31T10:07:19" hostname="Noahs-MacBook-Pro.local" time="2.282">
+<testsuite name="BasicGameEditorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2021-02-01T12:17:01" hostname="Noahs-MacBook-Pro.local" time="2.36">
   <properties/>
-  <testcase name="testValidMixedString" classname="BasicGameEditorTest" time="2.138"/>
-  <testcase name="testNamesPlainString" classname="BasicGameEditorTest" time="0.052"/>
-  <testcase name="testNamesMixedString" classname="BasicGameEditorTest" time="0.073"/>
-  <testcase name="testAdjMixedString" classname="BasicGameEditorTest" time="0.018"/>
+  <testcase name="testValidMixedString" classname="BasicGameEditorTest" time="2.2"/>
+  <testcase name="testNamesPlainString" classname="BasicGameEditorTest" time="0.064"/>
+  <testcase name="testNamesMixedString" classname="BasicGameEditorTest" time="0.044"/>
+  <testcase name="testAdjMixedString" classname="BasicGameEditorTest" time="0.05"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

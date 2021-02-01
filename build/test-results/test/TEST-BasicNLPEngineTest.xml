@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="BasicNLPEngineTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2021-01-31T10:07:22" hostname="Noahs-MacBook-Pro.local" time="4.644">
+<testsuite name="BasicNLPEngineTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2021-02-01T12:17:03" hostname="Noahs-MacBook-Pro.local" time="5.239">
   <properties/>
-  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="0.958"/>
-  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="BasicNLPEngineTest" time="0.25"/>
-  <testcase name="findVerbFindsUnaryEat" classname="BasicNLPEngineTest" time="0.224"/>
-  <testcase name="findNounsFindsUnaryNoun" classname="BasicNLPEngineTest" time="0.228"/>
-  <testcase name="parseNounWithSpace" classname="BasicNLPEngineTest" time="0.41"/>
-  <testcase name="findNounsFindsUnarySpaceNoun" classname="BasicNLPEngineTest" time="0.218"/>
-  <testcase name="findNounsFindsTernaryNouns" classname="BasicNLPEngineTest" time="0.448"/>
-  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="BasicNLPEngineTest" time="0.446"/>
-  <testcase name="parseNounWithDefiniteArticle" classname="BasicNLPEngineTest" time="0.421"/>
-  <testcase name="parseVerbSimpleTwoWords" classname="BasicNLPEngineTest" time="0.406"/>
-  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="0.421"/>
-  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="BasicNLPEngineTest" time="0.212"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="1.131"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="BasicNLPEngineTest" time="0.28"/>
+  <testcase name="findVerbFindsUnaryEat" classname="BasicNLPEngineTest" time="0.275"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="BasicNLPEngineTest" time="0.244"/>
+  <testcase name="parseNounWithSpace" classname="BasicNLPEngineTest" time="0.429"/>
+  <testcase name="findNounsFindsUnarySpaceNoun" classname="BasicNLPEngineTest" time="0.215"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="BasicNLPEngineTest" time="0.458"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="BasicNLPEngineTest" time="0.493"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="BasicNLPEngineTest" time="0.487"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="BasicNLPEngineTest" time="0.477"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="0.495"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="BasicNLPEngineTest" time="0.254"/>
   <system-out><![CDATA[Setting it up!
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

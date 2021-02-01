@@ -11,10 +11,6 @@ import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
 
-// TODO: Decisions being made
-// Doesn't support overloading verb operator like TURN around and TURN
-// Doesn't support multiple words like LISTEN TO
-// Doesn't support nullary operators
 
 public class BasicNLPEngine extends NLPEngine {
 
