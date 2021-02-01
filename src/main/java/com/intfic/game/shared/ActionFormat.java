@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ActionFormat implements Serializable {
-   private static final long serialVersionUID = -7020054998734425443L;
+  /* private static final long serialVersionUID = -7020054998734425443L;*/
    private String verb;
    private String regExpr;
 

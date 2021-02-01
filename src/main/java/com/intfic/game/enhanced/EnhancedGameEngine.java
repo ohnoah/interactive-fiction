@@ -83,7 +83,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          return implJust;
       }
       // Then check the GameDesignActions and prepend another message
-      EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignAction(gameAction, currentRoom);
+      EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignActions(gameAction, currentRoom);
 
       if (enhancedGameDesignAction == null) {
          if (message.equals("")) { // It's not an implemented action
@@ -327,7 +327,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
 
-   protected EnhancedGameDesignAction getGameDesignAction(InstantiatedGameAction gameAction, Room currentRoom) {
+   private EnhancedGameDesignAction getGameDesignActions(InstantiatedGameAction gameAction, Room currentRoom) {
       if (designerActions.containsKey(currentRoom)) {
          Map<InstantiatedGameAction, EnhancedGameDesignAction> gameDesignActions = designerActions.get(currentRoom);
          if (gameDesignActions.containsKey(gameAction)) {
@@ -338,7 +338,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    public void addAction(Room room, InstantiatedGameAction instantiatedAction, EnhancedGameDesignAction enhancedAction) {
-      Map<InstantiatedGameAction, EnhancedGameDesignAction> actionsInRoom = designerActions.getOrDefault(room, new HashMap<>());
+      Map<InstantiatedGameAction, EnhancedGameDesignAction> actionsInRoom = designerActions.get(room);
       actionsInRoom.put(instantiatedAction, enhancedAction);
    }
 
