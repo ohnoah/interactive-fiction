@@ -58,13 +58,7 @@ public class EnhancedNLPEngine extends NLPEngine {
 
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      if (actionFormat == null) {
-         // I DONT UNDERSTAND THAT
-         throw new FailedParseException(String.format("Can't understand the verb: %s", verb));
-      }
-      else {
-         findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
-      }
+      findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
 
       //TODO: do the wordnet stuff here for nouns
       List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
@@ -223,7 +217,7 @@ public class EnhancedNLPEngine extends NLPEngine {
             return af;
          }
       }
-      throw new FailedParseException("No matching game verb");
+      throw new FailedParseException(String.format("No action correspond to the verb: %s", verb));
    }
 
    // TODO: Think about ignoring everyhing after found
