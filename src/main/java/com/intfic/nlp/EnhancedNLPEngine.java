@@ -217,7 +217,7 @@ public class EnhancedNLPEngine extends NLPEngine {
             return af;
          }
       }
-      throw new FailedParseException(String.format("No action correspond to the verb: %s", verb));
+      throw new FailedParseException(String.format("No action corresponds to the verb: %s", verb));
    }
 
    // TODO: Think about ignoring everyhing after found

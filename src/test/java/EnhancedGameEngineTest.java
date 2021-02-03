@@ -52,9 +52,14 @@ public class EnhancedGameEngineTest {
       room2.setItemsNoAdjectives(Set.of("elephant"));
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
+      enhancedGameEngine.updateKnowledgeBase(new KnowledgeUpdate("world::random := 3.0"));
+      enhancedGameEngine.updateKnowledgeBase(new KnowledgeUpdate("banana::isTakeable := TRUE"));
       enhancedGameEngine.addRoom(room);
       enhancedGameEngine.addRoom(room2);
       enhancedGameEngine.setCurrentRoom(room);
+
+
+
       // Create key for action
       InstantiatedGameAction instantiatedGameAction1 = new InstantiatedGameAction(new ActionFormat("open"), List.of("banana"));
       // Create value for action
@@ -84,7 +89,17 @@ public class EnhancedGameEngineTest {
       EnhancedGameDesignAction enhancedGameDesignAction2 =
           new EnhancedGameDesignAction(conditions2, "You did action 2 number world::numActions.", knowledgeUpdates2);
 
+      // testing not alloed action when implemented
+      InstantiatedGameAction instantiatedGameAction3 = new InstantiatedGameAction(new ActionFormat("take"), List.of("banana"));
+      // Create value for action
+      List<Condition> conditions3 = new ArrayList<>();
+      conditions3.add(new Condition("world::random = 4.0", "You are not yet world::random equal to 4.0."));
+      List<KnowledgeUpdate> knowledgeUpdates3 = new ArrayList<>();
+      EnhancedGameDesignAction enhancedGameDesignAction3 =
+          new EnhancedGameDesignAction(conditions3, "You did action 3.", knowledgeUpdates3);
+
       enhancedGameEngine.addAction(room, instantiatedGameAction1, enhancedGameDesignAction1);
+      enhancedGameEngine.addAction(room, instantiatedGameAction3, enhancedGameDesignAction3);
       enhancedGameEngine.addAction(room2, instantiatedGameAction2, enhancedGameDesignAction2);
       return enhancedGameEngine;
 
@@ -233,6 +248,23 @@ public class EnhancedGameEngineTest {
       assertTrue(justificationOpen.isAccepted());
       assertTrue(justificationEat.isAccepted());
    }
+
+
+   @Test
+   public void notAllowedDesignedFailedEvenThoughImplemented() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
+      ActionFormat takeAF = new ActionFormat("take");
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(takeAF, List.of("banana"));
+      Justification justTake = enhancedGameEngine.progressStory(openGameAction);
+      String messageOpen = justTake.getReasoning();
+
+      assertEquals(messageOpen, "You are not yet 3 equal to 4.0.");
+      assertFalse(justTake.isAccepted());
+      assertTrue(enhancedGameEngine.conditionSucceeds("world::inventory IS []"));
+   }
+
+
+
 
    @Test
    public void numActionsProgressStoryTwoRoomsTwoActions() throws KnowledgeException, MissingKnowledgeException {

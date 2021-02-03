@@ -135,7 +135,7 @@ public class EnhancedNLPEngineTest {
    @Test
    public void whenNoMatchingGameVerbThrowFailedParseException() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
-      exceptionRule.expectMessage("No matching game verb");
+      exceptionRule.expectMessage("No action corresponds to the verb: eat");
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       possibleActionFormats.add(new ActionFormat("ski", null));
       possibleActionFormats.add(new ActionFormat("fly", null));
