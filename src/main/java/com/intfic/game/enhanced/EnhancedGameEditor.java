@@ -300,6 +300,10 @@ public class EnhancedGameEditor extends JFrame {
                             "to update and inherit with Generic Frames", knowledgeBase.toString());
                         enhancedGameEditState = EnhancedGameEditState.EDIT_KNOWLEDGE;
                         break;
+                     case "new action":
+                        output = "What new action do you want to add? Specify the verb and any regex by a comma e.g. \"fly, MYREGEX\". If you wan't a unary action, simply type the verb.";
+                        enhancedGameEditState = EnhancedGameEditState.ACTIONFORMAT;
+                        break;
                      default:
                         output = "That isn't a recognized command";
                         break;
@@ -353,6 +357,26 @@ public class EnhancedGameEditor extends JFrame {
                   gameEngine.setStartMessage(cmd);
                   output = String.format("Setting your start message %s", cmd);
                   enhancedGameEditState = EnhancedGameEditState.OPEN;
+                  break;
+               case ACTIONFORMAT:
+                  if (cmd.contains(",")) {
+                     String[] verbRegex = cmd.split(",");
+                     if (verbRegex.length != 2) {
+                        output = "Too many comma in input. Only one comma is needed for a regex and verb";
+                     }
+                     else {
+                        ActionFormat af = new ActionFormat(verbRegex[0], verbRegex[1]);
+                        gameEngine.addActionFormat(af);
+                        enhancedGameEditState = EnhancedGameEditState.OPEN;
+                        output = String.format("Adding verb %s with regex %s as a nullary/ternary action format", verbRegex[0], verbRegex[1]);
+                     }
+                  }
+                  else {
+                     ActionFormat af = new ActionFormat(cmd);
+                     gameEngine.addActionFormat(af);
+                     output = String.format("Adding unary action format %s.", cmd);
+                     enhancedGameEditState = EnhancedGameEditState.OPEN;
+                  }
                   break;
                case ROOM_NAME:
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);

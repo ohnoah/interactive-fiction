@@ -2,6 +2,7 @@ package com.intfic.game.basic;
 
 public enum BasicGameEditState {
    OPEN,
+   ACTIONFORMAT,
    SAVE_FILENAME,
    START_MESSAGE,
    ROOM_NAME,

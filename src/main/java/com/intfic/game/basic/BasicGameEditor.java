@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ComponentInputMap;
 import javax.swing.InputMap;
@@ -249,6 +250,10 @@ public class BasicGameEditor extends JFrame {
                         output = "What start message do you want the player to see when they start a new game?";
                         basicGameEditState = BasicGameEditState.START_MESSAGE;
                         break;
+                     case "new action":
+                        output = "What new action do you want to add? Specify the verb and any regex by a comma e.g. \"fly, MYREGEX\". If you wan't a unary action, simply type the verb.";
+                        basicGameEditState = BasicGameEditState.ACTIONFORMAT;
+                        break;
                      default:
                         output = "That isn't a recognized command";
                         break;
@@ -274,6 +279,26 @@ public class BasicGameEditor extends JFrame {
                case START_MESSAGE:
                   gameEngine.setStartMessage(cmd);
                   output = String.format("Setting your start message %s", cmd);
+                  break;
+               case ACTIONFORMAT:
+                  if (cmd.contains(",")) {
+                     String[] verbRegex = cmd.split(",");
+                     if (verbRegex.length != 2) {
+                        output = "Too many comma in input. Only one comma is needed for a regex and verb";
+                     }
+                     else {
+                        ActionFormat af = new ActionFormat(verbRegex[0], verbRegex[1]);
+                        gameEngine.addActionFormat(af);
+                        output = String.format("Adding verb %s with regex %s as a nullary/ternary action format", verbRegex[0], verbRegex[1]);
+                        basicGameEditState = BasicGameEditState.OPEN;
+                     }
+                  }
+                  else {
+                     ActionFormat af = new ActionFormat(cmd);
+                     gameEngine.addActionFormat(af);
+                     output = String.format("Adding unary action format %s.", cmd);
+                     basicGameEditState = BasicGameEditState.OPEN;
+                  }
                   break;
                case ROOM_NAME:
                   List<Room> matchingRooms = gameEngine.findRoom(cmd);

@@ -12,6 +12,7 @@ import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.updates.UpdateType;
 import com.intfic.game.shared.*;
+import gherkin.lexer.Kn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,13 +78,22 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
 
+      EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignActions(gameAction, currentRoom);
+
+      if (enhancedGameDesignAction != null) {
+         Justification designedJustification = validatePreconditions(enhancedGameDesignAction.getPreconditions(), gameAction.getArguments());
+         if(!designedJustification.isAccepted()){
+            return new Justification(false, designedJustification.getReasoning());
+         }
+      }
+
       Justification implJust = performImplementedLogic(gameAction);
       message = capitalize(implJust.getReasoning());
       if (!implJust.isAccepted()) { // Implemented but fails
          return implJust;
       }
       // Then check the GameDesignActions and prepend another message
-      EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignActions(gameAction, currentRoom);
+      /*EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignActions(gameAction, currentRoom);*/
 
       if (enhancedGameDesignAction == null) {
          if (message.equals("")) { // It's not an implemented action
@@ -93,6 +103,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             return new Justification(true, notDesignedImplementedFollow(message));
          }
       }
+      // TODO: Think about edge case where the action itself breaks the precondition. That is a misdesign
       Justification designJust = performDesignLogic(gameAction, enhancedGameDesignAction);
       message += capitalize(designJust.getReasoning());
       return new Justification(true, message.trim());
@@ -211,7 +222,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
 
    // TODO: This is where we intercept calls and do IF-CHANGED PROCEDURES
-   private void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
+   public void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       this.updateStrategy.updateKnowledgeBase(this, knowledgeUpdate);
    }
 
@@ -246,10 +257,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return deleteList;
    }
 
-   private Justification conditionallyPerformAction(@NotNull List<Condition> conditions,
-                                                    @NotNull List<String> nouns,
-                                                    @NotNull String successMessage,
-                                                    @NotNull List<KnowledgeUpdate> knowledgeUpdates) {
+
+   private Justification validatePreconditions(@NotNull List<Condition> conditions, @NotNull List<String> nouns) {
       boolean valid = true;
       String reasoning = "";
 
@@ -276,6 +285,63 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             break;
          }
       }
+      return new Justification(valid, reasoning);
+   }
+
+   private Justification conditionallyPerformUpdates(@NotNull Justification validatePreconds,
+                                                     @NotNull List<KnowledgeUpdate> knowledgeUpdates,
+                                                     @NotNull String successMessage, @NotNull List<String> nouns) {
+      boolean valid = validatePreconds.isAccepted();
+      String reasoning = validatePreconds.getReasoning();
+      if (valid) {
+         reasoning = replaceArgsWithNouns(successMessage, nouns, " ");
+         for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
+            KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
+            reasoning = knowledgeBase.fillQueryString(reasoning, getItemToDeleteFromKnowledgeUpdate(populatedKnowledgeUpdate));
+            updateKnowledgeBase(populatedKnowledgeUpdate);
+         }
+
+         reasoning = knowledgeBase.fillQueryString(reasoning);
+
+      }
+      return new Justification(valid, reasoning);
+   }
+
+   private Justification conditionallyPerformAction(@NotNull List<Condition> conditions,
+                                                    @NotNull List<String> nouns,
+                                                    @NotNull String successMessage,
+                                                    @NotNull List<KnowledgeUpdate> knowledgeUpdates) {
+/*      boolean valid = true;
+      String reasoning = "";
+
+      for (Condition condition : conditions) {
+         // replace _arg something in the string
+         Condition populatedCondition = fillConditionWithArgs(condition, nouns);
+         try {
+            if (!this.conditionSucceeds(populatedCondition.getBooleanExpr())) {
+               valid = false;
+               reasoning = knowledgeBase.fillQueryString(populatedCondition.getFailureMessage());
+               break;
+            }
+         }
+         catch (ParseCancellationException | KnowledgeException e) {
+            valid = false;
+            reasoning = "There was an error behind the scenes. Try performing another action.";
+            FileErrorHandler.printExceptionToLog(e);
+            break;
+         }
+         catch (MissingKnowledgeException e) {
+            valid = false;
+            reasoning = e.getMissingString();
+            FileErrorHandler.printExceptionToLog(e);
+            break;
+         }
+      }*/
+
+      Justification validatePreconds = validatePreconditions(conditions, nouns);
+      return conditionallyPerformUpdates(validatePreconds, knowledgeUpdates, successMessage, nouns);
+/*      boolean valid = validatePreconds.isAccepted();
+      String reasoning = validatePreconds.getReasoning();
       if (valid) {
          reasoning = replaceArgsWithNouns(successMessage, nouns, " ");
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
@@ -288,7 +354,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       }
 
-      return new Justification(valid, reasoning);
+      return new Justification(valid, reasoning);*/
    }
 
 
