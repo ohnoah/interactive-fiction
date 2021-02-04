@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class NLPEngine {
-  public abstract InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException;
+  /*public abstract InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException;*/
 }
 
 

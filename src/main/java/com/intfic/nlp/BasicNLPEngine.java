@@ -12,10 +12,9 @@ import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
 
 
-public class BasicNLPEngine extends NLPEngine {
+public class BasicNLPEngine {
 
-   @Override
-   public InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+   public static InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
       // TODO: Fail if more than one sentence or there is an and in the sentence
 
       // display tokens
@@ -43,7 +42,7 @@ public class BasicNLPEngine extends NLPEngine {
       return command;
    }
 
-   private void appendFirstNoun(List<String> nouns, String stringToSearch, ActionFormat actionToTake) throws JWNLException {
+   private static void appendFirstNoun(List<String> nouns, String stringToSearch, ActionFormat actionToTake) throws JWNLException {
       Dictionary d = null;
       d = Dictionary.getDefaultResourceInstance();
       String[] splitWords = stringToSearch.split(" ");
@@ -63,7 +62,7 @@ public class BasicNLPEngine extends NLPEngine {
       }
    }
 
-   public List<String> findNouns(String rawCommand, ActionFormat actionToTake) throws JWNLException, FailedParseException {
+   public static List<String> findNouns(String rawCommand, ActionFormat actionToTake) throws JWNLException, FailedParseException {
       // Either do a regex match for PUT IN
       List<String> nouns = new ArrayList<>();
       if (actionToTake.isTernary()) {
@@ -90,7 +89,7 @@ public class BasicNLPEngine extends NLPEngine {
    }
 
    // This fails for e.g. TURN it ON, TURN the box
-   public ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
+   public static ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
       // Word net in here
       for (ActionFormat af : possibleActionFormats) {
          if (af.getVerb().equals(verb)) {
@@ -100,7 +99,7 @@ public class BasicNLPEngine extends NLPEngine {
       throw new FailedParseException("No matching game verb");
    }
 
-   public String findVerb(String rawCommand) throws JWNLException, FailedParseException {
+   public static String findVerb(String rawCommand) throws JWNLException, FailedParseException {
       Dictionary d = null;
       d = Dictionary.getDefaultResourceInstance();
       String[] splitWords = rawCommand.split(" ");

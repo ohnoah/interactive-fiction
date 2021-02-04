@@ -17,8 +17,8 @@ dependencies {
 //    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 //    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.8-1'
-    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.0.0'
-    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.0.0', classifier: 'models'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.2.0'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.2.0', classifier: 'models'
     compile group: 'net.sf.extjwnl', name: 'extjwnl', version: '2.0.3'
     compile group: 'net.sf.extjwnl', name: 'extjwnl-data-wn31', version: '1.2'
 
@@ -33,3 +33,10 @@ patchPluginXml {
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
 }
+
+test{
+    //useJUnit()
+    maxHeapSize = "2048m"
+}
+
+
