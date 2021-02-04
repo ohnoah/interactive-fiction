@@ -49,7 +49,6 @@ public class GamePlayer extends JFrame {
 
 
    private static final String progname = "IF Game Player";
-   private NLPEngine nlpEngine = new EnhancedNLPEngine();
    private GameEngine gameEngine = null;
 
 
@@ -165,7 +164,7 @@ public class GamePlayer extends JFrame {
       Set<Item> possibleItems = gameEngine.possibleItems();
       InstantiatedGameAction gameAction = null;
       try {
-         gameAction = nlpEngine.parse(cmd, possibleGameActions, possibleItems);
+         gameAction = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems);
       }
       catch (FailedParseException e) {
          return e.getMessage();

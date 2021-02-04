@@ -221,7 +221,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
 
-   // TODO: This is where we intercept calls and do IF-CHANGED PROCEDURES
    public void updateKnowledgeBase(@NotNull KnowledgeUpdate knowledgeUpdate) {
       this.updateStrategy.updateKnowledgeBase(this, knowledgeUpdate);
    }
@@ -297,6 +296,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          reasoning = replaceArgsWithNouns(successMessage, nouns, " ");
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
             KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
+            // If item is removed from the world, need to fill its values before deleting it
             reasoning = knowledgeBase.fillQueryString(reasoning, getItemToDeleteFromKnowledgeUpdate(populatedKnowledgeUpdate));
             updateKnowledgeBase(populatedKnowledgeUpdate);
          }
@@ -311,50 +311,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
                                                     @NotNull List<String> nouns,
                                                     @NotNull String successMessage,
                                                     @NotNull List<KnowledgeUpdate> knowledgeUpdates) {
-/*      boolean valid = true;
-      String reasoning = "";
-
-      for (Condition condition : conditions) {
-         // replace _arg something in the string
-         Condition populatedCondition = fillConditionWithArgs(condition, nouns);
-         try {
-            if (!this.conditionSucceeds(populatedCondition.getBooleanExpr())) {
-               valid = false;
-               reasoning = knowledgeBase.fillQueryString(populatedCondition.getFailureMessage());
-               break;
-            }
-         }
-         catch (ParseCancellationException | KnowledgeException e) {
-            valid = false;
-            reasoning = "There was an error behind the scenes. Try performing another action.";
-            FileErrorHandler.printExceptionToLog(e);
-            break;
-         }
-         catch (MissingKnowledgeException e) {
-            valid = false;
-            reasoning = e.getMissingString();
-            FileErrorHandler.printExceptionToLog(e);
-            break;
-         }
-      }*/
-
       Justification validatePreconds = validatePreconditions(conditions, nouns);
       return conditionallyPerformUpdates(validatePreconds, knowledgeUpdates, successMessage, nouns);
-/*      boolean valid = validatePreconds.isAccepted();
-      String reasoning = validatePreconds.getReasoning();
-      if (valid) {
-         reasoning = replaceArgsWithNouns(successMessage, nouns, " ");
-         for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
-            KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
-            reasoning = knowledgeBase.fillQueryString(reasoning, getItemToDeleteFromKnowledgeUpdate(populatedKnowledgeUpdate));
-            updateKnowledgeBase(populatedKnowledgeUpdate);
-         }
-
-         reasoning = knowledgeBase.fillQueryString(reasoning);
-
-      }
-
-      return new Justification(valid, reasoning);*/
    }
 
 
@@ -423,7 +381,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    @Override
    public String toString() {
-      return "com.interactivefiction.EnhancedGameEngine{" +
+      return "EnhancedGameEngine{" +
           "designerActions=" + designerActions +
           ", knowledgeBase=" + knowledgeBase +
           ", worldRooms=" + worldRooms +

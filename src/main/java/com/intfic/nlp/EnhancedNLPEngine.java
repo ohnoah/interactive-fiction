@@ -1,5 +1,6 @@
 package com.intfic.nlp;
 
+import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -17,10 +18,20 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
-public class EnhancedNLPEngine extends NLPEngine {
+public class EnhancedNLPEngine {
 
-   @Override
-   public InstantiatedGameAction parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+   private static StanfordCoreNLP pipeline;
+
+   public static InstantiatedGameAction parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+/*
+      // Get current size of heap in bytes
+      long heapSize = Runtime.getRuntime().totalMemory();
+      System.out.println(heapSize);
+
+      // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
+      long heapMaxSize = Runtime.getRuntime().maxMemory();
+      System.out.println(heapMaxSize);
+*/
 
 /*      Properties props = new Properties();
       props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse");
@@ -49,7 +60,7 @@ public class EnhancedNLPEngine extends NLPEngine {
          }*/
       /*      }*/
 
-      CoreDocument document = generateCoreDocumentFromString(rawCommand, "tokenize,ssplit,pos"); //lemma stuff
+      CoreDocument document = generateCoreDocumentFromString(rawCommand); //lemma stuff
 
       // display tokens
       String verb = null;
@@ -68,23 +79,25 @@ public class EnhancedNLPEngine extends NLPEngine {
       for (CoreLabel tok : document.tokens()) {
          System.out.println(String.format("%s\t%s", tok.word(), tok.tag()));
       }
+      System.out.println(document.corefChains());
       // Use that to look for a VB and a NN and populate a Command
       // just look for the possible commands using WordNet otherwise return Error
       // enhanced engine can be more informative if a supplementary word happens
       // FAIL flag if command is fake
+      document = null;
 
 
       return command;
    }
 
    //TODO: with wordnet synonyms
-   // TODO: Throw com.interactivefiction.nlp.FailedParseException if item not in this room is given
+   // TODO: Throw FailedParseException if item not in this room is given
    // Returns a list of synonym-replaced String item names for "nouns" corresponding in-game items
    // If fails, throw a com.interactivefiction.nlp.FailedParseException. This can be either because adjectives don't match
    // or because there are no in-game items with that name.
    // TODO: To support multiple same-name items, need to change this to longest match and potentially return errors
-   public List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
-                                                    Set<Item> possibleItems) throws FailedParseException {
+   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
+                                                 Set<Item> possibleItems) throws FailedParseException {
       List<String> matchingGameItemNames = new ArrayList<>();
       nounLoop:
       for (int i = 0; i < nouns.size(); i++) {
@@ -121,12 +134,12 @@ public class EnhancedNLPEngine extends NLPEngine {
       return matchingGameItemNames;
    }
 
-   private boolean adjectivesMatch(Set<String> userAdjectives, Set<String> itemAdjectives) {
+   private static boolean adjectivesMatch(Set<String> userAdjectives, Set<String> itemAdjectives) {
       return itemAdjectives.containsAll(userAdjectives);
    }
 
    // TODO: Rule out put the box in the box
-   public void findNounsAndAdjectives(CoreDocument document, ActionFormat actionToTake, List<String> nouns, List<Set<String>> adjectives) throws FailedParseException {
+   public static void findNounsAndAdjectives(CoreDocument document, ActionFormat actionToTake, List<String> nouns, List<Set<String>> adjectives) throws FailedParseException {
       // TODO: Both cases should match against possibleActionNames with Wordnet
       // Word net in here
       // Either do a regex match for PUT IN
@@ -137,7 +150,7 @@ public class EnhancedNLPEngine extends NLPEngine {
          if (doesMatch) {
             for (int i = 1; i <= m.groupCount(); i++) {
                String matchingGroup = m.group(i);
-               appendMatchingGroupNoun(nouns, adjectives, document, matchingGroup, actionToTake);
+               appendMatchingGroupNoun(nouns, adjectives, document, matchingGroup, actionToTake, m.start(i), m.end(i));
             }
          }
          else {
@@ -167,7 +180,7 @@ public class EnhancedNLPEngine extends NLPEngine {
       }
    }
 
-   private String removeNumberTag(String s) {
+   private static String removeNumberTag(String s) {
       int i = s.indexOf("-");
       if (i == -1) {
          return s;
@@ -177,23 +190,51 @@ public class EnhancedNLPEngine extends NLPEngine {
       }
    }
 
-   private boolean isNoun(String tag){
+   private static boolean isNoun(String tag) {
       return tag.equals("NN") || tag.equals("NNS") || tag.equals("NNP") || tag.equals("NNPS");
    }
 
    // TODO: How does this work if there is a "-" in the sentence
-   private void appendMatchingGroupNoun(List<String> nouns, List<Set<String>> adjectives, CoreDocument document, String matchingGroup, ActionFormat actionToTake) throws FailedParseException {
-      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup, "tokenize");
-      int index = Collections.indexOfSubList(document.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()),
-          matchingDoc.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()));
-      if (index == -1) {
+   private static void appendMatchingGroupNoun(List<String> nouns, List<Set<String>> adjectives, CoreDocument document, String matchingGroup, ActionFormat actionToTake, int start, int end) throws FailedParseException {
+/*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
+/*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
+/*      int index = Collections.indexOfSubList(document.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()),
+          matchingDoc.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()));*/
+
+      int firstTokenIndex = -1;
+      for(int i = 0; i<document.tokens().size(); i++){
+         CoreLabel tok = document.tokens().get(i);
+         if(tok.beginPosition() == start){
+            firstTokenIndex = i;
+         }
+      }
+
+      if (firstTokenIndex == -1) {
          System.err.println(document.tokens());
-         System.err.println(matchingDoc.tokens());
+         System.err.println(matchingGroup);
          throw new FailedParseException("Incorrect usage of the verb: " + actionToTake.getVerb());
       }
+
       String noun;
       Set<String> currentAdjectives = new HashSet<>();
-      for (int i = index; i < index + matchingDoc.tokens().size(); i++) {
+      int tokenIndex = firstTokenIndex;
+      CoreLabel tok = document.tokens().get(tokenIndex);
+      while(tok.endPosition() <= end){
+         tok = document.tokens().get(tokenIndex);
+         String tag = tok.tag();
+         if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
+            currentAdjectives.add(tok.word());
+         }
+         if (isNoun(tag)) {
+            adjectives.add(currentAdjectives);
+            noun = tok.word();
+            nouns.add(noun);
+            return;
+         }
+         tokenIndex++;
+      }
+
+/*      for (int i = index; i < index + matchingDoc.tokens().size(); i++) {
          CoreLabel tok = document.tokens().get(i);
          String tag = tok.tag();
          if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
@@ -205,12 +246,12 @@ public class EnhancedNLPEngine extends NLPEngine {
             nouns.add(noun);
             return;
          }
-      }
+      }*/
       throw new FailedParseException(String.format("Couldn't find any item in words: %s", matchingGroup));
    }
 
    // This fails for e.g. TURN it ON, TURN the box
-   private ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
+   private static ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
       // TODO: ADD Word net in here
       for (ActionFormat af : possibleActionFormats) {
          if (af.getVerb().equals(verb)) {
@@ -221,7 +262,7 @@ public class EnhancedNLPEngine extends NLPEngine {
    }
 
    // TODO: Think about ignoring everyhing after found
-   public String findVerb(CoreDocument document) throws FailedParseException {
+   public static String findVerb(CoreDocument document) throws FailedParseException {
       String verb;
       for (int i = 0; i < document.tokens().size(); i++) {
          CoreLabel tok = document.tokens().get(i);
@@ -286,22 +327,34 @@ public class EnhancedNLPEngine extends NLPEngine {
             System.err.println(tree.getLeaves().subList(constituent.start(), constituent.end() + 1));
          }
       }
-
-      com.interactivefiction.EnhancedNLPEngine enhancedNLPEngine = new com.interactivefiction.EnhancedNLPEngine();
-      try {
-         InstantiatedGameAction command = enhancedNLPEngine
-             .parse("put the black key in the red key",
-                 new com.interactivefiction.BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key")));
+      */
+/*      try {
+         InstantiatedGameAction command = EnhancedNLPEngine
+             .parse("put the key in the box",
+                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box")));
+         InstantiatedGameAction command2 = EnhancedNLPEngine
+             .parse("put the box in the key",
+                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box")));
+         InstantiatedGameAction command3 = EnhancedNLPEngine
+             .parse("put the donkey in the box",
+                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box")));
       } catch (FailedParseException e) {
          e.printStackTrace();
       }*/
    }
 
-   public CoreDocument generateCoreDocumentFromString(String rawCommand, String annotatorsProperty) {
+   static {
       Properties props = new Properties();
-      props.setProperty("annotators", "tokenize,ssplit,pos"); // TODO: ,lemma in props
+      props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,depparse,coref");
+      pipeline = new StanfordCoreNLP(props);
+/*      Properties propsTokenizer = new Properties();
+      props.setProperty("annotators", "tokenize");
+      this.pipelineTokenizer = new StanfordCoreNLP(propsTokenizer);*/
+   }
+
+
+   public static CoreDocument generateCoreDocumentFromString(String rawCommand) {
       // build pipeline
-      StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
       // create a document object
       CoreDocument document = pipeline.processToCoreDocument(rawCommand);
       return document;
