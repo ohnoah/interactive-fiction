@@ -1,111 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedNLPEngineTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2021-02-05T13:54:54" hostname="Noahs-MacBook-Pro.local" time="1.247">
+<testsuite name="EnhancedNLPEngineTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2021-02-08T14:23:14" hostname="Noahs-MacBook-Pro.local" time="1.172">
   <properties/>
-  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.064"/>
-  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.139"/>
-  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.14"/>
-  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.12"/>
-  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.044"/>
+  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.091"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.131"/>
+  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.187"/>
+  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.123"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.037"/>
   <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.031"/>
-  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.151"/>
-  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.012"/>
+  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.144"/>
+  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.015"/>
   <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.001"/>
-  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.028"/>
-  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.054"/>
-  <testcase name="parseListenToRegex" classname="EnhancedNLPEngineTest" time="0.048"/>
-  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.094"/>
-  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.065"/>
-  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.056"/>
-  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.075"/>
-  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.001"/>
-  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.086"/>
-  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.036"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.023"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.046"/>
+  <testcase name="parseListenToRegex" classname="EnhancedNLPEngineTest" time="0.041"/>
+  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.072"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.054"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.042"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.042"/>
+  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.0"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.057"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.031"/>
   <system-out><![CDATA[Setting it up!
-(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (PP (IN with) (NP (NN grace))))))
-open	VB
-the	DT
-door	NN
-with	IN
-grace	NN
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (ADVP (RB quickly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+open	VB(-)
+the	DT(-)
+door	NN(-)
+quickly	RB(-)
 {}
-(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (PP (IN with) (NP (NN grace))))))
-destroy	VB
-the	DT
-cave	NN
-with	IN
-grace	NN
+DT
+JJ
+NN
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (ADVP (RB quickly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+destroy	VB(-)
+the	DT(-)
+cave	NN(-)
+quickly	RB(-)
 {}
 2147483648
 2147483648
 (ROOT (S (VP (VB put) (NP (DT the) (NN pen)) (PP (IN in) (NP (DT the) (NN box))))))
-put	VB
-the	DT
-pen	NN
-in	IN
-the	DT
-box	NN
+[(0,5)]
+[(1,2), (4,5)]
+DT
+NN
+DT
+NN
+put	VB(-)
+the	DT(-)
+pen	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
 {}
+DT
+JJ
+NN
+DT
+JJ
+NN
+DT
+NN
+DT
+JJR
+JJ
+NN
+DT
+JJS
+JJ
+NN
+NN
+NN
+NN
 (ROOT (S (VP (VB listen) (PP (IN to) (NP (DT the) (NN dog))))))
-listen	VB
-to	IN
-the	DT
-dog	NN
-{}
-(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (PP (IN with) (NP (NN grace))))))
-open	VB
-the	DT
-door	NN
-with	IN
-grace	NN
-{}
-(ROOT (S (VP (VB take) (NP (DT the) (NN dog)) (PP (IN with) (NP (NN grace))))))
-take	VB
-the	DT
-dog	NN
-with	IN
-grace	NN
-{}
-(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (PP (IN with) (NP (NN grace))))))
-destroy	VB
-the	DT
-cave	NN
-with	IN
-grace	NN
-{}
-(ROOT (S (VP (VB eat) (NP (NN steak)))))
-]]></system-out>
-  <system-err><![CDATA[log4j:WARN No appenders could be found for logger (edu.stanford.nlp.pipeline.StanfordCoreNLP).
-log4j:WARN Please initialize the log4j system properly.
-log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
-VB
+[(0,3)]
+[(2,3)]
 DT
 NN
-VB
-DT
-JJ
-NN
-VB
-DT
-NN
-ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8VB
-DT
-NN
-JJ
-NN
-VB
+listen	VB(-)
+to	IN(-)
+the	DT(-)
+dog	NN(-)
+{}
 DT
 JJ
 CC
 JJ
 NN
-VB
 DT
 NN
-VB
 DT
 NN
-VB
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (ADVP (RB slowly)))))
+[(0,3)]
+[(1,2)]
 DT
 NN
-]]></system-err>
+open	VB(-)
+the	DT(-)
+door	NN(-)
+slowly	RB(-)
+{}
+(ROOT (S (VP (VB take) (NP (DT the) (NN dog)) (ADVP (RB graciously)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+take	VB(-)
+the	DT(-)
+dog	NN(-)
+graciously	RB(-)
+{}
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (ADVP (RB ferociously)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+destroy	VB(-)
+the	DT(-)
+cave	NN(-)
+ferociously	RB(-)
+{}
+(ROOT (S (VP (VB eat) (NP (NN steak)))))
+[(0,1)]
+[(1,1)]
+]]></system-out>
+  <system-err><![CDATA[log4j:WARN No appenders could be found for logger (edu.stanford.nlp.pipeline.StanfordCoreNLP).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8]]></system-err>
 </testsuite>

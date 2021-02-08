@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">1.245s</div>
+<div class="counter">1.168s</div>
 <p>duration</p>
 </div>
 </td>
@@ -82,7 +82,7 @@
 </thead>
 <tr>
 <td class="success">findMatchingGameItemNamesFailsTooManyAdjectives</td>
-<td class="success">0.012s</td>
+<td class="success">0.015s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -92,47 +92,47 @@
 </tr>
 <tr>
 <td class="success">findMatchingGameItemNamesNoSynonyms</td>
-<td class="success">0.001s</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">findNounsFindsTernaryDefiniteNouns</td>
-<td class="success">0.065s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">findNounsFindsTernaryMultipleAdjectives</td>
-<td class="success">0.151s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">findNounsFindsTernaryNouns</td>
 <td class="success">0.054s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">findNounsFindsTernaryMultipleAdjectives</td>
+<td class="success">0.144s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">findNounsFindsTernaryNouns</td>
+<td class="success">0.046s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">findNounsFindsTernarySingleAdjective</td>
-<td class="success">0.120s</td>
+<td class="success">0.123s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">findNounsFindsUnaryDefiniteNoun</td>
-<td class="success">0.044s</td>
+<td class="success">0.037s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">findNounsFindsUnaryMultipleAdjectives</td>
-<td class="success">0.094s</td>
+<td class="success">0.072s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">findNounsFindsUnaryNoun</td>
-<td class="success">0.028s</td>
+<td class="success">0.023s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">findNounsFindsUnarySingleAdjective</td>
-<td class="success">0.064s</td>
+<td class="success">0.091s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -142,37 +142,37 @@
 </tr>
 <tr>
 <td class="success">parseListenToRegex</td>
-<td class="success">0.048s</td>
+<td class="success">0.041s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">parseNounSimpleWithExtraStuffAfter</td>
-<td class="success">0.086s</td>
+<td class="success">0.057s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">parseNounWithDefiniteArticle</td>
-<td class="success">0.056s</td>
+<td class="success">0.042s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">parsePutSpaceNoun</td>
-<td class="success">0.140s</td>
+<td class="success">0.187s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">parseVerbSimpleTwoWords</td>
-<td class="success">0.075s</td>
+<td class="success">0.042s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">parseVerbSimpleWithExtraStuffAfter</td>
-<td class="success">0.139s</td>
+<td class="success">0.131s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">whenNoMatchingGameVerbThrowFailedParseException</td>
-<td class="success">0.036s</td>
+<td class="success">0.031s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -181,58 +181,116 @@
 <h2>Standard output</h2>
 <span class="code">
 <pre>Setting it up!
-(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (PP (IN with) (NP (NN grace))))))
-open	VB
-the	DT
-door	NN
-with	IN
-grace	NN
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (ADVP (RB quickly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+open	VB(-)
+the	DT(-)
+door	NN(-)
+quickly	RB(-)
 {}
-(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (PP (IN with) (NP (NN grace))))))
-destroy	VB
-the	DT
-cave	NN
-with	IN
-grace	NN
+DT
+JJ
+NN
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (ADVP (RB quickly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+destroy	VB(-)
+the	DT(-)
+cave	NN(-)
+quickly	RB(-)
 {}
 2147483648
 2147483648
 (ROOT (S (VP (VB put) (NP (DT the) (NN pen)) (PP (IN in) (NP (DT the) (NN box))))))
-put	VB
-the	DT
-pen	NN
-in	IN
-the	DT
-box	NN
+[(0,5)]
+[(1,2), (4,5)]
+DT
+NN
+DT
+NN
+put	VB(-)
+the	DT(-)
+pen	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
 {}
+DT
+JJ
+NN
+DT
+JJ
+NN
+DT
+NN
+DT
+JJR
+JJ
+NN
+DT
+JJS
+JJ
+NN
+NN
+NN
+NN
 (ROOT (S (VP (VB listen) (PP (IN to) (NP (DT the) (NN dog))))))
-listen	VB
-to	IN
-the	DT
-dog	NN
+[(0,3)]
+[(2,3)]
+DT
+NN
+listen	VB(-)
+to	IN(-)
+the	DT(-)
+dog	NN(-)
 {}
-(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (PP (IN with) (NP (NN grace))))))
-open	VB
-the	DT
-door	NN
-with	IN
-grace	NN
+DT
+JJ
+CC
+JJ
+NN
+DT
+NN
+DT
+NN
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (ADVP (RB slowly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+open	VB(-)
+the	DT(-)
+door	NN(-)
+slowly	RB(-)
 {}
-(ROOT (S (VP (VB take) (NP (DT the) (NN dog)) (PP (IN with) (NP (NN grace))))))
-take	VB
-the	DT
-dog	NN
-with	IN
-grace	NN
+(ROOT (S (VP (VB take) (NP (DT the) (NN dog)) (ADVP (RB graciously)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+take	VB(-)
+the	DT(-)
+dog	NN(-)
+graciously	RB(-)
 {}
-(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (PP (IN with) (NP (NN grace))))))
-destroy	VB
-the	DT
-cave	NN
-with	IN
-grace	NN
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (ADVP (RB ferociously)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+destroy	VB(-)
+the	DT(-)
+cave	NN(-)
+ferociously	RB(-)
 {}
 (ROOT (S (VP (VB eat) (NP (NN steak)))))
+[(0,1)]
+[(1,1)]
 </pre>
 </span>
 </div>
@@ -242,37 +300,7 @@ grace	NN
 <pre>log4j:WARN No appenders could be found for logger (edu.stanford.nlp.pipeline.StanfordCoreNLP).
 log4j:WARN Please initialize the log4j system properly.
 log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
-VB
-DT
-NN
-VB
-DT
-JJ
-NN
-VB
-DT
-NN
-ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8VB
-DT
-NN
-JJ
-NN
-VB
-DT
-JJ
-CC
-JJ
-NN
-VB
-DT
-NN
-VB
-DT
-NN
-VB
-DT
-NN
-</pre>
+ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8</pre>
 </span>
 </div>
 </div>
@@ -283,7 +311,7 @@ NN
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 5.2.1</a> at 5 Feb 2021, 14:54:57</p>
+<a href="http://www.gradle.org">Gradle 5.2.1</a> at 8 Feb 2021, 15:23:18</p>
 </div>
 </div>
 </body>
