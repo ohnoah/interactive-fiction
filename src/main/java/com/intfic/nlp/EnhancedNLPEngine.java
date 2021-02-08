@@ -4,11 +4,11 @@ import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
-import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.trees.Constituent;
 import edu.stanford.nlp.trees.LabeledScoredConstituentFactory;
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -74,126 +73,79 @@ public class EnhancedNLPEngine {
       }
    }
 
-   public static List<InstantiatedGameAction> parseMultiple(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
-      return null;
-   }
 
-   public static List<InstantiatedGameAction> parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
-/*
-      // Get current size of heap in bytes
-      long heapSize = Runtime.getRuntime().totalMemory();
-      System.out.println(heapSize);
-
-      // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
-      long heapMaxSize = Runtime.getRuntime().maxMemory();
-      System.out.println(heapMaxSize);
-*/
-
-/*      Properties props = new Properties();
-      props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse");
-      // use faster shift reduce parser
-      //props.setProperty("parse.model", "edu/stanford/nlp/models/srparser/englishSR.ser.gz");
-      props.setProperty("parse.maxlen", "100");
-      // set up Stanford CoreNLP pipeline
-      StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-      // build annotation for a review
-      Annotation annotation =
-          new Annotation("turn on the television");
-      // annotate
-      pipeline.annotate(annotation);
-      // get tree
-      Tree tree =
-          annotation.get(CoreAnnotations.SentencesAnnotation.class).get(0).get(TreeCoreAnnotations.TreeAnnotation.class);
-
-
-      System.out.println(tree);
-      Set<Constituent> treeConstituents = tree.constituents(new LabeledScoredConstituentFactory());
-      for (Constituent constituent : treeConstituents) {
-         if (constituent.label() != null &&
-             (constituent.label().toString().equals("VP") || constituent.label().toString().equals("NP"))) {
-            System.err.println("found constituent: "+constituent.toString());
-            System.err.println(tree.getLeaves().subList(constituent.start(), constituent.end()+1));
-         }*/
-      /*      }*/
-
-      CoreDocument document = generateCoreDocumentFromString(rawCommand); //lemma stuff
-
-      Tree tree =
-          document.annotation().get(CoreAnnotations.SentencesAnnotation.class).get(0).get(TreeCoreAnnotations.TreeAnnotation.class);
-      System.out.println(tree);
-      List<Pair<Integer, Integer>> vps = new ArrayList<>();
-      List<Pair<Integer, Integer>> nps = new ArrayList<>();
-      npVpIndices(tree, vps, nps);
-      Comparator<Pair<Integer, Integer>> pairComparator = (o1, o2) -> {
-         if (o1 == null && o2 == null) {
-            return 0;
-         }
-         else if (o1 == null && o2 != null) {
-            return -1;
-         }
-         else if (o1 != null && o2 == null) {
-            return 1;
-         }
-         if (o1.first.compareTo(o2.first) > 0) {
-            return 1;
-         }
-         else if (o1.first.compareTo(o2.first) < 0) {
-            return -1;
-         }
-         else {
-            return o1.second.compareTo(o2.second);
-         }
-      };
-      vps.sort(pairComparator);
-      nps.sort(pairComparator);
-      // TODO: NP indices
-      System.out.println(vps);
-      System.out.println(nps);
-
-      // TODO: Check that no negations occur between vpIndices or that a separatae sentence
-
-      Map<Integer, CorefChain> corefChainMap = document.corefChains();
-      Map<Pair<Integer, Integer>, Pair<Integer, Integer>> representativeCorefCluster = new HashMap<>();
+   private static Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative(Map<Integer, CorefChain> corefChainMap) {
+      System.out.println(corefChainMap);
+      Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative = new HashMap<>();
       for (Map.Entry<Integer, CorefChain> entry : corefChainMap.entrySet()) {
          CorefChain c = entry.getValue();
          List<CorefChain.CorefMention> corefMentions = c.getMentionsInTextualOrder();
-         Pair<Integer, Integer> representing = new Pair<>(corefMentions.get(0).startIndex, corefMentions.get(0).endIndex);
-         for (CorefChain.CorefMention mention : c.getMentionsInTextualOrder()) {
-            Pair<Integer, Integer> mentionIndices = new Pair<>(mention.startIndex, mention.endIndex);
-            if (!representing.equals(mentionIndices)) {
-               representativeCorefCluster.put(mentionIndices, representing);
-               break;
+         Pair<Integer, Integer> representing = new Pair<>(corefMentions.get(0).startIndex - 1, corefMentions.get(0).endIndex - 2);
+         for (CorefChain.CorefMention mention : corefMentions) {
+            Pair<Integer, Integer> mentionIndices = new Pair<>(mention.startIndex - 1, mention.endIndex - 2);
+            // Don't add self-references or forward references
+            if (representing.compareTo(mentionIndices) < 0) {
+               corefRepresentative.put(mentionIndices, representing);
             }
          }
       }
+      return corefRepresentative;
+   }
+
+   public static List<InstantiatedGameAction> parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+
+      CoreDocument document = generateCoreDocumentFromString(rawCommand); //lemma stuff
+
+      Comparator<Pair<Integer, Integer>> pairComparator = Pair::compareTo;
+
+      Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache = new HashMap<>();
+      Map<Integer, CorefChain> corefChainMap = document.corefChains();
+      System.out.println(corefChainMap);
+      Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative = corefRepresentative(corefChainMap);
 
 
       List<InstantiatedGameAction> commands = new ArrayList<>();
-      for (Pair<Integer, Integer> vpStartEnd : vps) {
-         // display tokens
-         int start = vpStartEnd.first;
-         int end = vpStartEnd.second;
-         // TODO: Restructure these to use CoreDocument but indices of interest
-         String verb = findVerb(document, start, end);
-         ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
+      List<CoreSentence> sentences = document.sentences();
+      for (int sentIndex = 0; sentIndex < sentences.size(); sentIndex++) {
+         CoreSentence sentence = sentences.get(sentIndex);
+         Tree tree =
+             document.annotation().get(CoreAnnotations.SentencesAnnotation.class).get(sentIndex).get(TreeCoreAnnotations.TreeAnnotation.class);
+         System.out.println(tree);
+         List<Pair<Integer, Integer>> vps = new ArrayList<>();
+         List<Pair<Integer, Integer>> nps = new ArrayList<>();
+         npVpIndices(tree, vps, nps);
 
-         List<String> nouns = new ArrayList<>();
-         List<Set<String>> adjectives = new ArrayList<>();
-/*         if(equalNouns.containsKey(vpStartEnd)){
-            nouns = equalNouns.get(vpStartEnd);
-            adjectives = equalAdjectives.get(vpStartEnd);
-         }*/
-         findNounsAndAdjectives(document, start, end, nps, actionFormat, nouns, adjectives, representativeCorefCluster);
+         vps.sort(pairComparator);
+         nps.sort(pairComparator);
+         // TODO: NP indices
+         System.out.println(vps);
+         System.out.println(nps);
 
-         //TODO: do the wordnet stuff here for nouns
-         List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
+         // TODO: Check that no negations occur between vpIndices or that a separatae sentence
+
+         for (Pair<Integer, Integer> vpStartEnd : vps) {
+            // display tokens
+            int start = vpStartEnd.first;
+            int end = vpStartEnd.second;
+            // TODO: Restructure these to use CoreDocument but indices of interest
+            String verb = findVerb(sentence, start, end);
+            ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
+
+            List<String> nouns = new ArrayList<>();
+            List<Set<String>> adjectives = new ArrayList<>();
+            List<Pair<Integer, Integer>> npsInVP = nps.stream().filter(np -> start <= np.first && np.second <= end).collect(Collectors.toList());
+            findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative);
+
+            //TODO: do the wordnet stuff here for nouns
+            List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
 
 
-         InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
-         commands.add(command);
+            InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
+            commands.add(command);
+         }
       }
       for (CoreLabel tok : document.tokens()) {
-         String tagCoref = tagWithCoref(tok);
+         String tagCoref = tag(tok);
          System.out.println(String.format("%s\t%s(%s)", tok.word(), tok.tag(), tagCoref.equals(tok.tag()) ? "-" : tagCoref));
       }
       System.out.println(document.corefChains());
@@ -256,7 +208,7 @@ public class EnhancedNLPEngine {
       return tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS");
    }
 
-   private static String nounsAndAdjectivesInNP(CoreDocument document, Pair<Integer, Integer> np,
+   private static String nounsAndAdjectivesInNP(CoreSentence sentence, Pair<Integer, Integer> np,
                                                 Set<String> adjectives, Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
                                                 Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative) throws FailedParseException {
 
@@ -267,7 +219,7 @@ public class EnhancedNLPEngine {
          adjectives.addAll(adjAndNouns.first);
          return adjAndNouns.second;
       }
-      List<CoreLabel> tokens = document.tokens();
+      List<CoreLabel> tokens = sentence.tokens();
       for (int i = np.first; i <= np.second; i++) {
          CoreLabel tok = tokens.get(i);
          String tag = tok.tag();
@@ -277,7 +229,9 @@ public class EnhancedNLPEngine {
          }
          if (isNoun(tag)) {
             String noun = tok.word();
-            corefCache.put(np, new Pair<>(adjectives, noun));
+            if (corefRepresentative.containsValue(np)) {
+               corefCache.put(np, new Pair<>(adjectives, noun));
+            }
             return noun;
          }
       }
@@ -287,16 +241,15 @@ public class EnhancedNLPEngine {
    }
 
    // TODO: Rule out put the box in the box
-   public static void findNounsAndAdjectives(CoreDocument document, int start, int end,
-                                             List<Pair<Integer, Integer>> nps,
+   public static void findNounsAndAdjectives(CoreSentence sentence, int vpStart, int vpEnd,
+                                             List<Pair<Integer, Integer>> npsInVP,
                                              ActionFormat actionToTake, List<String> nouns,
-                                             List<Set<String>> adjectives, Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative) throws FailedParseException {
+                                             List<Set<String>> adjectives, Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
+                                             Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative) throws FailedParseException {
       // TODO: Both cases should match against possibleActionNames with Wordnet
       // Word net in here
       // Either do a regex match for PUT IN
-      Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache = new HashMap<>();
 
-      List<Pair<Integer, Integer>> npsInVP = nps.stream().filter(np -> start <= np.first && np.second <= end).collect(Collectors.toList());
       if (npsInVP.size() != actionToTake.getDegree()) {
          throw new FailedParseException(String.format("Expected %d arguments for verb %s but got %d",
              actionToTake.getDegree(), actionToTake.getVerb(), npsInVP.size()));
@@ -304,15 +257,16 @@ public class EnhancedNLPEngine {
 
       if (actionToTake.isTernary()) {
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
-         List<CoreLabel> tokens = document.tokens();
-         List<String> matchedStrings = tokens.subList(start, end + 1).stream().map(CoreLabel::value).collect(Collectors.toList());
+         List<CoreLabel> tokens = sentence.tokens();
+         List<String> matchedVPStrings = tokens.subList(vpStart, vpEnd + 1).stream().map(CoreLabel::value).collect(Collectors.toList());
 
-         Matcher m = p.matcher(String.join(" ", matchedStrings));
+         Matcher m = p.matcher(String.join(" ", matchedVPStrings));
          boolean doesMatch = m.matches();
          if (doesMatch) {
-            int offset = tokens.get(start).beginPosition();
+            int offset = tokens.get(vpStart).beginPosition();
+            // This code simply checks that the NP next in line is the next matching group to avoid mathching groups being non-NP
             for (int i = 1; i <= m.groupCount(); i++) {
-               String matchingGroup = m.group(i);
+               //String matchingGroup = m.group(i);
                Pair<Integer, Integer> np = npsInVP.get(i - 1);
                int npStartCharIndex = tokens.get(np.first).beginPosition() - offset;
                int npEndCharIndex = tokens.get(np.second).endPosition() - offset;
@@ -321,7 +275,7 @@ public class EnhancedNLPEngine {
                if (npStartCharIndex != matcherStart || npEndCharIndex != matcherEnd) {
                   throw new FailedParseException(String.format("Non-noun phrase specified in the %d:th slot of verb %s", i, actionToTake.getVerb()));
                }
-               appendMatchingGroupNoun(nouns, adjectives, document, np, corefCache, corefRepresentative);
+               appendMatchingGroupNoun(nouns, adjectives, sentence, np, corefCache, corefRepresentative);
             }
          }
          else {
@@ -332,9 +286,8 @@ public class EnhancedNLPEngine {
       else {
          String noun;
          Set<String> currentAdjectives = new HashSet<>();
-         List<CoreLabel> tokens = document.tokens();
-         Pair<Integer, Integer> np = nps.get(0);
-         noun = nounsAndAdjectivesInNP(document, np, currentAdjectives, corefCache, corefRepresentative);
+         Pair<Integer, Integer> np = npsInVP.get(0);
+         noun = nounsAndAdjectivesInNP(sentence, np, currentAdjectives, corefCache, corefRepresentative);
          nouns.add(noun);
          adjectives.add(currentAdjectives);
 /*         for (int i = np.first; i <= np.second; i++) {
@@ -354,83 +307,23 @@ public class EnhancedNLPEngine {
       }
    }
 
-   private static String removeNumberTag(String s) {
-      int i = s.indexOf("-");
-      if (i == -1) {
-         return s;
-      }
-      else {
-         return s.substring(0, i);
-      }
-   }
-
    private static boolean isNoun(String tag) {
       return tag.equals("NN") || tag.equals("NNS") || tag.equals("NNP") || tag.equals("NNPS");
    }
 
-   private static String tagWithCoref(CoreLabel tok) {
-/*      for (Map.Entry<Integer, CorefChain> c : corefchains.entrySet()) {
-         CorefChain val = c.getValue();
-         System.out.println(val.getChainID());
-         System.out.println(val.getMentionMap());
-         System.out.println(val.getMentionsInTextualOrder());
-         System.out.println(val.getRepresentativeMention());
-         CorefChain.CorefMention mention =
-
-      }*/
+   private static String tag(CoreLabel tok) {
       return tok.tag();
    }
 
    // TODO: How does this work if there is a "-" in the sentence
    private static void appendMatchingGroupNoun(List<String> nouns, List<Set<String>> adjectives,
-                                               CoreDocument document, Pair<Integer, Integer> np,
+                                               CoreSentence sentence, Pair<Integer, Integer> np,
                                                Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
                                                Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative) throws FailedParseException {
-      /*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
-      /*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
-/*      int index = Collections.indexOfSubList(document.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()),
-          matchingDoc.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()));*/
-
-/*      int firstTokenIndex = np.first;
-      int lastCharPos = document.tokens().get(np.second).endPosition();
-      int offset = document.tokens().get(np.first).beginPosition();
-*//*     for (int i = npStart; i <= npEnd; i++) {
-         CoreLabel tok = document.tokens().get(i);
-         if (tok.beginPosition() - offset == start) {
-            firstTokenIndex = i;
-         }
-      }
-
-      if (firstTokenIndex == -1) {
-         System.err.println(document.tokens());
-         System.err.println(matchingGroup);
-         throw new FailedParseException("Incorrect usage of the verb: " + actionToTake.getVerb());
-      }*//*
-
-      String noun;
       Set<String> currentAdjectives = new HashSet<>();
-      int tokenIndex = firstTokenIndex;
-      CoreLabel tok = document.tokens().get(tokenIndex);
-      while (tok.endPosition() - offset <= lastCharPos) {
-         tok = document.tokens().get(tokenIndex);
-         String tag = tagWithCoref(tok);
-         if (isAdjective(tag)) {
-            currentAdjectives.add(tok.word());
-         }
-         if (isNoun(tag)) {
-            adjectives.add(currentAdjectives);
-            noun = tok.word();
-            nouns.add(noun);
-            return;
-         }
-         tokenIndex++;
-      }*/
-      Set<String> currentAdjectives = new HashSet<>();
-      String noun = nounsAndAdjectivesInNP(document, np, currentAdjectives, corefCache, corefRepresentative);
+      String noun = nounsAndAdjectivesInNP(sentence, np, currentAdjectives, corefCache, corefRepresentative);
       nouns.add(noun);
       adjectives.add(currentAdjectives);
-
-      //throw new FailedParseException(String.format("Couldn't find any item in words: %s", matchingGroup));
    }
 
    // This fails for e.g. TURN it ON, TURN the box
@@ -445,16 +338,16 @@ public class EnhancedNLPEngine {
    }
 
    // TODO: Think about ignoring everyhing after found
-   public static String findVerb(CoreDocument document, int start, int end) throws FailedParseException {
+   public static String findVerb(CoreSentence sentence, int start, int end) throws FailedParseException {
       String verb;
       for (int i = start; i <= end; i++) {
-         CoreLabel tok = document.tokens().get(i);
-         String tag = tagWithCoref(tok);
+         CoreLabel tok = sentence.tokens().get(i);
+         String tag = tag(tok);
          if (tag.equals("VB") || tag.equals("VBN") || tag.equals("VBG") || tag.equals("VBP") || tag.equals("VBZ")) {
             verb = tok.word();
-            if (i != document.tokens().size() - 1) {
-               CoreLabel nextToken = document.tokens().get(i + 1);
-               if (tagWithCoref(nextToken).equals("RP")) {
+            if (i != sentence.tokens().size() - 1) {
+               CoreLabel nextToken = sentence.tokens().get(i + 1);
+               if (tag(nextToken).equals("RP")) {
                   verb += String.format(" %s", nextToken.word());
                }
             }
