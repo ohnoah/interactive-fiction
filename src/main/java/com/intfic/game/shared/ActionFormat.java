@@ -18,6 +18,7 @@ public class ActionFormat implements Serializable {
       this.regExpr = regExpr;
    }
 
+   // TODO: Generalize
    public int getDegree(){
       if(regExpr == null){
          return 1;
