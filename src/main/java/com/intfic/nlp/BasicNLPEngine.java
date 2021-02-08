@@ -14,7 +14,7 @@ import net.sf.extjwnl.data.POS;
 
 public class BasicNLPEngine {
 
-   public static InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+   public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
       // TODO: Fail if more than one sentence or there is an and in the sentence
 
       // display tokens
@@ -39,7 +39,7 @@ public class BasicNLPEngine {
       // FAIL flag if command is fake
 
 
-      return command;
+      return Collections.singletonList(command);
    }
 
    private static void appendFirstNoun(List<String> nouns, String stringToSearch, ActionFormat actionToTake) throws JWNLException {

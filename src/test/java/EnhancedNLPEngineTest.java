@@ -8,6 +8,7 @@ import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreDocument;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,19 +30,20 @@ public class EnhancedNLPEngineTest {
       Item door = new Item("door");
       possibleActionFormats.add(new ActionFormat(verb, null));
       InstantiatedGameAction instantiatedGameAction =
-       EnhancedNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, Set.of(door));
+          EnhancedNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, Set.of(door)).get(0);
    }
 
    @Rule
    public ExpectedException exceptionRule = ExpectedException.none();
+
    // Test helpers
    @Test
    public void findVerbFindsUnaryEat() throws JWNLException, FailedParseException {
       CoreDocument document = coreDocumentFromText("eat pizza");
-      assertEquals("eat", EnhancedNLPEngine.findVerb(document));
+      assertEquals("eat", EnhancedNLPEngine.findVerb(document, 0, 1));
    }
 
-   public CoreDocument coreDocumentFromText(String rawCommand) {
+   private CoreDocument coreDocumentFromText(String rawCommand) {
       return EnhancedNLPEngine.generateCoreDocumentFromString(rawCommand);
    }
 
@@ -52,7 +54,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("open door");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 1, actionFormat, nouns, adjectives);
       assertEquals(doorArr, nouns);
    }
 
@@ -63,7 +65,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("examine the bread");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 2, actionFormat, nouns, adjectives);
       assertEquals(breadArr, nouns);
    }
 
@@ -74,7 +76,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("throw ball in container");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 3, actionFormat, nouns, adjectives);
       assertEquals(keyBoxArr, nouns);
    }
 
@@ -85,7 +87,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("put the key in the box");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 5, actionFormat, nouns, adjectives);
       assertEquals(nouns, keyBoxArr);
    }
 
@@ -96,7 +98,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("examine the delicious bread");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 3, actionFormat, nouns, adjectives);
       assertEquals(adjectives, deliciousArr);
    }
 
@@ -107,7 +109,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("examine the delicious and yellow bread.");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 5, actionFormat, nouns, adjectives);
       assertEquals(adjectives, deliciousArr);
    }
 
@@ -118,7 +120,7 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("put the red key in the black box");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 7, actionFormat, nouns, adjectives);
       assertEquals(adjectives, redBlackArr);
    }
 
@@ -129,10 +131,9 @@ public class EnhancedNLPEngineTest {
       CoreDocument document = coreDocumentFromText("put the larger red key in the cutest blue box");
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
-      EnhancedNLPEngine.findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      EnhancedNLPEngine.findNounsAndAdjectives(document, 0, 9, actionFormat, nouns, adjectives);
       assertEquals(multiAdjArr, adjectives);
    }
-
 
 
    @Test
@@ -142,10 +143,12 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       possibleActionFormats.add(new ActionFormat("ski", null));
       possibleActionFormats.add(new ActionFormat("fly", null));
-      InstantiatedGameAction instantiatedGameAction = EnhancedNLPEngine.parse(String.format("eat steak"), possibleActionFormats, new HashSet<>());
+      InstantiatedGameAction instantiatedGameAction = EnhancedNLPEngine.parse(String.format("eat steak"), possibleActionFormats, new HashSet<>()).get(0);
 
    }
    // TODO: Check other exceptions here
+
+
 
    @Test
    public void parseVerbSimpleTwoWords() throws FailedParseException {
@@ -156,12 +159,15 @@ public class EnhancedNLPEngineTest {
       Item dog = new Item("dog");
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
-      InstantiatedGameAction instantiatedGameAction =
+      List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, Set.of(dog));
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
+      assertEquals(1, instantiatedGameActions.size());
    }
+
    @Test
    public void parseListenToRegex() throws FailedParseException {
       // take dog
@@ -171,11 +177,13 @@ public class EnhancedNLPEngineTest {
       Item dog = new Item("dog");
       possibleActionFormats.add(new ActionFormat("listen", "listen to ([\\w\\s]+)$"));
       possibleActionFormats.add(new ActionFormat("fly", null));
-      InstantiatedGameAction instantiatedGameAction =
+      List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s to the %s", verb, noun), possibleActionFormats, Set.of(dog));
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
+      assertEquals(1, instantiatedGameActions.size());
    }
 
    @Test
@@ -186,13 +194,24 @@ public class EnhancedNLPEngineTest {
       String noun = "door";
       Item door = new Item("door");
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction =
+      List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, Set.of(door));
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<String> wantedArr = List.of(noun);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);
+      assertEquals(1, instantiatedGameActions.size());
    }
 
+   private void printHeapSize(){
+      // Get current size of heap in bytes
+      long heapSize = Runtime.getRuntime().totalMemory();
+      System.out.println(heapSize);
+
+      // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
+      long heapMaxSize = Runtime.getRuntime().maxMemory();
+      System.out.println(heapMaxSize);
+   }
 
    @Test
    public void parsePutSpaceNoun() throws FailedParseException {
@@ -204,18 +223,16 @@ public class EnhancedNLPEngineTest {
       Item pen = new Item("pen");
       Item smallBox = new Item("box");
       possibleActionFormats.add((new EnhancedGameEngine()).findAction("put").get(0));
-      // Get current size of heap in bytes
-      long heapSize = Runtime.getRuntime().totalMemory();
-      System.out.println(heapSize);
 
-      // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
-      long heapMaxSize = Runtime.getRuntime().maxMemory();
-      System.out.println(heapMaxSize);
-      InstantiatedGameAction instantiatedGameAction =
+      printHeapSize();
+
+      List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s in the %s", verb, noun1, noun2), possibleActionFormats, Set.of(pen, smallBox));
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<String> wantedArr = List.of(noun1, noun2);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);
+      assertEquals(1, instantiatedGameActions.size());
    }
 
    @Test
@@ -226,11 +243,13 @@ public class EnhancedNLPEngineTest {
       String noun = "cave";
       Item cave = new Item("cave");
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction =
+      List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, Set.of(cave));
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
+      assertEquals(1, instantiatedGameActions.size());
    }
 
    @Test
@@ -241,11 +260,13 @@ public class EnhancedNLPEngineTest {
       String noun = "cave";
       Item cave = new Item("cave");
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction =
+      List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, Set.of(cave));
       List<String> wantedArr = List.of(noun);
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);
+      assertEquals(1, instantiatedGameActions.size());
    }
 
    // TODO: Test findMatchingGameItemNames

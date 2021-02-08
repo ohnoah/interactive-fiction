@@ -4,13 +4,21 @@ import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
+import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.trees.Constituent;
+import edu.stanford.nlp.trees.LabeledScoredConstituentFactory;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreeCoreAnnotations;
+import edu.stanford.nlp.util.Pair;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -22,7 +30,40 @@ public class EnhancedNLPEngine {
 
    private static StanfordCoreNLP pipeline;
 
-   public static InstantiatedGameAction parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+
+   private static List<Pair<Integer, Integer>> vpIndices(Tree tree) {
+      Set<Constituent> treeConstituents = tree.constituents(new LabeledScoredConstituentFactory());
+      List<Pair<Integer, Integer>> vps = new ArrayList<>();
+      List<Constituent> vpsConstituent = new ArrayList<>();
+      outer:
+      for (Constituent constituent : treeConstituents) {
+         if (constituent.label() != null &&
+             (constituent.label().toString().equals("VP"))) {
+            for (int j = 0; j < vpsConstituent.size(); j++) {
+               Constituent c = vpsConstituent.get(j);
+               if (c != null && c.contains(constituent)) {
+                  vpsConstituent.set(j, null);
+                  vps.set(j, null);
+               }
+               else if (c != null && constituent.contains(c)) {
+                  continue outer;
+               }
+            }
+            //System.err.println("found constituent: " + constituent.toString());
+            vps.add(new Pair<>(constituent.start(), constituent.end()));
+            vpsConstituent.add(constituent);
+            //System.err.println(tree.getLeaves().subList(constituent.start(), constituent.end() + 1));
+         }
+      }
+      vps = vps.stream().filter(x -> !Objects.isNull(x)).collect(Collectors.toList());
+      return vps;
+   }
+
+   public static List<InstantiatedGameAction> parseMultiple(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+      return null;
+   }
+
+   public static List<InstantiatedGameAction> parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
 /*
       // Get current size of heap in bytes
       long heapSize = Runtime.getRuntime().totalMemory();
@@ -62,20 +103,34 @@ public class EnhancedNLPEngine {
 
       CoreDocument document = generateCoreDocumentFromString(rawCommand); //lemma stuff
 
-      // display tokens
-      String verb = null;
-      verb = findVerb(document);
-      ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
+      Tree tree =
+          document.annotation().get(CoreAnnotations.SentencesAnnotation.class).get(0).get(TreeCoreAnnotations.TreeAnnotation.class);
+      System.out.println(tree);
+      List<Pair<Integer, Integer>> vps = vpIndices(tree);
+      System.out.println(vps);
 
-      List<String> nouns = new ArrayList<>();
-      List<Set<String>> adjectives = new ArrayList<>();
-      findNounsAndAdjectives(document, actionFormat, nouns, adjectives);
+      // TODO: Check that no negations occur between vpIndices
 
-      //TODO: do the wordnet stuff here for nouns
-      List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
+      List<InstantiatedGameAction> commands = new ArrayList<>();
+      for (Pair<Integer, Integer> vpStartEnd : vps) {
+         // display tokens
+         int start = vpStartEnd.first;
+         int end = vpStartEnd.second;
+         // TODO: Restructure these to use CoreDocument but indices of interest
+         String verb = findVerb(document, start, end);
+         ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
+
+         List<String> nouns = new ArrayList<>();
+         List<Set<String>> adjectives = new ArrayList<>();
+         findNounsAndAdjectives(document, start, end, actionFormat, nouns, adjectives);
+
+         //TODO: do the wordnet stuff here for nouns
+         List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
 
 
-      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
+         InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
+         commands.add(command);
+      }
       for (CoreLabel tok : document.tokens()) {
          System.out.println(String.format("%s\t%s", tok.word(), tok.tag()));
       }
@@ -84,10 +139,7 @@ public class EnhancedNLPEngine {
       // just look for the possible commands using WordNet otherwise return Error
       // enhanced engine can be more informative if a supplementary word happens
       // FAIL flag if command is fake
-      document = null;
-
-
-      return command;
+      return commands;
    }
 
    //TODO: with wordnet synonyms
@@ -97,7 +149,7 @@ public class EnhancedNLPEngine {
    // or because there are no in-game items with that name.
    // TODO: To support multiple same-name items, need to change this to longest match and potentially return errors
    public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
-                                                 Set<Item> possibleItems) throws FailedParseException {
+                                                        Set<Item> possibleItems) throws FailedParseException {
       List<String> matchingGameItemNames = new ArrayList<>();
       nounLoop:
       for (int i = 0; i < nouns.size(); i++) {
@@ -139,29 +191,33 @@ public class EnhancedNLPEngine {
    }
 
    // TODO: Rule out put the box in the box
-   public static void findNounsAndAdjectives(CoreDocument document, ActionFormat actionToTake, List<String> nouns, List<Set<String>> adjectives) throws FailedParseException {
+   public static void findNounsAndAdjectives(CoreDocument document, int start, int end, ActionFormat actionToTake, List<String> nouns, List<Set<String>> adjectives) throws FailedParseException {
       // TODO: Both cases should match against possibleActionNames with Wordnet
       // Word net in here
       // Either do a regex match for PUT IN
       if (actionToTake.isTernary()) {
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
-         Matcher m = p.matcher(document.text());
+         List<String> matchedStrings = document.tokens().subList(start, end + 1).stream().map(CoreLabel::value).collect(Collectors.toList());
+
+         Matcher m = p.matcher(String.join(" ", matchedStrings));
          boolean doesMatch = m.matches();
          if (doesMatch) {
             for (int i = 1; i <= m.groupCount(); i++) {
                String matchingGroup = m.group(i);
-               appendMatchingGroupNoun(nouns, adjectives, document, matchingGroup, actionToTake, m.start(i), m.end(i));
+               appendMatchingGroupNoun(nouns, adjectives, document, matchingGroup, actionToTake, start, end, m.start(i), m.end(i));
             }
          }
          else {
-            throw new FailedParseException("Argument structure after the verb was wrong.");
+            throw new FailedParseException(String.format("Argument structure after the %s was wrong.", actionToTake.getVerb()));
          }
       }
       // Or just find the noun
       else {
          String noun;
          Set<String> currentAdjectives = new HashSet<>();
-         for (CoreLabel tok : document.tokens()) {
+         List<CoreLabel> tokens = document.tokens();
+         for (int i = start; i <= end; i++) {
+            CoreLabel tok = tokens.get(i);
             String tag = tok.tag();
             System.err.println(tag);
             if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
@@ -195,16 +251,19 @@ public class EnhancedNLPEngine {
    }
 
    // TODO: How does this work if there is a "-" in the sentence
-   private static void appendMatchingGroupNoun(List<String> nouns, List<Set<String>> adjectives, CoreDocument document, String matchingGroup, ActionFormat actionToTake, int start, int end) throws FailedParseException {
-/*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
-/*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
+   private static void appendMatchingGroupNoun(List<String> nouns, List<Set<String>> adjectives,
+                                               CoreDocument document, String matchingGroup,
+                                               ActionFormat actionToTake, int tokenStart, int tokenEnd, int start, int end) throws FailedParseException {
+      /*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
+      /*      CoreDocument matchingDoc = generateCoreDocumentFromString(matchingGroup);*/
 /*      int index = Collections.indexOfSubList(document.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()),
           matchingDoc.tokens().stream().map(x -> removeNumberTag(x.toString())).collect(Collectors.toList()));*/
 
       int firstTokenIndex = -1;
-      for(int i = 0; i<document.tokens().size(); i++){
+      int offset = document.tokens().get(tokenStart).beginPosition();
+      for (int i = tokenStart; i <= tokenEnd; i++) {
          CoreLabel tok = document.tokens().get(i);
-         if(tok.beginPosition() == start){
+         if (tok.beginPosition() - offset == start) {
             firstTokenIndex = i;
          }
       }
@@ -219,7 +278,7 @@ public class EnhancedNLPEngine {
       Set<String> currentAdjectives = new HashSet<>();
       int tokenIndex = firstTokenIndex;
       CoreLabel tok = document.tokens().get(tokenIndex);
-      while(tok.endPosition() <= end){
+      while (tok.endPosition() - offset <= end) {
          tok = document.tokens().get(tokenIndex);
          String tag = tok.tag();
          if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
@@ -234,19 +293,6 @@ public class EnhancedNLPEngine {
          tokenIndex++;
       }
 
-/*      for (int i = index; i < index + matchingDoc.tokens().size(); i++) {
-         CoreLabel tok = document.tokens().get(i);
-         String tag = tok.tag();
-         if (tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS")) {
-            currentAdjectives.add(tok.word());
-         }
-         if (isNoun(tag)) {
-            adjectives.add(currentAdjectives);
-            noun = tok.word();
-            nouns.add(noun);
-            return;
-         }
-      }*/
       throw new FailedParseException(String.format("Couldn't find any item in words: %s", matchingGroup));
    }
 
@@ -262,9 +308,9 @@ public class EnhancedNLPEngine {
    }
 
    // TODO: Think about ignoring everyhing after found
-   public static String findVerb(CoreDocument document) throws FailedParseException {
+   public static String findVerb(CoreDocument document, int start, int end) throws FailedParseException {
       String verb;
-      for (int i = 0; i < document.tokens().size(); i++) {
+      for (int i = start; i <= end; i++) {
          CoreLabel tok = document.tokens().get(i);
          String tag = tok.tag();
          if (tag.equals("VB") || tag.equals("VBN") || tag.equals("VBG") || tag.equals("VBP") || tag.equals("VBZ")) {
@@ -328,24 +374,25 @@ public class EnhancedNLPEngine {
          }
       }
       */
-/*      try {
+      try {
          InstantiatedGameAction command = EnhancedNLPEngine
              .parse("put the key in the box",
-                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box")));
+                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box"))).get(0);
          InstantiatedGameAction command2 = EnhancedNLPEngine
              .parse("put the box in the key",
-                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box")));
+                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box"))).get(0);
          InstantiatedGameAction command3 = EnhancedNLPEngine
-             .parse("put the donkey in the box",
-                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box")));
-      } catch (FailedParseException e) {
+             .parse("put the donkey in the box and drink it from the box. eat box.",
+                 new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box"))).get(0);
+      }
+      catch (FailedParseException e) {
          e.printStackTrace();
-      }*/
+      }
    }
 
    static {
       Properties props = new Properties();
-      props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,depparse,coref");
+      props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse,coref");
       pipeline = new StanfordCoreNLP(props);
 /*      Properties propsTokenizer = new Properties();
       props.setProperty("annotators", "tokenize");
