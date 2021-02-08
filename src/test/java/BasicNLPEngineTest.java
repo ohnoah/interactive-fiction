@@ -15,53 +15,50 @@ import org.junit.rules.ExpectedException;
 
 
 public class BasicNLPEngineTest {
-   private static BasicNLPEngine basicNLPEngine;
-
    @BeforeClass
    public static void setUp() throws Exception {
       System.out.println("Setting it up!");
-      basicNLPEngine = new BasicNLPEngine();
    }
 
    // Test helpers
    @Test
    public void findVerbFindsUnaryEat() throws JWNLException, FailedParseException {
-      assertEquals("eat", basicNLPEngine.findVerb("eat pizza"));
+      assertEquals("eat", BasicNLPEngine.findVerb("eat pizza"));
    }
 
    @Test
    public void findNounsFindsUnaryNoun() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("open", null);
       List<String> doorArr = List.of("door");
-      assertEquals(doorArr, basicNLPEngine.findNouns("open door", actionFormat));
+      assertEquals(doorArr, BasicNLPEngine.findNouns("open door", actionFormat));
    }
 
    @Test
    public void findNounsFindsUnarySpaceNoun() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("open", null);
       List<String> doorArr = List.of("door");
-      assertEquals(doorArr, basicNLPEngine.findNouns("open big door", actionFormat));
+      assertEquals(doorArr, BasicNLPEngine.findNouns("open big door", actionFormat));
    }
 
    @Test
    public void findNounsFindsUnaryDefiniteNoun() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("examine", null);
       List<String> breadArr = List.of("bread");
-      assertEquals(breadArr, basicNLPEngine.findNouns("examine the bread", actionFormat));
+      assertEquals(breadArr, BasicNLPEngine.findNouns("examine the bread", actionFormat));
    }
 
    @Test
    public void findNounsFindsTernaryNouns() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("throw", "throw ([\\w\\s]+) in ([\\w\\s]+)$");
       List<String> keyBoxArr = List.of("ball", "container");
-      assertEquals(keyBoxArr, basicNLPEngine.findNouns("throw ball in container", actionFormat));
+      assertEquals(keyBoxArr, BasicNLPEngine.findNouns("throw ball in container", actionFormat));
    }
 
    @Test
    public void findNounsFindsTernaryDefiniteNouns() throws JWNLException, FailedParseException {
       ActionFormat actionFormat = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
       List<String> keyBoxArr = List.of("key", "box");
-      assertEquals(keyBoxArr, basicNLPEngine.findNouns("put the key in the box", actionFormat));
+      assertEquals(keyBoxArr, BasicNLPEngine.findNouns("put the key in the box", actionFormat));
    }
 
    @Rule
@@ -74,7 +71,7 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<>();
       possibleActionFormats.add(new ActionFormat("ski", null));
       possibleActionFormats.add(new ActionFormat("fly", null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse("eat steak", possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = BasicNLPEngine.parse("eat steak", possibleActionFormats, null).get(0);
 
    }
    // TODO: Check other exceptions here
@@ -87,7 +84,7 @@ public class BasicNLPEngineTest {
       String noun = "dog";
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s %s", verb, noun), possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = BasicNLPEngine.parse(String.format("%s %s", verb, noun), possibleActionFormats, null).get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
@@ -101,7 +98,7 @@ public class BasicNLPEngineTest {
       String verb = "open";
       String noun = "door";
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = BasicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats, null).get(0);
       List<String> wantedArr = List.of(noun);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);
@@ -114,7 +111,7 @@ public class BasicNLPEngineTest {
       String verb = "open";
       String noun = "door";
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the big %s", verb, noun), possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = BasicNLPEngine.parse(String.format("%s the big %s", verb, noun), possibleActionFormats, null).get(0);
       List<String> wantedArr = List.of(noun);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);
@@ -127,7 +124,7 @@ public class BasicNLPEngineTest {
       String verb = "destroy";
       String noun = "cave";
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = BasicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, null).get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
@@ -140,7 +137,7 @@ public class BasicNLPEngineTest {
       String verb = "destroy";
       String noun = "cave";
       possibleActionFormats.add(new ActionFormat(verb, null));
-      InstantiatedGameAction instantiatedGameAction = basicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, null);
+      InstantiatedGameAction instantiatedGameAction = BasicNLPEngine.parse(String.format("%s the %s with grace", verb, noun), possibleActionFormats, null).get(0);
       List<String> wantedArr = List.of(noun);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);

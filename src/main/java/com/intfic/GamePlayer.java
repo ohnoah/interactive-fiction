@@ -162,17 +162,29 @@ public class GamePlayer extends JFrame {
       }
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
       Set<Item> possibleItems = gameEngine.possibleItems();
-      InstantiatedGameAction gameAction = null;
+      List<InstantiatedGameAction> gameActions = null;
       try {
-         gameAction = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems);
+         gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems);
       }
       catch (FailedParseException e) {
          return e.getMessage();
       }
-      Justification justification = gameEngine.progressStory(gameAction);
-      String gameMessage = justification.getReasoning();
-
+      String gameMessage;
+      if(gameActions.size() == 1) {
+         InstantiatedGameAction gameAction = gameActions.get(0);
+         Justification justification = gameEngine.progressStory(gameAction);
+         gameMessage = justification.getReasoning();
+      }
+      else{
+         StringBuilder gameMessageBuilder = new StringBuilder();
+         for(InstantiatedGameAction gameAction : gameActions){
+            Justification justification = gameEngine.progressStory(gameAction);
+            gameMessageBuilder.append(justification.getReasoning());
+         }
+         gameMessage = gameMessageBuilder.toString();
+      }
       return gameMessage;
+
    }
 
    public static void main(final String[] args) {

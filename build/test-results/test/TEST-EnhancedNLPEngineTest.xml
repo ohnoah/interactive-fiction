@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedNLPEngineTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2021-02-04T21:53:18" hostname="Noahs-MacBook-Pro.local" time="0.948">
+<testsuite name="EnhancedNLPEngineTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2021-02-05T13:54:54" hostname="Noahs-MacBook-Pro.local" time="1.247">
   <properties/>
-  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.045"/>
-  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.075"/>
-  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.22"/>
-  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.077"/>
-  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.025"/>
-  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.029"/>
-  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.094"/>
-  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.011"/>
+  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.064"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.139"/>
+  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.14"/>
+  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.12"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.044"/>
+  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.031"/>
+  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.151"/>
+  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.012"/>
   <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.001"/>
-  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.013"/>
-  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.031"/>
-  <testcase name="parseListenToRegex" classname="EnhancedNLPEngineTest" time="0.034"/>
-  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.055"/>
-  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.045"/>
-  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.051"/>
-  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.041"/>
-  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.0"/>
-  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.069"/>
-  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.029"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.028"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.054"/>
+  <testcase name="parseListenToRegex" classname="EnhancedNLPEngineTest" time="0.048"/>
+  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.094"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.065"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.056"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.075"/>
+  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.001"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.086"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.036"/>
   <system-out><![CDATA[Setting it up!
-2147483648
-2147483648
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (PP (IN with) (NP (NN grace))))))
 open	VB
 the	DT
 door	NN
 with	IN
 grace	NN
 {}
-2147483648
-2147483648
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (PP (IN with) (NP (NN grace))))))
 destroy	VB
 the	DT
 cave	NN
@@ -39,8 +37,7 @@ grace	NN
 {}
 2147483648
 2147483648
-2147483648
-2147483648
+(ROOT (S (VP (VB put) (NP (DT the) (NN pen)) (PP (IN in) (NP (DT the) (NN box))))))
 put	VB
 the	DT
 pen	NN
@@ -48,39 +45,34 @@ in	IN
 the	DT
 box	NN
 {}
-2147483648
-2147483648
+(ROOT (S (VP (VB listen) (PP (IN to) (NP (DT the) (NN dog))))))
 listen	VB
 to	IN
 the	DT
 dog	NN
 {}
-2147483648
-2147483648
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (PP (IN with) (NP (NN grace))))))
 open	VB
 the	DT
 door	NN
 with	IN
 grace	NN
 {}
-2147483648
-2147483648
+(ROOT (S (VP (VB take) (NP (DT the) (NN dog)) (PP (IN with) (NP (NN grace))))))
 take	VB
 the	DT
 dog	NN
 with	IN
 grace	NN
 {}
-2147483648
-2147483648
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (PP (IN with) (NP (NN grace))))))
 destroy	VB
 the	DT
 cave	NN
 with	IN
 grace	NN
 {}
-2147483648
-2147483648
+(ROOT (S (VP (VB eat) (NP (NN steak)))))
 ]]></system-out>
   <system-err><![CDATA[log4j:WARN No appenders could be found for logger (edu.stanford.nlp.pipeline.StanfordCoreNLP).
 log4j:WARN Please initialize the log4j system properly.
