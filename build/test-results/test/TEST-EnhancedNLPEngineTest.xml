@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EnhancedNLPEngineTest" tests="28" skipped="0" failures="0" errors="0" timestamp="2021-02-08T21:30:28" hostname="Noahs-MacBook-Pro.local" time="4.561">
+<testsuite name="EnhancedNLPEngineTest" tests="31" skipped="0" failures="0" errors="0" timestamp="2021-02-09T14:28:21" hostname="Noahs-MacBook-Pro.local" time="2.734">
   <properties/>
-  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.894"/>
-  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.071"/>
-  <testcase name="parseCorefNounsOneSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.271"/>
-  <testcase name="parseCorefVerbsOneSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.381"/>
-  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.253"/>
-  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.327"/>
-  <testcase name="parseTwoActionsVerbsWithThen" classname="EnhancedNLPEngineTest" time="0.159"/>
-  <testcase name="parseTwoActionsNounsWithThen" classname="EnhancedNLPEngineTest" time="0.367"/>
-  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.113"/>
-  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.086"/>
-  <testcase name="parseCorefNounsTwoSentencesThreeActions" classname="EnhancedNLPEngineTest" time="0.389"/>
-  <testcase name="parseCorefVerbsTernarySingleSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.276"/>
-  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.118"/>
-  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.016"/>
-  <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.001"/>
-  <testcase name="parseCorefVerbsTwoSentencesThreeActions" classname="EnhancedNLPEngineTest" time="0.124"/>
-  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.02"/>
-  <testcase name="findNounsWithNoValidNounFails" classname="EnhancedNLPEngineTest" time="0.025"/>
-  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.049"/>
+  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.618"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.049"/>
+  <testcase name="parseCorefNounsOneSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.143"/>
+  <testcase name="parseCorefVerbsOneSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.111"/>
+  <testcase name="parseItDogSucceeds" classname="EnhancedNLPEngineTest" time="0.033"/>
+  <testcase name="parseItOtherActionSucceeds" classname="EnhancedNLPEngineTest" time="0.076"/>
+  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.159"/>
+  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.101"/>
+  <testcase name="parseTwoActionsVerbsWithThen" classname="EnhancedNLPEngineTest" time="0.092"/>
+  <testcase name="parseTwoActionsNounsWithThen" classname="EnhancedNLPEngineTest" time="0.09"/>
+  <testcase name="parseItActionVerb" classname="EnhancedNLPEngineTest" time="0.036"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.035"/>
+  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.025"/>
+  <testcase name="parseCorefNounsTwoSentencesThreeActions" classname="EnhancedNLPEngineTest" time="0.147"/>
+  <testcase name="parseCorefVerbsTernarySingleSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.244"/>
+  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.095"/>
+  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.012"/>
+  <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.0"/>
+  <testcase name="parseCorefVerbsTwoSentencesThreeActions" classname="EnhancedNLPEngineTest" time="0.136"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.018"/>
+  <testcase name="findNounsWithNoValidNounFails" classname="EnhancedNLPEngineTest" time="0.028"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.042"/>
   <testcase name="parseListenToRegex" classname="EnhancedNLPEngineTest" time="0.039"/>
-  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.104"/>
-  <testcase name="parseThreeSentences" classname="EnhancedNLPEngineTest" time="0.152"/>
-  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.071"/>
-  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.054"/>
-  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.063"/>
+  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.063"/>
+  <testcase name="parseThreeSentences" classname="EnhancedNLPEngineTest" time="0.138"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.06"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.036"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.04"/>
   <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.0"/>
-  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.087"/>
-  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.033"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.036"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.027"/>
   <system-out><![CDATA[Setting it up!
 {}
 {}
@@ -95,6 +98,28 @@ and	CC(-)
 eat	VB(-)
 it	PRP(-)
 {2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+{}
+{}
+(ROOT (S (VP (VB take) (NP (PRP it)))))
+[(0,1)]
+[(1,1)]
+take	VB(-)
+it	PRP(-)
+{}
+{}
+{}
+(ROOT (S (VP (VB take) (NP (DT the) (JJ fluffy) (NN dog)) (ADVP (RB graciously)))))
+[(0,4)]
+[(1,3)]
+DT
+JJ
+NN
+take	VB(-)
+the	DT(-)
+fluffy	JJ(-)
+dog	NN(-)
+graciously	RB(-)
+{}
 2147483648
 2147483648
 {}
@@ -155,6 +180,15 @@ examine	VB(-)
 the	DT(-)
 key	NN(-)
 {}
+{}
+{}
+(ROOT (S (VP (VB destroy) (NP (PRP it)) (ADVP (RB quickly)))))
+[(0,2)]
+[(1,1)]
+destroy	VB(-)
+it	PRP(-)
+quickly	RB(-)
+{}
 DT
 NN
 {2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 2]}
@@ -186,9 +220,9 @@ the	DT(-)
 box	NN(-)
 .	.(-)
 {2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 2]}
-{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
-{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
-(ROOT (S (VP (VP (VP (VB put) (NP (DT the) (NN donkey)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB drink) (NP (PRP it)) (PP (IN from) (NP (DT the) (NN box))))) (CC and) (VP (VBP examine) (NP (NN key)))) (. .)))
+{2=CHAIN2-["the horse" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
+{2=CHAIN2-["the horse" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
+(ROOT (S (VP (VP (VP (VB put) (NP (DT the) (NN horse)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB drink) (NP (PRP it)) (PP (IN from) (NP (DT the) (NN box))))) (CC and) (VP (VBP examine) (NP (NN key)))) (. .)))
 [(0,5), (7,11), (13,14)]
 [(1,2), (4,5), (8,8), (10,11), (14,14)]
 DT
@@ -198,7 +232,7 @@ NN
 NN
 put	VB(-)
 the	DT(-)
-donkey	NN(-)
+horse	NN(-)
 in	IN(-)
 the	DT(-)
 box	NN(-)
@@ -212,7 +246,7 @@ and	CC(-)
 examine	VBP(-)
 key	NN(-)
 .	.(-)
-{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
+{2=CHAIN2-["the horse" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
 DT
 JJR
 JJ

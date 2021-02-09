@@ -66,7 +66,7 @@ public class EnhancedNLPEngineTest {
    public void findNounsWithNoValidNounFails() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
       exceptionRule.expectMessage("Couldn't find any item in words: it");
-      ActionFormat actionFormat = new ActionFormat("open", null);
+      ActionFormat actionFormat = new ActionFormat("examine", null);
       List<String> doorArr = List.of("door");
       CoreDocument document = coreDocumentFromText("examine it.");
       List<String> nouns = new ArrayList<>();
@@ -74,6 +74,22 @@ public class EnhancedNLPEngineTest {
       List<Pair<Integer, Integer>> nps = List.of(new Pair<>(1, 1));
       EnhancedNLPEngine.findNounsAndAdjectives(document.sentences().get(0), 0, 1, nps, actionFormat, nouns, adjectives, new HashMap<>(), new HashMap<>());
    }
+
+
+/*
+   @Test
+   public void findNounsItSuceeds() throws FailedParseException {
+      ActionFormat actionFormat = new ActionFormat("examine", null);
+      List<String> doorArr = List.of("door");
+      CoreDocument document = coreDocumentFromText("examine it.");
+      List<String> nouns = new ArrayList<>();
+      List<Set<String>> adjectives = new ArrayList<>();
+      List<Pair<Integer, Integer>> nps = List.of(new Pair<>(1, 1));
+      EnhancedNLPEngine.findNounsAndAdjectives(document.sentences().get(0), 0, 1, nps, actionFormat, nouns, adjectives, new HashMap<>(), new HashMap<>(), new Pair<>(new HashSet<>(), "door"));
+      assertEquals(doorArr, nouns);
+      assertEquals(0, adjectives.size());
+   }
+*/
 
 
    @Test
@@ -193,6 +209,44 @@ public class EnhancedNLPEngineTest {
    }
 
    @Test
+   public void parseItDogSucceeds() throws FailedParseException {
+      // take dog
+      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      String verb = "take";
+      String noun = "it";
+      Item dog = new Item("dog", Set.of("fluffy", "hairy"));
+      possibleActionFormats.add(new ActionFormat(verb, null));
+      possibleActionFormats.add(new ActionFormat("fly", null));
+      List<InstantiatedGameAction> instantiatedGameActions =
+          EnhancedNLPEngine.parse(String.format("%s %s", verb, noun), possibleActionFormats, Set.of(dog), new Pair<>(dog.getAdjectives(), dog.getName()));
+      assertEquals(1, instantiatedGameActions.size());
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
+      ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
+      String outVerb = abstractAF.getVerb();
+      assertEquals(verb, outVerb);
+      assertEquals(dog.getName(), instantiatedGameAction.getArguments().get(0));
+   }
+
+   @Test
+   public void parseItOtherActionSucceeds() throws FailedParseException {
+      // take dog
+      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      String verb = "take";
+      String noun = "dog";
+      Item dog = new Item("dog", Set.of("fluffy", "hairy"));
+      possibleActionFormats.add(new ActionFormat(verb, null));
+      possibleActionFormats.add(new ActionFormat("fly", null));
+      List<InstantiatedGameAction> instantiatedGameActions =
+          EnhancedNLPEngine.parse(String.format("%s the fluffy %s graciously", verb, noun), possibleActionFormats, Set.of(dog, new Item("door")), new Pair<>(new HashSet<>(), "door"));
+      assertEquals(1, instantiatedGameActions.size());
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
+      ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
+      String outVerb = abstractAF.getVerb();
+      assertEquals(verb, outVerb);
+      assertEquals(dog.getName(), instantiatedGameAction.getArguments().get(0));
+   }
+
+   @Test
    public void parseListenToRegex() throws FailedParseException {
       // take dog
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
@@ -257,6 +311,23 @@ public class EnhancedNLPEngineTest {
       List<String> wantedArr = List.of(noun1, noun2);
       List<String> outArguments = instantiatedGameAction.getArguments();
       assertEquals(wantedArr, outArguments);
+   }
+
+   @Test
+   public void parseItActionVerb() throws FailedParseException {
+      // Maybe destroy the cave with grace
+      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      String verb = "destroy";
+      String noun = "cave";
+      Item cave = new Item("cave");
+      possibleActionFormats.add(new ActionFormat(verb, null));
+      List<InstantiatedGameAction> instantiatedGameActions =
+          EnhancedNLPEngine.parse(String.format("%s it quickly", verb, noun), possibleActionFormats, Set.of(cave), new Pair<>(new HashSet<>(), "cave"));
+      assertEquals(1, instantiatedGameActions.size());
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
+      ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
+      String outVerb = abstractAF.getVerb();
+      assertEquals(verb, outVerb);
    }
 
    @Test
@@ -405,8 +476,8 @@ public class EnhancedNLPEngineTest {
    @Test
    public void parseCorefVerbsTernarySingleSentenceThreeActions() throws FailedParseException {
       List<InstantiatedGameAction> instantiatedGameActions =
-          EnhancedNLPEngine.parse("put the donkey in the box and drink it from the box and examine key.",
-              new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box")));
+          EnhancedNLPEngine.parse("put the horse in the box and drink it from the box and examine key.",
+              new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("horse"), new Item("box")));
       assertEquals(3, instantiatedGameActions.size());
       InstantiatedGameAction putAction = instantiatedGameActions.get(0);
       InstantiatedGameAction eatAction = instantiatedGameActions.get(1);

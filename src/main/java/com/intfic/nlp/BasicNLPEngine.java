@@ -14,6 +14,10 @@ import net.sf.extjwnl.data.POS;
 
 public class BasicNLPEngine {
 
+   public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems, String it) throws FailedParseException {
+      return BasicNLPEngine.parse(rawCommand, possibleActionFormats, possibleItems);
+   }
+
    public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
       // TODO: Fail if more than one sentence or there is an and in the sentence
 
@@ -21,7 +25,8 @@ public class BasicNLPEngine {
       String verb = null;
       try {
          verb = findVerb(rawCommand);
-      } catch (JWNLException e) {
+      }
+      catch (JWNLException e) {
          e.printStackTrace();
       }
       ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
@@ -29,7 +34,8 @@ public class BasicNLPEngine {
       List<String> nouns = null;
       try {
          nouns = findNouns(rawCommand, actionFormat);
-      } catch (JWNLException e) {
+      }
+      catch (JWNLException e) {
          e.printStackTrace();
       }
       InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, nouns);
@@ -74,7 +80,8 @@ public class BasicNLPEngine {
                String matchingGroup = m.group(i);
                appendFirstNoun(nouns, matchingGroup, actionToTake);
             }
-         } else {
+         }
+         else {
             throw new FailedParseException("Argument structure after the verb was wrong.");
          }
       }
@@ -108,7 +115,8 @@ public class BasicNLPEngine {
          iw = d.getIndexWord(POS.VERB, word);
          if (iw == null) { // not a verb
             continue;
-         } else {
+         }
+         else {
             return iw.getLemma().trim();
          }
       }
@@ -122,7 +130,8 @@ public class BasicNLPEngine {
 /*         IndexWord iw = d.getIndexWord(POS.VERB, "LISTEN TO");
          System.out.println(iw.getKey());
          System.out.println(iw.getLemma());*/
-      } catch (JWNLException e) {
+      }
+      catch (JWNLException e) {
          System.out.println("SDSD");
          e.printStackTrace();
       }
