@@ -9,6 +9,8 @@ public enum EnhancedGameEditState implements Serializable {
    START_MESSAGE,
    ROOM_NAME,
    ROOM_ITEMS,
+   ITEM_SYNONYMS,
+   ITEM_SYNONYMS_SPECIFIED,
    ACTION_ROOM,
    ACTION_TRIGGER,
    ACTION_TRIGGER_CLARIFY,

@@ -1,14 +1,13 @@
 package com.intfic;
 
-import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.FileErrorHandler;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
-import com.intfic.nlp.EnhancedNLPEngine;
-import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;
+import com.intfic.game.shared.GameEngine;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
-import com.intfic.nlp.NLPEngine;
+import com.intfic.nlp.EnhancedNLPEngine;
+import com.intfic.nlp.FailedParseException;
 import edu.stanford.nlp.util.Pair;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -26,38 +25,34 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.ComponentInputMap;
 import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
 
 /**
- * com.interactivefiction.GamePlayer
+ * com.interactivefiction.BasicGamePlayer
  *
  * @author Stefan Wagner, Noah Ohrner
  * @date Mi 25. Apr 17:27:19 CEST 2012, 17 Nov 2020
  * (c) GPLv3
  */
 
-public class GamePlayer extends JFrame {
+public abstract class GamePlayer extends JFrame {
 
 
-   private static final String progname = "IF Game Player";
-   private GameEngine gameEngine = null;
-   private Pair<Set<String>, String> it;
+  /* private GameEngine gameEngine = null;*/
+   /*private Pair<Set<String>, String> it;*/
 
 
-   private JTextField input;
-   private JTextArea history;
+   JTextField input;
+   JTextArea history;
 
-   private void initializeJFrame(ActionMap actionMap) {
+   void initializeJFrame(ActionMap actionMap) {
       InputMap keyMap = input.getInputMap();
       input.getActionMap().put("enter", actionMap.get("enter"));
      /* InputMap keyMap = new ComponentInputMap(input);*/
@@ -76,8 +71,7 @@ public class GamePlayer extends JFrame {
       center();
    }
 
-   public GamePlayer() {
-      super(progname);
+   void prepareSwing(){
       JPanel mainPanel = new JPanel();
       mainPanel.setLayout(new BorderLayout());
       this.getContentPane().add(mainPanel);
@@ -97,9 +91,13 @@ public class GamePlayer extends JFrame {
 
       mainPanel.add(areaScrollPane, BorderLayout.CENTER);
       mainPanel.add(input, BorderLayout.SOUTH);
+   }
+   public GamePlayer(String progname) {
+      super(progname);
+      prepareSwing();
 
-      ActionMap actionMap = new ActionMapUIResource();
 
+/*      ActionMap actionMap = new ActionMapUIResource();
       actionMap.put("enter", new AbstractAction() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -138,18 +136,11 @@ public class GamePlayer extends JFrame {
       });
 
       initializeJFrame(actionMap);
+      */
+
 
    }
 
-   private boolean isReadableFile(String cmd) {
-      Path path = Paths.get(cmd);
-      return Files.exists(path) && Files.isReadable(path);
-   }
-
-   private void writeToTerminal(String cmd, String sofar, String result) {
-      history.setText(sofar + cmd + "\n" + result + "\n> ");
-      input.setText("");
-   }
 
    private void center() {
       Toolkit tk = Toolkit.getDefaultToolkit();
@@ -158,7 +149,8 @@ public class GamePlayer extends JFrame {
       setLocation((screen.width - d.width) / 2, (screen.height - d.height) / 2);
    }
 
-   private String processCmd(String cmd) {
+   public abstract String processCmd(String cmd);
+/*   private String processCmd(String cmd) {
       if (cmd.equals("quit")) {
          System.exit(0);
       }
@@ -189,11 +181,11 @@ public class GamePlayer extends JFrame {
       }
       return gameMessage;
 
-   }
+   }*/
 
-   public static void main(final String[] args) {
+/*   public static void main(final String[] args) {
       Runnable runner = GamePlayer::new;
       EventQueue.invokeLater(runner);
-   }
+   }*/
 
 }
