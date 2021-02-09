@@ -9,6 +9,7 @@ import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.nlp.NLPEngine;
+import edu.stanford.nlp.util.Pair;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -50,6 +51,7 @@ public class GamePlayer extends JFrame {
 
    private static final String progname = "IF Game Player";
    private GameEngine gameEngine = null;
+   private Pair<Set<String>, String> it;
 
 
    private JTextField input;
@@ -163,8 +165,10 @@ public class GamePlayer extends JFrame {
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
       Set<Item> possibleItems = gameEngine.possibleItems();
       List<InstantiatedGameAction> gameActions = null;
+
       try {
-         gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems);
+         gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         it = gameActions.get(0).getIt();
       }
       catch (FailedParseException e) {
          return e.getMessage();

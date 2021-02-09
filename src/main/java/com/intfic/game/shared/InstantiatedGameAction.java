@@ -1,18 +1,33 @@
 package com.intfic.game.shared;
 
+import edu.stanford.nlp.util.Pair;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class InstantiatedGameAction implements Serializable {
-   /*private static final long serialVersionUID = -4988899466920322925L;*/
+   private static final long serialVersionUID = 4004019328393742799L;
    private ActionFormat abstractActionFormat;
    private List<String> arguments;
+
+
+   private Pair<Set<String>, String> it;
+
    public InstantiatedGameAction(ActionFormat actionFormat, List<String> nouns) {
       setAbstractActionFormat(actionFormat);
       setArguments(nouns);
    }
+
+   public Pair<Set<String>, String> getIt() {
+      return it;
+   }
+
+   public void setIt(Pair<Set<String>, String> it) {
+      this.it = it;
+   }
+
    // TODO: Case-sensitivity
    public InstantiatedGameAction(ActionFormat actionFormat) {
       abstractActionFormat = actionFormat;

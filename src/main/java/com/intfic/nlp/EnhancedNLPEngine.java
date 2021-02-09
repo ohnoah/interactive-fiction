@@ -93,6 +93,10 @@ public class EnhancedNLPEngine {
    }
 
    public static List<InstantiatedGameAction> parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
+      return parse(rawCommand, possibleActionFormats, possibleItems, null);
+   }
+
+   public static List<InstantiatedGameAction> parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems, Pair<Set<String>, String> it) throws FailedParseException {
 
       CoreDocument document = generateCoreDocumentFromString(rawCommand); //lemma stuff
 
@@ -106,6 +110,7 @@ public class EnhancedNLPEngine {
 
       List<InstantiatedGameAction> commands = new ArrayList<>();
       List<CoreSentence> sentences = document.sentences();
+      boolean firstCommand = true;
       for (int sentIndex = 0; sentIndex < sentences.size(); sentIndex++) {
          CoreSentence sentence = sentences.get(sentIndex);
          Tree tree =
@@ -113,13 +118,23 @@ public class EnhancedNLPEngine {
          System.out.println(tree);
          List<Pair<Integer, Integer>> vps = new ArrayList<>();
          List<Pair<Integer, Integer>> nps = new ArrayList<>();
+         // TODO: Seems like this can be replaced with sentence.verbPhraseTrees.start/end
          npVpIndices(tree, vps, nps);
 
          vps.sort(pairComparator);
          nps.sort(pairComparator);
-         // TODO: NP indices
          System.out.println(vps);
          System.out.println(nps);
+         if (it != null && sentIndex == 0 && nps.size() > 0) {
+            Pair<Integer, Integer> firstNP = nps.get(0);
+            if (firstNP.second - firstNP.first == 0) {
+               CoreLabel firstTokenNP = sentence.tokens().get(firstNP.first);
+               if (firstTokenNP.tag().equals("PRP") && firstTokenNP.word().toLowerCase().equals("it")) {
+                  corefCache.put(firstNP, it);
+                  corefRepresentative.put(firstNP, firstNP);
+               }
+            }
+         }
 
          // TODO: Check that no negations occur between vpIndices or that a separatae sentence
 
@@ -127,20 +142,24 @@ public class EnhancedNLPEngine {
             // display tokens
             int start = vpStartEnd.first;
             int end = vpStartEnd.second;
-            // TODO: Restructure these to use CoreDocument but indices of interest
             String verb = findVerb(sentence, start, end);
             ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
 
             List<String> nouns = new ArrayList<>();
             List<Set<String>> adjectives = new ArrayList<>();
             List<Pair<Integer, Integer>> npsInVP = nps.stream().filter(np -> start <= np.first && np.second <= end).collect(Collectors.toList());
-            findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative);
+            Pair<Set<String>, String> itToSet = firstCommand ? new Pair<>(new HashSet<>(), "") : null;
+            findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
 
             //TODO: do the wordnet stuff here for nouns
             List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
 
 
             InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
+            if (firstCommand) {
+               command.setIt(itToSet);
+               firstCommand = false;
+            }
             commands.add(command);
          }
       }
@@ -240,12 +259,21 @@ public class EnhancedNLPEngine {
           tokens.subList(np.first, np.second + 1).stream().map(CoreLabel::word).collect(Collectors.joining(" "))));
    }
 
-   // TODO: Rule out put the box in the box
    public static void findNounsAndAdjectives(CoreSentence sentence, int vpStart, int vpEnd,
                                              List<Pair<Integer, Integer>> npsInVP,
                                              ActionFormat actionToTake, List<String> nouns,
                                              List<Set<String>> adjectives, Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
                                              Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative) throws FailedParseException {
+      findNounsAndAdjectives(sentence, vpStart, vpEnd, npsInVP, actionToTake, nouns, adjectives, corefCache, corefRepresentative, null);
+   }
+
+   // TODO: Both cases should match against possibleActionNames with Wordnet
+   // TODO: Rule out put the box in the box
+   public static void findNounsAndAdjectives(CoreSentence sentence, int vpStart, int vpEnd,
+                                             List<Pair<Integer, Integer>> npsInVP,
+                                             ActionFormat actionToTake, List<String> nouns,
+                                             List<Set<String>> adjectives, Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
+                                             Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative, Pair<Set<String>, String> itToSet) throws FailedParseException {
       // TODO: Both cases should match against possibleActionNames with Wordnet
       // Word net in here
       // Either do a regex match for PUT IN
@@ -275,7 +303,11 @@ public class EnhancedNLPEngine {
                if (npStartCharIndex != matcherStart || npEndCharIndex != matcherEnd) {
                   throw new FailedParseException(String.format("Non-noun phrase specified in the %d:th slot of verb %s", i, actionToTake.getVerb()));
                }
-               appendMatchingGroupNoun(nouns, adjectives, sentence, np, corefCache, corefRepresentative);
+               /*appendMatchingGroupNoun(nouns, adjectives, sentence, np, corefCache, corefRepresentative, it);*/
+               Set<String> currentAdjectives = new HashSet<>();
+               String noun = nounsAndAdjectivesInNP(sentence, np, currentAdjectives, corefCache, corefRepresentative);
+               nouns.add(noun);
+               adjectives.add(currentAdjectives);
             }
          }
          else {
@@ -288,6 +320,10 @@ public class EnhancedNLPEngine {
          Set<String> currentAdjectives = new HashSet<>();
          Pair<Integer, Integer> np = npsInVP.get(0);
          noun = nounsAndAdjectivesInNP(sentence, np, currentAdjectives, corefCache, corefRepresentative);
+         if (itToSet != null) {
+            itToSet.setFirst(currentAdjectives);
+            itToSet.setSecond(noun);
+         }
          nouns.add(noun);
          adjectives.add(currentAdjectives);
 /*         for (int i = np.first; i <= np.second; i++) {
@@ -404,7 +440,7 @@ public class EnhancedNLPEngine {
          }
       }
       */
-      try {
+/*      try {
          InstantiatedGameAction command = EnhancedNLPEngine
              .parse("put the key in the box",
                  new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box"))).get(0);
@@ -420,7 +456,7 @@ public class EnhancedNLPEngine {
       }
       catch (FailedParseException e) {
          e.printStackTrace();
-      }
+      }*/
    }
 
    static {

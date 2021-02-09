@@ -12,7 +12,6 @@ import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.updates.UpdateType;
 import com.intfic.game.shared.*;
-import gherkin.lexer.Kn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,23 +77,24 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
 
+
       EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignActions(gameAction, currentRoom);
 
+      // dont allow purposefully designed not-allowed actions
       if (enhancedGameDesignAction != null) {
          Justification designedJustification = validatePreconditions(enhancedGameDesignAction.getPreconditions(), gameAction.getArguments());
-         if(!designedJustification.isAccepted()){
+         if (!designedJustification.isAccepted()) {
             return new Justification(false, designedJustification.getReasoning());
          }
       }
 
+      // Perform implemented logic and fail fast if fails
       Justification implJust = performImplementedLogic(gameAction);
       message = capitalize(implJust.getReasoning());
       if (!implJust.isAccepted()) { // Implemented but fails
          return implJust;
       }
       // Then check the GameDesignActions and prepend another message
-      /*EnhancedGameDesignAction enhancedGameDesignAction = getGameDesignActions(gameAction, currentRoom);*/
-
       if (enhancedGameDesignAction == null) {
          if (message.equals("")) { // It's not an implemented action
             return new Justification(false, "You can't do that right now");
