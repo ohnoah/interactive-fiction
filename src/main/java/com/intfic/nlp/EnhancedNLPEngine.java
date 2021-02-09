@@ -152,7 +152,7 @@ public class EnhancedNLPEngine {
             findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
 
             //TODO: do the wordnet stuff here for nouns
-            List<String> gameItemNames = findMatchingGameItemNames(nouns, adjectives, possibleItems);
+            List<String> gameItemNames = NLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
 
 
             InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
@@ -175,53 +175,9 @@ public class EnhancedNLPEngine {
       return commands;
    }
 
-   //TODO: with wordnet synonyms
-   // TODO: Throw FailedParseException if item not in this room is given
-   // Returns a list of synonym-replaced String item names for "nouns" corresponding in-game items
-   // If fails, throw a com.interactivefiction.nlp.FailedParseException. This can be either because adjectives don't match
-   // or because there are no in-game items with that name.
-   // TODO: To support multiple same-name items, need to change this to longest match and potentially return errors
-   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
-                                                        Set<Item> possibleItems) throws FailedParseException {
-      List<String> matchingGameItemNames = new ArrayList<>();
-      nounLoop:
-      for (int i = 0; i < nouns.size(); i++) {
-         String noun = nouns.get(i);
-         for (Item item : possibleItems) {
-            String itemName = item.getName();
-            if (itemName.equals(noun)) {
-               if (adjectivesMatch(adjectives.get(i), item.getAdjectives())) {
-                  matchingGameItemNames.add(itemName);
-                  continue nounLoop;
-               }
-               else {
-                  String missingItems = adjectives.get(i).stream()
-                      .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
-                  throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
-               }
-            }
-         }
-         for (Item item : possibleItems) {
-            if (item.getSynonyms().contains(noun)) {
-               if (adjectivesMatch(adjectives.get(i), item.getAdjectives())) {
-                  matchingGameItemNames.add(item.getName());
-                  continue nounLoop;
-               }
-               else {
-                  String missingItems = adjectives.get(i).stream()
-                      .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
-                  throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
-               }
-            }
-         }
-         throw new FailedParseException(String.format("There is no %s in your environment.", noun));
-      }
-      return matchingGameItemNames;
-   }
 
-   private static boolean adjectivesMatch(Set<String> userAdjectives, Set<String> itemAdjectives) {
-      return itemAdjectives.containsAll(userAdjectives);
-   }
+
+
 
    private static boolean isAdjective(String tag) {
       return tag.equals("JJ") || tag.equals("JJR") || tag.equals("JJS");
@@ -474,5 +430,9 @@ public class EnhancedNLPEngine {
       // create a document object
       CoreDocument document = pipeline.processToCoreDocument(rawCommand);
       return document;
+   }
+
+   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+      return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
 }

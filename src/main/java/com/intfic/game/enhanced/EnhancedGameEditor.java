@@ -31,6 +31,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.plaf.ActionMapUIResource;
+import net.sf.extjwnl.JWNLException;
+import net.sf.extjwnl.data.IndexWord;
+import net.sf.extjwnl.data.POS;
+import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.Word;
+import net.sf.extjwnl.dictionary.Dictionary;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,6 +70,13 @@ public class EnhancedGameEditor extends JFrame {
 
    private JTextField input;
    private JTextArea history;
+   private Item synonymItem;
+
+   public int getNumEdits() {
+      return numEdits;
+   }
+
+   private int numEdits = 0;
 
 
    private void initializeJFrame(ActionMap actionMap) {
@@ -152,7 +165,8 @@ public class EnhancedGameEditor extends JFrame {
    private KnowledgeUpdate stringToKnowledgeUpdate(String raw) {
       try {
          return new KnowledgeUpdate(raw);
-      } catch (KnowledgeException e) {
+      }
+      catch (KnowledgeException e) {
          return null;
       }
    }
@@ -234,6 +248,7 @@ public class EnhancedGameEditor extends JFrame {
    // TODO: The behaviour here will depend on the implementation of com.interactivefiction.GameEngine
    // TODO: Current idea just extend com.basic.EnhancedGameDesignAction and check instanceof in switch
    private List<String> editGame(String cmd, String sofar) {
+      this.numEdits++;
       String output = null;
       switch (cmd) {
          case "quit":
@@ -263,7 +278,7 @@ public class EnhancedGameEditor extends JFrame {
                output = roomForAction.getItems().stream().map(Item::toString).collect(Collectors.joining(","));
             }
             else {
-               output = "No room has been selected for adding an action to";
+               output = String.join("\n", gameEngine.globalItems().keySet());
             }
             break;
          case "print knowledge":
@@ -300,6 +315,16 @@ public class EnhancedGameEditor extends JFrame {
                             "to update and inherit with Generic Frames", knowledgeBase.toString());
                         enhancedGameEditState = EnhancedGameEditState.EDIT_KNOWLEDGE;
                         break;
+                     case "add synonyms":
+                        Map<String, Item> globalItems = gameEngine.globalItems();
+                        StringBuilder outBuilder = new StringBuilder();
+                        for (String key : globalItems.keySet()) {
+                           outBuilder.append(String.format("%s \n", key));
+                        }
+                        output = outBuilder.toString();
+                        output += "Type the id of the item you want to add synonyms for.";
+                        enhancedGameEditState = EnhancedGameEditState.ITEM_SYNONYMS;
+                        break;
                      case "new action":
                         output = "What new action do you want to add? Specify the verb and any regex by a comma e.g. \"fly, MYREGEX\". If you wan't a unary action, simply type the verb.";
                         enhancedGameEditState = EnhancedGameEditState.ACTIONFORMAT;
@@ -321,12 +346,13 @@ public class EnhancedGameEditor extends JFrame {
                      fileOut.close();
                      output = String.format("Saved your game to disk with name: %s.", fileName);
                      saved = true;
-                  } catch (IOException i) {
+                  }
+                  catch (IOException i) {
                      i.printStackTrace();
                   }
                   break;
                case LOAD:
-                  if(cmd.length() > 0){
+                  if (cmd.length() > 0) {
                      String fn = cmd;
                      fn = fn.endsWith(".txt") ? fn : fn + ".txt";
                      List<String> res = List.of("load", ">", "");
@@ -343,13 +369,14 @@ public class EnhancedGameEditor extends JFrame {
                         myReader.close();
                         enhancedGameEditState = EnhancedGameEditState.OPEN;
                         return res;
-                     } catch (FileNotFoundException e) {
+                     }
+                     catch (FileNotFoundException e) {
                         System.err.println("Couldn't open the load file");
                         e.printStackTrace();
                         output = "Try again. Invalid File name.";
                      }
                   }
-                  else{
+                  else {
                      output = "Invalid file name";
                   }
                   break;
@@ -421,7 +448,7 @@ public class EnhancedGameEditor extends JFrame {
                         roomToAdd.setItems(items);
                         gameEngine.addRoom(roomToAdd);
                         output = String.format("Great. Added a room called \"%s\" with items \"%s\". " +
-                                "Remember to add volumes using the \"edit knowledge -> fillers\" command for them to work properly with containers."
+                                "Remember to add volumes using the \"edit knowledge -> fillers\" command for them to work properly with implemented behaviour."
                             , roomToAdd.getName(), String.join(",", names));
                         if (gameEngine.getNumRooms() == 1) {
                            gameEngine.setCurrentRoom(roomToAdd);
@@ -435,6 +462,48 @@ public class EnhancedGameEditor extends JFrame {
                      output = "Invalid specification. Try to use the form " +
                          "\"name1 [adj1 adj2 ... adjn]\" for each item or just \"name2\" without" +
                          "adjectives. Remember, item names don't contain spaces";
+                  }
+                  break;
+               case ITEM_SYNONYMS:
+                  Map<String, Item> globalItems = gameEngine.globalItems();
+                  if (globalItems.containsKey(cmd)) {
+                     // WORDNET
+                     this.synonymItem = globalItems.get(cmd);
+                     try {
+                        Dictionary d = Dictionary.getDefaultResourceInstance();
+                        IndexWord iw = d.getIndexWord(POS.NOUN, this.synonymItem.getName());
+                        if (iw == null) {
+                           output = "Couldn't load dictionary entry for " + this.synonymItem.getName() + ". Type some synonyms you want anyway.";
+                        }
+                        else {
+                           List<Synset> synsets = iw.getSenses();
+                           StringBuilder outputBuilder = new StringBuilder();
+                           for (Synset synset : synsets) {
+                              outputBuilder.append(synset.getWords().stream().map(Word::getLemma).collect(Collectors.joining(","))).append("\n");
+                           }
+                           output = "---- \n " + outputBuilder.toString() + "---- \n";
+                           output += String.format(" are some suggested synonyms for %s. " +
+                               "Type those that you want and any more synonyms you wish as a comma-separated list.", this.synonymItem.getName());
+                        }
+                     }
+                     catch (JWNLException e) {
+                        output = "Couldn't load dictionary " + e.getMessage() + ". Type some synonyms you want anyway.";
+                     }
+                     enhancedGameEditState = EnhancedGameEditState.ITEM_SYNONYMS_SPECIFIED;
+                  }
+                  else {
+                     output = "That's not a valid item ID. Try again.";
+                  }
+                  break;
+               case ITEM_SYNONYMS_SPECIFIED:
+                  if (cmd.equals("")) {
+                     output = "Invalid synonyms comma-separated list. Try again";
+                  }
+                  else {
+                     List<String> splitList = splitByCommaAndTrim(cmd);
+                     this.synonymItem.getSynonyms().addAll(splitList);
+                     output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();
+                     enhancedGameEditState = EnhancedGameEditState.OPEN;
                   }
                   break;
                case ACTION_ROOM:
@@ -490,7 +559,8 @@ public class EnhancedGameEditor extends JFrame {
                         actionFormats = null;
                         enhancedGameEditState = EnhancedGameEditState.ACTION_ARGS;
                      }
-                  } catch (NumberFormatException e) {
+                  }
+                  catch (NumberFormatException e) {
                      output = "Non-integer entered to choose among the above options.";
                   }
                   break;
@@ -519,7 +589,7 @@ public class EnhancedGameEditor extends JFrame {
                   try {
                      effectAction = new EnhancedGameDesignAction();
                      List<Condition> preConds;
-                     if(cmd.equals("")){
+                     if (cmd.equals("")) {
                         preConds = new ArrayList<>();
                      }
                      else {
@@ -537,7 +607,8 @@ public class EnhancedGameEditor extends JFrame {
                         }
                      }
 
-                  } catch (IndexOutOfBoundsException e) {
+                  }
+                  catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each condition string " +
                          " by a \",\"";
                   }
@@ -556,7 +627,8 @@ public class EnhancedGameEditor extends JFrame {
                         output = "Enter the message to display to the user after taking this action.";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_MSG;
                      }
-                  } catch (IndexOutOfBoundsException e) {
+                  }
+                  catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each KnowledgeUpdate" +
                          " by a \",\"";
                   }
@@ -591,11 +663,12 @@ public class EnhancedGameEditor extends JFrame {
                case FILLERS:
                   List<String> knowledgeUpdates = splitByCommaAndTrim(cmd);
                   StringBuilder outputBuilder = new StringBuilder();
-                  for(String s : knowledgeUpdates){
+                  for (String s : knowledgeUpdates) {
                      try {
                         KnowledgeUpdate knowledgeUpdate = new KnowledgeUpdate(s);
                         gameEngine.updateKnowledgeBaseMultiple(knowledgeUpdate);
-                     } catch (KnowledgeException e) {
+                     }
+                     catch (KnowledgeException e) {
                         outputBuilder.append(String.format("Didn't complete update \"%s\" because it has an invalid form %s.\n", s, e.getMessage()));
                      }
                   }
@@ -662,10 +735,12 @@ public class EnhancedGameEditor extends JFrame {
                      output = String.format("Added the new Generic Frame %s as a parent of %s", parent.getId(), child.getId());
                      resetAdditions();
                      enhancedGameEditState = EnhancedGameEditState.OPEN;
-                  } catch (IndexOutOfBoundsException e) {
+                  }
+                  catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each slot and filler pair" +
                          " by a \",\" and the slot and the filler by a \"=\" with no excess spaces";
-                  } catch (ParseCancellationException e) {
+                  }
+                  catch (ParseCancellationException e) {
                      output = "Malformed filler value for string " + e.getMessage()
                          + ". Fillers can only be strings, numbers and lists of strings or numbers";
                   }

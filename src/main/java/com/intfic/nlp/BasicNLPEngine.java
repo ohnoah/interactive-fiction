@@ -3,6 +3,8 @@ package com.intfic.nlp;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
+import edu.stanford.nlp.util.Pair;
+import gherkin.lexer.Fa;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,11 +12,12 @@ import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
+import org.junit.internal.runners.statements.Fail;
 
 
 public class BasicNLPEngine {
 
-   public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems, String it) throws FailedParseException {
+   public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems, Pair<Set<String>, String> it) throws FailedParseException {
       return BasicNLPEngine.parse(rawCommand, possibleActionFormats, possibleItems);
    }
 
@@ -31,9 +34,10 @@ public class BasicNLPEngine {
       }
       ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
 
-      List<String> nouns = null;
+      List<String> nouns = new ArrayList<>();
+      List<Set<String>> adjectives = new ArrayList<>();
       try {
-         nouns = findNouns(rawCommand, actionFormat);
+         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives);
       }
       catch (JWNLException e) {
          e.printStackTrace();
@@ -48,29 +52,48 @@ public class BasicNLPEngine {
       return Collections.singletonList(command);
    }
 
-   private static void appendFirstNoun(List<String> nouns, String stringToSearch, ActionFormat actionToTake) throws JWNLException {
+   private static String appendFirstNounAndAdjectives(Set<String> adjectives, String stringToSearch, ActionFormat actionToTake) throws JWNLException, FailedParseException {
       Dictionary d = null;
       d = Dictionary.getDefaultResourceInstance();
-      String[] splitWords = stringToSearch.split(" ");
-      for (String word : splitWords) {
-         if (word.equals(actionToTake.getVerb())) { // to block e.g. "open" to be classified as a noun
-            continue;
+      String[] splitWords = Arrays.stream(stringToSearch.split(" ")).map(s -> s.replaceAll("\\.|\\,|\\!", "")).toArray(String[]::new);
+      IndexWord iwNoun = null;
+      String noun;
+      if (splitWords.length > 0) {
+         noun = splitWords[splitWords.length - 1];
+         iwNoun = d.getIndexWord(POS.NOUN, noun);
+         if (iwNoun == null) {
+            throw new FailedParseException("Expected last word to be a noun but was: " + noun);
          }
-         IndexWord iw = null;
-         iw = d.getIndexWord(POS.NOUN, word);
-         if (iw != null) {
-            String lemma = iw.getLemma();
-            nouns.add(lemma.trim());
-            break;
-         }
-         // not a noun
-
       }
+      else{
+         throw new FailedParseException("Empty string encountered when looking for noun and adjectives");
+      }
+      for (int i = splitWords.length - 2; i >= 0; i--) {
+         String word = splitWords[i];
+         if (word.equals(actionToTake.getVerb())) { // to block e.g. "open" to be classified as a noun
+            return noun;
+         }
+/*         IndexWord iwNoun = null;
+         iwNoun = d.getIndexWord(POS.NOUN, word);
+         if (iwNoun != null) {
+*//*            String lemma = iwNoun.getLemma();
+            nouns.add(lemma.trim());*//*
+            nouns.add(word.trim());
+            adjectives.add(currentAdjectives);
+            break;
+         }*/
+         // not a noun
+         IndexWord iwAdj = null;
+         iwAdj = d.getIndexWord(POS.ADJECTIVE, word);
+         if (iwAdj != null) {
+            adjectives.add(word.trim());
+         }
+      }
+      return noun;
    }
 
-   public static List<String> findNouns(String rawCommand, ActionFormat actionToTake) throws JWNLException, FailedParseException {
+   public static void findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake, List<String> nouns, List<Set<String>> adjectives) throws JWNLException, FailedParseException {
       // Either do a regex match for PUT IN
-      List<String> nouns = new ArrayList<>();
       if (actionToTake.isTernary()) {
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
          Matcher m = p.matcher(rawCommand);
@@ -78,7 +101,10 @@ public class BasicNLPEngine {
          if (doesMatch) {
             for (int i = 1; i <= m.groupCount(); i++) {
                String matchingGroup = m.group(i);
-               appendFirstNoun(nouns, matchingGroup, actionToTake);
+               Set<String> currentAdjectives = new HashSet<>();
+               String noun = appendFirstNounAndAdjectives(currentAdjectives, matchingGroup, actionToTake);
+               nouns.add(noun);
+               adjectives.add(currentAdjectives);
             }
          }
          else {
@@ -87,12 +113,14 @@ public class BasicNLPEngine {
       }
       // Or just find the noun if its a unary
       else {
-         appendFirstNoun(nouns, rawCommand, actionToTake);
-         if (nouns.size() == 0) { // no nullary operator allowed
-            throw new FailedParseException("No arguments given to the verb.");
+         Set<String> currentAdjectives = new HashSet<>();
+         String noun = appendFirstNounAndAdjectives(currentAdjectives, rawCommand, actionToTake);
+         nouns.add(noun);
+         adjectives.add(currentAdjectives);
+         if (nouns.size() != 1) { // no nullary operator allowed
+            throw new FailedParseException("Expected 1 noun as argument but got " + nouns.size() + ".");
          }
       }
-      return nouns;
    }
 
    // This fails for e.g. TURN it ON, TURN the box
@@ -103,7 +131,7 @@ public class BasicNLPEngine {
             return af;
          }
       }
-      throw new FailedParseException("No matching game verb");
+      throw new FailedParseException("No action corresponds to the verb: " + verb);
    }
 
    public static String findVerb(String rawCommand) throws JWNLException, FailedParseException {
@@ -124,12 +152,15 @@ public class BasicNLPEngine {
    }
 
    public static void main(String[] args) {
+/*
       System.out.println("HELLO");
       try {
          Dictionary d = Dictionary.getDefaultResourceInstance();
+*/
 /*         IndexWord iw = d.getIndexWord(POS.VERB, "LISTEN TO");
          System.out.println(iw.getKey());
-         System.out.println(iw.getLemma());*/
+         System.out.println(iw.getLemma());*//*
+
       }
       catch (JWNLException e) {
          System.out.println("SDSD");
@@ -140,10 +171,15 @@ public class BasicNLPEngine {
       boolean doesMatch = m.matches();
       System.out.println(m.group(1));
       System.out.println(m.group(2));
+*/
 
 
 
 /*      com.interactivefiction.BasicNLPEngine basicNLPEngine = new com.interactivefiction.BasicNLPEngine();
       com.interactivefiction.game.shared.InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
+   }
+
+   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+      return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
 }

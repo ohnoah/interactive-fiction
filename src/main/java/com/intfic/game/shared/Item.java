@@ -57,7 +57,7 @@ public class Item implements Serializable {
    }
 
    public Set<String> getAdjectives() {
-      return new HashSet<>(adjectives);
+      return adjectives;
    }
 
    public void setAdjectives(Set<String> adjectives) {
@@ -66,7 +66,7 @@ public class Item implements Serializable {
    }
 
    public Set<String> getSynonyms() {
-      return new HashSet<>(synonyms);
+      return synonyms;
    }
 
    public void setSynonyms(List<String> synonyms) {
