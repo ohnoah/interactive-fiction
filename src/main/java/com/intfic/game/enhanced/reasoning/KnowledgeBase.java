@@ -118,7 +118,7 @@ public class KnowledgeBase implements Serializable {
       return fillQueryString(failureMessage, null);
    }
 
-   public String fillQueryString(String failureMessage, List<String> nounsToFill) {
+   public String fillQueryString(String failureMessage, List<String> itemIdentifiersToFill) {
       // TODO: Replace all possible query strings that start with _ in the strings. Don't replace values
       String valueRegex = KnowledgeRegex.KNOWLEDGE_EXPR;
 
@@ -130,7 +130,7 @@ public class KnowledgeBase implements Serializable {
          List<String> frameAndSlot = null;
          try {
             frameAndSlot = frameAndSlot(match);
-            if (nounsToFill != null && !nounsToFill.contains(frameAndSlot.get(0))) {
+            if (itemIdentifiersToFill != null && !itemIdentifiersToFill.contains(frameAndSlot.get(0))) {
                continue;
             }
          }
@@ -396,8 +396,12 @@ public class KnowledgeBase implements Serializable {
       }
    }
 
+   public static String getItemIdentifier(Item i){
+      return i.getID();
+   }
+
    public boolean createSpecificFrame(Item i, String... gs) {
-      SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(i.getName()));
+      SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(getItemIdentifier(i)));
       for (String g : gs) {
          if (genericFrames.containsKey(g)) {
             specificFrame.addParent(genericFrames.get(g));

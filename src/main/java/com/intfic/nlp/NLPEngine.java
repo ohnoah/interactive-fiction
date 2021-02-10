@@ -17,9 +17,9 @@ public abstract class NLPEngine {
    // If fails, throw a com.interactivefiction.nlp.FailedParseException. This can be either because adjectives don't match
    // or because there are no in-game items with that name.
    // TODO: To support multiple same-name items, need to change this to longest match and potentially return errors
-   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
+   public static List<Item> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives,
                                                         Set<Item> possibleItems) throws FailedParseException {
-      List<String> matchingGameItemNames = new ArrayList<>();
+      List<Item> matchingGameItemNames = new ArrayList<>();
       nounLoop:
       for (int i = 0; i < nouns.size(); i++) {
          String noun = nouns.get(i);
@@ -27,7 +27,7 @@ public abstract class NLPEngine {
             String itemName = item.getName();
             if (itemName.equals(noun)) {
                if (adjectivesMatch(adjectives.get(i), item.getAdjectives())) {
-                  matchingGameItemNames.add(itemName);
+                  matchingGameItemNames.add(item);
                   continue nounLoop;
                }
                else {
@@ -40,7 +40,7 @@ public abstract class NLPEngine {
          for (Item item : possibleItems) {
             if (item.getSynonyms().contains(noun)) {
                if (adjectivesMatch(adjectives.get(i), item.getAdjectives())) {
-                  matchingGameItemNames.add(item.getName());
+                  matchingGameItemNames.add(item);
                   continue nounLoop;
                }
                else {

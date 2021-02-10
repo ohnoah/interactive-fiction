@@ -14,12 +14,12 @@ import com.intfic.game.enhanced.reasoning.updates.UpdateType;
 import com.intfic.game.shared.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jetbrains.annotations.NotNull;
@@ -70,9 +70,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    public Justification progressStory(@NotNull InstantiatedGameAction gameAction) {
       String message = "";
       // if it returns a healthy String message, prepend that and let the GameDesignAction continue
-      Set<String> possibleItemNames = this.possibleItemNames();
-      for (String argument : gameAction.getArguments()) {
-         if (!possibleItemNames.contains(argument)) {
+      /*Set<String> possibleItemNames = this.possibleItemNames();*/
+      Set<Item> possibleItems = this.possibleItems();
+      for (Item argument : gameAction.getArguments()) {
+         if (!possibleItems.contains(argument)) {
             return new Justification(false, String.format("There is no %s in your environment.", argument));
          }
       }
@@ -113,9 +114,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return knowledgeBase;
    }
 
-   public Map<String, Item> globalItems() {
-      return worldRooms.stream().map(Room::getItems).flatMap(Collection::stream).collect(Collectors.toMap(Item::getName, i -> i));
-   }
 
    @Override
    public Set<Item> possibleItems() {
@@ -136,7 +134,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    public void setCurrentRoom(Room newRoom) {
       this.currentRoom = newRoom;
-         /*this.updateKnowledgeBase(new KnowledgeUpdate(String.format("!world::room := \"%s\"", currentRoom.getName())));*/
+      /*this.updateKnowledgeBase(new KnowledgeUpdate(String.format("!world::room := \"%s\"", currentRoom.getName())));*/
       this.updateKnowledgeBase(new KnowledgeUpdate(UpdateType.SET, "world", "room",
           String.format("\"%s\"", currentRoom.getName())));
 
@@ -146,71 +144,77 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return knowledgeBase.conditionSucceeds(condition);
    }
 
+   private static String itemNameInUserSpace(Item i){
+      return i.getName();
+   }
 
-   protected Condition fillConditionWithArgs(@NotNull Condition condition, @NotNull List<String> nouns) {
-      String newBooleanExpr = replaceArgsWithNouns(condition.getBooleanExpr(), nouns, "-", "");
-      String newFailureMessage = replaceArgsWithNouns(condition.getFailureMessage(), nouns, " ");
+   protected Condition fillConditionWithArgs(@NotNull Condition condition, @NotNull List<Item> items) {
+      List<String> itemIdentifiers = itemsToStrings(items, KnowledgeBase::getItemIdentifier);
+      List<String> itemNames = itemsToStrings(items, EnhancedGameEngine::itemNameInUserSpace);
+
+      String newBooleanExpr = replacePlaceHolderArgsWithStrings(condition.getBooleanExpr(), itemIdentifiers, "-", "");
+      String newFailureMessage = replacePlaceHolderArgsWithStrings(condition.getFailureMessage(), itemNames, " ");
       /*newBooleanExpr = newBooleanExpr.replaceAll(KnowledgeRegex.loneFrameNameExpr, "\"$1\"");*/
       return new Condition(newBooleanExpr, newFailureMessage);
    }
 
-   private KnowledgeUpdate fillKnowledgeUpdateWithArgs(KnowledgeUpdate knowledgeUpdate, List<String> nouns) {
+   private KnowledgeUpdate fillKnowledgeUpdateWithArgs(KnowledgeUpdate knowledgeUpdate, List<String> itemIdentifiers) {
       KnowledgeUpdate newKnowledgeUpdate = new KnowledgeUpdate(knowledgeUpdate);
-      newKnowledgeUpdate.setFrameToUpdate(replaceArgsWithNouns(newKnowledgeUpdate.getFrameToUpdate(), nouns));
-      newKnowledgeUpdate.setSlotToUpdate(replaceArgsWithNouns(newKnowledgeUpdate.getSlotToUpdate(), nouns));
+      newKnowledgeUpdate.setFrameToUpdate(replacePlaceHolderArgsWithStrings(newKnowledgeUpdate.getFrameToUpdate(), itemIdentifiers));
+      newKnowledgeUpdate.setSlotToUpdate(replacePlaceHolderArgsWithStrings(newKnowledgeUpdate.getSlotToUpdate(), itemIdentifiers));
       if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.KNOWLEDGE) {
          String foreignFrame = newKnowledgeUpdate.getForeignFrame();
-         newKnowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+         newKnowledgeUpdate.setForeignFrame(replacePlaceHolderArgsWithStrings(foreignFrame, itemIdentifiers));
          String foreignSlot = newKnowledgeUpdate.getForeignSlot();
-         newKnowledgeUpdate.setForeignSlot(replaceArgsWithNouns(foreignSlot, nouns));
+         newKnowledgeUpdate.setForeignSlot(replacePlaceHolderArgsWithStrings(foreignSlot, itemIdentifiers));
       }
       else if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.FRAME) {
          String foreignFrame = newKnowledgeUpdate.getForeignFrame();
-         newKnowledgeUpdate.setForeignFrame(replaceArgsWithNouns(foreignFrame, nouns));
+         newKnowledgeUpdate.setForeignFrame(replacePlaceHolderArgsWithStrings(foreignFrame, itemIdentifiers));
       }
       else if (newKnowledgeUpdate.getSettingType() == KnowledgeUpdate.SettingType.CONSTANT) {
          Object updateConstant = newKnowledgeUpdate.getUpdateConstant();
          if (updateConstant instanceof String) {
-            newKnowledgeUpdate.setUpdateConstant(replaceArgsWithNouns((String) updateConstant, nouns));
+            newKnowledgeUpdate.setUpdateConstant(replacePlaceHolderArgsWithStrings((String) updateConstant, itemIdentifiers));
          }
       }
       return newKnowledgeUpdate;
    }
 
-   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns) {
-      return this.replaceArgsWithNouns(s, nouns, "-", "");
+   protected String replacePlaceHolderArgsWithStrings(@NotNull String s, @NotNull List<String> stringList) {
+      return this.replacePlaceHolderArgsWithStrings(s, stringList, "-", "");
    }
 
-   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, @NotNull String spaceReplacer) {
-      return this.replaceArgsWithNouns(s, nouns, spaceReplacer, "");
+   protected String replacePlaceHolderArgsWithStrings(@NotNull String s, @NotNull List<String> stringList, @NotNull String spaceReplacer) {
+      return this.replacePlaceHolderArgsWithStrings(s, stringList, spaceReplacer, "");
    }
 
-   protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, String spaceReplacer, String quotation) {
+   protected String replacePlaceHolderArgsWithStrings(@NotNull String s, @NotNull List<String> stringList, String spaceReplacer, String quotation) {
       String newString = s;
-      for (int i = 0; i < nouns.size(); i++) {
+      for (int i = 0; i < stringList.size(); i++) {
          String argString = "!arg" + i + "::";
-         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer) + "::";
+         String nounNoSpaces = (stringList.get(i)).replace(" ", spaceReplacer) + "::";
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
       }
-      for (int i = 0; i < nouns.size(); i++) {
+      for (int i = 0; i < stringList.size(); i++) {
          String argString = "arg" + i + "::";
-         String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer) + "::";
+         String nounNoSpaces = (stringList.get(i)).replace(" ", spaceReplacer) + "::";
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
       }
-      for (int i = 0; i < nouns.size(); i++) {
+      for (int i = 0; i < stringList.size(); i++) {
          String argString = "!arg" + i;
-         String nounNoSpaces = quotation + nouns.get(i).replace(" ", spaceReplacer) + quotation;
+         String nounNoSpaces = quotation + (stringList.get(i)).replace(" ", spaceReplacer) + quotation;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
       }
-      for (int i = 0; i < nouns.size(); i++) {
+      for (int i = 0; i < stringList.size(); i++) {
          String argString = "arg" + i;
-         String nounNoSpaces = quotation + nouns.get(i).replace(" ", spaceReplacer) + quotation;
+         String nounNoSpaces = quotation + (stringList.get(i)).replace(" ", spaceReplacer) + quotation;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
@@ -240,7 +244,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
 
-   public List<String> getItemToDeleteFromKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
+   public List<String> getItemIdentifiersToDeleteFromKnowledgeUpdate(KnowledgeUpdate knowledgeUpdate) {
       List<String> deleteList = new ArrayList<>();
       if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT && knowledgeUpdate.getFrameToUpdate().equals("world") && knowledgeUpdate.getSlotToUpdate().equals("items")) {
          try {
@@ -255,12 +259,13 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
 
-   private Justification validatePreconditions(@NotNull List<Condition> conditions, @NotNull List<String> nouns) {
+   private Justification validatePreconditions(@NotNull List<Condition> conditions, @NotNull List<Item> nouns) {
       boolean valid = true;
       String reasoning = "";
 
       for (Condition condition : conditions) {
          // replace !arg something in the string
+         // TODO: Maybe fill items with unique noun + adjective because multiple nouns will lead to ambiguity
          Condition populatedCondition = fillConditionWithArgs(condition, nouns);
          try {
             if (!this.conditionSucceeds(populatedCondition.getBooleanExpr())) {
@@ -285,17 +290,23 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return new Justification(valid, reasoning);
    }
 
+   private static List<String> itemsToStrings(List<Item> items, Function<Item, String> fn){
+      return items.stream().map(fn).collect(Collectors.toList());
+   }
+
    private Justification conditionallyPerformUpdates(@NotNull Justification validatePreconds,
                                                      @NotNull List<KnowledgeUpdate> knowledgeUpdates,
-                                                     @NotNull String successMessage, @NotNull List<String> nouns) {
+                                                     @NotNull String successMessage, @NotNull List<Item> nouns) {
       boolean valid = validatePreconds.isAccepted();
       String reasoning = validatePreconds.getReasoning();
+      List<String> itemNames = itemsToStrings(nouns, EnhancedGameEngine::itemNameInUserSpace);
+      List<String> itemIdentifiers = itemsToStrings(nouns, KnowledgeBase::getItemIdentifier);
       if (valid) {
-         reasoning = replaceArgsWithNouns(successMessage, nouns, " ");
+         reasoning = replacePlaceHolderArgsWithStrings(successMessage, itemNames, " ");
          for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
-            KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, nouns);
+            KnowledgeUpdate populatedKnowledgeUpdate = fillKnowledgeUpdateWithArgs(knowledgeUpdate, itemIdentifiers);
             // If item is removed from the world, need to fill its values before deleting it
-            reasoning = knowledgeBase.fillQueryString(reasoning, getItemToDeleteFromKnowledgeUpdate(populatedKnowledgeUpdate));
+            reasoning = knowledgeBase.fillQueryString(reasoning, getItemIdentifiersToDeleteFromKnowledgeUpdate(populatedKnowledgeUpdate));
             updateKnowledgeBase(populatedKnowledgeUpdate);
          }
 
@@ -306,7 +317,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    private Justification conditionallyPerformAction(@NotNull List<Condition> conditions,
-                                                    @NotNull List<String> nouns,
+                                                    @NotNull List<Item> nouns,
                                                     @NotNull String successMessage,
                                                     @NotNull List<KnowledgeUpdate> knowledgeUpdates) {
       Justification validatePreconds = validatePreconditions(conditions, nouns);
@@ -325,7 +336,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    protected Justification performImplementedLogic(@NotNull InstantiatedGameAction gameAction) {
       ActionFormat actionFormat = gameAction.getAbstractActionFormat();
       // If action is implemented
-      List<String> nouns = gameAction.getArguments();
+      List<Item> nouns = gameAction.getArguments();
       Justification justification;
       if (ImplementedActionLogic.implementedConditionsMap.containsKey(actionFormat)) {
          List<Condition> conditions = ImplementedActionLogic.implementedConditionsMap.get(actionFormat);

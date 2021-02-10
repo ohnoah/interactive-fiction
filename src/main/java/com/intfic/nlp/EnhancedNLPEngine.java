@@ -152,7 +152,7 @@ public class EnhancedNLPEngine {
             findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
 
             //TODO: do the wordnet stuff here for nouns
-            List<String> gameItemNames = NLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
+            List<Item> gameItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
 
 
             InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
@@ -418,7 +418,7 @@ public class EnhancedNLPEngine {
       return document;
    }
 
-   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+   public static List<Item> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
       return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
 }

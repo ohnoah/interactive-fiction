@@ -6,19 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InstantiatedGameAction implements Serializable {
    private static final long serialVersionUID = 4004019328393742799L;
    private ActionFormat abstractActionFormat;
-   private List<String> arguments;
+   private List<Item> arguments;
 
 
    private Pair<Set<String>, String> it;
 
-   public InstantiatedGameAction(ActionFormat actionFormat, List<String> nouns) {
+   public InstantiatedGameAction(ActionFormat actionFormat, List<Item> nouns) {
       setAbstractActionFormat(actionFormat);
       setArguments(nouns);
    }
+
 
    public Pair<Set<String>, String> getIt() {
       return it;
@@ -41,11 +43,11 @@ public class InstantiatedGameAction implements Serializable {
       this.abstractActionFormat = abstractActionFormat;
    }
 
-   public List<String> getArguments() {
+   public List<Item> getArguments() {
       return arguments;
    }
 
-   public void setArguments(List<String> arguments) {
+   public void setArguments(List<Item> arguments) {
       this.arguments = new ArrayList<>(arguments);
    }
 

@@ -40,9 +40,11 @@ public class BasicNLPEngine {
          findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives);
       }
       catch (JWNLException e) {
-         e.printStackTrace();
+         throw new FailedParseException("Dictionary error on the back end. Try again.");
       }
-      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, nouns);
+      List<Item> gameItemNames = BasicNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
+
+      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
       // Use that to look for a VB and a NN and populate a Command
       // just look for the possible commands using WordNet otherwise return Error
       // enhanced engine can be more informative if a supplementary word happens
@@ -179,7 +181,7 @@ public class BasicNLPEngine {
       com.interactivefiction.game.shared.InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
    }
 
-   public static List<String> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+   public static List<Item> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
       return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
 }

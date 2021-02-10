@@ -3,14 +3,16 @@ package com.intfic.game.shared;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class GameEngine implements Serializable {
 
-   private static final long serialVersionUID = 3557779271951435981L;
+   private static final long serialVersionUID = 7868760665131884319L;
    private List<ActionFormat> possibleActionFormats;
    protected List<Room> worldRooms;
    private String startMessage;
@@ -97,6 +99,11 @@ public abstract class GameEngine implements Serializable {
    }
 
    public abstract Set<Item> possibleItems();
+
+   public Map<String, Item> globalItems() {
+      return Util.streamToMap(worldRooms.stream().map(Room::getItems).flatMap(Collection::stream), Item::getID);
+      /*return worldRooms.stream().map(Room::getItems).flatMap(Collection::stream).collect(Collectors.toMap(Item::getID, i -> i));*/
+   }
 
    public abstract Justification progressStory(@NotNull InstantiatedGameAction gameAction);
 
