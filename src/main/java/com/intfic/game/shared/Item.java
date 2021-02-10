@@ -15,19 +15,27 @@ public class Item implements Serializable {
    private Set<String> synonyms;
 
 
+   private Room originalRoom;
+
+
+   private String id;
+
+
    public Item(@NotNull String name) {
       this.name = name;
+      this.id = name;
       synonyms = new HashSet<>();
       adjectives = new HashSet<>();
    }
 
    @Override
    public String toString() {
-      return String.format("[%s] %s", String.join(",", adjectives), name);
+      return String.format("[%s] %s", String.join(",", adjectives), id);
    }
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives) {
       this.name = name;
+      this.id = name;
       this.adjectives = new HashSet<>();
       this.adjectives.addAll(defaultAdjectives);
       this.synonyms = new HashSet<>();
@@ -35,6 +43,7 @@ public class Item implements Serializable {
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives, @NotNull Set<String> synonyms) {
       this.name = name;
+      this.id = name;
       this.adjectives = new HashSet<>(defaultAdjectives);
       this.synonyms = new HashSet<>(synonyms);
    }
@@ -48,12 +57,12 @@ public class Item implements Serializable {
          return false;
       }
       Item item = (Item) o;
-      return getName().equals(item.getName());
+      return getId().equals(item.getId());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(getName());
+      return Objects.hash(getId());
    }
 
    public Set<String> getAdjectives() {
@@ -65,6 +74,14 @@ public class Item implements Serializable {
       this.adjectives.addAll(adjectives);
    }
 
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
+   }
+
    public Set<String> getSynonyms() {
       return synonyms;
    }
@@ -73,6 +90,13 @@ public class Item implements Serializable {
       this.synonyms = new HashSet<>(synonyms);
    }
 
+   public Room getOriginalRoom() {
+      return originalRoom;
+   }
+
+   public void setOriginalRoom(Room originalRoom) {
+      this.originalRoom = originalRoom;
+   }
 
    public String getName() {
       return name;

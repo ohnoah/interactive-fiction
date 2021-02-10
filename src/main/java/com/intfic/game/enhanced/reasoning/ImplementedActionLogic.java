@@ -33,30 +33,30 @@ public class ImplementedActionLogic implements Serializable {
        */
       {
          ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
-         Condition putConditionNotContained0 = new Condition("NOT _arg0::isContained",
-             "The _arg0 is already inside of something.");
-         Condition putConditionIsContainer = new Condition("_arg1::isContainer",
-             "You can't do that because _arg1 is not a container.");
-         Condition putConditionArg0SolidOrLiquid = new Condition("_arg0::state = \"solid\" OR _arg0::state = \"liquid\"",
-             "You can't put the _arg0 anywhere because it's not solid or liquid.");
-         Condition putConditionArg1SolidOrLiquid = new Condition("_arg1::state = \"solid\" OR _arg1::state = \"liquid\"",
-             "You can't put _arg0 in _arg1 because _arg1 isn't solid or liquid.");
-         Condition putConditionVolume = new Condition("_arg0::volume <= _arg1::internalVolume",
-             "The _arg1 is not big enough to contain the _arg0.");
-         Condition putConditionNotContained1 = new Condition("NOT _arg1::isContained",
-             "You can't do that because _arg1 is inside of something.");
-         Condition putConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to put in the _arg1.");
+         Condition putConditionNotContained0 = new Condition("NOT !arg0::isContained",
+             "The !arg0 is already inside of something.");
+         Condition putConditionIsContainer = new Condition("!arg1::isContainer",
+             "You can't do that because !arg1 is not a container.");
+         Condition putConditionArg0SolidOrLiquid = new Condition("!arg0::state = \"solid\" OR !arg0::state = \"liquid\"",
+             "You can't put the !arg0 anywhere because it's not solid or liquid.");
+         Condition putConditionArg1SolidOrLiquid = new Condition("!arg1::state = \"solid\" OR !arg1::state = \"liquid\"",
+             "You can't put !arg0 in !arg1 because !arg1 isn't solid or liquid.");
+         Condition putConditionVolume = new Condition("!arg0::volume <= !arg1::internalVolume",
+             "The !arg1 is not big enough to contain the !arg0.");
+         Condition putConditionNotContained1 = new Condition("NOT !arg1::isContained",
+             "You can't do that because !arg1 is inside of something.");
+         Condition putConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to put in the !arg1.");
          // We can use knowledgeEngine constructs here
 
-         implementedSuccessMessageMap.put(putIn, "You put the _arg0 in the _arg1.");
+         implementedSuccessMessageMap.put(putIn, "You put the !arg0 in the !arg1.");
          implementedConditionsMap.put(putIn, List.of(putConditionNotContained0,
              putConditionIsContainer, putConditionArg0SolidOrLiquid, putConditionArg1SolidOrLiquid,
              putConditionVolume, putConditionNotContained1, putConditionMass));
          try {
-            KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("_arg1::internalVolume -= _arg0::volume");
-            KnowledgeUpdate putContains = new KnowledgeUpdate("_arg1::contains += _arg0");
-            KnowledgeUpdate putContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
+            KnowledgeUpdate putMinusVolume = new KnowledgeUpdate("!arg1::internalVolume -= !arg0::volume");
+            KnowledgeUpdate putContains = new KnowledgeUpdate("!arg1::contains += !arg0");
+            KnowledgeUpdate putContained = new KnowledgeUpdate("!arg0::isContained := TRUE");
             implementedKnowledgeUpdateMap.put(putIn, List.of(putMinusVolume, putContains, putContained));
          }
          catch (KnowledgeException e) {
@@ -70,16 +70,16 @@ public class ImplementedActionLogic implements Serializable {
     */
       {
          ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
-         Condition putConditionNotContained = new Condition("NOT _arg0::isContained",
-             "You can't put the _arg0 on _arg1 because _arg0 is inside of something.");
-         Condition putConditionArg0SolidOrLiquid = new Condition("_arg0::state = \"solid\" OR _arg0::state = \"liquid\"",
-             "You can't put the _arg0 anywhere because it's not solid or liquid.");
-         Condition putConditionArg1Solid = new Condition("_arg0::state = \"solid\"",
-             "You can't put _arg0 on the _arg1 because _arg1 is not solid.");
-         Condition putConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to put on the _arg1.");
+         Condition putConditionNotContained = new Condition("NOT !arg0::isContained",
+             "You can't put the !arg0 on !arg1 because !arg0 is inside of something.");
+         Condition putConditionArg0SolidOrLiquid = new Condition("!arg0::state = \"solid\" OR !arg0::state = \"liquid\"",
+             "You can't put the !arg0 anywhere because it's not solid or liquid.");
+         Condition putConditionArg1Solid = new Condition("!arg0::state = \"solid\"",
+             "You can't put !arg0 on the !arg1 because !arg1 is not solid.");
+         Condition putConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to put on the !arg1.");
          implementedConditionsMap.put(putOn, List.of(putConditionNotContained, putConditionArg0SolidOrLiquid, putConditionArg1Solid, putConditionMass));
-         implementedSuccessMessageMap.put(putOn, "You put the _arg0 on the _arg1.");
+         implementedSuccessMessageMap.put(putOn, "You put the !arg0 on the !arg1.");
       }
 
       /* REMOVE
@@ -89,26 +89,26 @@ public class ImplementedActionLogic implements Serializable {
       {
          ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
 
-         Condition removeConditionIsContained0 = new Condition("_arg0::isContained",
-             "The _arg0 is not inside of anything.");
-         Condition removeConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't remove the _arg0 because it's not solid.");
-         Condition removeConditionIsContained1 = new Condition("NOT _arg1::isContained",
-             "The _arg1 is inside of something so you can't remove _arg0 from it.");
-         Condition removeConditionIsContainer = new Condition("_arg1::isContainer",
-             "The _arg0 is not inside of the _arg1 because _arg1 doesn't have things inside of it.");
-         Condition removeConditionContains = new Condition("\"_arg0\" IN _arg1::contains",
-             "The _arg0 is not inside of the _arg1");
-         Condition removeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to remove from the _arg1.");
+         Condition removeConditionIsContained0 = new Condition("!arg0::isContained",
+             "The !arg0 is not inside of anything.");
+         Condition removeConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't remove the !arg0 because it's not solid.");
+         Condition removeConditionIsContained1 = new Condition("NOT !arg1::isContained",
+             "The !arg1 is inside of something so you can't remove !arg0 from it.");
+         Condition removeConditionIsContainer = new Condition("!arg1::isContainer",
+             "The !arg0 is not inside of the !arg1 because !arg1 doesn't have things inside of it.");
+         Condition removeConditionContains = new Condition("\"!arg0\" IN !arg1::contains",
+             "The !arg0 is not inside of the !arg1");
+         Condition removeConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to remove from the !arg1.");
 
          implementedConditionsMap.put(remove, List.of(removeConditionIsContained0, removeConditionSolid, removeConditionIsContained1,
              removeConditionIsContainer, removeConditionContains, removeConditionMass));
-         implementedSuccessMessageMap.put(remove, "You removed the _arg0 from the _arg1.");
+         implementedSuccessMessageMap.put(remove, "You removed the !arg0 from the !arg1.");
          try {
-            KnowledgeUpdate removePlusVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
-            KnowledgeUpdate removeContains = new KnowledgeUpdate("_arg1::contains -= _arg0");
-            KnowledgeUpdate removeContained = new KnowledgeUpdate("_arg0::isContained := FALSE");
+            KnowledgeUpdate removePlusVolume = new KnowledgeUpdate("!arg1::internalVolume += !arg0::volume");
+            KnowledgeUpdate removeContains = new KnowledgeUpdate("!arg1::contains -= !arg0");
+            KnowledgeUpdate removeContained = new KnowledgeUpdate("!arg0::isContained := FALSE");
             implementedKnowledgeUpdateMap.put(remove, List.of(removePlusVolume, removeContains, removeContained));
          }
          catch (KnowledgeException e) {
@@ -121,28 +121,28 @@ public class ImplementedActionLogic implements Serializable {
        */
       {
          ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
-         Condition transferConditionIsContainer = new Condition("_arg2::isContainer",
-             "You can't do that because _arg2 is not a container.");
-         Condition transferConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to transfer to the _arg2.");
-         Condition transferConditionArg2SolidOrLiquid = new Condition("_arg2::state = \"solid\" OR _arg2::state = \"liquid\"",
-             "You can't transfer _arg0 to _arg2 because _arg2 isn't solid or liquid.");
-         Condition transferConditionNotContained2 = new Condition("NOT _arg2::isContained",
-             "You can't do that because _arg2 is inside of something.");
-         Condition transferConditionVolume = new Condition("_arg0::volume <= _arg2::internalVolume",
-             "The _arg2 is not big enough to contain the _arg0.");
+         Condition transferConditionIsContainer = new Condition("!arg2::isContainer",
+             "You can't do that because !arg2 is not a container.");
+         Condition transferConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to transfer to the !arg2.");
+         Condition transferConditionArg2SolidOrLiquid = new Condition("!arg2::state = \"solid\" OR !arg2::state = \"liquid\"",
+             "You can't transfer !arg0 to !arg2 because !arg2 isn't solid or liquid.");
+         Condition transferConditionNotContained2 = new Condition("NOT !arg2::isContained",
+             "You can't do that because !arg2 is inside of something.");
+         Condition transferConditionVolume = new Condition("!arg0::volume <= !arg2::internalVolume",
+             "The !arg2 is not big enough to contain the !arg0.");
          // We can use knowledgeEngine constructs here
 
-         implementedSuccessMessageMap.put(transfer, "You transfer the _arg0 from the _arg1 to the _arg2.");
+         implementedSuccessMessageMap.put(transfer, "You transfer the !arg0 from the !arg1 to the !arg2.");
          implementedConditionsMap.put(transfer, List.of(transferConditionIsContainer,
              transferConditionMass, transferConditionArg2SolidOrLiquid,
              transferConditionNotContained2, transferConditionVolume));
          try {
-            KnowledgeUpdate transferContainsArg1 = new KnowledgeUpdate("_arg1::contains -= _arg0");
-            KnowledgeUpdate transferContainsArg2 = new KnowledgeUpdate("_arg2::contains += _arg0");
-            KnowledgeUpdate transferContained = new KnowledgeUpdate("_arg0::isContained := TRUE");
-            KnowledgeUpdate transferAddVolume = new KnowledgeUpdate("_arg1::internalVolume += _arg0::volume");
-            KnowledgeUpdate transferMinusVolume = new KnowledgeUpdate("_arg2::internalVolume -= _arg0::volume");
+            KnowledgeUpdate transferContainsArg1 = new KnowledgeUpdate("!arg1::contains -= !arg0");
+            KnowledgeUpdate transferContainsArg2 = new KnowledgeUpdate("!arg2::contains += !arg0");
+            KnowledgeUpdate transferContained = new KnowledgeUpdate("!arg0::isContained := TRUE");
+            KnowledgeUpdate transferAddVolume = new KnowledgeUpdate("!arg1::internalVolume += !arg0::volume");
+            KnowledgeUpdate transferMinusVolume = new KnowledgeUpdate("!arg2::internalVolume -= !arg0::volume");
             implementedKnowledgeUpdateMap.put(transfer, List.of(transferAddVolume, transferContainsArg1, transferContainsArg2, transferContained, transferMinusVolume));
          }
          catch (KnowledgeException e) {
@@ -157,20 +157,20 @@ public class ImplementedActionLogic implements Serializable {
 
       {
          ActionFormat take = new ActionFormat("take", null);
-         Condition takeConditionTaken = new Condition("NOT (\"_arg0\" IN world::inventory)",
-             "The _arg0 is already on your person.");
-         Condition takeConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't take the _arg0 because it's not solid.");
-         Condition takeConditionIsTakeable = new Condition("_arg0::isTakeable",
-             "You can't take the _arg0 right now.");
-         Condition takeConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is inside of something else.");
-         Condition takeConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to carry.");
+         Condition takeConditionTaken = new Condition("NOT (\"!arg0\" IN world::inventory)",
+             "The !arg0 is already on your person.");
+         Condition takeConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't take the !arg0 because it's not solid.");
+         Condition takeConditionIsTakeable = new Condition("!arg0::isTakeable",
+             "You can't take the !arg0 right now.");
+         Condition takeConditionNotContained = new Condition("NOT !arg0::isContained",
+             "The !arg0 is inside of something else.");
+         Condition takeConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to carry.");
          implementedConditionsMap.put(take, List.of(takeConditionTaken, takeConditionSolid, takeConditionIsTakeable, takeConditionNotContained, takeConditionMass));
-         implementedSuccessMessageMap.put(take, "You take the _arg0.");
+         implementedSuccessMessageMap.put(take, "You take the !arg0.");
          try {
-            KnowledgeUpdate takeInventory = new KnowledgeUpdate("world::inventory += _arg0");
+            KnowledgeUpdate takeInventory = new KnowledgeUpdate("world::inventory += !arg0");
             implementedKnowledgeUpdateMap.put(take, List.of(takeInventory));
          }
          catch (KnowledgeException e) {
@@ -184,28 +184,28 @@ public class ImplementedActionLogic implements Serializable {
    */
       {
          ActionFormat push = new ActionFormat("push", null);
-         Condition pushConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't push the _arg0 because it's not solid.");
-         Condition pushConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is inside of something else.");
-         Condition pushConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to push.");
+         Condition pushConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't push the !arg0 because it's not solid.");
+         Condition pushConditionNotContained = new Condition("NOT !arg0::isContained",
+             "The !arg0 is inside of something else.");
+         Condition pushConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to push.");
          implementedConditionsMap.put(push, List.of(pushConditionSolid, pushConditionNotContained, pushConditionMass));
-         implementedSuccessMessageMap.put(push, "You push the _arg0.");
+         implementedSuccessMessageMap.put(push, "You push the !arg0.");
       }
    /* PULL
    --------
    */
       {
          ActionFormat pull = new ActionFormat("pull", null);
-         Condition pullConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't pull the _arg0 because it's not solid.");
-         Condition pullConditionNotContained = new Condition("NOT _arg0::isContained",
-             "The _arg0 is inside of something else.");
-         Condition pullConditionMass = new Condition("_world::liftingPower >= _arg0::mass",
-             "The _arg0 is too heavy for you to pull.");
+         Condition pullConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't pull the !arg0 because it's not solid.");
+         Condition pullConditionNotContained = new Condition("NOT !arg0::isContained",
+             "The !arg0 is inside of something else.");
+         Condition pullConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
+             "The !arg0 is too heavy for you to pull.");
          implementedConditionsMap.put(pull, List.of(pullConditionSolid, pullConditionNotContained, pullConditionMass));
-         implementedSuccessMessageMap.put(pull, "You pull the _arg0.");
+         implementedSuccessMessageMap.put(pull, "You pull the !arg0.");
       }
 
    /* DROP
@@ -213,12 +213,12 @@ public class ImplementedActionLogic implements Serializable {
     */
       {
          ActionFormat drop = new ActionFormat("drop", null);
-         Condition dropConditionTaken = new Condition("\"_arg0\" IN world::inventory",
-             "You can't drop the _arg0 because you haven't picked it up.");
+         Condition dropConditionTaken = new Condition("\"!arg0\" IN world::inventory",
+             "You can't drop the !arg0 because you haven't picked it up.");
          implementedConditionsMap.put(drop, List.of(dropConditionTaken));
-         implementedSuccessMessageMap.put(drop, "You drop the _arg0 next to you.");
+         implementedSuccessMessageMap.put(drop, "You drop the !arg0 next to you.");
          try {
-            KnowledgeUpdate dropInventory = new KnowledgeUpdate("world::inventory -= _arg0");
+            KnowledgeUpdate dropInventory = new KnowledgeUpdate("world::inventory -= !arg0");
             implementedKnowledgeUpdateMap.put(drop, List.of(dropInventory));
          }
          catch (KnowledgeException e) {
@@ -231,12 +231,12 @@ public class ImplementedActionLogic implements Serializable {
     */
       {
          ActionFormat turn = new ActionFormat("turn", null);
-         Condition turnConditionNotContained = new Condition("NOT _arg0::isContained",
-             "You can't turn the _arg0 because it is inside of something else.");
-         Condition turnConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't turn the _arg0 because it's not solid.");
+         Condition turnConditionNotContained = new Condition("NOT !arg0::isContained",
+             "You can't turn the !arg0 because it is inside of something else.");
+         Condition turnConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't turn the !arg0 because it's not solid.");
          implementedConditionsMap.put(turn, List.of(turnConditionNotContained, turnConditionSolid));
-         implementedSuccessMessageMap.put(turn, "You turn the _arg0.");
+         implementedSuccessMessageMap.put(turn, "You turn the !arg0.");
       }
 
    /* search
@@ -244,12 +244,12 @@ public class ImplementedActionLogic implements Serializable {
     */
       {
          ActionFormat search = new ActionFormat("search", null);
-         Condition searchConditionNotContained = new Condition("NOT _arg0::isContained",
-             "You can't search the _arg0 because it is inside of something else.");
-         Condition searchConditionSolid = new Condition("_arg0::state = \"solid\"",
-             "You can't search the _arg0 because it's not solid.");
+         Condition searchConditionNotContained = new Condition("NOT !arg0::isContained",
+             "You can't search the !arg0 because it is inside of something else.");
+         Condition searchConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't search the !arg0 because it's not solid.");
          implementedConditionsMap.put(search, List.of(searchConditionNotContained, searchConditionSolid));
-         implementedSuccessMessageMap.put(search, "You search the _arg0.");
+         implementedSuccessMessageMap.put(search, "You search the !arg0.");
       }
 
       /* examine
@@ -257,10 +257,10 @@ public class ImplementedActionLogic implements Serializable {
        */
       {
          ActionFormat examine = new ActionFormat("examine", null);
-         Condition examineConditionNotContained = new Condition("NOT _arg0::isContained",
-             "You can't examine the _arg0 because it is inside of something else.");
+         Condition examineConditionNotContained = new Condition("NOT !arg0::isContained",
+             "You can't examine the !arg0 because it is inside of something else.");
          implementedConditionsMap.put(examine, List.of(examineConditionNotContained));
-         implementedSuccessMessageMap.put(examine, "You examine the _arg0.");
+         implementedSuccessMessageMap.put(examine, "You examine the !arg0.");
       }
 
       /* LISTEN TO
@@ -269,7 +269,7 @@ public class ImplementedActionLogic implements Serializable {
       {
          ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
          implementedConditionsMap.put(listenTo, List.of());
-         implementedSuccessMessageMap.put(listenTo, "You listen to the _arg0.");
+         implementedSuccessMessageMap.put(listenTo, "You listen to the !arg0.");
       }
 
 
@@ -278,14 +278,14 @@ public class ImplementedActionLogic implements Serializable {
        */
       {
          ActionFormat eat = new ActionFormat("eat");
-         Condition eatConditionEdible = new Condition("_arg0::isEdible",
-             "You can't do that because the _arg0 is not edible.");
-         Condition eatConditionNotContained = new Condition("NOT _arg0::isContained",
-             "You can't eat the _arg0 because it is inside of something else.");
+         Condition eatConditionEdible = new Condition("!arg0::isEdible",
+             "You can't do that because the !arg0 is not edible.");
+         Condition eatConditionNotContained = new Condition("NOT !arg0::isContained",
+             "You can't eat the !arg0 because it is inside of something else.");
          implementedConditionsMap.put(eat, List.of(eatConditionEdible, eatConditionNotContained));
-         implementedSuccessMessageMap.put(eat, "You eat up the _arg0. It tastes _arg0::taste.");
+         implementedSuccessMessageMap.put(eat, "You eat up the !arg0. It tastes !arg0::taste.");
          try {
-            KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= _arg0");
+            KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= !arg0");
             implementedKnowledgeUpdateMap.put(eat, List.of(deleteItem));
          }
          catch (KnowledgeException e) {
@@ -298,18 +298,18 @@ public class ImplementedActionLogic implements Serializable {
        */
       {
          ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");
-         Condition drinkConditionNotContained = new Condition("NOT _arg1::isContained",
-             "The _arg1 is inside of something so you can't drink the _arg0 from it.");
-         Condition drinkInContainer = new Condition("_arg1::isContainer AND \"_arg0\" IN _arg1::contains",
-             "You can't do that because the _arg0 is not in the _arg1.");
-         Condition drinkConditionLiquid = new Condition("_arg0::state = \"liquid\"",
-             "You can't drink the _arg0 because it's not liquid.");
-         Condition drinkConditionDrinkable = new Condition("_arg0::isDrinkable",
-             "You can't do that because the _arg0 is not drinkable.");
+         Condition drinkConditionNotContained = new Condition("NOT !arg1::isContained",
+             "The !arg1 is inside of something so you can't drink the !arg0 from it.");
+         Condition drinkInContainer = new Condition("!arg1::isContainer AND \"!arg0\" IN !arg1::contains",
+             "You can't do that because the !arg0 is not in the !arg1.");
+         Condition drinkConditionLiquid = new Condition("!arg0::state = \"liquid\"",
+             "You can't drink the !arg0 because it's not liquid.");
+         Condition drinkConditionDrinkable = new Condition("!arg0::isDrinkable",
+             "You can't do that because the !arg0 is not drinkable.");
          implementedConditionsMap.put(drink, List.of(drinkConditionNotContained, drinkInContainer, drinkConditionLiquid, drinkConditionDrinkable));
-         implementedSuccessMessageMap.put(drink, "You drink the _arg0. It tastes _arg0::taste.");
+         implementedSuccessMessageMap.put(drink, "You drink the !arg0. It tastes !arg0::taste.");
          try {
-            KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= _arg0");
+            KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= !arg0");
             implementedKnowledgeUpdateMap.put(drink, List.of(deleteItem));
          }
          catch (KnowledgeException e) {

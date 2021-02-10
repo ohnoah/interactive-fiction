@@ -74,8 +74,8 @@ public class KnowledgeBase implements Serializable {
       }
    }
 
-   public static String stripUnderscore(String s) {
-      if (s.charAt(0) == '_') {
+   public static String stripExclamationMark(String s) {
+      if (s.charAt(0) == '!') {
          return s.substring(1);
       }
       else {
@@ -85,7 +85,7 @@ public class KnowledgeBase implements Serializable {
 
 
    public boolean frameNameEquals(String s1, String s2) {
-      return stripUnderscore(s1).equals(stripUnderscore(s2));
+      return stripExclamationMark(s1).equals(stripExclamationMark(s2));
    }
    // TODO: ALL of these need to throw MISSING Knowledge exception
 
@@ -155,7 +155,7 @@ public class KnowledgeBase implements Serializable {
       Pattern pattern = Pattern.compile(frameIdRegex);
       Matcher matcher = pattern.matcher(halfway);
 
-      String result = matcher.replaceAll(matchResult -> stripUnderscore(matchResult.group()));
+      String result = matcher.replaceAll(matchResult -> stripExclamationMark(matchResult.group()));
 
       return result;
    }
@@ -175,7 +175,7 @@ public class KnowledgeBase implements Serializable {
          return result;
       }
       catch (RecognitionException | ParseCancellationException e) {
-         throw new ParseCancellationException("Couldn't parse expression" + expression + " ." + e.getMessage());
+         throw new ParseCancellationException("Couldn't parse expression " + expression + " ." + e.getMessage());
       }
    }
 
@@ -310,7 +310,7 @@ public class KnowledgeBase implements Serializable {
    }
 
    public Object query(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
-      SpecificFrame frameQueried = findSpecificFrame(stripUnderscore(frame));
+      SpecificFrame frameQueried = findSpecificFrame(stripExclamationMark(frame));
       return frameQueried.getFiller(slot);
    }
 

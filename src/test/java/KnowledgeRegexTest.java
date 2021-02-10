@@ -15,6 +15,8 @@ public class KnowledgeRegexTest {
       return IntStream.range(1, m.groupCount() + 1).mapToObj(m::group).collect(Collectors.toList());
    }
 
+   private String identifierToken = "!";
+
    @Test
    public void testKnowledgeSyntaxMatches() {
       String frame = "frame";
@@ -47,7 +49,7 @@ public class KnowledgeRegexTest {
    public void testKnowledgeSyntaxUnderscoreMatches() {
       String frame = "frame01";
       String slot = "sl12o2t";
-      String test = "_" + frame + "::" + slot;
+      String test = identifierToken + frame + "::" + slot;
       String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
 
       assertTrue(Pattern.matches(knowledgeExpr, test));
@@ -58,7 +60,7 @@ public class KnowledgeRegexTest {
    public void testKnowledgeSyntaxUnderscoreContents() {
       String frame = "frame01";
       String slot = "sl12o2t";
-      String test = "_" + frame + "::" + slot;
+      String test = identifierToken + frame + "::" + slot;
       String knowledgeExpr = KnowledgeRegex.KNOWLEDGE_EXPR;
       List<String> expectedList = List.of(frame, slot);
 

@@ -98,7 +98,7 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void compositeIdentifierOrAndSuccess() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "(_test::banna OR TRUE) AND (TRUE)";
+      String expression = "(!test::banna OR TRUE) AND (TRUE)";
       KnowledgeBase kb = new KnowledgeBase();
       SpecificFrame s = new SpecificFrame("test");
       s.updateFiller("banna", false);
@@ -276,11 +276,11 @@ public class ConditionEvaluationVisitorTest {
    // Interactions with com.interactivefiction.game.enhanced.reasoning.KnowledgeBase
    @Test
    public void failedUnderscoreIdentifierThrowsException() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "_test::test IN  [] ";
+      String expression = "!test::test IN  [] ";
       KnowledgeBase kb = new KnowledgeBase();
 
       exceptionRule.expect(KnowledgeException.class);
-      exceptionRule.expectMessage("Error when parsing expression \"_test::test IN  [] \". Frame: test doesn't exist");
+      exceptionRule.expectMessage("Error when parsing expression \"!test::test IN  [] \". Frame: test doesn't exist");
       Boolean result = produceBooleanResult(kb, expression);
    }
 
@@ -341,10 +341,10 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void identifierStringExpressionSuccess() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "Test932::Ural1234 = \"hello\"";
+      String expression = "Test_932::Ural1234 = \"hello\"";
       KnowledgeBase kb = new KnowledgeBase();
 
-      SpecificFrame s = new SpecificFrame("Test932");
+      SpecificFrame s = new SpecificFrame("Test_932");
       s.updateFiller("Ural1234", "hello");
       SpecificFrame s2 = new SpecificFrame("Test92");
       s2.updateFiller("Ural123", 4.5);
@@ -392,10 +392,10 @@ public class ConditionEvaluationVisitorTest {
    // TODO : TEST DOUBLE IDENTIFEIR THING MORE THOROUGHLY
    @Test
    public void twoIdentifierNonBoolComparatorDoubles() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "Test935::Ural17 > Test92::Banana";
+      String expression = "Test_935::Ural17 > Test92::Banana";
       KnowledgeBase kb = new KnowledgeBase();
 
-      SpecificFrame s = new SpecificFrame("Test935");
+      SpecificFrame s = new SpecificFrame("Test_935");
       s.updateFiller("Ural125", "hello");
       s.updateFiller("Ural17", 4.0);
       SpecificFrame s2 = new SpecificFrame("Test92");
@@ -409,10 +409,10 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void twoIdentifierNonBoolComparatorStrings() throws KnowledgeException, MissingKnowledgeException {
-      String expression = "Test92::Banana < Test935::Ural ";
+      String expression = "Test92::Banana < !room6_Test935::Ural ";
       KnowledgeBase kb = new KnowledgeBase();
 
-      SpecificFrame s = new SpecificFrame("Test935");
+      SpecificFrame s = new SpecificFrame("room6_Test935");
       s.updateFiller("Ural", "hello");
       s.updateFiller("Ural17", 4.0);
       SpecificFrame s2 = new SpecificFrame("Test92");

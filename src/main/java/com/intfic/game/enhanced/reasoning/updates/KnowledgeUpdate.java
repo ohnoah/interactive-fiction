@@ -25,7 +25,7 @@ public class KnowledgeUpdate implements Serializable {
    }
 
    public void setForeignFrame(String foreignFrame) {
-      this.foreignFrame = KnowledgeBase.stripUnderscore(foreignFrame);
+      this.foreignFrame = KnowledgeBase.stripExclamationMark(foreignFrame);
    }
 
    public void setForeignSlot(String foreignSlot) {
@@ -176,7 +176,7 @@ public class KnowledgeUpdate implements Serializable {
          }
          else {
             // NOTE. Only alphanumeric chars in KnowledgeExpr
-            throw new KnowledgeException("com.interactivefiction.game.enhanced.reasoning.updates.KnowledgeUpdate doesn't follow the setting syntax: " + expr + " .");
+            throw new KnowledgeException("KnowledgeUpdate doesn't follow the setting syntax: " + expr + " .");
          }
       }
       setSettingProperties(secondKnowledge);

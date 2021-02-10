@@ -136,12 +136,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    public void setCurrentRoom(Room newRoom) {
       this.currentRoom = newRoom;
-      try {
-         this.updateKnowledgeBase(new KnowledgeUpdate(String.format("_world::room := \"%s\"", currentRoom.getName())));
-      }
-      catch (KnowledgeException e) {
-         FileErrorHandler.printExceptionToLog(e);
-      }
+         /*this.updateKnowledgeBase(new KnowledgeUpdate(String.format("!world::room := \"%s\"", currentRoom.getName())));*/
+      this.updateKnowledgeBase(new KnowledgeUpdate(UpdateType.SET, "world", "room",
+          String.format("\"%s\"", currentRoom.getName())));
+
    }
 
    public boolean conditionSucceeds(String condition) throws KnowledgeException, MissingKnowledgeException {
@@ -190,7 +188,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    protected String replaceArgsWithNouns(@NotNull String s, @NotNull List<String> nouns, String spaceReplacer, String quotation) {
       String newString = s;
       for (int i = 0; i < nouns.size(); i++) {
-         String argString = "_arg" + i + "::";
+         String argString = "!arg" + i + "::";
          String nounNoSpaces = nouns.get(i).replace(" ", spaceReplacer) + "::";
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
@@ -204,7 +202,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
       for (int i = 0; i < nouns.size(); i++) {
-         String argString = "_arg" + i;
+         String argString = "!arg" + i;
          String nounNoSpaces = quotation + nouns.get(i).replace(" ", spaceReplacer) + quotation;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
@@ -262,7 +260,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       String reasoning = "";
 
       for (Condition condition : conditions) {
-         // replace _arg something in the string
+         // replace !arg something in the string
          Condition populatedCondition = fillConditionWithArgs(condition, nouns);
          try {
             if (!this.conditionSucceeds(populatedCondition.getBooleanExpr())) {

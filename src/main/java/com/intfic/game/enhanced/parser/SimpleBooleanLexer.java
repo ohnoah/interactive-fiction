@@ -2,9 +2,12 @@
 package com.intfic.game.enhanced.parser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class SimpleBooleanLexer extends Lexer {
@@ -121,7 +124,7 @@ public class SimpleBooleanLexer extends Lexer {
 		"\3\25\3\26\3\26\3\27\6\27\u008d\n\27\r\27\16\27\u008e\3\27\3\27\2\2\30"+
 		"\3\3\5\4\7\5\t\6\13\7\r\b\17\t\21\n\23\13\25\f\27\r\31\16\33\17\35\20"+
 		"\37\21!\22#\23%\24\'\25)\26+\27-\30\3\2\n\3\2$$\7\2\13\f\16\17\"#%]_\u0080"+
-		"\3\2\62;\3\2aa\6\2//\62;C\\c|\3\2<<\5\2\62;C\\c|\5\2\13\f\16\17\"\"\2"+
+		"\3\2\62;\3\2##\6\2\62;C\\aac|\3\2<<\5\2\62;C\\c|\5\2\13\f\16\17\"\"\2"+
 		"\u009a\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2"+
 		"\r\3\2\2\2\2\17\3\2\2\2\2\21\3\2\2\2\2\23\3\2\2\2\2\25\3\2\2\2\2\27\3"+
 		"\2\2\2\2\31\3\2\2\2\2\33\3\2\2\2\2\35\3\2\2\2\2\37\3\2\2\2\2!\3\2\2\2"+

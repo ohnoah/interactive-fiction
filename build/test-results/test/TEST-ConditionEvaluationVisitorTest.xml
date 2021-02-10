@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ConditionEvaluationVisitorTest" tests="39" skipped="0" failures="0" errors="0" timestamp="2021-02-10T12:11:15" hostname="Noahs-MacBook-Pro.local" time="0.208">
+  <properties/>
+  <testcase name="failedUnderscoreIdentifierThrowsException" classname="ConditionEvaluationVisitorTest" time="0.079"/>
+  <testcase name="stringInequalitySuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="stringListEqualitySuccess" classname="ConditionEvaluationVisitorTest" time="0.003"/>
+  <testcase name="doubleListEqualityFail" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="bracketedBoolExpression" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="stringInequalitySymmetry" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="missingSlotThrowsException" classname="ConditionEvaluationVisitorTest" time="0.003"/>
+  <testcase name="identifierBooleanExpressionSuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="loneTrueSuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="emptyListEqualEmptyListSuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="doubleEqualitySuccess" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="failedIdentifierThrowsException" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="loneStringFailedParseException" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="identifierStringExpressionSuccess" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="stringListInSuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="doubleInequalityEqualSuccess" classname="ConditionEvaluationVisitorTest" time="0.0"/>
+  <testcase name="loneDoubleFailedParseException" classname="ConditionEvaluationVisitorTest" time="0.0"/>
+  <testcase name="compositeIdentifierOrAndSuccess" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="twoIdentifierNonBoolComparatorDoubles" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="bracketedBoolEqualNotExpression" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="simpleAndSuccess" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="wrongTypeIdentifierStringThrowsException" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="twoIdentifierNonBoolComparatorStrings" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="doubleInequalityIntegerSuccess" classname="ConditionEvaluationVisitorTest" time="0.006"/>
+  <testcase name="doubleListInEmptyFails" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="stringEqualityFail" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="stringInequalityEqualSuccess" classname="ConditionEvaluationVisitorTest" time="0.004"/>
+  <testcase name="notTrueIsFalse" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="doubleListInSuccess" classname="ConditionEvaluationVisitorTest" time="0.008"/>
+  <testcase name="doubleListEqualitySuccess" classname="ConditionEvaluationVisitorTest" time="0.007"/>
+  <testcase name="doubleInequalitySuccess" classname="ConditionEvaluationVisitorTest" time="0.003"/>
+  <testcase name="stringListInEmptyFails" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="stringEqualitySuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="wrongTypeIdentifierDoubleThrowsException" classname="ConditionEvaluationVisitorTest" time="0.003"/>
+  <testcase name="loneFalseSuccess" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="stringStrictInequalitySymmetry" classname="ConditionEvaluationVisitorTest" time="0.003"/>
+  <testcase name="compositeOrAndSuccess" classname="ConditionEvaluationVisitorTest" time="0.002"/>
+  <testcase name="doubleInequalityNegativeSuccess" classname="ConditionEvaluationVisitorTest" time="0.001"/>
+  <testcase name="identifierDoubleExpressionSuccess" classname="ConditionEvaluationVisitorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9 used for code generation does not match the current runtime version 4.8]]></system-err>
+</testsuite>
