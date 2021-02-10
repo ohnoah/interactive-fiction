@@ -24,18 +24,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ActionMap;
-import javax.swing.ComponentInputMap;
 import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.plaf.ActionMapUIResource;
 
 /**
@@ -219,7 +215,7 @@ public class BasicGameEditor extends JFrame {
             break;
          case "list items":
             if (roomForAction != null) {
-               output = roomForAction.getItems().stream().map(Item::toString).collect(Collectors.joining(","));
+               output = roomForAction.getItems().values().stream().map(Item::toString).collect(Collectors.joining(","));
             }
             else {
                output = "No room has been selected for adding an action to";
@@ -419,9 +415,10 @@ public class BasicGameEditor extends JFrame {
                          "exactly %d argument(s).", numArgs);
                   }
                   else {
-                     boolean validItems = roomForAction.validItems(splitArgs);
+                     boolean validItems = roomForAction.isValidItemIdentifierList(splitArgs);
                      if (validItems) {
-                        instantiatedGameAction.setArguments(splitArgs);
+                        Map<String, Item> roomItems = roomForAction.getItems();
+                        instantiatedGameAction.setArguments(splitArgs.stream().map(roomItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the global state for this action " +
                             "e.g. \"room=First room,player=yellow\".";
                         basicGameEditState = BasicGameEditState.ACTION_PRE;

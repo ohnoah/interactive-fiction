@@ -245,8 +245,6 @@ public class EnhancedGameEditor extends JFrame {
       return true;
    }
 
-   // TODO: The behaviour here will depend on the implementation of com.interactivefiction.GameEngine
-   // TODO: Current idea just extend com.basic.EnhancedGameDesignAction and check instanceof in switch
    private List<String> editGame(String cmd, String sofar) {
       this.numEdits++;
       String output = null;
@@ -535,8 +533,8 @@ public class EnhancedGameEditor extends JFrame {
                   else if (actionFormats.size() == 1) {
                      ActionFormat actionFormat = actionFormats.get(0);
                      instantiatedGameAction = new InstantiatedGameAction(actionFormat);
-                     output = "Enter the items that this action should act upon as a " +
-                         "comma-separated list e.g. \"apple,banana,pear\".";
+                     output = "Enter the item IDs that this action should act upon as a " +
+                         "comma-separated list e.g. \"apple,banana,pear\". To list them write \"list items\"";
                      actionFormats = null;
                      enhancedGameEditState = EnhancedGameEditState.ACTION_ARGS;
                   }
@@ -573,9 +571,10 @@ public class EnhancedGameEditor extends JFrame {
                          "exactly %d argument(s).", numArgs);
                   }
                   else {
-                     boolean validItems = roomForAction.validItems(splitArgs);
+                     boolean validItems = roomForAction.isValidItemIdentifierList(splitArgs);
                      if (validItems) {
-                        instantiatedGameAction.setArguments(splitArgs);
+                        Map<String, Item> roomItems = roomForAction.getItems();
+                        instantiatedGameAction.setArguments(splitArgs.stream().map(roomItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the knowledge base (and failure explanations) for this action as a comma-separated list of conditions of the form " +
                             "e.g. \"world::numDoors = 4|The number of doors isn't 4, it's world::numDoors\".";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_PRE;
@@ -591,6 +590,10 @@ public class EnhancedGameEditor extends JFrame {
                      List<Condition> preConds;
                      if (cmd.equals("")) {
                         preConds = new ArrayList<>();
+                        effectAction.setPreconditions(preConds);
+                        output = "Enter the updates to the knowledgebase as comma-separated KnowledgeUpdate strings" +
+                            "e.g. \"world::numDoors += 1, box::contains = [\"apple\"]\".";
+                        enhancedGameEditState = EnhancedGameEditState.ACTION_POST;
                      }
                      else {
                         List<String> splitPreconds = splitByCommaAndTrim(cmd);

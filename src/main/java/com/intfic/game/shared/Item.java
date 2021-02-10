@@ -57,12 +57,12 @@ public class Item implements Serializable {
          return false;
       }
       Item item = (Item) o;
-      return getId().equals(item.getId());
+      return getID().equals(item.getID());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(getId());
+      return Objects.hash(getID());
    }
 
    public Set<String> getAdjectives() {
@@ -74,7 +74,7 @@ public class Item implements Serializable {
       this.adjectives.addAll(adjectives);
    }
 
-   public String getId() {
+   public String getID() {
       return id;
    }
 
