@@ -17,11 +17,12 @@ public class KnowledgeRegex implements Serializable {
    public static String NUMBER_LIST_EXPR;
    public static String LARGE_CAPTURE_KNOWLEDGE_EXPR;
    public static String LONE_FRAME_NAME_EXPR;
+
    static {
-      FRAME_NAME_EXPR = "_?([a-zA-Z0-9-]+)";
-      LONE_FRAME_NAME_EXPR = "_([a-zA-Z0-9-]+)(?!::)";
-      KNOWLEDGE_EXPR = "_?([a-zA-Z0-9-]+)::([a-zA-Z0-9]+)";
-      LARGE_CAPTURE_KNOWLEDGE_EXPR = "_?([a-zA-Z0-9-]+::[a-zA-Z0-9]+)";
+      FRAME_NAME_EXPR = "!?([a-zA-Z0-9_]+)";
+      LONE_FRAME_NAME_EXPR = "!([a-zA-Z0-9_]+)(?!::)";
+      KNOWLEDGE_EXPR = "!?([a-zA-Z0-9_]+)::([a-zA-Z0-9]+)";
+      LARGE_CAPTURE_KNOWLEDGE_EXPR = "!?([a-zA-Z0-9_]+::[a-zA-Z0-9]+)";
       NUMBER_EXPR = "-?[0-9]+(?:\\.[0-9]+)?";
       STRING_EXPR = "\"[\\s\\w\\p{Punct}]*\"";
       STRING_LIST_EXPR = "\\[(?:" + STRING_EXPR + "(?:, " + STRING_EXPR + ")*)?\\]";

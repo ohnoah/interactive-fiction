@@ -282,20 +282,6 @@ public class EnhancedNLPEngine {
          }
          nouns.add(noun);
          adjectives.add(currentAdjectives);
-/*         for (int i = np.first; i <= np.second; i++) {
-            CoreLabel tok = tokens.get(i);
-            String tag = tok.tag();
-            System.out.println(tag);
-            if (isAdjective(tag)) {
-               currentAdjectives.add(tok.word());
-            }
-            if (isNoun(tag)) {
-               adjectives.add(currentAdjectives);
-               noun = tok.word();
-               nouns.add(noun);
-               break;
-            }
-         }*/
       }
    }
 
