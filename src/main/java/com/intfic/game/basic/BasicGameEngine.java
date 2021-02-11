@@ -6,6 +6,7 @@ import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
    @Override
    public Set<Item> possibleItems() {
-      return this.currentRoom.getItems();
+      return new HashSet<>(this.currentRoom.getItems().values());
    }
 
    public boolean validatePrecondition(Map<String, String> wantedGlobalState) {

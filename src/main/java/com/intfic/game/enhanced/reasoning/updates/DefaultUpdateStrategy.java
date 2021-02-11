@@ -72,9 +72,9 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
 
    private void updateItemsWithKnowledgeUpdate(@NotNull EnhancedGameEngine enhancedGameEngine, @NotNull KnowledgeUpdate knowledgeUpdate) {
       KnowledgeBase knowledgeBase = enhancedGameEngine.getKnowledgeBase();
-      Object itemName = null;
+      Object itemIdentifier = null;
       try {
-         itemName = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
+         itemIdentifier = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
       }
       catch (MissingKnowledgeException | KnowledgeException e) {
          FileErrorHandler.printExceptionToLog(e);
@@ -83,11 +83,11 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
       }
 
       Item itemInRoom;
-      if (itemName instanceof String) {
+      if (itemIdentifier instanceof String) {
          List<Item> containsItems = new ArrayList<>();
          try {
             Map<String, Item> globalItems = enhancedGameEngine.globalItems();
-            containsItems = knowledgeBase.queryStringList((String) itemName, "contains")
+            containsItems = knowledgeBase.queryStringList((String) itemIdentifier, "contains")
                 .stream().map(globalItems::get).collect(Collectors.toList());
          }
          catch (KnowledgeException e) {
@@ -96,17 +96,17 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
          catch (MissingKnowledgeException ignored) {
          }
          if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
-            String finalItemName = (String) itemName;
+            String finalItemName = (String) itemIdentifier;
             // try to remove from room
-            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().stream().filter(i -> i.getName().equals(finalItemName)).findAny().orElse(null);
+            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().get(finalItemName);
             boolean validItem = enhancedGameEngine.getCurrentRoom().removeItem(itemInRoom);
             // try to remove from inventory
-            Item returned = enhancedGameEngine.getInventoryItems().remove(itemName);
+            Item returned = enhancedGameEngine.getInventoryItems().remove(itemIdentifier);
             if (returned == null && !validItem) {
-               FileErrorHandler.printToErrorLog(itemName + " is an invalid item that was attempted to be removed from the world.");
+               FileErrorHandler.printToErrorLog(itemIdentifier + " is an invalid item that was attempted to be removed from the world.");
                return;
             }
-            knowledgeBase.removeSpecificFrame((String) itemName);
+            knowledgeBase.removeSpecificFrame((String) itemIdentifier);
             for (Item i : containsItems) {
                if (i == null) {
                   FileErrorHandler.printToErrorLog("Bad item in contains list when removing from world.");
@@ -127,9 +127,9 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
 
    private void updateInventoryWithKnowledgeUpdate(@NotNull EnhancedGameEngine enhancedGameEngine, @NotNull KnowledgeUpdate knowledgeUpdate) {
       KnowledgeBase knowledgeBase = enhancedGameEngine.getKnowledgeBase();
-      Object itemName;
+      Object itemIdentifier;
       try {
-         itemName = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
+         itemIdentifier = knowledgeBase.rhsValueFromKnowledgeUpdate(knowledgeUpdate);
       }
       catch (KnowledgeException | MissingKnowledgeException e) {
          FileErrorHandler.printExceptionToLog(e);
@@ -137,11 +137,11 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
          return;
       }
       Item itemInRoom;
-      if (itemName instanceof String) {
+      if (itemIdentifier instanceof String) {
          List<Item> containsItems = new ArrayList<>();
          try {
             Map<String, Item> globalItems = enhancedGameEngine.globalItems();
-            containsItems = knowledgeBase.queryStringList((String) itemName, "contains")
+            containsItems = knowledgeBase.queryStringList((String) itemIdentifier, "contains")
                 .stream().map(globalItems::get).collect(Collectors.toList());
          }
          catch (KnowledgeException e) {
@@ -150,9 +150,10 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
          catch (MissingKnowledgeException ignored) {
          }
          if (knowledgeUpdate.getUpdateType() == UpdateType.ADD) {
-            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().stream().filter(i -> i.getName().equals(itemName)).findAny().orElse(null);
+            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().get(itemIdentifier);
+            /*            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().stream().filter(i -> i.getName().equals(itemIdentifier)).findAny().orElse(null);*/
             if (itemInRoom == null) {
-               FileErrorHandler.printToErrorLog(itemName + " is an invalid item that was attempted to be removed from inventory or added to.");
+               FileErrorHandler.printToErrorLog(itemIdentifier + " is an invalid item that was attempted to be removed from inventory or added to.");
                return;
             }
             enhancedGameEngine.getInventoryItems().put(itemInRoom.getName(), itemInRoom);
@@ -165,7 +166,7 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
             }
          }
          else if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
-            Item returned = enhancedGameEngine.getInventoryItems().remove(itemName);
+            Item returned = enhancedGameEngine.getInventoryItems().remove(itemIdentifier);
             for (Item i : containsItems) {
                if (i == null) {
                   FileErrorHandler.printToErrorLog("Bad item in contains list");
