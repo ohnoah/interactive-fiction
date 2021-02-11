@@ -33,7 +33,7 @@ public class Item implements Serializable {
 
    public Item(@NotNull String name) {
       this.name = name;
-      setParentRoom(EnhancedGameEngine.unassignedItemRoom, EnhancedGameEngine.unassignedItemRoom.getItems().values());
+      setParentRoom(GameEngine.unassignedItemRoom, GameEngine.unassignedItemRoom.getItems().values());
       synonyms = new HashSet<>();
       adjectives = new HashSet<>();
    }
@@ -41,14 +41,14 @@ public class Item implements Serializable {
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives) {
       this.name = name;
-      setParentRoom(EnhancedGameEngine.unassignedItemRoom, EnhancedGameEngine.unassignedItemRoom.getItems().values());
+      setParentRoom(GameEngine.unassignedItemRoom, GameEngine.unassignedItemRoom.getItems().values());
       setAdjectives(defaultAdjectives);
       this.synonyms = new HashSet<>();
    }
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives, @NotNull Set<String> synonyms) {
       this.name = name;
-      setParentRoom(EnhancedGameEngine.unassignedItemRoom, EnhancedGameEngine.unassignedItemRoom.getItems().values());
+      setParentRoom(GameEngine.unassignedItemRoom, GameEngine.unassignedItemRoom.getItems().values());
       setAdjectives(defaultAdjectives);
       setSynonyms(synonyms);
    }
@@ -67,13 +67,32 @@ public class Item implements Serializable {
          return false;
       }
       Item item = (Item) o;
+      return getName().equals(item.getName()) &&
+          getAdjectives().equals(item.getAdjectives()) &&
+          getParentRoom().equals(item.getParentRoom());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(getName(), getAdjectives(), getParentRoom());
+   }
+
+/*   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      Item item = (Item) o;
       return getID().equals(item.getID());
    }
 
    @Override
    public int hashCode() {
       return Objects.hash(getID());
-   }
+   }*/
 
    public Set<String> getAdjectives() {
       return adjectives;
