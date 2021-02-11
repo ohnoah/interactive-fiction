@@ -505,7 +505,7 @@ public class EnhancedNLPEngineTest {
    // TODO: Test findMatchingGameItemNames
    @Test
    public void findMatchingGameItemNamesNoSynonyms() throws FailedParseException {
-      List<String> nouns = List.of("bear", "panda", "grizzly bear");
+      List<String> nouns = List.of("bear", "panda", "owl");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
       Item bear = new Item("bear", Set.of("furry", "kind", "hilarious", "funny"));
       Item panda = new Item("panda");

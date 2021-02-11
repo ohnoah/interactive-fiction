@@ -273,7 +273,7 @@ public class EnhancedGameEditor extends JFrame {
             break;
          case "list items":
             if (roomForAction != null) {
-               output = roomForAction.getItems().stream().map(Item::toString).collect(Collectors.joining(","));
+               output = roomForAction.getItems().values().stream().map(Item::toString).collect(Collectors.joining(","));
             }
             else {
                output = String.join("\n", gameEngine.globalItems().keySet());

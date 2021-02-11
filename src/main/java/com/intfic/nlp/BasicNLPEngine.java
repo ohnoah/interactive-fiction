@@ -4,7 +4,6 @@ import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import edu.stanford.nlp.util.Pair;
-import gherkin.lexer.Fa;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +11,6 @@ import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
-import org.junit.internal.runners.statements.Fail;
 
 
 public class BasicNLPEngine {
@@ -42,7 +40,7 @@ public class BasicNLPEngine {
       catch (JWNLException e) {
          throw new FailedParseException("Dictionary error on the back end. Try again.");
       }
-      List<Item> gameItemNames = BasicNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
+      List<Item> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
 
       InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
       // Use that to look for a VB and a NN and populate a Command
@@ -181,7 +179,7 @@ public class BasicNLPEngine {
       com.interactivefiction.game.shared.InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
    }
 
-   public static List<Item> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+   public static List<Item> findMatchingGameItems(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
       return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
 }

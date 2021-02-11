@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Util {
-   public static final <T, S> Map<S, T> collectionToMap(Collection<T> collection, Function<T, S> fn){
+   public static <T, S> Map<S, T> collectionToMap(Collection<T> collection, Function<T, S> fn){
       return collection.stream().collect(Collectors.toMap(fn, value -> value));
    }
-   public static final <T, S> Map<S, T> streamToMap(Stream<T> collection, Function<T, S> fn){
+   public static <T, S> Map<S, T> streamToMap(Stream<T> collection, Function<T, S> fn){
       return collection.collect(Collectors.toMap(fn, value -> value));
    }
 }

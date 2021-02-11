@@ -74,7 +74,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       Set<Item> possibleItems = this.possibleItems();
       for (Item argument : gameAction.getArguments()) {
          if (!possibleItems.contains(argument)) {
-            return new Justification(false, String.format("There is no %s in your environment.", argument));
+            return new Justification(false, String.format("There is no %s in your environment.", itemNameInUserSpace(argument)));
          }
       }
 
@@ -115,9 +115,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
 
+   // TODO: Look into if this should be a set or a map in NLPEngine
    @Override
    public Set<Item> possibleItems() {
-      Set<Item> possibleItems = new HashSet<>(currentRoom.getItems());
+      Set<Item> possibleItems = new HashSet<>(currentRoom.getItems().values());
       possibleItems.addAll(this.inventoryItems.values());
       return possibleItems;
    }
@@ -230,7 +231,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
    public void removeItem(Item i) {
       for (Room r : this.worldRooms) {
-         if (r.getItems().contains(i)) {
+         if (r.getItems().containsValue(i)) {
             r.removeItem(i);
          }
       }
@@ -381,7 +382,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          worldRooms.add(room);
          designerActions.putIfAbsent(room, new HashMap<>());
 
-         for (Item i : room.getItems()) {
+         for (Item i : room.getItems().values()) {
             knowledgeBase.createSpecificFrame(i, "nonContainer", "massive");
          }
       }

@@ -4,6 +4,7 @@ import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -101,7 +102,11 @@ public abstract class GameEngine implements Serializable {
    public abstract Set<Item> possibleItems();
 
    public Map<String, Item> globalItems() {
-      return Util.streamToMap(worldRooms.stream().map(Room::getItems).flatMap(Collection::stream), Item::getID);
+      Map<String, Item> globalItems = new HashMap<>();
+      for(Room room : worldRooms){
+         globalItems.putAll(room.getItems());
+      }
+      return globalItems;
       /*return worldRooms.stream().map(Room::getItems).flatMap(Collection::stream).collect(Collectors.toMap(Item::getID, i -> i));*/
    }
 
