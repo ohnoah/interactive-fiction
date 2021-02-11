@@ -92,13 +92,14 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
          }
          catch (KnowledgeException e) {
             FileErrorHandler.printExceptionToLog(e);
+            return;
          }
          catch (MissingKnowledgeException ignored) {
          }
          if (knowledgeUpdate.getUpdateType() == UpdateType.SUBTRACT) {
-            String finalItemName = (String) itemIdentifier;
+            String finalItemIdentifier = (String) itemIdentifier;
             // try to remove from room
-            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().get(finalItemName);
+            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().get(finalItemIdentifier);
             boolean validItem = enhancedGameEngine.getCurrentRoom().removeItem(itemInRoom);
             // try to remove from inventory
             Item returned = enhancedGameEngine.getInventoryItems().remove(itemIdentifier);
@@ -111,8 +112,10 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
                if (i == null) {
                   FileErrorHandler.printToErrorLog("Bad item in contains list when removing from world.");
                }
-               enhancedGameEngine.removeItem(i); // Contained items can be anywhere
-               knowledgeBase.removeSpecificFrame(i.getName());
+               else {
+                  enhancedGameEngine.removeItem(i); // Contained items can be anywhere
+                  knowledgeBase.removeSpecificFrame(KnowledgeBase.getItemIdentifier(i));
+               }
             }
          }
          else {
@@ -153,10 +156,10 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
             itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().get(itemIdentifier);
             /*            itemInRoom = enhancedGameEngine.getCurrentRoom().getItems().stream().filter(i -> i.getName().equals(itemIdentifier)).findAny().orElse(null);*/
             if (itemInRoom == null) {
-               FileErrorHandler.printToErrorLog(itemIdentifier + " is an invalid item that was attempted to be removed from inventory or added to.");
+               FileErrorHandler.printToErrorLog(itemIdentifier + " is an invalid item that was attempted to be added to inventory.");
                return;
             }
-            enhancedGameEngine.getInventoryItems().put(itemInRoom.getName(), itemInRoom);
+            enhancedGameEngine.addToInventory(itemInRoom);
             enhancedGameEngine.getCurrentRoom().removeItem(itemInRoom);
             for (Item i : containsItems) {
                if (i == null) {
@@ -171,7 +174,9 @@ public class DefaultUpdateStrategy implements UpdateStrategy {
                if (i == null) {
                   FileErrorHandler.printToErrorLog("Bad item in contains list");
                }
-               enhancedGameEngine.getCurrentRoom().addItem(i);
+               else {
+                  enhancedGameEngine.getCurrentRoom().addItem(i);
+               }
             }
             if (returned != null) {
                enhancedGameEngine.getCurrentRoom().addItem(returned);

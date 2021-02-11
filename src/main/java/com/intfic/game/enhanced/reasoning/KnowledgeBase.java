@@ -35,9 +35,10 @@ public class KnowledgeBase implements Serializable {
    private boolean firstError = true;
    private String errorHeader = "\n" + DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm").format(LocalDateTime.now()) + "\n";
 
+   public static char SEPARATOR = '_';
 
    private String replaceSpaces(String name) {
-      return name.replace(" ", "-");
+      return name.replace(' ', SEPARATOR);
    }
 
    public Map<String, SpecificFrame> getSpecificFrames() {
@@ -400,8 +401,8 @@ public class KnowledgeBase implements Serializable {
       return i.getID();
    }
 
-   public boolean createSpecificFrame(Item i, String... gs) {
-      SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(getItemIdentifier(i)));
+   public boolean createSpecificFrame(String i, String... gs) {
+      SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(i));
       for (String g : gs) {
          if (genericFrames.containsKey(g)) {
             specificFrame.addParent(genericFrames.get(g));

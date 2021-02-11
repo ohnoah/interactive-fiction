@@ -28,7 +28,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "open";
       String noun = "door";
-      Item door = new Item("door");
+      Item door = TestUtil.roomItem("door");
       possibleActionFormats.add(new ActionFormat(verb, null));
       InstantiatedGameAction instantiatedGameAction =
           EnhancedNLPEngine.parse(String.format("%s the %s quickly", verb, noun), possibleActionFormats, Set.of(door)).get(0);
@@ -194,7 +194,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "take";
       String noun = "dog";
-      Item dog = new Item("dog");
+      Item dog = TestUtil.roomItem("dog");
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
@@ -212,7 +212,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "take";
       String noun = "it";
-      Item dog = new Item("dog", Set.of("fluffy", "hairy"));
+      Item dog = TestUtil.roomItem("dog", Set.of("fluffy", "hairy"));
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
@@ -231,11 +231,11 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "take";
       String noun = "dog";
-      Item dog = new Item("dog", Set.of("fluffy", "hairy"));
+      Item dog = TestUtil.roomItem("dog", Set.of("fluffy", "hairy"));
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
-          EnhancedNLPEngine.parse(String.format("%s the fluffy %s graciously", verb, noun), possibleActionFormats, Set.of(dog, new Item("door")), new Pair<>(new HashSet<>(), "door"));
+          EnhancedNLPEngine.parse(String.format("%s the fluffy %s graciously", verb, noun), possibleActionFormats, Set.of(dog, TestUtil.roomItem("door")), new Pair<>(new HashSet<>(), "door"));
       assertEquals(1, instantiatedGameActions.size());
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
@@ -250,7 +250,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "listen";
       String noun = "dog";
-      Item dog = new Item("dog");
+      Item dog = TestUtil.roomItem("dog");
       possibleActionFormats.add(new ActionFormat("listen", "listen to ([\\w\\s]+)$"));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
@@ -268,7 +268,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "open";
       String noun = "door";
-      Item door = new Item("door");
+      Item door = TestUtil.roomItem("door");
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s slowly", verb, noun), possibleActionFormats, Set.of(door));
@@ -296,8 +296,8 @@ public class EnhancedNLPEngineTest {
       String verb = "put";
       String noun1 = "pen";
       String noun2 = "box";
-      Item pen = new Item(noun1);
-      Item smallBox = new Item(noun2);
+      Item pen = TestUtil.roomItem(noun1);
+      Item smallBox = TestUtil.roomItem(noun2);
       possibleActionFormats.add((new EnhancedGameEngine()).findAction("put").get(0));
 
       printHeapSize();
@@ -317,7 +317,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "destroy";
       String noun = "cave";
-      Item cave = new Item("cave");
+      Item cave = TestUtil.roomItem("cave");
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s it quickly", verb), possibleActionFormats, Set.of(cave), new Pair<>(new HashSet<>(), "cave"));
@@ -334,7 +334,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "destroy";
       String noun = "cave";
-      Item cave = new Item("cave");
+      Item cave = TestUtil.roomItem("cave");
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s quickly", verb, noun), possibleActionFormats, Set.of(cave));
@@ -351,7 +351,7 @@ public class EnhancedNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "destroy";
       String noun = "cave";
-      Item cave = new Item(noun);
+      Item cave = TestUtil.roomItem(noun);
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse(String.format("%s the %s ferociously", verb, noun), possibleActionFormats, Set.of(cave));
@@ -366,10 +366,10 @@ public class EnhancedNLPEngineTest {
    public void parseThreeSentences() throws FailedParseException {
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("eat the donkey. examine the key. open the box.",
-              new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box")));
-      List<Item> wantedArr1 = List.of(new Item("donkey"));
-      List<Item> wantedArr2 = List.of(new Item("key"));
-      List<Item> wantedArr3 = List.of(new Item("box"));
+              new BasicGameEngine().getPossibleActionFormats(), Set.of(TestUtil.roomItem("key"), TestUtil.roomItem("donkey"), TestUtil.roomItem("box")));
+      List<Item> wantedArr1 = List.of(TestUtil.roomItem("donkey"));
+      List<Item> wantedArr2 = List.of(TestUtil.roomItem("key"));
+      List<Item> wantedArr3 = List.of(TestUtil.roomItem("box"));
       assertEquals(3, instantiatedGameActions.size());
       InstantiatedGameAction eatAction = instantiatedGameActions.get(0);
       List<Item> eatActionArguments = eatAction.getArguments();
@@ -387,7 +387,7 @@ public class EnhancedNLPEngineTest {
    public void parseTwoActionsVerbsWithThen() throws FailedParseException {
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("eat the donkey and then examine the key",
-              new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box")));
+              new BasicGameEngine().getPossibleActionFormats(), Set.of(TestUtil.roomItem("key"), TestUtil.roomItem("donkey"), TestUtil.roomItem("box")));
       assertEquals(2, instantiatedGameActions.size());
       InstantiatedGameAction eatAction = instantiatedGameActions.get(0);
       InstantiatedGameAction examineAction = instantiatedGameActions.get(1);
@@ -397,9 +397,9 @@ public class EnhancedNLPEngineTest {
 
    @Test
    public void parseTwoActionsNounsWithThen() throws FailedParseException {
-      Item key = new Item("key");
-      Item donkey = new Item("donkey");
-      Item box = new Item("box");
+      Item key = TestUtil.roomItem("key");
+      Item donkey = TestUtil.roomItem("donkey");
+      Item box = TestUtil.roomItem("box");
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("eat the donkey and then examine the key",
               new BasicGameEngine().getPossibleActionFormats(), Set.of(key, donkey, box));
@@ -419,7 +419,7 @@ public class EnhancedNLPEngineTest {
    public void parseCorefVerbsOneSentenceThreeActions() throws FailedParseException {
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("put the donkey in the box and eat it",
-              new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box")));
+              new BasicGameEngine().getPossibleActionFormats(), Set.of(TestUtil.roomItem("key"), TestUtil.roomItem("donkey"), TestUtil.roomItem("box")));
       assertEquals(2, instantiatedGameActions.size());
       InstantiatedGameAction putAction = instantiatedGameActions.get(0);
       InstantiatedGameAction eatAction1 = instantiatedGameActions.get(1);
@@ -429,9 +429,9 @@ public class EnhancedNLPEngineTest {
 
    @Test
    public void parseCorefNounsOneSentenceThreeActions() throws FailedParseException {
-      Item key = new Item("key");
-      Item donkey = new Item("donkey");
-      Item box = new Item("box");
+      Item key = TestUtil.roomItem("key");
+      Item donkey = TestUtil.roomItem("donkey");
+      Item box = TestUtil.roomItem("box");
 
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("put the donkey in the box and eat it",
@@ -446,9 +446,9 @@ public class EnhancedNLPEngineTest {
 
    @Test
    public void parseCorefVerbsTwoSentencesThreeActions() throws FailedParseException {
-      Item key = new Item("key");
-      Item donkey = new Item("donkey");
-      Item box = new Item("box");
+      Item key = TestUtil.roomItem("key");
+      Item donkey = TestUtil.roomItem("donkey");
+      Item box = TestUtil.roomItem("box");
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("put the donkey in the box and eat it. eat box.",
               new BasicGameEngine().getPossibleActionFormats(), Set.of(donkey, key, box));
@@ -463,9 +463,9 @@ public class EnhancedNLPEngineTest {
 
    @Test
    public void parseCorefNounsTwoSentencesThreeActions() throws FailedParseException {
-      Item key = new Item("key");
-      Item donkey = new Item("donkey");
-      Item box = new Item("box");
+      Item key = TestUtil.roomItem("key");
+      Item donkey = TestUtil.roomItem("donkey");
+      Item box = TestUtil.roomItem("box");
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("put the donkey in the box and eat it. eat the box.",
               new BasicGameEngine().getPossibleActionFormats(), Set.of(key, donkey, box));
@@ -486,9 +486,9 @@ public class EnhancedNLPEngineTest {
 
    @Test
    public void parseCorefVerbsTernarySingleSentenceThreeActions() throws FailedParseException {
-      Item key = new Item("key");
-      Item horse = new Item("horse");
-      Item box = new Item("box");
+      Item key = TestUtil.roomItem("key");
+      Item horse = TestUtil.roomItem("horse");
+      Item box = TestUtil.roomItem("box");
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("put the horse in the box and drink it from the box and examine key.",
               new BasicGameEngine().getPossibleActionFormats(), Set.of(key, horse, box));
@@ -507,9 +507,9 @@ public class EnhancedNLPEngineTest {
    public void findMatchingGameItemNamesNoSynonyms() throws FailedParseException {
       List<String> nouns = List.of("bear", "panda", "owl");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
-      Item bear = new Item("bear", Set.of("furry", "kind", "hilarious", "funny"));
-      Item panda = new Item("panda");
-      Item owl = new Item("owl", Set.of("funny", "boring", "interesting"));
+      Item bear = TestUtil.roomItem("bear", Set.of("furry", "kind", "hilarious", "funny"));
+      Item panda = TestUtil.roomItem("panda");
+      Item owl = TestUtil.roomItem("owl", Set.of("funny", "boring", "interesting"));
       Set<Item> gameItems = Set.of(
               bear, panda, owl
       );
@@ -526,9 +526,9 @@ public class EnhancedNLPEngineTest {
       List<String> nouns = List.of("bear", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny", "orange", "yellow"));
       Set<Item> gameItems = Set.of(
-          new Item("bear", Set.of("furry", "kind", "hilarious", "funny")),
-          new Item("panda"),
-          new Item("grizzly bear", Set.of("funny", "boring", "interesting"))
+          TestUtil.roomItem("bear", Set.of("furry", "kind", "hilarious", "funny")),
+          TestUtil.roomItem("panda"),
+          TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
       List<Item> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }
@@ -541,9 +541,9 @@ public class EnhancedNLPEngineTest {
       List<String> nouns = List.of("paparrazi", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
       Set<Item> gameItems = Set.of(
-          new Item("kangaroo", Set.of("furry", "kind", "hilarious", "funny")),
-          new Item("panda"),
-          new Item("grizzly bear", Set.of("funny", "boring", "interesting"))
+          TestUtil.roomItem("kangaroo", Set.of("furry", "kind", "hilarious", "funny")),
+          TestUtil.roomItem("panda"),
+          TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
       List<Item> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
    }

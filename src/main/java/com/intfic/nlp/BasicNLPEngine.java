@@ -180,6 +180,6 @@ public class BasicNLPEngine {
    }
 
    public static List<Item> findMatchingGameItems(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
-      return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
+      return NLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
    }
 }

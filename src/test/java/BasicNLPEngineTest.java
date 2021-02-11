@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.shared.Item;
+import com.intfic.game.shared.Room;
 import com.intfic.nlp.BasicNLPEngine;
 import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;
@@ -160,13 +161,15 @@ public class BasicNLPEngineTest {
    // TODO: Check other exceptions here
 
 
+
+
    @Test
    public void parseVerbSimpleTwoWords() throws FailedParseException {
       // take dog
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "take";
       String noun = "dog";
-      Item dog = new Item("dog");
+      Item dog = TestUtil.roomItem(noun);
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
@@ -203,11 +206,11 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "take";
       String noun = "dog";
-      Item dog = new Item("dog", Set.of("fluffy", "hairy"));
+      Item dog = TestUtil.roomItem("dog", Set.of("fluffy", "hairy"));
       possibleActionFormats.add(new ActionFormat(verb, null));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
-          BasicNLPEngine.parse(String.format("%s the fluffy %s", verb, noun), possibleActionFormats, Set.of(dog, new Item("door")));
+          BasicNLPEngine.parse(String.format("%s the fluffy %s", verb, noun), possibleActionFormats, Set.of(dog, TestUtil.roomItem("door")));
       assertEquals(1, instantiatedGameActions.size());
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
@@ -222,7 +225,7 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "listen";
       String noun = "dog";
-      Item dog = new Item("dog");
+      Item dog = TestUtil.roomItem("dog");
       possibleActionFormats.add(new ActionFormat("listen", "listen to ([\\w\\s]+)$"));
       possibleActionFormats.add(new ActionFormat("fly", null));
       List<InstantiatedGameAction> instantiatedGameActions =
@@ -240,7 +243,7 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "open";
       String noun = "door";
-      Item door = new Item(noun);
+      Item door = TestUtil.roomItem(noun);
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           BasicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats, Set.of(door));
@@ -268,8 +271,8 @@ public class BasicNLPEngineTest {
       String verb = "put";
       String noun1 = "pen";
       String noun2 = "box";
-      Item pen = new Item("pen");
-      Item smallBox = new Item("box");
+      Item pen = TestUtil.roomItem("pen");
+      Item smallBox = TestUtil.roomItem("box");
       possibleActionFormats.add((new EnhancedGameEngine()).findAction("put").get(0));
 
       printHeapSize();
@@ -289,7 +292,7 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "destroy";
       String noun = "cave";
-      Item cave = new Item("cave");
+      Item cave = TestUtil.roomItem("cave");
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           BasicNLPEngine.parse(String.format("%s it", verb), possibleActionFormats, Set.of(cave));
@@ -306,7 +309,7 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "destroy";
       String noun = "cave";
-      Item cave = new Item(noun);
+      Item cave = TestUtil.roomItem(noun);
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           BasicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats, Set.of(cave));
@@ -323,7 +326,7 @@ public class BasicNLPEngineTest {
       List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
       String verb = "destroy";
       String noun = "cave";
-      Item cave = new Item(noun);
+      Item cave = TestUtil.roomItem(noun);
       possibleActionFormats.add(new ActionFormat(verb, null));
       List<InstantiatedGameAction> instantiatedGameActions =
           BasicNLPEngine.parse(String.format("%s the %s", verb, noun), possibleActionFormats, Set.of(cave));
@@ -345,9 +348,9 @@ public class BasicNLPEngineTest {
    public void findMatchingGameItemNamesNoSynonyms() throws FailedParseException {
       List<String> nouns = List.of("bear", "panda", "owl");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
-      Item bear = new Item("bear", Set.of("furry", "kind", "hilarious", "funny"));
-      Item panda = new Item("panda");
-      Item owl = new Item("owl", Set.of("funny", "boring", "interesting"));
+      Item bear = TestUtil.roomItem("bear", Set.of("furry", "kind", "hilarious", "funny"));
+      Item panda = TestUtil.roomItem("panda");
+      Item owl = TestUtil.roomItem("owl", Set.of("funny", "boring", "interesting"));
       Set<Item> gameItems = Set.of(
           bear, panda, owl
       );
@@ -364,9 +367,9 @@ public class BasicNLPEngineTest {
       List<String> nouns = List.of("bear", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny", "orange", "yellow"));
       Set<Item> gameItems = Set.of(
-          new Item("bear", Set.of("furry", "kind", "hilarious", "funny")),
-          new Item("panda"),
-          new Item("grizzly bear", Set.of("funny", "boring", "interesting"))
+          TestUtil.roomItem("bear", Set.of("furry", "kind", "hilarious", "funny")),
+          TestUtil.roomItem("panda"),
+          TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
       List<Item> foundItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
    }
@@ -379,9 +382,9 @@ public class BasicNLPEngineTest {
       List<String> nouns = List.of("paparrazi", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
       Set<Item> gameItems = Set.of(
-          new Item("kangaroo", Set.of("furry", "kind", "hilarious", "funny")),
-          new Item("panda"),
-          new Item("grizzly bear", Set.of("funny", "boring", "interesting"))
+          TestUtil.roomItem("kangaroo", Set.of("furry", "kind", "hilarious", "funny")),
+          TestUtil.roomItem("panda"),
+          TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
       List<Item> foundItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
    }
