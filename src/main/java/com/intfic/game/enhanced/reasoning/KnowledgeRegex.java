@@ -19,9 +19,9 @@ public class KnowledgeRegex implements Serializable {
    public static String LONE_FRAME_NAME_EXPR;
 
    static {
-      FRAME_NAME_EXPR = "!?([a-zA-Z0-9_]+)";
-      LONE_FRAME_NAME_EXPR = "!([a-zA-Z0-9_]+)(?!::)";
-      KNOWLEDGE_EXPR = "!?([a-zA-Z0-9_]+)::([a-zA-Z0-9]+)";
+      FRAME_NAME_EXPR = "!?([a-zA-Z0-9_.]+)";
+      LONE_FRAME_NAME_EXPR = "!([a-zA-Z0-9_.]+)(?!::)";
+      KNOWLEDGE_EXPR = "!?([a-zA-Z0-9_.]+)::([a-zA-Z0-9]+)";
       LARGE_CAPTURE_KNOWLEDGE_EXPR = "!?([a-zA-Z0-9_]+::[a-zA-Z0-9]+)";
       NUMBER_EXPR = "-?[0-9]+(?:\\.[0-9]+)?";
       STRING_EXPR = "\"[\\s\\w\\p{Punct}]*\"";

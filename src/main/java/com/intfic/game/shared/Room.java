@@ -1,6 +1,7 @@
 package com.intfic.game.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,24 +15,30 @@ import org.jetbrains.annotations.NotNull;
 // Note: Names of rooms must be unique and need to verify this in user code
 
 public class Room implements Serializable {
-   private static final long serialVersionUID = 5587204892436301652L;
+   private static final long serialVersionUID = 895624202663443963L;
    private String name;
    private Map<String, Item> items;
 
    public Room(@NotNull String name) {
       this.name = name;
+      setItems(new ArrayList<>());
    }
 
-   public Room(String name, List<Item> items) {
+   public Room(@NotNull String name, @NotNull List<Item> items) {
       this.name = name;
-      this.items = Util.collectionToMap(items, Item::getID);
+      setItems(items);
    }
 
    public Map<String, Item> getItems() {
       return new HashMap<>(items);
    }
 
-   public void setItems(Collection<Item> items) {
+
+   public void setItems(@NotNull Collection<Item> items) {
+      for(Item i : items){
+         // This will trigger update of IDs that can be used in the map
+         i.setParentRoom(this, items);
+      }
       this.items = Util.collectionToMap(items, Item::getID);
    }
 
@@ -81,11 +88,15 @@ public class Room implements Serializable {
       return true;
    }
 
-   public void addItem(Item item) {
+/*   public long numberOfItemsWithName(@NotNull String name){
+      return items.values().stream().filter(i -> i.getName().equals(name)).count();
+   }*/
+
+   public void addItem(@NotNull Item item) {
       this.items.put(item.getID(), item);
    }
 
    public boolean removeItem(Item itemInRoom) {
-      return this.items.remove(itemInRoom.getID(), itemInRoom);
+      return !Objects.isNull(itemInRoom) && this.items.remove(itemInRoom.getID(), itemInRoom);
    }
 }

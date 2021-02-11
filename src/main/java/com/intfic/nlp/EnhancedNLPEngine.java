@@ -1,6 +1,5 @@
 package com.intfic.nlp;
 
-import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -419,6 +418,6 @@ public class EnhancedNLPEngine {
    }
 
    public static List<Item> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
-      return NLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
+      return NLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
    }
 }

@@ -88,7 +88,7 @@ RPAREN     : ')' ;
 QUOTE      : '"' ;
 STRING     : ["] [a-zA-Z0-9'!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
-IDENTIFIER : [!]? ([a-zA-Z0-9_]+) [:] [:] [a-zA-Z0-9]+;
+IDENTIFIER : [!]? ([a-zA-Z0-9_.]+) [:] [:] [a-zA-Z0-9]+;
 
 BEGL : '[';
 ENDL : ']';

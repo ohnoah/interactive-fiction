@@ -18,9 +18,9 @@ import org.junit.Test;
 public class BasicGameEngineTest {
 
 
-   public static BasicGameEngine oneRoomOneAction(){
+   public static BasicGameEngine oneRoomOneAction() {
       Room room = new Room("place1");
-      Set<Item> place1Items = TestUtil.stringsToItemsNoAdj(Set.of("apple", "banana", "orange"));
+      Set<Item> place1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
       room.setItems(place1Items);
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
@@ -44,14 +44,14 @@ public class BasicGameEngineTest {
       return basicGameEngine;
    }
 
-   public static BasicGameEngine twoRoomTwoActions(){
+   public static BasicGameEngine twoRoomTwoActions() {
       Room room = new Room("place1");
       Set<Item> room1Items =
-          TestUtil.stringsToItemsNoAdj(Set.of("apple", "banana", "orange"));
+          TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
       room.setItems(room1Items);
 
       Room room2 = new Room("room2");
-      Set<Item> room2Items = TestUtil.stringsToItemsNoAdj(Set.of("elephant"));
+      Set<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("elephant"));
       room2.setItems(room2Items);
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
@@ -85,27 +85,29 @@ public class BasicGameEngineTest {
    }
 
    @Test
-   public void possibleItemNamesWorks(){
+   public void possibleItemNamesWorks() {
       BasicGameEngine basicGameEngine = oneRoomOneAction();
       Set<Item> items = basicGameEngine.possibleItems();
       Set<String> itemNames = items.stream().map(Item::getName).collect(Collectors.toSet());
       assertEquals(Set.of("apple", "banana", "orange"), itemNames);
    }
+
    @Test
-   public void messageAfterProgressStory(){
+   public void messageAfterProgressStory() {
       BasicGameEngine basicGameEngine = oneRoomOneAction();
       ActionFormat actionFormat = new ActionFormat("eat");
-      InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of(TestUtil.findPossibleItem(basicGameEngine, "apple")));
+      InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "apple")));
       Justification justification = basicGameEngine.progressStory(instantiatedGameAction);
       String message = justification.getReasoning();
       assertEquals(message, "You did action 1");
       assertTrue(justification.isAccepted());
    }
+
    @Test
-   public void validatePreconditionAfterProgressStory(){
+   public void validatePreconditionAfterProgressStory() {
       BasicGameEngine basicGameEngine = oneRoomOneAction();
       ActionFormat actionFormat = new ActionFormat("eat");
-      InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of(TestUtil.findPossibleItem(basicGameEngine, "apple")));
+      InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "apple")));
       basicGameEngine.progressStory(instantiatedGameAction);
       Map<String, String> postState = new HashMap<>();
       postState.put("random-state", "very-good");
@@ -115,33 +117,34 @@ public class BasicGameEngineTest {
    }
 
    @Test
-   public void messagesProgressStoryTwoRoomsTwoActions(){
+   public void messagesProgressStoryTwoRoomsTwoActions() {
       BasicGameEngine basicGameEngine = twoRoomTwoActions();
       ActionFormat openActionFormat = new ActionFormat("open");
-      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItem(basicGameEngine, "banana")));
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
       Justification justificationOpen = basicGameEngine.progressStory(openGameAction);
       String messageOpen = justificationOpen.getReasoning();
 
       ActionFormat eatActionFormat = new ActionFormat("eat");
-      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of(TestUtil.findPossibleItem(basicGameEngine, "elephant")));
+      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "elephant")));
 
       Justification justificationEat = basicGameEngine.progressStory(eatGameAction);
       String messageEat = justificationEat.getReasoning();
 
       assertEquals(List.of("You did action 1", "You did action 2"), List.of(messageOpen, messageEat));
-      assertTrue(justificationOpen.isAccepted()); assertTrue(justificationEat.isAccepted());
+      assertTrue(justificationOpen.isAccepted());
+      assertTrue(justificationEat.isAccepted());
    }
 
 
    @Test
-   public void globalStateProgressStoryTwoRoomsTwoActions(){
+   public void globalStateProgressStoryTwoRoomsTwoActions() {
       BasicGameEngine basicGameEngine = twoRoomTwoActions();
       ActionFormat openActionFormat = new ActionFormat("open");
-      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItem(basicGameEngine, "banana")));
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
       basicGameEngine.progressStory(openGameAction);
 
       ActionFormat eatActionFormat = new ActionFormat("eat");
-      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of(TestUtil.findPossibleItem(basicGameEngine, "elephant")));
+      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "elephant")));
 
       basicGameEngine.progressStory(eatGameAction);
 
