@@ -18,6 +18,7 @@ public abstract class GameEngine implements Serializable {
    protected List<Room> worldRooms;
    private String startMessage;
    protected Room currentRoom;
+   public static Room unassignedItemRoom = new Room("UNASSIGNED ITEM ROOM");
 
    public String getStartMessage() {
       return startMessage;

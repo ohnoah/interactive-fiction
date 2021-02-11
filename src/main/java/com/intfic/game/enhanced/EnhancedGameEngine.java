@@ -33,7 +33,6 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private UpdateStrategy updateStrategy = new DefaultUpdateStrategy();
 
    // Use this as a special room so that item IDs are valid before initialization
-   public static Room unassignedItemRoom = new Room("UNASSIGNED ITEM ROOM");
 
    private Map<String, Item> inventoryItems;
 

@@ -157,6 +157,8 @@ public class BasicGameEditor extends JFrame {
       actionFormats = null;
    }
 
+
+
    public static <T> boolean hasDuplicate(Iterable<T> all) {
       Set<T> set = new HashSet<T>();
       // Set#add returns false if the set does not change, which
