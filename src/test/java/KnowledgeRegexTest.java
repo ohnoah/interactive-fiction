@@ -1,7 +1,9 @@
 import static org.junit.Assert.*;
 
 
+import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.enhanced.reasoning.KnowledgeRegex;
+import com.intfic.game.shared.ActionFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -215,6 +217,24 @@ public class KnowledgeRegexTest {
       String frameNameExpr = KnowledgeRegex.FRAME_NAME_EXPR;
 
       assertTrue(Pattern.matches(frameNameExpr, string));
+   }
+
+   @Test
+   public void actionFormatToStringPut() {
+      ActionFormat a = (new BasicGameEngine()).findAction("put").get(0);
+      assertEquals("put [0] in [1]", a.toString());
+   }
+
+   @Test
+   public void actionFormatToStringOpen() {
+      ActionFormat a = (new BasicGameEngine()).findAction("open").get(0);
+      assertEquals("open [0]", a.toString());
+   }
+
+   @Test
+   public void actionFormatToStringListen() {
+      ActionFormat a = (new BasicGameEngine()).findAction("listen").get(0);
+      assertEquals("listen to [0]", a.toString());
    }
 
 

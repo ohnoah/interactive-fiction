@@ -2,34 +2,37 @@ package com.intfic.game.shared;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ActionFormat implements Serializable {
-  /* private static final long serialVersionUID = -7020054998734425443L;*/
+   /* private static final long serialVersionUID = -7020054998734425443L;*/
    private String verb;
    private String regExpr;
 
 
-   public ActionFormat(String verb){
+   public ActionFormat(String verb) {
       this.verb = verb;
    }
 
-   public ActionFormat(String verb, String regExpr){
+   public ActionFormat(String verb, String regExpr) {
       this.verb = verb;
       this.regExpr = regExpr;
    }
 
    // TODO: Generalize
-   public int getDegree(){
-      if(regExpr == null){
+   public int getDegree() {
+      if (regExpr == null) {
          return 1;
       }
-      else{
+      else {
          return (int) regExpr.chars().filter(c -> c == '(').count();
       }
 
    }
 
-   public boolean isTernary(){
+   public boolean isTernary() {
       return regExpr != null;
    }
 
@@ -69,9 +72,14 @@ public class ActionFormat implements Serializable {
 
    @Override
    public String toString() {
-      return "ActionFormat{" +
-          "verb='" + verb + '\'' +
-          ", regExpr='" + regExpr + '\'' +
-          '}';
+      if (regExpr != null) {
+         Pattern p = Pattern.compile("([(](?!\\?\\:)[\\w\\p{Punct}]*)[)]");
+         AtomicInteger filler = new AtomicInteger();
+         Matcher m = p.matcher(regExpr);
+         return m.replaceAll(match -> "[" + filler.getAndIncrement() + "]");
+      }
+      else{
+         return this.getVerb() + " [0]";
+      }
    }
 }
