@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.plaf.ActionMapUIResource;
@@ -45,6 +46,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    private GameEngine gameEngine = null;
    private Pair<Set<String>, String> it;
    private boolean isAskingQuestion = false;
+   private String lastResult;
 
 
    private void attemptToLoadGameEngine(String cmd, String sofar) {
@@ -56,7 +58,9 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          in.close();
          fileIn.close();
          String startMessage = gameEngine.getStartMessage() != null ? gameEngine.getStartMessage() : "";
-         history.setText(startMessage + "\n" + "> ");
+         String questionMessage = (questions == null ? "WARNING: No questionarre questions loaded. Check that you have a questions.txt file in this folder" :
+             "Expect to answer about " + questions.size() + " questions as you play today.") + "\n" + "--------------------" + "\n";
+         history.setText(questionMessage + startMessage + "\n" + "> ");
          input.setText("");
          FileErrorHandler.firstError = true;
       }
@@ -70,8 +74,9 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       }
    }
 
-   private void answerQuestion(String cmd){
+   private void answerQuestion(String cmd) {
       addToQuestionTranscript(cmd);
+      incrementField("acceptedCommands");
    }
 
    public EnhancedGamePlayer() {
@@ -83,41 +88,45 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          @Override
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText().trim();
-            String sofar = history.getText();
             if (gameEngine != null) {
-               if(!isAskingQuestion) {
-                  writeToTerminal(cmd, sofar, processCmd(cmd));
+               if (!isAskingQuestion) {
+                  lastResult = processCmd(cmd);
+                  writeToTerminal(cmd, history.getText(), lastResult);
+                  if (getIntStatistics("acceptedCommands") % questionFreq == (1)) {
+                     String question = getNextQuestion();
+                     if (question != null) {
+                        isAskingQuestion = true;
+                        addToQuestionTranscript(question);
+                        writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n" + answerOptions, history.getText());
+                        addToQuestionTranscript(answerOptions);
+                     }
+                  }
                }
-               else{
+               else {
                   // TODO: Implement questions
-                  writeToTerminal(cmd, sofar);
+                  writeToTerminal(cmd, history.getText());
                   answerQuestion(cmd);
                   isAskingQuestion = false;
+                  writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
                }
-               if(getIntStatistics("acceptedCommands") % 7 == 1){
+               if (getIntStatistics("numCommands") % 5 == 1) {
                   writeStatisticsAndTranscriptToFile();
                }
-               if(!isAskingQuestion && getIntStatistics("acceptedCommands") % questionFreq == 1){
-                  isAskingQuestion = true;
-                  String question = getNextQuestion();
-                  addToQuestionTranscript(question);
-                  writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n" + answerOptions, sofar);
-                  addToQuestionTranscript(answerOptions);
-               }
+
             }
             else {
                if (isReadableFile(cmd)) {
-                  attemptToLoadGameEngine(cmd, sofar);
-                  if(gameEngine != null) {
+                  attemptToLoadGameEngine(cmd, history.getText());
+                  if (gameEngine != null) {
                      try {
-                        EnhancedNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(),gameEngine.possibleItems());
+                        EnhancedNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
                      }
                      catch (FailedParseException ignored) {
                      }
                   }
                }
                else {
-                  writeToTerminal(cmd, sofar, "That isn't a valid readable file in your file system. Try again.");
+                  writeToTerminal(cmd, history.getText(), "That isn't a valid readable file in your file system. Try again.");
                }
             }
          }
@@ -157,8 +166,6 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    }
 
 
-
-
    private void updateStatistics(Justification justification) {
       String acceptedCommands = "acceptedCommands";
       String deniedCommands = "deniedCommands";
@@ -177,8 +184,11 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          writeStatisticsAndTranscriptToFile();
          System.exit(0);
       }
-      if(cmd.trim().equals("")){
+      if (cmd.trim().equals("")) {
          return "";
+      }
+      if (cmd.equals("help")) {
+         return (gameEngine.getPossibleActionFormats().stream().map(ActionFormat::toString).collect(Collectors.joining(",")));
       }
       updateStatistics(cmd);
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
@@ -187,7 +197,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
 
       try {
          gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
-         if(gameActions.size() > 0) {
+         if (gameActions.size() > 0) {
             it = gameActions.get(0).getIt();
          }
       }
@@ -202,7 +212,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          gameMessage = justification.getReasoning();
       }
       else if (gameActions.size() == 0) {
-         return "Error. No game action specified in parse.";
+         return "Error. No valid game verb specified.";
       }
       else {
          StringBuilder gameMessageBuilder = new StringBuilder();

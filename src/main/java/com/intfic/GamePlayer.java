@@ -62,7 +62,7 @@ public abstract class GamePlayer extends JFrame implements Serializable {
    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-HH-mm-ss");
 
    String getNextQuestion() {
-      return currentQuestionIndex < questions.size() ? questions.get(currentQuestionIndex) : null;
+      return currentQuestionIndex < questions.size() ? questions.get(currentQuestionIndex++) : null;
    }
 
    void writeStatisticsAndTranscriptToFile() {
@@ -119,6 +119,15 @@ public abstract class GamePlayer extends JFrame implements Serializable {
    }
 
    void initializeJFrame(ActionMap actionMap) {
+
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      addWindowListener(new java.awt.event.WindowAdapter() {
+         public void windowClosed(java.awt.event.WindowEvent evt){
+            writeStatisticsAndTranscriptToFile();
+         }
+      });
+
+
       InputMap keyMap = input.getInputMap();
       input.getActionMap().put("enter", actionMap.get("enter"));
       /* InputMap keyMap = new ComponentInputMap(input);*/
@@ -155,7 +164,6 @@ public abstract class GamePlayer extends JFrame implements Serializable {
 
       setSize(600, 600);
       setLocation(100, 100);
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
       center();
    }
@@ -191,9 +199,9 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       try {
          questions = Files.readAllLines(Paths.get(QUESTION_FILE_NAME));
          try {
-            int freq = Integer.parseInt(questions.get(0));
+            int freq = Math.abs(Integer.parseInt(questions.get(0)));
             questions.remove(0);
-            questionFreq = freq;
+            questionFreq = Math.max(2, freq);
          }
          catch (NumberFormatException ignored) {
          }

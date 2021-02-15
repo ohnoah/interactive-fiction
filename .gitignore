@@ -29,3 +29,6 @@ hs_err_pid*
 # noahs own
 *.ser
 error-log*
+
+game-transcript-*
+question-transcript-*
