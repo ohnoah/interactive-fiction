@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnhancedGameEngine extends GameEngine implements Serializable {
 
-   private static final long serialVersionUID = -6641823063075230452L;
+   private static final long serialVersionUID = -4347326551883534303L;
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
    private UpdateStrategy updateStrategy = new DefaultUpdateStrategy();
@@ -155,7 +155,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       List<String> itemIdentifiers = itemsToStrings(items, KnowledgeBase::getItemIdentifier);
       List<String> itemNames = itemsToStrings(items, EnhancedGameEngine::itemNameInUserSpace);
 
-      String newBooleanExpr = replacePlaceHolderArgsWithStrings(condition.getBooleanExpr(), itemIdentifiers, "-", "");
+      String newBooleanExpr = replacePlaceHolderArgsWithStrings(condition.getBooleanExpr(), itemIdentifiers, "_", "\"");
       String newFailureMessage = replacePlaceHolderArgsWithStrings(condition.getFailureMessage(), itemIdentifiers, itemNames, " ");
       /*newBooleanExpr = newBooleanExpr.replaceAll(KnowledgeRegex.loneFrameNameExpr, "\"$1\"");*/
       return new Condition(newBooleanExpr, newFailureMessage);
@@ -206,7 +206,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    protected String replacePlaceHolderArgsWithStrings(@NotNull String s, @NotNull List<String> knowledgeExprReplaceList, @NotNull List<String> frameExprReplaceList,
-                                                      @NotNull String spaceReplacer, @NotNull String quotation) {
+                                                      @NotNull String spaceReplacer, @NotNull String quotationForFrameNames) {
       String newString = s;
       for (int i = 0; i < knowledgeExprReplaceList.size(); i++) {
          String argString = "!arg" + i + "::";
@@ -224,14 +224,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
       for (int i = 0; i < frameExprReplaceList.size(); i++) {
          String argString = "!arg" + i;
-         String nounNoSpaces = quotation + (frameExprReplaceList.get(i)).replace(" ", spaceReplacer) + quotation;
+         String nounNoSpaces = quotationForFrameNames + (frameExprReplaceList.get(i)).replace(" ", spaceReplacer) + quotationForFrameNames;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }
       }
       for (int i = 0; i < frameExprReplaceList.size(); i++) {
          String argString = "arg" + i;
-         String nounNoSpaces = quotation + (frameExprReplaceList.get(i)).replace(" ", spaceReplacer) + quotation;
+         String nounNoSpaces = quotationForFrameNames + (frameExprReplaceList.get(i)).replace(" ", spaceReplacer) + quotationForFrameNames;
          if (newString.contains(argString)) {
             newString = newString.replaceAll(argString, nounNoSpaces);
          }

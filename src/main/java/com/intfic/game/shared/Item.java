@@ -23,10 +23,14 @@ public class Item implements Serializable {
    private static char SEPARATOR = '_';
 
 
+   public static String roomId(@NotNull String roomName) {
+      return roomName.replaceAll(" ", String.valueOf(SEPARATOR)).toLowerCase();
+   }
+
    public String idGenerator(@NotNull String roomName, @NotNull Collection<Item> currentItems) {
       long count = EnhancedGameEngine.numberOfItemsWithName(currentItems, this.name);
 
-      return (roomName.replaceAll(" ", String.valueOf(SEPARATOR)) + "." +
+      return (roomId(roomName) + "." +
           this.name.replaceAll(" ", String.valueOf(SEPARATOR)) +
           (count != 1 ? SEPARATOR + count : "")).toLowerCase();
    }

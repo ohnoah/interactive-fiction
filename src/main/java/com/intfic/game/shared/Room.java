@@ -63,7 +63,7 @@ public class Room implements Serializable {
          return false;
       }
       Room room = (Room) o;
-      return getName().equals(room.getName());
+      return getName().toLowerCase().equals(room.getName().toLowerCase());
    }
 
    @Override
