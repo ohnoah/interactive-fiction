@@ -1,3 +1,5 @@
+start message
+Welcome. Put the pen in the box or push the ball or push the keys.
 add room
 Room 1
 pen [yellow], box [orange], ball [green], bucket [blue]
@@ -11,13 +13,13 @@ put
 pen, box
 TRUE|""
 world::random := 1
-Great. You put the pen in the box in _world::room.
+Great. You put the pen in the box in !world::room.
 
 add action
 Room 1
 push
 ball
-_pen IN box::contains|You haven't done what you need with the pen., _box IN bucket::contains|You haven't done the bucket thing.
+"room_1.pen" IN room_1.box::contains|You haven't done what you need with the pen., "room_1.box" IN room_1.bucket::contains|You haven't done the bucket thing.
 world::room := "Room 2"
 Well done. Leaving room.
 
@@ -27,26 +29,26 @@ push
 keys
 TRUE|""
 world::key := TRUE, world::room := "Room 1"
-Good work man.
+Good work man/woman.
 
 edit knowledge
 parents
-bucket
+room_1.bucket
 container
 
 edit knowledge
 parents
-jar
+room_2.jar
 container
 
 edit knowledge
 parents
-box
+room_1.box
 container
 
 edit knowledge
 fillers
-pen::volume := 1, box::volume := 10, box::internalVolume := 10, bucket::volume := 20, bucket::internalVolume := 20, mouse::volume := 3, ball::volume := 10, keys::volume := 5, jar::volume := 10, jar::internalVolume := 10
+room_1.pen::volume := 1, room_1.box::volume := 10, room_1.box::internalVolume := 10, room_1.bucket::volume := 20, room_1.bucket::internalVolume := 20, room_2.mouse::volume := 3, room_1.ball::volume := 10, room_2.keys::volume := 5, room_2.jar::volume := 10, room_2.jar::internalVolume := 10
 
 edit knowledge
 fillers

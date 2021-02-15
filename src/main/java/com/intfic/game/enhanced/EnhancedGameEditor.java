@@ -1,5 +1,6 @@
 package com.intfic.game.enhanced;
 
+import com.intellij.ide.favoritesTreeView.NoteSerializable;
 import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -249,6 +251,9 @@ public class EnhancedGameEditor extends JFrame {
       this.numEdits++;
       String output = null;
       switch (cmd) {
+         case "":
+            output = "";
+            break;
          case "quit":
             if (!saved) {
                output = "Warning: you have not saved your progress. If you still want to quit type quit again.";
@@ -345,7 +350,12 @@ public class EnhancedGameEditor extends JFrame {
                      output = String.format("Saved your game to disk with name: %s.", fileName);
                      saved = true;
                   }
+                  catch(NotSerializableException e){
+                     output = "Not serializable exception found: " + e.getMessage() + ". Maybe some user code doesn't implement serializable";
+                     e.printStackTrace();
+                  }
                   catch (IOException i) {
+                     output = "IOException when writing your file. Maybe there is already such a file.";
                      i.printStackTrace();
                   }
                   break;
@@ -571,10 +581,16 @@ public class EnhancedGameEditor extends JFrame {
                          "exactly %d argument(s).", numArgs);
                   }
                   else {
-                     boolean validItems = roomForAction.isValidItemIdentifierList(splitArgs);
+                     List<String> formattedItemNames = new ArrayList<>();
+                     String roomPrefix = Item.roomId(roomForAction.getName());
+                     for (String s : splitArgs) {
+                        String formatted = !s.startsWith(roomPrefix) ? roomPrefix + "." + s : s;
+                        formattedItemNames.add(formatted);
+                     }
+                     boolean validItems = roomForAction.isValidItemIdentifierList(formattedItemNames);
                      if (validItems) {
                         Map<String, Item> roomItems = roomForAction.getItems();
-                        instantiatedGameAction.setArguments(splitArgs.stream().map(roomItems::get).collect(Collectors.toList()));
+                        instantiatedGameAction.setArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the knowledge base (and failure explanations) for this action as a comma-separated list of conditions of the form " +
                             "e.g. \"world::numDoors = 4|The number of doors isn't 4, it's world::numDoors\".";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_PRE;

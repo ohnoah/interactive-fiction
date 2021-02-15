@@ -1,28 +1,24 @@
 package com.intfic;
 
-import com.intfic.game.enhanced.FileErrorHandler;
-import com.intfic.game.enhanced.reasoning.wrappers.Justification;
-import com.intfic.game.shared.ActionFormat;
-import com.intfic.game.shared.GameEngine;
-import com.intfic.game.shared.InstantiatedGameAction;
-import com.intfic.game.shared.Item;
-import com.intfic.nlp.EnhancedNLPEngine;
-import com.intfic.nlp.FailedParseException;
-import edu.stanford.nlp.util.Pair;
+import com.intfic.game.shared.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -32,7 +28,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.plaf.ActionMapUIResource;
 
 /**
  * com.interactivefiction.BasicGamePlayer
@@ -42,27 +37,121 @@ import javax.swing.plaf.ActionMapUIResource;
  * (c) GPLv3
  */
 
-public abstract class GamePlayer extends JFrame {
+public abstract class GamePlayer extends JFrame implements Serializable {
 
 
-  /* private GameEngine gameEngine = null;*/
+   /* private GameEngine gameEngine = null;*/
    /*private Pair<Set<String>, String> it;*/
 
 
+   Map<String, String> stringStatistics;
+   Map<String, Integer> integerStatistics;
    JTextField input;
    JTextArea history;
+   List<String> commands = new ArrayList<>();
+   List<String> transcript = new ArrayList<>();
+   List<String> questionTranscript = new ArrayList<>();
+   final String QUESTION_FILE_NAME = "questions.txt";
+   final String ANSWER_OPTIONS_FILE_NAME = "options.txt";
+   List<String> questions;
+   int currentQuestionIndex = 0;
+   int currentTranscriptIndex = 1;
+   int questionFreq = 5;
+   String answerOptions;
+   LocalDateTime startTime;
+   DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-HH-mm-ss");
+
+   String getNextQuestion() {
+      return currentQuestionIndex < questions.size() ? questions.get(currentQuestionIndex) : null;
+   }
+
+   void writeStatisticsAndTranscriptToFile() {
+      try {
+         File fullTranscript = new File(String.format("game-transcript-%s.txt", startTime.format(dateTimeFormatter)));
+         File questions = new File(String.format("question-transcript-%s.txt", startTime.format(dateTimeFormatter)));
+         fullTranscript.createNewFile();
+         questions.createNewFile();
+         Files.write(fullTranscript.toPath(), transcript, StandardOpenOption.APPEND);
+/*         for (String line : transcript) {
+            Files.write(file.toPath(), line.getBytes(), StandardOpenOption.APPEND);
+         }*/
+
+         Files.write(questions.toPath(), questionTranscript, StandardOpenOption.APPEND);
+         transcript.clear();
+         questionTranscript.clear();
+         Files.write(fullTranscript.toPath(), ("STRING-STATISTICS:" + stringStatistics.toString() + "\n").getBytes(), StandardOpenOption.APPEND);
+         Files.write(fullTranscript.toPath(), ("INTEGER-STATISTICS:" + integerStatistics.toString() + "\n").getBytes(), StandardOpenOption.APPEND);
+      }
+      catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void addToTranscript(String s) {
+      transcript.add(s);
+   }
+
+   public void addToQuestionTranscript(String s) {
+      questionTranscript.add(s);
+   }
+
+   public String getStringStatistic(String key) {
+      return stringStatistics.get(key);
+   }
+
+   public int getIntStatistics(String key) {
+      return integerStatistics.getOrDefault(key, 0);
+   }
+
+   void incrementField(String key) {
+      this.integerStatistics.put(key, 1 + this.integerStatistics.getOrDefault(key, 0));
+   }
+
+   void updateStatistics(String cmd) {
+      String numCommands = "numCommands";
+      incrementField(numCommands);
+      commands.add(cmd);
+   }
+
+   void addTimeToTranscript() {
+      Duration between = Duration.between(startTime, LocalDateTime.now());
+      addToTranscript("-!-!- " + Util.formatDuration(between));
+   }
 
    void initializeJFrame(ActionMap actionMap) {
       InputMap keyMap = input.getInputMap();
       input.getActionMap().put("enter", actionMap.get("enter"));
-     /* InputMap keyMap = new ComponentInputMap(input);*/
+      /* InputMap keyMap = new ComponentInputMap(input);*/
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-    /*  keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");*/
+      /*  keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");*/
+      input.getActionMap().put("up", new AbstractAction() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            if (commands == null || commands.size() == 0) {
+               return;
+            }
+            currentTranscriptIndex = Math.min(commands.size(), currentTranscriptIndex + 1);
+            input.setText(commands.get(commands.size() - (currentTranscriptIndex)));
+         }
+      });
+      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+      input.getActionMap().put("down", new AbstractAction() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            if (commands == null || commands.size() == 0) {
+               return;
+            }
+            currentTranscriptIndex = Math.max(1, currentTranscriptIndex - 1);
+            input.setText(commands.get(commands.size() - (currentTranscriptIndex)));
+         }
+      });
+      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
+
 
       /*SwingUtilities.replaceUIActionMap(input, actionMap);*/
-   /*   SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);*/
+      /*   SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);*/
       input.setEditable(true);
-      history.setText("Please enter the file-name of the game you wish to play \n>");
+      history.setText("Please enter the file-name of the game you wish to play. It may take up to 2 minutes to load the game. \n>");
 
       setSize(600, 600);
       setLocation(100, 100);
@@ -71,7 +160,7 @@ public abstract class GamePlayer extends JFrame {
       center();
    }
 
-   void prepareSwing(){
+   void prepareSwing() {
       JPanel mainPanel = new JPanel();
       mainPanel.setLayout(new BorderLayout());
       this.getContentPane().add(mainPanel);
@@ -92,8 +181,35 @@ public abstract class GamePlayer extends JFrame {
       mainPanel.add(areaScrollPane, BorderLayout.CENTER);
       mainPanel.add(input, BorderLayout.SOUTH);
    }
+
    public GamePlayer(String progname) {
       super(progname);
+      integerStatistics = new HashMap<>();
+      stringStatistics = new HashMap<>();
+      integerStatistics.put("numCommands", 0);
+      startTime = LocalDateTime.now();
+      try {
+         questions = Files.readAllLines(Paths.get(QUESTION_FILE_NAME));
+         try {
+            int freq = Integer.parseInt(questions.get(0));
+            questions.remove(0);
+            questionFreq = freq;
+         }
+         catch (NumberFormatException ignored) {
+         }
+      }
+      catch (IOException e) {
+         questions = null;
+         e.printStackTrace();
+      }
+      try {
+         answerOptions = Files.readString(Paths.get(ANSWER_OPTIONS_FILE_NAME));
+      }
+      catch (IOException e) {
+         answerOptions = null;
+         e.printStackTrace();
+      }
+
       prepareSwing();
 
 

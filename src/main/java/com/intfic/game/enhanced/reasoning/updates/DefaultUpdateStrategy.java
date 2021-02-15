@@ -6,13 +6,14 @@ import com.intfic.game.enhanced.reasoning.KnowledgeBase;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
 import com.intfic.game.shared.Item;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
-public class DefaultUpdateStrategy implements UpdateStrategy {
+public class DefaultUpdateStrategy implements UpdateStrategy, Serializable {
 
 
    @Override

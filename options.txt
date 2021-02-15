@@ -1,0 +1,5 @@
+(1) Strongly disagree
+(2) Disagree
+(3) Neither disagree nor agree
+(4) Agree
+(5) Strongly agree

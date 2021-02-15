@@ -232,6 +232,9 @@ public class BasicGameEditor extends JFrame {
             switch (basicGameEditState) {
                case OPEN:
                   switch (cmd) {
+                     case "":
+                        output = "";
+                        break;
                      case "add room":
                         output = "What should the room be called?";
                         basicGameEditState = BasicGameEditState.ROOM_NAME;
@@ -417,10 +420,16 @@ public class BasicGameEditor extends JFrame {
                          "exactly %d argument(s).", numArgs);
                   }
                   else {
-                     boolean validItems = roomForAction.isValidItemIdentifierList(splitArgs);
+                     List<String> formattedItemNames = new ArrayList<>();
+                     String roomPrefix = Item.roomId(roomForAction.getName());
+                     for (String s : splitArgs) {
+                        String formatted = !s.startsWith(roomPrefix) ? roomPrefix + "." + s : s;
+                        formattedItemNames.add(formatted);
+                     }
+                     boolean validItems = roomForAction.isValidItemIdentifierList(formattedItemNames);
                      if (validItems) {
                         Map<String, Item> roomItems = roomForAction.getItems();
-                        instantiatedGameAction.setArguments(splitArgs.stream().map(roomItems::get).collect(Collectors.toList()));
+                        instantiatedGameAction.setArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the global state for this action " +
                             "e.g. \"room=First room,player=yellow\".";
                         basicGameEditState = BasicGameEditState.ACTION_PRE;
