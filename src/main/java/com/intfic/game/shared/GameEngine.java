@@ -33,6 +33,7 @@ public abstract class GameEngine implements Serializable {
       return currentRoom;
    }
 
+   public abstract boolean getWorldBoolean(String key);
 
    public boolean moveRoom(String roomName) {
       List<Room> matched = findRoom(roomName);

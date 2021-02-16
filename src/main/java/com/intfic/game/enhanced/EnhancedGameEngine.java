@@ -307,6 +307,19 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return new Justification(valid, reasoning);
    }
 
+   @Override
+   public boolean getWorldBoolean(String key) {
+      try {
+         return knowledgeBase.conditionSucceeds("!world::"+key);
+      }
+      catch (KnowledgeException e) {
+         FileErrorHandler.printExceptionToLog(e);
+         return false;
+      }
+      catch (MissingKnowledgeException e) {
+         return false;
+      }
+   }
 
    public static long numberOfItemsWithName(@NotNull Collection<Item> items, @NotNull String name){
       return items.stream().filter(i -> i.getName().equals(name)).count();

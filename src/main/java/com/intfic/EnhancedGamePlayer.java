@@ -74,9 +74,35 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       }
    }
 
-   private void answerQuestion(String cmd) {
-      addToQuestionTranscript(cmd);
-      incrementField("acceptedCommands");
+   private void askQuestion(){
+      if(questionsAsked < questionsInRow) {
+         String question = getNextQuestion();
+         if (question != null) {
+            questionsAsked++;
+            writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n" + answerOptions, history.getText());
+            isAskingQuestion = true;
+            addToQuestionTranscript(question);
+            addToQuestionTranscript(answerOptions);
+         }
+         else {
+            isAskingQuestion = false;
+            if(questionsAsked != 0) {
+               writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
+            }
+            questionsAsked = 0;
+            incrementField("numCommands");
+            incrementField("acceptedCommands");
+         }
+      }
+      else{
+         isAskingQuestion = false;
+         if(questionsAsked != 0) {
+            writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
+         }
+         questionsAsked = 0;
+         incrementField("numCommands");
+         incrementField("acceptedCommands");
+      }
    }
 
    public EnhancedGamePlayer() {
@@ -92,22 +118,17 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
                if (!isAskingQuestion) {
                   lastResult = processCmd(cmd);
                   writeToTerminal(cmd, history.getText(), lastResult);
-                  if (getIntStatistics("acceptedCommands") % questionFreq == (1)) {
-                     String question = getNextQuestion();
-                     if (question != null) {
-                        isAskingQuestion = true;
-                        addToQuestionTranscript(question);
-                        writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n" + answerOptions, history.getText());
-                        addToQuestionTranscript(answerOptions);
-                     }
+                  boolean timeToAskQuestion = (questionBreakpoints != null && breakpointHit(gameEngine)) ||
+                      (questionBreakpoints == null && getIntStatistics("acceptedCommands") % questionFreq == (questionFreq - 1));
+                  if (timeToAskQuestion) {
+                     askQuestion();
                   }
                }
                else {
                   // TODO: Implement questions
                   writeToTerminal(cmd, history.getText());
                   answerQuestion(cmd);
-                  isAskingQuestion = false;
-                  writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
+                  askQuestion();
                }
                if (getIntStatistics("numCommands") % 5 == 1) {
                   writeStatisticsAndTranscriptToFile();
@@ -181,6 +202,9 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    @Override
    public String processCmd(String cmd) {
       if (cmd.equals("quit")) {
+         if(currentQuestionIndex != questions.size()){
+            stringStatistics.put("errorCode","You haven't answered all questions. Contact the administrator to ask what to do with the remaining questions");
+         }
          writeStatisticsAndTranscriptToFile();
          System.exit(0);
       }
