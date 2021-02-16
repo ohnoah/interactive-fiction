@@ -12,7 +12,7 @@ put
 0
 pen, box
 TRUE|""
-world::random := 1
+world::putpen := TRUE 
 Great. You put the pen in the box in !world::room.
 
 add action
@@ -20,7 +20,7 @@ Room 1
 push
 ball
 "room_1.pen" IN room_1.box::contains|You haven't done what you need with the pen., "room_1.box" IN room_1.bucket::contains|You haven't done the bucket thing.
-world::room := "Room 2"
+world::room := "Room 2", world::pushball := TRUE
 Well done. Leaving room.
 
 add action

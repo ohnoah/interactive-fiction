@@ -76,7 +76,8 @@ public class ActionFormat implements Serializable {
          Pattern p = Pattern.compile("([(](?!\\?\\:)[\\w\\p{Punct}]*)[)]");
          AtomicInteger filler = new AtomicInteger();
          Matcher m = p.matcher(regExpr);
-         return m.replaceAll(match -> "[" + filler.getAndIncrement() + "]");
+         String replaced = m.replaceAll(match -> "[" + filler.getAndIncrement() + "]");
+         return replaced.replaceAll("[$^]", "");
       }
       else{
          return this.getVerb() + " [0]";

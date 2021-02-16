@@ -1,5 +1,6 @@
 package com.intfic;
 
+import com.intfic.game.shared.GameEngine;
 import com.intfic.game.shared.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -38,6 +39,22 @@ import javax.swing.KeyStroke;
  */
 
 public abstract class GamePlayer extends JFrame implements Serializable {
+   List<String> questionBreakpoints;
+   int currentQuestionBreakPoint = 0;
+
+   boolean breakpointHit(GameEngine gameEngine) {
+      if (questionBreakpoints != null) {
+         if (currentQuestionBreakPoint < questionBreakpoints.size()) {
+            String booleanKeyWorld = questionBreakpoints.get(currentQuestionBreakPoint);
+            boolean accepted = gameEngine.getWorldBoolean(booleanKeyWorld);
+            if (accepted) {
+               currentQuestionBreakPoint++;
+            }
+            return accepted;
+         }
+      }
+      return false;
+   }
 
 
    /* private GameEngine gameEngine = null;*/
@@ -52,11 +69,14 @@ public abstract class GamePlayer extends JFrame implements Serializable {
    List<String> transcript = new ArrayList<>();
    List<String> questionTranscript = new ArrayList<>();
    final String QUESTION_FILE_NAME = "questions.txt";
+   final String QUESTION_BREAKPOINT_FILE_NAME = "question-breakpoints.txt";
    final String ANSWER_OPTIONS_FILE_NAME = "options.txt";
    List<String> questions;
    int currentQuestionIndex = 0;
-   int currentTranscriptIndex = 1;
+   int currentCommandIndex = 1;
    int questionFreq = 5;
+   int questionsInRow = 2;
+   int questionsAsked = 0;
    String answerOptions;
    LocalDateTime startTime;
    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-HH-mm-ss");
@@ -122,7 +142,7 @@ public abstract class GamePlayer extends JFrame implements Serializable {
 
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       addWindowListener(new java.awt.event.WindowAdapter() {
-         public void windowClosed(java.awt.event.WindowEvent evt){
+         public void windowClosed(java.awt.event.WindowEvent evt) {
             writeStatisticsAndTranscriptToFile();
          }
       });
@@ -139,8 +159,8 @@ public abstract class GamePlayer extends JFrame implements Serializable {
             if (commands == null || commands.size() == 0) {
                return;
             }
-            currentTranscriptIndex = Math.min(commands.size(), currentTranscriptIndex + 1);
-            input.setText(commands.get(commands.size() - (currentTranscriptIndex)));
+            currentCommandIndex = Math.min(commands.size(), currentCommandIndex + 1);
+            input.setText(commands.get(commands.size() - (currentCommandIndex)));
          }
       });
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
@@ -150,8 +170,8 @@ public abstract class GamePlayer extends JFrame implements Serializable {
             if (commands == null || commands.size() == 0) {
                return;
             }
-            currentTranscriptIndex = Math.max(1, currentTranscriptIndex - 1);
-            input.setText(commands.get(commands.size() - (currentTranscriptIndex)));
+            currentCommandIndex = Math.max(1, currentCommandIndex - 1);
+            input.setText(commands.get(commands.size() - (currentCommandIndex)));
          }
       });
       keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
@@ -198,6 +218,9 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       startTime = LocalDateTime.now();
       try {
          questions = Files.readAllLines(Paths.get(QUESTION_FILE_NAME));
+         questionBreakpoints = Files.readAllLines(Paths.get(QUESTION_BREAKPOINT_FILE_NAME));
+         int minQuestionsInRow = (int) Math.ceil(((double) questions.size()) / ((double) questionBreakpoints.size()));
+         questionsInRow = Math.max(minQuestionsInRow, questionsInRow);
          try {
             int freq = Math.abs(Integer.parseInt(questions.get(0)));
             questions.remove(0);
@@ -208,6 +231,7 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       }
       catch (IOException e) {
          questions = null;
+         questionBreakpoints = null;
          e.printStackTrace();
       }
       try {
@@ -271,6 +295,11 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       Dimension screen = tk.getScreenSize();
       Dimension d = getSize();
       setLocation((screen.width - d.width) / 2, (screen.height - d.height) / 2);
+   }
+
+
+   void answerQuestion(String cmd) {
+      addToQuestionTranscript(cmd);
    }
 
    public abstract String processCmd(String cmd);
