@@ -75,8 +75,8 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       }
    }
 
-   private void askQuestion(){
-      if(questionsAsked < questionsInRow) {
+   private void askQuestion() {
+      if (questionsAsked < questionsInRow) {
          String question = getNextQuestion();
          if (question != null) {
             questionsAsked++;
@@ -87,7 +87,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          }
          else {
             isAskingQuestion = false;
-            if(questionsAsked != 0) {
+            if (questionsAsked != 0) {
                writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
             }
             questionsAsked = 0;
@@ -95,15 +95,28 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
             incrementField("acceptedCommands");
          }
       }
-      else{
+      else {
          isAskingQuestion = false;
-         if(questionsAsked != 0) {
+         if (questionsAsked != 0) {
             writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
          }
          questionsAsked = 0;
          incrementField("numCommands");
          incrementField("acceptedCommands");
       }
+   }
+
+   private boolean validateQuestionAnswer(String answer) {
+      answer = answer.trim();
+      try {
+         int intResponse = Integer.parseInt(answer);
+         if (intResponse >= 0 && intResponse <= 10) {
+            return true;
+         }
+      }
+      catch (NumberFormatException ignored) {
+      }
+      return false;
    }
 
    public EnhancedGamePlayer() {
@@ -128,9 +141,12 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
                else {
                   // TODO: Implement questions
                   writeToTerminal(cmd, history.getText());
-                  if(!cmd.trim().equals("")) {
+                  if (validateQuestionAnswer(cmd)) {
                      answerQuestion(cmd);
                      askQuestion();
+                  }
+                  else{
+                     writeToTerminal(cmd, history.getText(), "Invalid response. Write a number in the range 0 to 10 inclusive.");
                   }
                }
                if (getIntStatistics("numCommands") % 5 == 1) {
@@ -205,8 +221,8 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    @Override
    public String processCmd(String cmd) {
       if (cmd.equals("quit")) {
-         if(currentQuestionIndex != questions.size()){
-            stringStatistics.put("errorCode","You haven't answered all questions. Contact the administrator to ask what to do with the remaining questions");
+         if (currentQuestionIndex != questions.size()) {
+            stringStatistics.put("errorCode", "You haven't answered all questions. Contact the administrator to ask what to do with the remaining questions");
          }
          writeStatisticsAndTranscriptToFile();
          System.exit(0);

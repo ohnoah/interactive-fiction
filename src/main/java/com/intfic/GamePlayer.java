@@ -73,14 +73,12 @@ public abstract class GamePlayer extends JFrame implements Serializable {
    List<String> questionTranscript = new ArrayList<>();
    final String QUESTION_FILE_NAME = "questions.txt";
    final String QUESTION_BREAKPOINT_FILE_NAME = "question-breakpoints.txt";
-   final String ANSWER_OPTIONS_FILE_NAME = "options.txt";
    List<String> questions;
    int currentQuestionIndex = 0;
    int currentCommandIndex = 1;
    int questionFreq = 5;
    int questionsInRow = 2;
    int questionsAsked = 0;
-   String answerOptions;
    LocalDateTime startTime;
    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-HH-mm-ss");
 
@@ -244,13 +242,6 @@ public abstract class GamePlayer extends JFrame implements Serializable {
          questionBreakpoints = null;
          e.printStackTrace();
       }
-/*      try {
-         answerOptions = Files.readString(Paths.get(ANSWER_OPTIONS_FILE_NAME));
-      }
-      catch (IOException e) {
-         answerOptions = null;
-         e.printStackTrace();
-      }*/
 
       prepareSwing();
 
@@ -309,7 +300,7 @@ public abstract class GamePlayer extends JFrame implements Serializable {
 
 
    void answerQuestion(String cmd) {
-      addToQuestionTranscript(cmd);
+      addToQuestionTranscript("ANSWER:" + cmd);
    }
 
    public abstract String processCmd(String cmd);
