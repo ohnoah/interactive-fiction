@@ -80,10 +80,10 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          String question = getNextQuestion();
          if (question != null) {
             questionsAsked++;
-            writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n" + answerOptions, history.getText());
+            writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n"/* + answerOptions*/, history.getText());
             isAskingQuestion = true;
             addToQuestionTranscript(question);
-            addToQuestionTranscript(answerOptions);
+            /*addToQuestionTranscript(answerOptions);*/
          }
          else {
             isAskingQuestion = false;
@@ -217,14 +217,14 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       if (cmd.equals("help")) {
          return (gameEngine.getPossibleActionFormats().stream().map(ActionFormat::toString).collect(Collectors.joining(",")));
       }
-      try {
+/*      try {
          int i = Integer.parseInt(cmd);
          history.setTabSize(i);
          return "okay";
       }
       catch(NumberFormatException ignored){
 
-      }
+      }*/
       updateStatistics(cmd);
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
       Set<Item> possibleItems = gameEngine.possibleItems();
