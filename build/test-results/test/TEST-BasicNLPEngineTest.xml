@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="BasicNLPEngineTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2021-02-16T14:53:00" hostname="Noahs-MacBook-Pro.local" time="6.768">
+  <properties/>
+  <testcase name="findNounsFindsUnarySingleAdjective" classname="BasicNLPEngineTest" time="0.631"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="0.466"/>
+  <testcase name="parseItOtherActionSucceeds" classname="BasicNLPEngineTest" time="0.519"/>
+  <testcase name="parsePutSpaceNoun" classname="BasicNLPEngineTest" time="0.655"/>
+  <testcase name="findNounsFindsTernarySingleAdjective" classname="BasicNLPEngineTest" time="0.397"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="BasicNLPEngineTest" time="0.201"/>
+  <testcase name="findVerbFindsUnaryEat" classname="BasicNLPEngineTest" time="0.201"/>
+  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="BasicNLPEngineTest" time="0.439"/>
+  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="BasicNLPEngineTest" time="0.003"/>
+  <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="BasicNLPEngineTest" time="0.0"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="BasicNLPEngineTest" time="0.23"/>
+  <testcase name="findNounsWithNoValidNounFails" classname="BasicNLPEngineTest" time="0.218"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="BasicNLPEngineTest" time="0.418"/>
+  <testcase name="parseListenToRegex" classname="BasicNLPEngineTest" time="0.383"/>
+  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="BasicNLPEngineTest" time="0.19"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="BasicNLPEngineTest" time="0.404"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="BasicNLPEngineTest" time="0.428"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="BasicNLPEngineTest" time="0.404"/>
+  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="BasicNLPEngineTest" time="0.001"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="BasicNLPEngineTest" time="0.381"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="BasicNLPEngineTest" time="0.197"/>
+  <system-out><![CDATA[465567744
+2147483648
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

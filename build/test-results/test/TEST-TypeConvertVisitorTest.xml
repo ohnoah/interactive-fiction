@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TypeConvertVisitorTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2021-02-16T14:53:00" hostname="Noahs-MacBook-Pro.local" time="0.026">
+  <properties/>
+  <testcase name="validFalseBooleanSucceeds" classname="TypeConvertVisitorTest" time="0.005"/>
+  <testcase name="validIntegerDoubleSucceeds" classname="TypeConvertVisitorTest" time="0.004"/>
+  <testcase name="validDoubleListSucceeds" classname="TypeConvertVisitorTest" time="0.002"/>
+  <testcase name="validEmptyStringSucceeds" classname="TypeConvertVisitorTest" time="0.002"/>
+  <testcase name="validTrueBooleanSucceeds" classname="TypeConvertVisitorTest" time="0.001"/>
+  <testcase name="validDecimalDoubleSucceeds" classname="TypeConvertVisitorTest" time="0.001"/>
+  <testcase name="validStringSucceeds" classname="TypeConvertVisitorTest" time="0.001"/>
+  <testcase name="mixedListFails" classname="TypeConvertVisitorTest" time="0.002"/>
+  <testcase name="validStringListSucceeds" classname="TypeConvertVisitorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
