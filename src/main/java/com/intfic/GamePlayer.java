@@ -18,9 +18,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -183,7 +185,7 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       input.setEditable(true);
       history.setText("Please enter the file-name of the game you wish to play. It may take up to 2 minutes to load the game. \n>");
 
-      setSize(600, 600);
+      setSize(620, 620);
       setLocation(100, 100);
       setVisible(true);
       center();
@@ -200,7 +202,7 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       history.setEditable(false);
       history.setLineWrap(true);
       history.setWrapStyleWord(true);
-      history.setTabSize(35);
+      history.setTabSize(46);
       history.setFont(new Font("monospaced", Font.PLAIN, history.getFont().getSize()));
 
       // TODO: Replace with IntelliJ Implementation
@@ -220,7 +222,12 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       integerStatistics.put("numCommands", 0);
       startTime = LocalDateTime.now();
       try {
-         questions = Files.readAllLines(Paths.get(QUESTION_FILE_NAME));
+         String qs = Files.readString(Paths.get(QUESTION_FILE_NAME));
+         questions = new ArrayList<>(Arrays.asList(qs.split("(?m)^\\s*\\^$")));
+         if (questions.size() > 0 && Pattern.matches("\\s*", questions.get(questions.size() - 1))) {
+            questions.remove(questions.size() - 1);
+         }
+         /*questions = Files.readAllLines(Paths.get(QUESTION_FILE_NAME));*/
          questionBreakpoints = Files.readAllLines(Paths.get(QUESTION_BREAKPOINT_FILE_NAME));
          int minQuestionsInRow = (int) Math.ceil(((double) questions.size()) / ((double) questionBreakpoints.size()));
          questionsInRow = Math.max(minQuestionsInRow, questionsInRow);
@@ -237,13 +244,13 @@ public abstract class GamePlayer extends JFrame implements Serializable {
          questionBreakpoints = null;
          e.printStackTrace();
       }
-      try {
+/*      try {
          answerOptions = Files.readString(Paths.get(ANSWER_OPTIONS_FILE_NAME));
       }
       catch (IOException e) {
          answerOptions = null;
          e.printStackTrace();
-      }
+      }*/
 
       prepareSwing();
 

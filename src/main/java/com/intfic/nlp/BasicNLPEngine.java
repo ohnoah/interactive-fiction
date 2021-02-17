@@ -52,6 +52,8 @@ public class BasicNLPEngine {
       return Collections.singletonList(command);
    }
 
+
+
    private static String appendFirstNounAndAdjectives(Set<String> adjectives, String stringToSearch, ActionFormat actionToTake) throws JWNLException, FailedParseException {
       Dictionary d = null;
       d = Dictionary.getDefaultResourceInstance();
@@ -60,7 +62,7 @@ public class BasicNLPEngine {
       String noun;
       if (splitWords.length > 0) {
          noun = splitWords[splitWords.length - 1];
-         iwNoun = d.getIndexWord(POS.NOUN, noun);
+         iwNoun = d.lookupIndexWord(POS.NOUN, noun);
          if (iwNoun == null) {
             throw new FailedParseException("Expected last word to be a noun but was: " + noun);
          }
@@ -74,7 +76,7 @@ public class BasicNLPEngine {
             return noun;
          }
 /*         IndexWord iwNoun = null;
-         iwNoun = d.getIndexWord(POS.NOUN, word);
+         iwNoun = d.lookupIndexWord(POS.NOUN, word);
          if (iwNoun != null) {
 *//*            String lemma = iwNoun.getLemma();
             nouns.add(lemma.trim());*//*
@@ -84,7 +86,7 @@ public class BasicNLPEngine {
          }*/
          // not a noun
          IndexWord iwAdj = null;
-         iwAdj = d.getIndexWord(POS.ADJECTIVE, word);
+         iwAdj = d.lookupIndexWord(POS.ADJECTIVE, word);
          if (iwAdj != null) {
             adjectives.add(word.trim());
          }
@@ -140,7 +142,7 @@ public class BasicNLPEngine {
       String[] splitWords = rawCommand.split(" ");
       for (String word : splitWords) {
          IndexWord iw = null;
-         iw = d.getIndexWord(POS.VERB, word);
+         iw = d.lookupIndexWord(POS.VERB, word);
          if (iw == null) { // not a verb
             continue;
          }
@@ -157,7 +159,7 @@ public class BasicNLPEngine {
       try {
          Dictionary d = Dictionary.getDefaultResourceInstance();
 */
-/*         IndexWord iw = d.getIndexWord(POS.VERB, "LISTEN TO");
+/*         IndexWord iw = d.lookupIndexWord(POS.VERB, "LISTEN TO");
          System.out.println(iw.getKey());
          System.out.println(iw.getLemma());*//*
 
