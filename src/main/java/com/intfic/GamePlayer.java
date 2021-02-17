@@ -4,6 +4,7 @@ import com.intfic.game.shared.GameEngine;
 import com.intfic.game.shared.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -199,6 +200,8 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       history.setEditable(false);
       history.setLineWrap(true);
       history.setWrapStyleWord(true);
+      history.setTabSize(35);
+      history.setFont(new Font("monospaced", Font.PLAIN, history.getFont().getSize()));
 
       // TODO: Replace with IntelliJ Implementation
       JScrollPane areaScrollPane = new JScrollPane(history);
@@ -210,8 +213,8 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       mainPanel.add(input, BorderLayout.SOUTH);
    }
 
-   public GamePlayer(String progname) {
-      super(progname);
+   public GamePlayer(String progName) {
+      super(progName);
       integerStatistics = new HashMap<>();
       stringStatistics = new HashMap<>();
       integerStatistics.put("numCommands", 0);

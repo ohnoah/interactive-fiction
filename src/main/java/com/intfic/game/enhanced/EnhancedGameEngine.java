@@ -155,7 +155,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       List<String> itemIdentifiers = itemsToStrings(items, KnowledgeBase::getItemIdentifier);
       List<String> itemNames = itemsToStrings(items, EnhancedGameEngine::itemNameInUserSpace);
 
-      String newBooleanExpr = replacePlaceHolderArgsWithStrings(condition.getBooleanExpr(), itemIdentifiers, "_", "\"");
+      String newBooleanExpr = replacePlaceHolderArgsWithStrings(condition.getBooleanExpr(), itemIdentifiers, "_", "");
       String newFailureMessage = replacePlaceHolderArgsWithStrings(condition.getFailureMessage(), itemIdentifiers, itemNames, " ");
       /*newBooleanExpr = newBooleanExpr.replaceAll(KnowledgeRegex.loneFrameNameExpr, "\"$1\"");*/
       return new Condition(newBooleanExpr, newFailureMessage);

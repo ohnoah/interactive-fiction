@@ -5,6 +5,7 @@ import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.FileErrorHandler;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.Util;
+import com.intfic.nlp.BasicNLPEngine;
 import com.intfic.nlp.EnhancedNLPEngine;
 import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;
@@ -127,8 +128,10 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
                else {
                   // TODO: Implement questions
                   writeToTerminal(cmd, history.getText());
-                  answerQuestion(cmd);
-                  askQuestion();
+                  if(!cmd.trim().equals("")) {
+                     answerQuestion(cmd);
+                     askQuestion();
+                  }
                }
                if (getIntStatistics("numCommands") % 5 == 1) {
                   writeStatisticsAndTranscriptToFile();
@@ -140,7 +143,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
                   attemptToLoadGameEngine(cmd, history.getText());
                   if (gameEngine != null) {
                      try {
-                        EnhancedNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
+                        BasicNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
                      }
                      catch (FailedParseException ignored) {
                      }
@@ -214,13 +217,21 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       if (cmd.equals("help")) {
          return (gameEngine.getPossibleActionFormats().stream().map(ActionFormat::toString).collect(Collectors.joining(",")));
       }
+      try {
+         int i = Integer.parseInt(cmd);
+         history.setTabSize(i);
+         return "okay";
+      }
+      catch(NumberFormatException ignored){
+
+      }
       updateStatistics(cmd);
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
       Set<Item> possibleItems = gameEngine.possibleItems();
       List<InstantiatedGameAction> gameActions = null;
 
       try {
-         gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         gameActions = BasicNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
          if (gameActions.size() > 0) {
             it = gameActions.get(0).getIt();
          }
