@@ -3,10 +3,12 @@ package com.intfic.nlp;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
+import com.intfic.game.shared.Util;
 import edu.stanford.nlp.util.Pair;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
@@ -35,7 +37,7 @@ public class BasicNLPEngine {
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
       try {
-         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives);
+         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, possibleItems.stream().map(Item::getName).collect(Collectors.toSet()));
       }
       catch (JWNLException e) {
          throw new FailedParseException("Dictionary error on the back end. Try again.");
@@ -53,11 +55,11 @@ public class BasicNLPEngine {
    }
 
 
-
-   private static String appendFirstNounAndAdjectives(Set<String> adjectives, String stringToSearch, ActionFormat actionToTake) throws JWNLException, FailedParseException {
+   private static String appendFirstNounAndAdjectives(Set<String> adjectives, String stringToSearch,
+                                                      ActionFormat actionToTake, Set<String> possibleItemNames) throws JWNLException, FailedParseException {
       Dictionary d = null;
       d = Dictionary.getDefaultResourceInstance();
-      String[] splitWords = Arrays.stream(stringToSearch.split(" ")).map(s -> s.replaceAll("\\.|\\,|\\!", "")).toArray(String[]::new);
+      String[] splitWords = Arrays.stream(stringToSearch.split(" ")).map(s -> s.replaceAll("[.,!]", "")).toArray(String[]::new);
       IndexWord iwNoun = null;
       String noun;
       if (splitWords.length > 0) {
@@ -67,7 +69,7 @@ public class BasicNLPEngine {
             throw new FailedParseException("Expected last word to be a noun but was: " + noun);
          }
       }
-      else{
+      else {
          throw new FailedParseException("Empty string encountered when looking for noun and adjectives");
       }
       for (int i = splitWords.length - 2; i >= 0; i--) {
@@ -94,7 +96,8 @@ public class BasicNLPEngine {
       return noun;
    }
 
-   public static void findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake, List<String> nouns, List<Set<String>> adjectives) throws JWNLException, FailedParseException {
+   public static void findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake,
+                                             List<String> nouns, List<Set<String>> adjectives, Set<String> possibleItemNames) throws JWNLException, FailedParseException {
       // Either do a regex match for PUT IN
       if (actionToTake.isTernary()) {
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
@@ -104,7 +107,7 @@ public class BasicNLPEngine {
             for (int i = 1; i <= m.groupCount(); i++) {
                String matchingGroup = m.group(i);
                Set<String> currentAdjectives = new HashSet<>();
-               String noun = appendFirstNounAndAdjectives(currentAdjectives, matchingGroup, actionToTake);
+               String noun = appendFirstNounAndAdjectives(currentAdjectives, matchingGroup, actionToTake, possibleItemNames);
                nouns.add(noun);
                adjectives.add(currentAdjectives);
             }

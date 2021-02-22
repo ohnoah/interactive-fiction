@@ -1,5 +1,6 @@
 package com.intfic.game.shared;
 
+import com.intfic.game.enhanced.reasoning.ImplementedActionLogic;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,12 +71,13 @@ public abstract class GameEngine implements Serializable {
       this.worldRooms = new ArrayList<>();
       this.currentRoom = null;
       // very common
-      ActionFormat examine = new ActionFormat("examine");
+/*      ActionFormat examine = new ActionFormat("examine");
       ActionFormat push = new ActionFormat("push");
       ActionFormat take = new ActionFormat("take");
       ActionFormat pull = new ActionFormat("pull");
       ActionFormat drop = new ActionFormat("drop");
-      ActionFormat turn = new ActionFormat("turn");
+      ActionFormat turnOn = new ActionFormat("turn" ,"turn ([\\w\\s]+) on$");
+      ActionFormat turnOff = new ActionFormat("turn" ,"turn ([\\w\\s]+) off$");
       ActionFormat open = new ActionFormat("open");
       ActionFormat feel = new ActionFormat("feel");
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
@@ -95,10 +97,11 @@ public abstract class GameEngine implements Serializable {
       ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
       // Noah's own
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
-      ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
+      ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");*/
 
-      this.possibleActionFormats = List.of(examine, push, take, pull, drop, turn, open, feel, putIn,
-          putOn, eat, climb, drink, wave, /*fill,*/ wear, smell, listenTo, breakIt, burn, enter, search, unlockWith, remove, transfer);
+      this.possibleActionFormats = ImplementedActionLogic.defaultActionFormats;
+/*      this.possibleActionFormats = List.of(examine, push, take, pull, drop, turnOn, turnOff, open, feel, putIn,
+          putOn, eat, climb, drink, wave, *//*fill,*//* wear, smell, listenTo, breakIt, burn, enter, search, unlockWith, remove, transfer);*/
    }
 
    public abstract Set<Item> possibleItems();

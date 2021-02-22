@@ -777,12 +777,12 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction putOnGameAction = new InstantiatedGameAction(turn, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "box")));
       Justification justification = enhancedGameEngine.progressStory(putOnGameAction);
       String message = justification.getReasoning();
-      assertEquals("You turn the box. Nothing important happens.", message);
+      assertEquals("You turn on the box. Nothing important happens.", message);
       assertTrue(justification.isAccepted());
    }
 
    @Test
-   public void cantTurnContainedItem() throws KnowledgeException {
+   public void cantTurnOnContainedItem() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
       ActionFormat turn = enhancedGameEngine.findAction("turn").get(0);
       ActionFormat putIn = enhancedGameEngine.findAction("put").get(0);
@@ -790,10 +790,10 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction putInGameAction = new InstantiatedGameAction(putIn, List.of(ball,
           TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "box")));
       InstantiatedGameAction turnGameAction = new InstantiatedGameAction(turn, List.of(ball));
-      Justification justification1 = enhancedGameEngine.progressStory(putInGameAction);
+      enhancedGameEngine.progressStory(putInGameAction);
       Justification justification2 = enhancedGameEngine.progressStory(turnGameAction);
       String message = justification2.getReasoning();
-      assertEquals("You can't turn the ball because it is inside of something else.", message);
+      assertEquals("You can't turn on the ball because it is inside of something else.", message);
       assertFalse(justification2.isAccepted());
    }
 

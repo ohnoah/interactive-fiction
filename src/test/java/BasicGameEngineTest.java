@@ -75,27 +75,40 @@ public class BasicGameEngineTest {
 
 
       // Create key for action
-      InstantiatedGameAction instantiatedGameAction2 = new InstantiatedGameAction(new ActionFormat("eat"), List.of(TestUtil.findItem(room2Items, "elephant")));
+      InstantiatedGameAction eatAction = new InstantiatedGameAction(
+          new ActionFormat("eat"), List.of(TestUtil.findItem(room2Items, "elephant")));
       // Create value for action
-      Map<String, String> preCond2 = new HashMap<>();
-      preCond2.put("room", "room2");
-      BasicGameDesignAction basicGameDesignAction2 = new BasicGameDesignAction(preCond2, "You did action 2", new HashMap<>());
+      Map<String, String> eatPrecond = new HashMap<>();
+      eatPrecond.put("room", "room2");
+      BasicGameDesignAction designEat = new BasicGameDesignAction(eatPrecond,
+          "You did action 2", new HashMap<>());
+
+      InstantiatedGameAction enterAction = new InstantiatedGameAction(
+          new ActionFormat("enter"), List.of(TestUtil.findItem(room1Items, "banana")));
+      // Create value for action
+      Map<String, String> enterPrecond = new HashMap<>();
+      enterPrecond.put("random", "randomina");
+      BasicGameDesignAction designEnter = new BasicGameDesignAction(enterPrecond,
+          "You did action 3", "You failed with a custom fail message.", new HashMap<>());
+
 
       basicGameEngine.addAction(room, instantiatedGameAction1, basicGameDesignAction1);
-      basicGameEngine.addAction(room2, instantiatedGameAction2, basicGameDesignAction2);
+      basicGameEngine.addAction(room2, eatAction, designEat);
+      basicGameEngine.addAction(room, enterAction, designEnter);
       return basicGameEngine;
 
 
    }
 
    @Test
-   public void errorMessageChangesAppropriately() throws KnowledgeException, MissingKnowledgeException {
+   public void errorMessageChangesAppropriately(){
       BasicGameEngine basicGameEngine = twoRoomTwoActions();
       ActionFormat burnActionFormat = basicGameEngine.findAction("burn").get(0);
       InstantiatedGameAction burnGameAction = new InstantiatedGameAction(burnActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
       Justification justificationOpen = basicGameEngine.progressStory(burnGameAction);
 
-      assertEquals("You can't do that in this place.", justificationOpen.getReasoning());
+      assertEquals("You can't do that.", justificationOpen.getReasoning());
+      assertFalse(justificationOpen.isAccepted());
 
       ActionFormat openActionFormat = basicGameEngine.findAction("open").get(0);
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
@@ -107,7 +120,20 @@ public class BasicGameEngineTest {
       Justification justificationClimb = basicGameEngine.progressStory(climbAction);
 
       assertEquals("You can't do that, dummy.", justificationClimb.getReasoning());
+      assertFalse(justificationClimb.isAccepted());
    }
+
+   @Test
+   public void designedErrorMessage(){
+      BasicGameEngine basicGameEngine = twoRoomTwoActions();
+      ActionFormat enterAF = basicGameEngine.findAction("enter").get(0);
+      InstantiatedGameAction enterAction = new InstantiatedGameAction(enterAF, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
+      Justification justEnter = basicGameEngine.progressStory(enterAction);
+
+      assertFalse(justEnter.isAccepted());
+      assertEquals("You failed with a custom fail message.", justEnter.getReasoning());
+   }
+
 
 
    @Test

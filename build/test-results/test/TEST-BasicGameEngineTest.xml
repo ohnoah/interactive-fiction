@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="BasicGameEngineTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2021-02-22T09:10:54" hostname="Noahs-MacBook-Pro.local" time="0.017">
+<testsuite name="BasicGameEngineTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2021-02-22T12:10:07" hostname="Noahs-MacBook-Pro.local" time="0.018">
   <properties/>
   <testcase name="validatePreconditionAfterProgressStory" classname="BasicGameEngineTest" time="0.009"/>
-  <testcase name="globalStateProgressStoryTwoRoomsTwoActions" classname="BasicGameEngineTest" time="0.002"/>
-  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="BasicGameEngineTest" time="0.001"/>
-  <testcase name="errorMessageChangesAppropriately" classname="BasicGameEngineTest" time="0.002"/>
+  <testcase name="designedErrorMessage" classname="BasicGameEngineTest" time="0.002"/>
+  <testcase name="globalStateProgressStoryTwoRoomsTwoActions" classname="BasicGameEngineTest" time="0.001"/>
+  <testcase name="messagesProgressStoryTwoRoomsTwoActions" classname="BasicGameEngineTest" time="0.002"/>
+  <testcase name="errorMessageChangesAppropriately" classname="BasicGameEngineTest" time="0.001"/>
   <testcase name="messageAfterProgressStory" classname="BasicGameEngineTest" time="0.001"/>
-  <testcase name="possibleItemNamesWorks" classname="BasicGameEngineTest" time="0.002"/>
+  <testcase name="possibleItemNamesWorks" classname="BasicGameEngineTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

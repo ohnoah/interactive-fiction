@@ -250,6 +250,7 @@ public class EnhancedGameEditor extends JFrame {
    private List<String> editGame(String cmd, String sofar) {
       this.numEdits++;
       String output = null;
+      cmd = cmd.replace("\\n", "\n");
       switch (cmd) {
          case "":
             output = "";
@@ -370,12 +371,13 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.OPEN;
                         while (myReader.hasNextLine()) {
                            String line = myReader.nextLine().trim();
-                           String runningSofar = history.getText();
-                           res = editGame(line, runningSofar);
-                           writeToTerminal(res.get(0), res.get(1), res.get(2));
+                           if(!((line.equals("") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
+                              String runningSofar = history.getText();
+                              res = editGame(line, runningSofar);
+                              writeToTerminal(res.get(0), res.get(1), res.get(2));
+                           }
                         }
                         myReader.close();
-                        enhancedGameEditState = EnhancedGameEditState.OPEN;
                         return res;
                      }
                      catch (FileNotFoundException e) {

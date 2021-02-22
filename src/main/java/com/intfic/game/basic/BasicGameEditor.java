@@ -10,6 +10,8 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,13 +107,15 @@ public class BasicGameEditor extends JFrame {
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText().trim();
             String sofar = history.getText();
-            // TODO: If game editing mode, process numbered CLI
+            List<String> res = editGame(cmd, sofar);
+            String cmdRet = res.get(0);
+            String sofarRet = res.get(1);
+            String outputRet = res.get(2);
+            writeToTerminal(cmdRet, sofarRet, outputRet);
+/*            String cmd = input.getText().trim();
+            String sofar = history.getText();*/
             // Maybe use a variable indicating initialized progress
-/*            if (playingGame) {
-               writeToTerminal(cmd, sofar, processCmd(cmd));
-            } else {*/
-            editGame(cmd, sofar);
-            /*            }*/
+            /*editGame(cmd, sofar);*/
          }
       });
       actionMap.put("backspace", new AbstractAction() {
@@ -127,7 +132,12 @@ public class BasicGameEditor extends JFrame {
    }
 
    private void writeToTerminal(String cmd, String sofar, String result) {
-      history.setText(sofar + cmd + "\n" + result + "\n> ");
+      if(cmd.length() > 40){
+         history.setText(sofar + cmd + "\n \n" + result + "\n> ");
+      }
+      else {
+         history.setText(sofar + cmd + "\n" + result + "\n> ");
+      }
       input.setText("");
    }
 
@@ -156,7 +166,6 @@ public class BasicGameEditor extends JFrame {
       effectAction = null;
       actionFormats = null;
    }
-
 
 
    public static <T> boolean hasDuplicate(Iterable<T> all) {
@@ -199,8 +208,9 @@ public class BasicGameEditor extends JFrame {
 
    // TODO: The behaviour here will depend on the implementation of com.interactivefiction.GameEngine
    // TODO: Current idea just extend com.interactivefiction.game.basic.BasicGameDesignAction and check instanceof in switch
-   private void editGame(String cmd, String sofar) {
+   private List<String> editGame(String cmd, String sofar) {
       String output = null;
+      cmd = cmd.replace("\\n", "\n");
       switch (cmd) {
          case "quit":
             if (!saved) {
@@ -210,6 +220,11 @@ public class BasicGameEditor extends JFrame {
             else {
                System.exit(0);
             }
+            break;
+         case "clear":
+            output = "Cleared your status.";
+            gameEngine = new BasicGameEngine();
+            resetAdditions();
             break;
          case "list":
             output = gameEngine.getPossibleActionFormats().stream()
@@ -242,6 +257,10 @@ public class BasicGameEditor extends JFrame {
                      case "add action":
                         output = "In what room?";
                         basicGameEditState = BasicGameEditState.ACTION_ROOM;
+                        break;
+                     case "load":
+                        output = "Select a text file with commands to build a new game.";
+                        basicGameEditState = BasicGameEditState.LOAD;
                         break;
                      case "save":
                         output = "Saving your game. What file-name do you want it to have?";
@@ -277,9 +296,40 @@ public class BasicGameEditor extends JFrame {
                      i.printStackTrace();
                   }
                   break;
+               case LOAD:
+                  if (cmd.length() > 0) {
+                     String fn = cmd;
+                     fn = fn.endsWith(".txt") ? fn : fn + ".txt";
+                     List<String> res = List.of("load", ">", "");
+                     try {
+                        File myObj = new File(fn);
+                        Scanner myReader = new Scanner(myObj);
+                        basicGameEditState = BasicGameEditState.OPEN;
+                        while (myReader.hasNextLine()) {
+                           String line = myReader.nextLine().trim();
+                           if (!((line.equals("") && basicGameEditState.equals(BasicGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
+                              String runningSofar = history.getText();
+                              res = editGame(line, runningSofar);
+                              writeToTerminal(res.get(0), res.get(1), res.get(2));
+                           }
+                        }
+                        myReader.close();
+                        return res;
+                     }
+                     catch (FileNotFoundException e) {
+                        System.err.println("Couldn't open the load file");
+                        e.printStackTrace();
+                        output = "Try again. Invalid File name.";
+                     }
+                  }
+                  else {
+                     output = "Invalid file name";
+                  }
+                  break;
                case START_MESSAGE:
                   gameEngine.setStartMessage(cmd);
-                  output = String.format("Setting your start message %s", cmd);
+                  output = String.format("Setting your start message as: \n %s", cmd);
+                  basicGameEditState = BasicGameEditState.OPEN;
                   break;
                case ACTIONFORMAT:
                   if (cmd.contains(",")) {
@@ -466,11 +516,22 @@ public class BasicGameEditor extends JFrame {
                   }
                   break;
                case ACTION_MSG:
-                  effectAction.setMessage(cmd);
+                  effectAction.setSuccessMessage(cmd);
+                  output = "Great. What message should show if the preconditions are not true? " +
+                      "Press enter to get the default, dynamic error message";
+                  basicGameEditState = BasicGameEditState.ACTION_FAIL_MSG;
+                  break;
+               case ACTION_FAIL_MSG:
+                  if(cmd.equals("")){
+                     effectAction.setFailureMessage(null);
+                  }
+                  else{
+                     effectAction.setFailureMessage(cmd);
+                  }
                   gameEngine.addAction(roomForAction, instantiatedGameAction, effectAction);
+                  basicGameEditState = BasicGameEditState.OPEN;
                   resetAdditions();
                   output = "Great. Adding your new action to the game";
-                  basicGameEditState = BasicGameEditState.OPEN;
                   break;
                default:
                   output = "Invalid game-developing state. Consult the game developer.";
@@ -479,7 +540,8 @@ public class BasicGameEditor extends JFrame {
       }
 
 
-      writeToTerminal(cmd, sofar, output);
+      return List.of(cmd, sofar, output);
+      /*      writeToTerminal(cmd, sofar, output);*/
 
    }
 
