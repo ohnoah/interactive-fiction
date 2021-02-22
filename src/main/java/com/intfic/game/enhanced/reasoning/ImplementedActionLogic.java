@@ -21,9 +21,41 @@ public class ImplementedActionLogic implements Serializable {
    public static Map<ActionFormat, String> implementedSuccessMessageMap;
    public static Map<ActionFormat, List<KnowledgeUpdate>> implementedKnowledgeUpdateMap;
    public static List<GenericFrame> defaultGenericFrames;
+   public static List<ActionFormat> defaultActionFormats;
 
 
    static {
+      ActionFormat examine = new ActionFormat("examine");
+      ActionFormat push = new ActionFormat("push");
+      ActionFormat take = new ActionFormat("take");
+      ActionFormat pull = new ActionFormat("pull");
+      ActionFormat drop = new ActionFormat("drop");
+      ActionFormat turnOn = new ActionFormat("turn", "turn ([\\w\\s]+) on$");
+      ActionFormat turnOff = new ActionFormat("turn", "turn ([\\w\\s]+) off$");
+      ActionFormat open = new ActionFormat("open");
+      ActionFormat feel = new ActionFormat("feel");
+      ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
+      ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
+      // you could also try
+      ActionFormat eat = new ActionFormat("eat");
+      ActionFormat climb = new ActionFormat("climb");
+      ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");
+      ActionFormat wave = new ActionFormat("wave");
+      ActionFormat wear = new ActionFormat("wear");
+      ActionFormat smell = new ActionFormat("smell");
+      ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
+      ActionFormat breakIt = new ActionFormat("break");
+      ActionFormat burn = new ActionFormat("burn");
+      ActionFormat enter = new ActionFormat("enter");
+      ActionFormat leave = new ActionFormat("leave");
+      ActionFormat search = new ActionFormat("search");
+      ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
+      // Noah's own
+      ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
+      ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
+
+      defaultActionFormats = List.of(examine, push, take, pull, drop, turnOn, turnOff, open, feel, putIn,
+          putOn, eat, climb, drink, wave, /*fill,*/ wear, smell, listenTo, breakIt, burn, enter, leave, search, unlockWith, remove, transfer);
       implementedConditionsMap = new HashMap<>();
       implementedSuccessMessageMap = new HashMap<>();
       implementedKnowledgeUpdateMap = new HashMap<>();
@@ -32,7 +64,7 @@ public class ImplementedActionLogic implements Serializable {
       --------
        */
       {
-         ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
+         /*ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");*/
          Condition putConditionNotContained0 = new Condition("NOT !arg0::isContained",
              "The !arg0 is already inside of something.");
          Condition putConditionIsContainer = new Condition("!arg1::isContainer",
@@ -69,7 +101,7 @@ public class ImplementedActionLogic implements Serializable {
    --------
     */
       {
-         ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");
+         /*ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");*/
          Condition putConditionNotContained = new Condition("NOT !arg0::isContained",
              "You can't put the !arg0 on !arg1 because !arg0 is inside of something.");
          Condition putConditionArg0SolidOrLiquid = new Condition("!arg0::state = \"solid\" OR !arg0::state = \"liquid\"",
@@ -87,7 +119,7 @@ public class ImplementedActionLogic implements Serializable {
        */
 
       {
-         ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
+         /*      ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");*/
 
          Condition removeConditionIsContained0 = new Condition("!arg0::isContained",
              "The !arg0 is not inside of anything.");
@@ -120,7 +152,7 @@ public class ImplementedActionLogic implements Serializable {
       --------
        */
       {
-         ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
+         /*ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");*/
          Condition transferConditionIsContainer = new Condition("!arg2::isContainer",
              "You can't do that because !arg2 is not a container.");
          Condition transferConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
@@ -156,7 +188,7 @@ public class ImplementedActionLogic implements Serializable {
        */
 
       {
-         ActionFormat take = new ActionFormat("take", null);
+         /*ActionFormat take = new ActionFormat("take", null);*/
          Condition takeConditionTaken = new Condition("NOT (\"!arg0\" IN world::inventory)",
              "The !arg0 is already on your person.");
          Condition takeConditionSolid = new Condition("!arg0::state = \"solid\"",
@@ -183,7 +215,7 @@ public class ImplementedActionLogic implements Serializable {
    --------
    */
       {
-         ActionFormat push = new ActionFormat("push", null);
+         /*ActionFormat push = new ActionFormat("push", null);*/
          Condition pushConditionSolid = new Condition("!arg0::state = \"solid\"",
              "You can't push the !arg0 because it's not solid.");
          Condition pushConditionNotContained = new Condition("NOT !arg0::isContained",
@@ -197,7 +229,7 @@ public class ImplementedActionLogic implements Serializable {
    --------
    */
       {
-         ActionFormat pull = new ActionFormat("pull", null);
+         /* ActionFormat pull = new ActionFormat("pull", null);*/
          Condition pullConditionSolid = new Condition("!arg0::state = \"solid\"",
              "You can't pull the !arg0 because it's not solid.");
          Condition pullConditionNotContained = new Condition("NOT !arg0::isContained",
@@ -212,7 +244,7 @@ public class ImplementedActionLogic implements Serializable {
    --------
     */
       {
-         ActionFormat drop = new ActionFormat("drop", null);
+         /*ActionFormat drop = new ActionFormat("drop", null);*/
          Condition dropConditionTaken = new Condition("\"!arg0\" IN world::inventory",
              "You can't drop the !arg0 because you haven't picked it up.");
          implementedConditionsMap.put(drop, List.of(dropConditionTaken));
@@ -226,24 +258,38 @@ public class ImplementedActionLogic implements Serializable {
          }
       }
 
-   /* TURN
+   /* TURN ON
    --------
     */
       {
-         ActionFormat turn = new ActionFormat("turn", null);
+         /*ActionFormat turn = new ActionFormat("turn", null);*/
          Condition turnConditionNotContained = new Condition("NOT !arg0::isContained",
-             "You can't turn the !arg0 because it is inside of something else.");
+             "You can't turn on the !arg0 because it is inside of something else.");
          Condition turnConditionSolid = new Condition("!arg0::state = \"solid\"",
-             "You can't turn the !arg0 because it's not solid.");
-         implementedConditionsMap.put(turn, List.of(turnConditionNotContained, turnConditionSolid));
-         implementedSuccessMessageMap.put(turn, "You turn the !arg0.");
+             "You can't turn on the !arg0 because it's not solid.");
+         implementedConditionsMap.put(turnOn, List.of(turnConditionNotContained, turnConditionSolid));
+         implementedSuccessMessageMap.put(turnOn, "You turn on the !arg0.");
+      }
+
+
+         /* TURN OFF
+   --------
+    */
+      {
+         /*ActionFormat turn = new ActionFormat("turn", null);*/
+         Condition turnConditionNotContained = new Condition("NOT !arg0::isContained",
+             "You can't turn off the !arg0 because it is inside of something else.");
+         Condition turnConditionSolid = new Condition("!arg0::state = \"solid\"",
+             "You can't turn off the !arg0 because it's not solid.");
+         implementedConditionsMap.put(turnOff, List.of(turnConditionNotContained, turnConditionSolid));
+         implementedSuccessMessageMap.put(turnOff, "You turn off the !arg0.");
       }
 
    /* search
    --------
     */
       {
-         ActionFormat search = new ActionFormat("search", null);
+         /*ActionFormat search = new ActionFormat("search", null);*/
          Condition searchConditionNotContained = new Condition("NOT !arg0::isContained",
              "You can't search the !arg0 because it is inside of something else.");
          Condition searchConditionSolid = new Condition("!arg0::state = \"solid\"",
@@ -256,7 +302,7 @@ public class ImplementedActionLogic implements Serializable {
       --------
        */
       {
-         ActionFormat examine = new ActionFormat("examine", null);
+         /*ActionFormat examine = new ActionFormat("examine", null);*/
          Condition examineConditionNotContained = new Condition("NOT !arg0::isContained",
              "You can't examine the !arg0 because it is inside of something else.");
          implementedConditionsMap.put(examine, List.of(examineConditionNotContained));
@@ -267,7 +313,7 @@ public class ImplementedActionLogic implements Serializable {
       --------
        */
       {
-         ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");
+         /*ActionFormat listenTo = new ActionFormat("listen", "listen to ([\\w\\s]+)$");*/
          implementedConditionsMap.put(listenTo, List.of());
          implementedSuccessMessageMap.put(listenTo, "You listen to the !arg0.");
       }
@@ -277,7 +323,7 @@ public class ImplementedActionLogic implements Serializable {
       --------
        */
       {
-         ActionFormat eat = new ActionFormat("eat");
+         /*ActionFormat eat = new ActionFormat("eat");*/
          Condition eatConditionEdible = new Condition("!arg0::isEdible",
              "You can't do that because the !arg0 is not edible.");
          Condition eatConditionNotContained = new Condition("NOT !arg0::isContained",
@@ -297,7 +343,7 @@ public class ImplementedActionLogic implements Serializable {
       --------
        */
       {
-         ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");
+         /*ActionFormat drink = new ActionFormat("drink", "drink ([\\w\\s]+) from ([\\w\\s]+)$");*/
          Condition drinkConditionNotContained = new Condition("NOT !arg1::isContained",
              "The !arg1 is inside of something so you can't drink the !arg0 from it.");
          Condition drinkInContainer = new Condition("!arg1::isContainer AND \"!arg0\" IN !arg1::contains",

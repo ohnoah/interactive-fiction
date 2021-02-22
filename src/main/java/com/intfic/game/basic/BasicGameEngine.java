@@ -20,7 +20,7 @@ public class BasicGameEngine extends GameEngine implements Serializable {
    private Map<String, String> worldState;
    // room name maps
    private Map<Room, Map<InstantiatedGameAction, BasicGameDesignAction>> designerActions;
-   private static final String DEFAULT_ERROR_MESSAGE = "You can't do that in this place.";
+   private static final String DEFAULT_ERROR_MESSAGE = "You can't do that.";
 
    public void setCurrentRoom(Room currentRoom) {
       this.currentRoom = currentRoom;
@@ -97,9 +97,11 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
       boolean preCondSatisfied = validatePrecondition(wantedGlobalState);
       if (!preCondSatisfied) {
-         return new Justification(false, "You are not allowed do that yet.");
+         String errorMessage = designAction.getFailureMessage() != null ?
+             designAction.getFailureMessage() : "You are not allowed to do that yet.";
+         return new Justification(false, errorMessage);
       }
-      String message = designAction.getMessage();
+      String message = designAction.getSuccessMessage();
 
       updateWorldState(designAction);
 

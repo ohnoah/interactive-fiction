@@ -16,7 +16,7 @@ public abstract class NLPEngine {
    // Returns a list of synonym-replaced String item names for "nouns" corresponding in-game items
    // If fails, throw a com.interactivefiction.nlp.FailedParseException. This can be either because adjectives don't match
    // or because there are no in-game items with that name.
-   // TODO: To support multiple same-name items, need to change this to longest match and potentially return errors
+   // TODO: To support multiple same-name items, need to change this to longest match and return list of list
    public static List<Item> findMatchingGameItems(List<String> nouns, List<Set<String>> adjectives,
                                                   Set<Item> possibleItems) throws FailedParseException {
       List<Item> matchingGameItems = new ArrayList<>();
@@ -33,7 +33,7 @@ public abstract class NLPEngine {
                else {
                   String missingItems = adjectives.get(i).stream()
                       .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
-                  throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
+                  throw new FailedParseException(String.format("I couldn't find a %s %s in your environment.", missingItems, noun));
                }
             }
          }
@@ -46,7 +46,7 @@ public abstract class NLPEngine {
                else {
                   String missingItems = adjectives.get(i).stream()
                       .filter(s -> !item.getAdjectives().contains(s)).sorted().collect(Collectors.joining(","));
-                  throw new FailedParseException(String.format("There is no %s %s in your environment.", missingItems, noun));
+                  throw new FailedParseException(String.format("I couldn't find a %s %s in your environment.", missingItems, noun));
                }
             }
          }

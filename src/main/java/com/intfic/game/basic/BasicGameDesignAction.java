@@ -8,13 +8,32 @@ public class BasicGameDesignAction implements Serializable {
    private static final long serialVersionUID = -4706216167250700984L;
 
    private Map<String, String> preconditions;
-   private String message;
+   private String successMessage;
    private Map<String, String> updateState;
 
-   public BasicGameDesignAction(Map<String, String> preconditions, String message, Map<String, String> updateState) {
+   public String getFailureMessage() {
+      return failureMessage;
+   }
+
+   public void setFailureMessage(String failureMessage) {
+      this.failureMessage = failureMessage;
+   }
+
+   private String failureMessage;
+
+   public BasicGameDesignAction(Map<String, String> preconditions, String successMessage, Map<String, String> updateState) {
       this.preconditions = preconditions;
-      this.message = message;
+      this.successMessage = successMessage;
       this.updateState = updateState;
+      this.failureMessage = null;
+   }
+
+
+   public BasicGameDesignAction(Map<String, String> preconditions, String successMessage, String failureMessage, Map<String, String> updateState) {
+      this.preconditions = preconditions;
+      this.successMessage = successMessage;
+      this.updateState = updateState;
+      this.failureMessage = failureMessage;
    }
 
    public BasicGameDesignAction() {
@@ -41,11 +60,11 @@ public class BasicGameDesignAction implements Serializable {
    }
 
 
-   public String getMessage() {
-      return message;
+   public String getSuccessMessage() {
+      return successMessage;
    }
 
-   public void setMessage(String message) {
-      this.message = message;
+   public void setSuccessMessage(String successMessage) {
+      this.successMessage = successMessage;
    }
 }
