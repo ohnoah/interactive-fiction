@@ -12,7 +12,6 @@ import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.updates.UpdateType;
 import com.intfic.game.shared.*;
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +76,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       // if it returns a healthy String message, prepend that and let the GameDesignAction continue
       /*Set<String> possibleItemNames = this.possibleItemNames();*/
       Set<Item> possibleItems = this.possibleItems();
-      for (Item argument : gameAction.getArguments()) {
+      if (gameAction.getActualArguments() == null) {
+         return new Justification(false, "Arguments are not initialized. Contact game admin.");
+      }
+      for (Item argument : gameAction.getActualArguments()) {
          if (!possibleItems.contains(argument)) {
             return new Justification(false, String.format("There is no %s in your environment.", itemNameInUserSpace(argument)));
          }
@@ -88,7 +90,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
 
       // dont allow purposefully designed not-allowed actions
       if (enhancedGameDesignAction != null) {
-         Justification designedJustification = validatePreconditions(enhancedGameDesignAction.getPreconditions(), gameAction.getArguments());
+         Justification designedJustification = validatePreconditions(enhancedGameDesignAction.getPreconditions(), gameAction.getActualArguments());
          if (!designedJustification.isAccepted()) {
             return new Justification(false, designedJustification.getReasoning());
          }
@@ -376,14 +378,14 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       List<Condition> designConditions = designAction.getPreconditions();
       List<KnowledgeUpdate> designUpdates = designAction.getUpdateState();
       String placeholderMessage = designAction.getMessage();
-      return conditionallyPerformAction(designConditions, instGameAction.getArguments(), placeholderMessage, designUpdates);
+      return conditionallyPerformAction(designConditions, instGameAction.getActualArguments(), placeholderMessage, designUpdates);
    }
 
 
    protected Justification performImplementedLogic(@NotNull InstantiatedGameAction gameAction) {
       ActionFormat actionFormat = gameAction.getAbstractActionFormat();
       // If action is implemented
-      List<Item> nouns = gameAction.getArguments();
+      List<Item> nouns = gameAction.getActualArguments();
       Justification justification;
       if (ImplementedActionLogic.implementedConditionsMap.containsKey(actionFormat)) {
          List<Condition> conditions = ImplementedActionLogic.implementedConditionsMap.get(actionFormat);

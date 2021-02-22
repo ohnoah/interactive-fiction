@@ -42,7 +42,7 @@ public class BasicNLPEngine {
       catch (JWNLException e) {
          throw new FailedParseException("Dictionary error on the back end. Try again.");
       }
-      List<Item> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
+      List<List<Item>> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
 
       InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
       // Use that to look for a VB and a NN and populate a Command
@@ -63,9 +63,9 @@ public class BasicNLPEngine {
       IndexWord iwNoun = null;
       String noun;
       if (splitWords.length > 0) {
-         noun = splitWords[splitWords.length - 1];
+         noun = splitWords[splitWords.length - 1].trim().toLowerCase();
          iwNoun = d.lookupIndexWord(POS.NOUN, noun);
-         if (iwNoun == null) {
+         if (!possibleItemNames.contains(noun) && iwNoun == null) {
             throw new FailedParseException("Expected last word to be a noun but was: " + noun);
          }
       }
@@ -119,7 +119,7 @@ public class BasicNLPEngine {
       // Or just find the noun if its a unary
       else {
          Set<String> currentAdjectives = new HashSet<>();
-         String noun = appendFirstNounAndAdjectives(currentAdjectives, rawCommand, actionToTake);
+         String noun = appendFirstNounAndAdjectives(currentAdjectives, rawCommand, actionToTake, possibleItemNames);
          nouns.add(noun);
          adjectives.add(currentAdjectives);
          if (nouns.size() != 1) { // no nullary operator allowed
@@ -184,7 +184,7 @@ public class BasicNLPEngine {
       com.interactivefiction.game.shared.InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
    }
 
-   public static List<Item> findMatchingGameItems(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+   public static List<List<Item>> findMatchingGameItems(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
       return NLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
    }
 }

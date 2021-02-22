@@ -151,7 +151,7 @@ public class EnhancedNLPEngine {
             findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
 
             //TODO: do the wordnet stuff here for nouns
-            List<Item> gameItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
+            List<List<Item>> gameItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
 
 
             InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
@@ -173,9 +173,6 @@ public class EnhancedNLPEngine {
       // FAIL flag if command is fake
       return commands;
    }
-
-
-
 
 
    private static boolean isAdjective(String tag) {
@@ -417,7 +414,7 @@ public class EnhancedNLPEngine {
       return document;
    }
 
-   public static List<Item> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
+   public static List<List<Item>> findMatchingGameItemNames(List<String> nouns, List<Set<String>> adjectives, Set<Item> gameItems) throws FailedParseException {
       return NLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
    }
 }
