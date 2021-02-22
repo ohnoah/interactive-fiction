@@ -62,29 +62,28 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.setCurrentRoom(room);
 
 
-      // Create key for action
       InstantiatedGameAction instantiatedGameAction1 = new InstantiatedGameAction(new ActionFormat("open"), List.of(TestUtil.findItem(room1Items, "banana")));
-      // Create value for action
       List<Condition> conditions1 = new ArrayList<>();
       conditions1.add(new Condition("world::room = \"place1\"", "You are not in place1 yet, you are in world::room"));
       List<KnowledgeUpdate> knowledgeUpdates1 = new ArrayList<>();
 
-      InstantiatedGameAction instantiatedGameAction2 = new InstantiatedGameAction(new ActionFormat("feel"), List.of(TestUtil.findItem(room2Items, "elephant")));
-      List<Condition> conditions2 = new ArrayList<>();
-      List<KnowledgeUpdate> knowledgeUpdates2 = new ArrayList<>();
-      // Create key for action
       knowledgeUpdates1.add(new KnowledgeUpdate("world::room := \"room2\""));
       knowledgeUpdates1.add(new KnowledgeUpdate("world::state := \"random\""));
       knowledgeUpdates1.add(new KnowledgeUpdate("world::numActions := 0"));
       knowledgeUpdates1.add(new KnowledgeUpdate("world::randomList := []"));
       knowledgeUpdates1.add(new KnowledgeUpdate("world::numberList := [3.14, 3.142]"));
+      knowledgeUpdates1.add(new KnowledgeUpdate("world::errorMessage := \"You can't do that, dummy.\""));
 
-      // Create value for action
+
+      InstantiatedGameAction instantiatedGameAction2 = new InstantiatedGameAction(new ActionFormat("feel"), List.of(TestUtil.findItem(room2Items, "elephant")));
+      List<Condition> conditions2 = new ArrayList<>();
+      List<KnowledgeUpdate> knowledgeUpdates2 = new ArrayList<>();
       conditions2.add(new Condition("world::room = \"room2\"", "100% you are not in room2 yet, you are in world::room"));
       knowledgeUpdates2.add(new KnowledgeUpdate("world::numActions += 1"));
       knowledgeUpdates2.add(new KnowledgeUpdate("world::randomList += \"banana\""));
       knowledgeUpdates2.add(new KnowledgeUpdate("world::numberList += world::numActions"));
       knowledgeUpdates2.add(new KnowledgeUpdate("world::numberList -= 3.142"));
+      knowledgeUpdates2.add(new KnowledgeUpdate("world::errorMessage := \"You can't do that now.\""));
 
       EnhancedGameDesignAction enhancedGameDesignAction1 =
           new EnhancedGameDesignAction(conditions1, "You did action 1.", knowledgeUpdates1);
@@ -276,14 +275,46 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "banana")));
       enhancedGameEngine.progressStory(openGameAction);
 
-      ActionFormat eatActionFormat = new ActionFormat("feel");
-      InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eatActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "elephant")));
+      ActionFormat feelActionFormat = new ActionFormat("feel");
+      InstantiatedGameAction feelGameAction = new InstantiatedGameAction(feelActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "elephant")));
 
-      enhancedGameEngine.progressStory(eatGameAction);
+      enhancedGameEngine.progressStory(feelGameAction);
 
       String postCondition = "world::numActions = 1";
       boolean validPrecond = enhancedGameEngine.conditionSucceeds(postCondition);
       assertTrue(validPrecond);
+   }
+
+   @Test
+   public void errorMessageChangesAppropriately() throws KnowledgeException, MissingKnowledgeException {
+      EnhancedGameEngine enhancedGameEngine = twoRoomTwoActions();
+      ActionFormat burnActionFormat = enhancedGameEngine.findAction("burn").get(0);
+      InstantiatedGameAction burnGameAction = new InstantiatedGameAction(burnActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "banana")));
+      Justification justificationOpen = enhancedGameEngine.progressStory(burnGameAction);
+
+      assertEquals("You can't do that right now.", justificationOpen.getReasoning());
+
+
+      ActionFormat openActionFormat = enhancedGameEngine.findAction("open").get(0);
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "banana")));
+      enhancedGameEngine.progressStory(openGameAction);
+
+      ActionFormat climbActionFormat = new ActionFormat("climb");
+      InstantiatedGameAction climbAction = new InstantiatedGameAction(climbActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "elephant")));
+
+      Justification justificationClimb = enhancedGameEngine.progressStory(climbAction);
+
+      assertEquals("You can't do that, dummy.", justificationClimb.getReasoning());
+
+      ActionFormat feelActionFormat = new ActionFormat("feel");
+      InstantiatedGameAction feelGameAction = new InstantiatedGameAction(feelActionFormat, List.of(TestUtil.findPossibleItemFromNoun(enhancedGameEngine, "elephant")));
+
+      enhancedGameEngine.progressStory(feelGameAction);
+
+
+      Justification justificationClimb2 = enhancedGameEngine.progressStory(climbAction);
+
+      assertEquals("You can't do that now.", justificationClimb2.getReasoning());
    }
 
    @Test
@@ -549,6 +580,7 @@ public class EnhancedGameEngineTest {
       assertEquals("The pen is not inside of anything.", message);
       assertFalse(justification.isAccepted());
    }
+
    @Test
    public void takingTwice() throws KnowledgeException, MissingKnowledgeException {
       EnhancedGameEngine enhancedGameEngine = takingPushingPullingRoom();
