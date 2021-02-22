@@ -1,6 +1,5 @@
 package com.intfic.game.enhanced;
 
-import com.intellij.ide.favoritesTreeView.NoteSerializable;
 import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
@@ -592,7 +591,7 @@ public class EnhancedGameEditor extends JFrame {
                      boolean validItems = roomForAction.isValidItemIdentifierList(formattedItemNames);
                      if (validItems) {
                         Map<String, Item> roomItems = roomForAction.getItems();
-                        instantiatedGameAction.setArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
+                        instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the knowledge base (and failure explanations) for this action as a comma-separated list of conditions of the form " +
                             "e.g. \"world::numDoors = 4|The number of doors isn't 4, it's world::numDoors\".";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_PRE;

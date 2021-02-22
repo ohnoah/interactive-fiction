@@ -89,6 +89,9 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
       Room currentRoom = getCurrentRoom();
 
+      if (gameAction.getActualArguments() == null) {
+         return new Justification(false, "Internal error with unpopulated action. Contact game admin.");
+      }
       BasicGameDesignAction designAction = getGameDesignAction(gameAction, currentRoom);
       if (designAction == null) {
          return new Justification(false, worldState.get("errorMessage"));

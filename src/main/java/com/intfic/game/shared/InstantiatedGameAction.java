@@ -11,15 +11,36 @@ import java.util.stream.Collectors;
 public class InstantiatedGameAction implements Serializable {
    private static final long serialVersionUID = 4004019328393742799L;
    private ActionFormat abstractActionFormat;
-   private List<Item> arguments;
+   private List<List<Item>> potentialArguments;
+
+   public List<Item> getActualArguments() {
+      return actualArguments;
+   }
+
+   public void setActualArguments(List<Item> actualArguments) {
+      this.actualArguments = actualArguments;
+   }
+
+   private List<Item> actualArguments;
 
 
    private Pair<Set<String>, String> it;
 
-   public InstantiatedGameAction(ActionFormat actionFormat, List<Item> nouns) {
+
+   public InstantiatedGameAction(ActionFormat actionFormat, List<List<Item>> nouns) {
       setAbstractActionFormat(actionFormat);
-      setArguments(nouns);
+      setPotentialArguments(nouns);
+      if(Util.isFlat(nouns)){
+         setActualArguments(Util.flatten(nouns));
+      }
    }
+
+   // Used for testing
+   public InstantiatedGameAction(ActionFormat actionFormat, List<Item> nouns, boolean l) {
+      setAbstractActionFormat(actionFormat);
+      setActualArguments(nouns);
+   }
+
 
 
    public Pair<Set<String>, String> getIt() {
@@ -43,12 +64,12 @@ public class InstantiatedGameAction implements Serializable {
       this.abstractActionFormat = abstractActionFormat;
    }
 
-   public List<Item> getArguments() {
-      return arguments;
+   public List<List<Item>> getPotentialArguments() {
+      return potentialArguments;
    }
 
-   public void setArguments(List<Item> arguments) {
-      this.arguments = new ArrayList<>(arguments);
+   public void setPotentialArguments(List<List<Item>> potentialArguments) {
+      this.potentialArguments = new ArrayList<>(potentialArguments);
    }
 
    @Override
@@ -60,13 +81,12 @@ public class InstantiatedGameAction implements Serializable {
          return false;
       }
       InstantiatedGameAction that = (InstantiatedGameAction) o;
-      return getAbstractActionFormat().equals(that.getAbstractActionFormat()) &&
-          getArguments().equals(that.getArguments());
+      return abstractActionFormat.equals(that.abstractActionFormat) && Objects.equals(actualArguments, that.actualArguments);
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(getAbstractActionFormat(), getArguments());
+      return Objects.hash(abstractActionFormat, actualArguments);
    }
 
 // Some form of enum with different possibilities and showing the slots it needs

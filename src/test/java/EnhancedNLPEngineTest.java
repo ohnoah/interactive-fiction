@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.enhanced.EnhancedGameEngine;
+import com.intfic.game.shared.Util;
 import com.intfic.nlp.EnhancedNLPEngine;
 import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;
@@ -25,7 +26,7 @@ public class EnhancedNLPEngineTest {
    @BeforeClass
    public static void setUp() throws Exception {
       System.out.println("Setting it up!");
-      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
       String verb = "open";
       String noun = "door";
       Item door = TestUtil.roomItem("door");
@@ -222,7 +223,7 @@ public class EnhancedNLPEngineTest {
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
-      assertEquals(dog, instantiatedGameAction.getArguments().get(0));
+      assertEquals(dog, Util.flatten(instantiatedGameAction.getPotentialArguments()).get(0));
    }
 
    @Test
@@ -241,13 +242,13 @@ public class EnhancedNLPEngineTest {
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
-      assertEquals(dog, instantiatedGameAction.getArguments().get(0));
+      assertEquals(dog, Util.flatten(instantiatedGameAction.getPotentialArguments()).get(0));
    }
 
    @Test
    public void parseListenToRegex() throws FailedParseException {
       // take dog
-      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      List<ActionFormat> possibleActionFormats = new ArrayList<>();
       String verb = "listen";
       String noun = "dog";
       Item dog = TestUtil.roomItem("dog");
@@ -275,7 +276,7 @@ public class EnhancedNLPEngineTest {
       assertEquals(1, instantiatedGameActions.size());
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<Item> wantedArr = List.of(door);
-      List<Item> outArguments = instantiatedGameAction.getArguments();
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
       assertEquals(wantedArr, outArguments);
    }
 
@@ -307,7 +308,7 @@ public class EnhancedNLPEngineTest {
       assertEquals(1, instantiatedGameActions.size());
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<Item> wantedArr = List.of(pen, smallBox);
-      List<Item> outArguments = instantiatedGameAction.getArguments();
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
       assertEquals(wantedArr, outArguments);
    }
 
@@ -358,7 +359,7 @@ public class EnhancedNLPEngineTest {
       assertEquals(1, instantiatedGameActions.size());
       List<Item> wantedArr = List.of(cave);
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
-      List<Item> outArguments = instantiatedGameAction.getArguments();
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
       assertEquals(wantedArr, outArguments);
    }
 
@@ -372,11 +373,11 @@ public class EnhancedNLPEngineTest {
       List<Item> wantedArr3 = List.of(TestUtil.roomItem("box"));
       assertEquals(3, instantiatedGameActions.size());
       InstantiatedGameAction eatAction = instantiatedGameActions.get(0);
-      List<Item> eatActionArguments = eatAction.getArguments();
+      List<Item> eatActionArguments = Util.flatten(eatAction.getPotentialArguments());
       InstantiatedGameAction examineAction = instantiatedGameActions.get(1);
-      List<Item> examineActionArguments = examineAction.getArguments();
+      List<Item> examineActionArguments = Util.flatten(examineAction.getPotentialArguments());
       InstantiatedGameAction openAction = instantiatedGameActions.get(2);
-      List<Item> openActionArguments = openAction.getArguments();
+      List<Item> openActionArguments = Util.flatten(openAction.getPotentialArguments());
       assertEquals(wantedArr1, eatActionArguments);
       assertEquals(wantedArr2, examineActionArguments);
       assertEquals(wantedArr3, openActionArguments);
@@ -407,9 +408,9 @@ public class EnhancedNLPEngineTest {
       List<Item> wantedArr2 = List.of(key);
       assertEquals(2, instantiatedGameActions.size());
       InstantiatedGameAction eatAction = instantiatedGameActions.get(0);
-      List<Item> eatActionArguments = eatAction.getArguments();
+      List<Item> eatActionArguments = Util.flatten(eatAction.getPotentialArguments());
       InstantiatedGameAction examineAction = instantiatedGameActions.get(1);
-      List<Item> examineActionArguments = examineAction.getArguments();
+      List<Item> examineActionArguments = Util.flatten(examineAction.getPotentialArguments());
       assertEquals(wantedArr1, eatActionArguments);
       assertEquals(wantedArr2, examineActionArguments);
    }
@@ -439,8 +440,8 @@ public class EnhancedNLPEngineTest {
       assertEquals(2, instantiatedGameActions.size());
       InstantiatedGameAction putAction = instantiatedGameActions.get(0);
       InstantiatedGameAction eatAction1 = instantiatedGameActions.get(1);
-      assertEquals(List.of(donkey, box), putAction.getArguments());
-      assertEquals(List.of(donkey), eatAction1.getArguments());
+      assertEquals(List.of(donkey, box), Util.flatten(putAction.getPotentialArguments()));
+      assertEquals(List.of(donkey), Util.flatten(eatAction1.getPotentialArguments()));
    }
 
 
@@ -474,11 +475,11 @@ public class EnhancedNLPEngineTest {
       List<Item> wantedArr3 = List.of(box);
       assertEquals(3, instantiatedGameActions.size());
       InstantiatedGameAction putAction = instantiatedGameActions.get(0);
-      List<Item> putArguments = putAction.getArguments();
+      List<Item> putArguments = Util.flatten(putAction.getPotentialArguments());
       InstantiatedGameAction eatAction1 = instantiatedGameActions.get(1);
-      List<Item> eatAction1Arguments = eatAction1.getArguments();
+      List<Item> eatAction1Arguments = Util.flatten(eatAction1.getPotentialArguments());
       InstantiatedGameAction eatAction2 = instantiatedGameActions.get(2);
-      List<Item> eatAction2Arguments = eatAction2.getArguments();
+      List<Item> eatAction2Arguments = Util.flatten(eatAction2.getPotentialArguments());
       assertEquals(wantedArr1, putArguments);
       assertEquals(wantedArr2, eatAction1Arguments);
       assertEquals(wantedArr3, eatAction2Arguments);
@@ -513,7 +514,7 @@ public class EnhancedNLPEngineTest {
       Set<Item> gameItems = Set.of(
               bear, panda, owl
       );
-      List<Item> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
+      List<Item> foundItemNames = Util.flatten(EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems));
       assertEquals(List.of(bear, panda, owl),foundItemNames);
 
    }
@@ -522,7 +523,7 @@ public class EnhancedNLPEngineTest {
    @Test
    public void findMatchingGameItemNamesFailsTooManyAdjectives() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
-      exceptionRule.expectMessage("There is no orange,yellow grizzly bear in your environment.");
+      exceptionRule.expectMessage("I couldn't find a funny,orange,yellow grizzly bear in your environment.");
       List<String> nouns = List.of("bear", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny", "orange", "yellow"));
       Set<Item> gameItems = Set.of(
@@ -530,14 +531,14 @@ public class EnhancedNLPEngineTest {
           TestUtil.roomItem("panda"),
           TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
-      List<Item> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
+      List<Item> foundItemNames = Util.flatten(EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems));
    }
 
    // TODO: Test findMatchingGameItemNames
    @Test
    public void findMatchingGameItemNamesFailsWrongNoun() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
-      exceptionRule.expectMessage("There is no paparrazi in your environment.");
+      exceptionRule.expectMessage("I couldn't find paparrazi in your environment.");
       List<String> nouns = List.of("paparrazi", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
       Set<Item> gameItems = Set.of(
@@ -545,7 +546,7 @@ public class EnhancedNLPEngineTest {
           TestUtil.roomItem("panda"),
           TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
-      List<Item> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
+      List<Item> foundItemNames = Util.flatten(EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems));
    }
 
 

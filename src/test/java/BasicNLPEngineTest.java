@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.shared.Item;
-import com.intfic.game.shared.Room;
+import com.intfic.game.shared.Util;
 import com.intfic.nlp.BasicNLPEngine;
 import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;
@@ -38,7 +38,7 @@ public class BasicNLPEngineTest {
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
       List<Pair<Integer, Integer>> nps = List.of(new Pair<>(1, 1));
-      BasicNLPEngine.findNounsAndAdjectives("open door", actionFormat, nouns, adjectives);
+      BasicNLPEngine.findNounsAndAdjectives("open door", actionFormat, nouns, adjectives, new HashSet<>());
       assertEquals(doorArr, nouns);
    }
 
@@ -51,7 +51,7 @@ public class BasicNLPEngineTest {
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
       List<Pair<Integer, Integer>> nps = List.of(new Pair<>(1, 1));
-      BasicNLPEngine.findNounsAndAdjectives("examine eat", actionFormat, nouns, adjectives);
+      BasicNLPEngine.findNounsAndAdjectives("examine eat", actionFormat, nouns, adjectives, new HashSet<>());
    }
 
 
@@ -72,7 +72,7 @@ public class BasicNLPEngineTest {
 
 
    private void findNounsAndAdjectivesTest(String rawCommand, ActionFormat actionFormat, List<String> nouns, List<Set<String>> adjectives) throws JWNLException, FailedParseException {
-      BasicNLPEngine.findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives);
+      BasicNLPEngine.findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, new HashSet<>());
    }
 
    @Test
@@ -216,7 +216,7 @@ public class BasicNLPEngineTest {
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
-      assertEquals(dog, instantiatedGameAction.getArguments().get(0));
+      assertEquals(dog, Util.flatten(instantiatedGameAction.getPotentialArguments()).get(0));
    }
 
    @Test
@@ -250,7 +250,7 @@ public class BasicNLPEngineTest {
       assertEquals(1, instantiatedGameActions.size());
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<Item> wantedArr = List.of(door);
-      List<Item> outArguments = instantiatedGameAction.getArguments();
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
       assertEquals(wantedArr, outArguments);
    }
 
@@ -282,7 +282,7 @@ public class BasicNLPEngineTest {
       assertEquals(1, instantiatedGameActions.size());
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
       List<Item> wantedArr = List.of(pen, smallBox);
-      List<Item> outArguments = instantiatedGameAction.getArguments();
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
       assertEquals(wantedArr, outArguments);
    }
 
@@ -333,7 +333,7 @@ public class BasicNLPEngineTest {
       assertEquals(1, instantiatedGameActions.size());
       List<Item> wantedArr = List.of(cave);
       InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
-      List<Item> outArguments = instantiatedGameAction.getArguments();
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
       assertEquals(wantedArr, outArguments);
    }
 
@@ -354,7 +354,7 @@ public class BasicNLPEngineTest {
       Set<Item> gameItems = Set.of(
           bear, panda, owl
       );
-      List<Item> foundItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
+      List<Item> foundItemNames = Util.flatten(BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems));
       assertEquals(List.of(bear, panda, owl),foundItemNames);
 
    }
@@ -363,7 +363,7 @@ public class BasicNLPEngineTest {
    @Test
    public void findMatchingGameItemNamesFailsTooManyAdjectives() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
-      exceptionRule.expectMessage("There is no orange,yellow grizzly bear in your environment.");
+      exceptionRule.expectMessage("I couldn't find a funny,orange,yellow grizzly bear in your environment.");
       List<String> nouns = List.of("bear", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny", "orange", "yellow"));
       Set<Item> gameItems = Set.of(
@@ -371,14 +371,14 @@ public class BasicNLPEngineTest {
           TestUtil.roomItem("panda"),
           TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
-      List<Item> foundItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
+      List<Item> foundItemNames = Util.flatten(BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems));
    }
 
    // TODO: Test findMatchingGameItemNames
    @Test
    public void findMatchingGameItemNamesFailsWrongNoun() throws FailedParseException {
       exceptionRule.expect(FailedParseException.class);
-      exceptionRule.expectMessage("There is no paparrazi in your environment.");
+      exceptionRule.expectMessage("I couldn't find paparrazi in your environment.");
       List<String> nouns = List.of("paparrazi", "panda", "grizzly bear");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));
       Set<Item> gameItems = Set.of(
@@ -386,7 +386,7 @@ public class BasicNLPEngineTest {
           TestUtil.roomItem("panda"),
           TestUtil.roomItem("grizzly bear", Set.of("funny", "boring", "interesting"))
       );
-      List<Item> foundItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems);
+      List<Item> foundItemNames = Util.flatten(BasicNLPEngine.findMatchingGameItems(nouns, adjectives, gameItems));
    }
 
 

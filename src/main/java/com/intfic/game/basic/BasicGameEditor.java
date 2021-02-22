@@ -479,7 +479,7 @@ public class BasicGameEditor extends JFrame {
                      boolean validItems = roomForAction.isValidItemIdentifierList(formattedItemNames);
                      if (validItems) {
                         Map<String, Item> roomItems = roomForAction.getItems();
-                        instantiatedGameAction.setArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
+                        instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the global state for this action " +
                             "e.g. \"room=First room,player=yellow\".";
                         basicGameEditState = BasicGameEditState.ACTION_PRE;
