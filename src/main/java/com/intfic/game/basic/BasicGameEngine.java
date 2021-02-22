@@ -20,6 +20,7 @@ public class BasicGameEngine extends GameEngine implements Serializable {
    private Map<String, String> worldState;
    // room name maps
    private Map<Room, Map<InstantiatedGameAction, BasicGameDesignAction>> designerActions;
+   private static final String DEFAULT_ERROR_MESSAGE = "You can't do that in this place.";
 
    public void setCurrentRoom(Room currentRoom) {
       this.currentRoom = currentRoom;
@@ -30,6 +31,7 @@ public class BasicGameEngine extends GameEngine implements Serializable {
    public BasicGameEngine() {
       super();
       worldState = new HashMap<>();
+      worldState.put("errorMessage", DEFAULT_ERROR_MESSAGE);
       designerActions = new HashMap<>();
    }
 
@@ -89,13 +91,13 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
       BasicGameDesignAction designAction = getGameDesignAction(gameAction, currentRoom);
       if (designAction == null) {
-         return new Justification(false, "You can't do that right now");
+         return new Justification(false, worldState.get("errorMessage"));
       }
       Map<String, String> wantedGlobalState = new HashMap<>(designAction.getPreconditions());
 
       boolean preCondSatisfied = validatePrecondition(wantedGlobalState);
       if (!preCondSatisfied) {
-         return new Justification(false, "You can't do that yet");
+         return new Justification(false, "You are not allowed do that yet.");
       }
       String message = designAction.getMessage();
 
@@ -113,7 +115,6 @@ public class BasicGameEngine extends GameEngine implements Serializable {
          moveRoom(updateState.get("room"));
       }
    }
-
 
 
    public Room getCurrentRoom() {

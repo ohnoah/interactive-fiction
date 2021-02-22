@@ -12,6 +12,7 @@ import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.updates.UpdateType;
 import com.intfic.game.shared.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +32,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    private Map<Room, Map<InstantiatedGameAction, EnhancedGameDesignAction>> designerActions;
    private KnowledgeBase knowledgeBase;
    private UpdateStrategy updateStrategy = new DefaultUpdateStrategy();
+   private static final String DEFAULT_ERROR_MESSAGE = "You can't do that right now.";
 
    // Use this as a special room so that item IDs are valid before initialization
 
@@ -47,6 +49,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       worldFrame.updateFiller("items", new ArrayList<>());
       worldFrame.updateFiller("inventory", new ArrayList<>());
       worldFrame.updateFiller("liftingPower", 100.0);
+      worldFrame.updateFiller("errorMessage", DEFAULT_ERROR_MESSAGE);
       this.knowledgeBase.addSpecificFrame(worldFrame);
 
       for (GenericFrame g : ImplementedActionLogic.defaultGenericFrames) {
@@ -100,7 +103,16 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       // Then check the GameDesignActions and prepend another message
       if (enhancedGameDesignAction == null) {
          if (message.equals("")) { // It's not an implemented action
-            return new Justification(false, "You can't do that right now");
+            String errorMessage = DEFAULT_ERROR_MESSAGE;
+            try {
+               errorMessage = knowledgeBase.queryString("world", "errorMessage");
+            }
+            catch (KnowledgeException | MissingKnowledgeException e) {
+               FileErrorHandler.printToErrorLog("Error while querying dynamic errorMessage" +
+                   " on world frame after non-implemented action.");
+               FileErrorHandler.printExceptionToLog(e);
+            }
+            return new Justification(false, errorMessage);
          }
          else { // It's implemented and succeeds but not designed
             return new Justification(true, notDesignedImplementedFollow(message));
@@ -193,7 +205,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       return this.replacePlaceHolderArgsWithStrings(s, knowledgeExprList, frameExprList, "_", "");
    }
 
-   protected String replacePlaceHolderArgsWithStrings(@NotNull String s, @NotNull List<String> stringList, @NotNull String spaceReplacer, @NotNull String quotation ) {
+   protected String replacePlaceHolderArgsWithStrings(@NotNull String s, @NotNull List<String> stringList, @NotNull String spaceReplacer, @NotNull String quotation) {
       return this.replacePlaceHolderArgsWithStrings(s, stringList, stringList, spaceReplacer, quotation);
    }
 
@@ -310,7 +322,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    @Override
    public boolean getWorldBoolean(String key) {
       try {
-         return knowledgeBase.conditionSucceeds("!world::"+key);
+         return knowledgeBase.conditionSucceeds("!world::" + key);
       }
       catch (KnowledgeException e) {
          FileErrorHandler.printExceptionToLog(e);
@@ -321,7 +333,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
       }
    }
 
-   public static long numberOfItemsWithName(@NotNull Collection<Item> items, @NotNull String name){
+   public static long numberOfItemsWithName(@NotNull Collection<Item> items, @NotNull String name) {
       return items.stream().filter(i -> i.getName().equals(name)).count();
    }
 

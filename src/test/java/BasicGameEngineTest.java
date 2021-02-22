@@ -3,6 +3,9 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.basic.BasicGameDesignAction;
+import com.intfic.game.enhanced.EnhancedGameEngine;
+import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
+import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
@@ -66,6 +69,7 @@ public class BasicGameEngineTest {
       Map<String, String> postCond = new HashMap<>();
       postCond.put("room", "room2");
       postCond.put("state", "random");
+      postCond.put("errorMessage", "You can't do that, dummy.");
       BasicGameDesignAction basicGameDesignAction1 = new BasicGameDesignAction(preCond, "You did action 1", postCond);
       // Put in maps
 
@@ -83,6 +87,28 @@ public class BasicGameEngineTest {
 
 
    }
+
+   @Test
+   public void errorMessageChangesAppropriately() throws KnowledgeException, MissingKnowledgeException {
+      BasicGameEngine basicGameEngine = twoRoomTwoActions();
+      ActionFormat burnActionFormat = basicGameEngine.findAction("burn").get(0);
+      InstantiatedGameAction burnGameAction = new InstantiatedGameAction(burnActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
+      Justification justificationOpen = basicGameEngine.progressStory(burnGameAction);
+
+      assertEquals("You can't do that in this place.", justificationOpen.getReasoning());
+
+      ActionFormat openActionFormat = basicGameEngine.findAction("open").get(0);
+      InstantiatedGameAction openGameAction = new InstantiatedGameAction(openActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana")));
+      basicGameEngine.progressStory(openGameAction);
+
+      ActionFormat climbActionFormat = new ActionFormat("climb");
+      InstantiatedGameAction climbAction = new InstantiatedGameAction(climbActionFormat, List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "elephant")));
+
+      Justification justificationClimb = basicGameEngine.progressStory(climbAction);
+
+      assertEquals("You can't do that, dummy.", justificationClimb.getReasoning());
+   }
+
 
    @Test
    public void possibleItemNamesWorks() {
