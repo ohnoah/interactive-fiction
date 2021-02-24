@@ -23,7 +23,7 @@ public class BasicGameEngineTest {
 
    public static BasicGameEngine oneRoomOneAction() {
       Room room = new Room("place1");
-      Set<Item> place1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
+      List<Item> place1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
       room.setItems(place1Items);
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();
@@ -49,12 +49,12 @@ public class BasicGameEngineTest {
 
    public static BasicGameEngine twoRoomTwoActions() {
       Room room = new Room("place1");
-      Set<Item> room1Items =
+      List<Item> room1Items =
           TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
       room.setItems(room1Items);
 
       Room room2 = new Room("room2");
-      Set<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("elephant"));
+      List<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("elephant"));
       room2.setItems(room2Items);
 
       BasicGameEngine basicGameEngine = new BasicGameEngine();

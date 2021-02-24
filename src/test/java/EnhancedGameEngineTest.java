@@ -21,7 +21,7 @@ import org.junit.Test;
 public class EnhancedGameEngineTest {
    private static EnhancedGameEngine oneRoomOneAction() throws KnowledgeException {
       Room room = new Room("place1");
-      Set<Item> place1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
+      List<Item> place1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
       room.setItems(place1Items);
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
@@ -49,10 +49,10 @@ public class EnhancedGameEngineTest {
 
    private static EnhancedGameEngine twoRoomTwoActions() throws KnowledgeException {
       Room room = new Room("place1");
-      Set<Item> room1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
+      List<Item> room1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("apple", "banana", "orange"));
       room.setItems(room1Items);
       Room room2 = new Room("room2");
-      Set<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("elephant"));
+      List<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("elephant"));
       room2.setItems(room2Items);
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
@@ -110,7 +110,7 @@ public class EnhancedGameEngineTest {
 
    private static EnhancedGameEngine puttingNoDesignRoom() throws KnowledgeException {
       Room room = new Room("Putting Room");
-      Set<Item> room1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("box", "pen", "apple", "ball"));
+      List<Item> room1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("box", "pen", "apple", "ball"));
       room.setItems(room1Items);
 
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
@@ -134,14 +134,14 @@ public class EnhancedGameEngineTest {
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
 
       Room room1 = new Room("Taking Room");
-      Set<Item> room1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("box", "banana", "bottle", "coke", "bucket", "pen", "apple", "ball"));
+      List<Item> room1Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("box", "banana", "bottle", "coke", "bucket", "pen", "apple", "ball"));
       room1.setItems(room1Items);
 
       enhancedGameEngine.addRoom(room1);
       enhancedGameEngine.setCurrentRoom(room1);
 
       Room room2 = new Room("Other Room");
-      Set<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("mouse", "keys", "water"));
+      List<Item> room2Items = TestUtil.stringsToItemsInRoomNoAdj(Set.of("mouse", "keys", "water"));
       room2.setItems(room2Items);
       enhancedGameEngine.addRoom(room2);
 

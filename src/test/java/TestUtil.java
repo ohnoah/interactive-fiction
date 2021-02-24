@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 class TestUtil {
 
 
-   static Set<Item> stringsToItemsInRoomNoAdj(Collection<String> strings){
-      return (strings.stream().map(Item::new).collect(Collectors.toSet()));
+   static List<Item> stringsToItemsInRoomNoAdj(Collection<String> strings){
+      return (strings.stream().map(Item::new).collect(Collectors.toList()));
    }
 
    static Item findItem(Collection<Item> items, String name){

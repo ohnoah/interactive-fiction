@@ -322,7 +322,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          return message;
       }
       else {
-         return String.format("Couldn't uniquely identify argument number %d when taking action %s. Choose the one you meant by writing a number from the list below.\n %s"
+         return String.format("Couldn't uniquely identify argument number %d when taking action %s. Choose the one you meant by writing a number from the list below.\n%s"
              , nextClarify + 1, clarifyingAction.getAbstractActionFormat(), Util.selectionList(potentialArgs.get(nextClarify)));
       }
 

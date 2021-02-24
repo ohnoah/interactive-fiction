@@ -278,7 +278,7 @@ public class EnhancedGameEditor extends JFrame {
             break;
          case "list items":
             if (roomForAction != null) {
-               output = roomForAction.getItems().values().stream().map(Item::toString).collect(Collectors.joining(","));
+               output = roomForAction.getItems().values().stream().map(i -> i.toString() + " - " + i.getID()).collect(Collectors.joining(","));
             }
             else {
                output = String.join("\n", gameEngine.globalItems().keySet());
@@ -350,7 +350,7 @@ public class EnhancedGameEditor extends JFrame {
                      output = String.format("Saved your game to disk with name: %s.", fileName);
                      saved = true;
                   }
-                  catch(NotSerializableException e){
+                  catch (NotSerializableException e) {
                      output = "Not serializable exception found: " + e.getMessage() + ". Maybe some user code doesn't implement serializable";
                      e.printStackTrace();
                   }
@@ -370,7 +370,7 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.OPEN;
                         while (myReader.hasNextLine()) {
                            String line = myReader.nextLine().trim();
-                           if(!((line.equals("") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
+                           if (!((line.equals("") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
                               String runningSofar = history.getText();
                               res = editGame(line, runningSofar);
                               writeToTerminal(res.get(0), res.get(1), res.get(2));
@@ -439,20 +439,19 @@ public class EnhancedGameEditor extends JFrame {
                   Justification j = validNames(names);
 
                   if (validText) {
-                     if (hasDuplicate(names)) {
-                        output = "Items can not have the same name. Try again.";
-                     }
-                     else if (!j.isAccepted()) {
+                     if (!j.isAccepted()) {
                         output = j.getReasoning();
                      }
                      else if (names.contains("world")) {
                         output = "The word \"world\" is reserved";
                      }
                      else {
-                        Set<Item> items = new HashSet<>();
+                        List<Item> items = new ArrayList<>();
                         for (int i = 0; i < names.size(); i++) {
                            Item item = new Item(names.get(i), adjectives.get(i));
-                           items.add(item);
+                           if(!items.contains(item)) {
+                              items.add(item);
+                           }
                         }
                         roomToAdd.setItems(items);
                         gameEngine.addRoom(roomToAdd);

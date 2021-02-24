@@ -34,12 +34,16 @@ public class Room implements Serializable {
    }
 
 
-   public void setItems(@NotNull Collection<Item> items) {
+   public void setItems(@NotNull List<Item> items) {
+      List<Item> itemsSoFar = new ArrayList<>();
       for(Item i : items){
          // This will trigger update of IDs that can be used in the map
-         i.setParentRoom(this, items);
+         if(!itemsSoFar.contains(i)) {
+            itemsSoFar.add(i);
+            i.setParentRoom(this, itemsSoFar);
+         }
       }
-      this.items = Util.collectionToMap(items, Item::getID);
+      this.items = Util.collectionToMap(itemsSoFar, Item::getID);
    }
 
 /*   public void setItemsNoAdjectives(Set<String> items) {

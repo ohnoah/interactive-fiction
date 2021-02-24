@@ -3,7 +3,7 @@ You wake up in your bed feeling well rested after a good’s night sleep.  The s
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, room [red]
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, room
 
 % all actions 
 
