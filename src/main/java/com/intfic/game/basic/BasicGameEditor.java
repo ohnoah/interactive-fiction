@@ -235,7 +235,8 @@ public class BasicGameEditor extends JFrame {
                output = roomForAction.getItems().values().stream().map(Item::toString).collect(Collectors.joining(","));
             }
             else {
-               output = "No room has been selected for adding an action to";
+               output = String.join("\n", gameEngine.globalItems()
+                   .keySet());
             }
             break;
          case "stop":
@@ -375,17 +376,16 @@ public class BasicGameEditor extends JFrame {
                   boolean validText = itemNamesAndAdjectives(cmd, names, adjectives);
 
                   if (validText) {
-                     if (hasDuplicate(names)) {
-                        output = "Items can not have the same name. Try again.";
-                     }
-                     else if (names.contains("world")) {
+                     if (names.contains("world")) {
                         output = "The word \"world\" is reserved";
                      }
                      else {
-                        Set<Item> items = new HashSet<>();
+                        List<Item> items = new ArrayList<>();
                         for (int i = 0; i < names.size(); i++) {
                            Item item = new Item(names.get(i), adjectives.get(i));
-                           items.add(item);
+                           if(!items.contains(item)) {
+                              items.add(item);
+                           }
                         }
                         roomToAdd.setItems(items);
                         gameEngine.addRoom(roomToAdd);

@@ -2,6 +2,7 @@ package com.intfic.game.shared;
 
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -27,17 +28,17 @@ public class Item implements Serializable {
       return roomName.replaceAll(" ", String.valueOf(SEPARATOR)).toLowerCase();
    }
 
-   public String idGenerator(@NotNull String roomName, @NotNull Collection<Item> currentItems) {
+   public String idGenerator(@NotNull String roomName, @NotNull List<Item> currentItems) {
       long count = EnhancedGameEngine.numberOfItemsWithName(currentItems, this.name);
 
       return (roomId(roomName) + "." +
           this.name.replaceAll(" ", String.valueOf(SEPARATOR)) +
-          (count != 1 ? SEPARATOR + count : "")).toLowerCase();
+          (count != 1 ? SEPARATOR + "" + count : "")).toLowerCase();
    }
 
    public Item(@NotNull String name) {
       this.name = name;
-      setParentRoom(GameEngine.unassignedItemRoom, GameEngine.unassignedItemRoom.getItems().values());
+      setParentRoom(GameEngine.unassignedItemRoom, new ArrayList<>(GameEngine.unassignedItemRoom.getItems().values()));
       synonyms = new HashSet<>();
       adjectives = new HashSet<>();
    }
@@ -45,21 +46,21 @@ public class Item implements Serializable {
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives) {
       this.name = name;
-      setParentRoom(GameEngine.unassignedItemRoom, GameEngine.unassignedItemRoom.getItems().values());
+      setParentRoom(GameEngine.unassignedItemRoom, new ArrayList<>(GameEngine.unassignedItemRoom.getItems().values()));
       setAdjectives(defaultAdjectives);
       this.synonyms = new HashSet<>();
    }
 
    public Item(@NotNull String name, @NotNull Set<String> defaultAdjectives, @NotNull Set<String> synonyms) {
       this.name = name;
-      setParentRoom(GameEngine.unassignedItemRoom, GameEngine.unassignedItemRoom.getItems().values());
+      setParentRoom(GameEngine.unassignedItemRoom, new ArrayList<>(GameEngine.unassignedItemRoom.getItems().values()));
       setAdjectives(defaultAdjectives);
       setSynonyms(synonyms);
    }
 
    @Override
    public String toString() {
-      return String.format("[%s] %s", String.join(",", adjectives), id);
+      return String.format("[%s] %s", String.join(",", adjectives), name);
    }
 
    @Override
@@ -126,7 +127,7 @@ public class Item implements Serializable {
       return parentRoom;
    }
 
-   public void setParentRoom(@NotNull Room originalRoom, @NotNull Collection<Item> currentItems) {
+   public void setParentRoom(@NotNull Room originalRoom, @NotNull List<Item> currentItems) {
       if (this.parentRoom == null || this.parentRoom.equals(EnhancedGameEngine.unassignedItemRoom)) {
          this.id = idGenerator(originalRoom.getName(), currentItems);
       }
