@@ -38,10 +38,8 @@ public class Room implements Serializable {
       List<Item> itemsSoFar = new ArrayList<>();
       for(Item i : items){
          // This will trigger update of IDs that can be used in the map
-         if(!itemsSoFar.contains(i)) {
-            itemsSoFar.add(i);
-            i.setParentRoom(this, itemsSoFar);
-         }
+         itemsSoFar.add(i);
+         i.setParentRoom(this, itemsSoFar);
       }
       this.items = Util.collectionToMap(itemsSoFar, Item::getID);
    }
