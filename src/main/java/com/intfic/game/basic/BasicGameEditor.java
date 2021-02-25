@@ -132,7 +132,7 @@ public class BasicGameEditor extends JFrame {
    }
 
    private void writeToTerminal(String cmd, String sofar, String result) {
-      if(cmd.length() > 40){
+      if (cmd.length() > 40) {
          history.setText(sofar + cmd + "\n \n" + result + "\n> ");
       }
       else {
@@ -151,7 +151,8 @@ public class BasicGameEditor extends JFrame {
       if (!cmd.equals("")) {
          splitMap = splitByComma.stream()
              .map(s -> s.split("="))
-             .collect(Collectors.toMap(split -> split[0], split -> split[1]));
+             .collect(Collectors.toMap(split -> split[0], split -> (split.length
+                 == 2) ? split[1] : ""));
       }
       else {
          splitMap = new HashMap<>();
@@ -184,14 +185,14 @@ public class BasicGameEditor extends JFrame {
       List<String> clauses = splitByCommaAndTrim(cmd);
       for (String clause : clauses) {
          if (clause.contains("[") || clause.contains("]")) {
-            Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s]+)\\]$");
+            Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s-]+)]$");
             Matcher m = p.matcher(clause);
             boolean doesMatch = m.matches();
             if (doesMatch) {
                String name = m.group(1);
                String adjectiveSlots = m.group(2);
                names.add(name);
-               adjectives.add(Arrays.asList(adjectiveSlots.split(" ")).stream()
+               adjectives.add(Arrays.stream(adjectiveSlots.split(" "))
                    .map(String::trim).collect(Collectors.toSet()));
             }
             else {
@@ -223,6 +224,7 @@ public class BasicGameEditor extends JFrame {
             break;
          case "clear":
             output = "Cleared your status.";
+            basicGameEditState = BasicGameEditState.OPEN;
             gameEngine = new BasicGameEngine();
             resetAdditions();
             break;
@@ -383,7 +385,7 @@ public class BasicGameEditor extends JFrame {
                         List<Item> items = new ArrayList<>();
                         for (int i = 0; i < names.size(); i++) {
                            Item item = new Item(names.get(i), adjectives.get(i));
-                           if(!items.contains(item)) {
+                           if (!items.contains(item)) {
                               items.add(item);
                            }
                         }
@@ -473,6 +475,7 @@ public class BasicGameEditor extends JFrame {
                      List<String> formattedItemNames = new ArrayList<>();
                      String roomPrefix = Item.roomId(roomForAction.getName());
                      for (String s : splitArgs) {
+                        s = s.toLowerCase();
                         String formatted = !s.startsWith(roomPrefix) ? roomPrefix + "." + s : s;
                         formattedItemNames.add(formatted);
                      }
@@ -522,10 +525,10 @@ public class BasicGameEditor extends JFrame {
                   basicGameEditState = BasicGameEditState.ACTION_FAIL_MSG;
                   break;
                case ACTION_FAIL_MSG:
-                  if(cmd.equals("")){
+                  if (cmd.equals("")) {
                      effectAction.setFailureMessage(null);
                   }
-                  else{
+                  else {
                      effectAction.setFailureMessage(cmd);
                   }
                   gameEngine.addAction(roomForAction, instantiatedGameAction, effectAction);
