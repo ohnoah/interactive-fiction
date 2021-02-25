@@ -361,12 +361,49 @@ leave
 % item
 room
 % precond
-acidPut=true
-% postcond
 windowBroken=true
+% postcond
+room=garden, errorMessage=Why would you do that? Drof is yelling for you to put the one-piece one.
 % message
-You throw the acid-coated bag at the window with all your force. The instant the bag touches the window, the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a one-piece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
 % failmessage
-Why would you put apple juice on your bag?
 
+
+% GARDENTIME
+add room
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, note
+
+
+add action
+% room
+garden
+% trigger
+put
+2
+% item
+one-piece
+% precond
+onePieceOn=
+% postcond
+onePieceOn=true, errorMessage=Why would you do that? You need to follow Drof.
+% message
+You put on the one-piece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.
+% failmessage
+You already have the one-piece on.
+
+add action
+% room
+garden
+% trigger
+follow
+% item
+Drof
+% precond
+onePieceOn=
+% postcond
+onePieceOn=true, errorMessage=Why would you do that? You need to follow Drof.
+% message
+You put on the one-piece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.
+% failmessage
+You already have the one-piece on.
 
