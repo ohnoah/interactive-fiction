@@ -371,8 +371,7 @@ You leave the house through the window and notice a big machine the size of a bu
 
 % GARDENTIME
 add room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, note
-
+Drof [Tcefer], one-piece [robot-like, halloween, cotton]
 
 add action
 % room

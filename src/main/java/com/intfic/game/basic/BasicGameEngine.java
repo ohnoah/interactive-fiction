@@ -72,7 +72,7 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       for (Map.Entry<String, String> entry : wantedGlobalState.entrySet()) {
          String key = entry.getKey();
          String wantedValue = entry.getValue();
-         if (!worldState.containsKey(key) || !worldState.get(key).equals(wantedValue)) {
+         if (!worldState.getOrDefault(key, "").equals(wantedValue)) {
             return false;
          }
       }
