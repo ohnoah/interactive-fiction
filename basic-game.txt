@@ -3,7 +3,7 @@ You wake up in your bed feeling well rested after a good’s night sleep.  The s
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, room
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, note
 
 % all actions 
 
@@ -108,7 +108,19 @@ examine
 object
 lightOn=true
 brickExamined=true
+The brick is a standard red brick that your mum keeps in her work shed around the back of the house. It’s not that large and would easily fit in your backpack that you see sticking out under your bed next to the brick. As you are about to put the brick down, you see a small handwritten note under where the brick was.
 You squint but can't make out anything about the object in the dark.
+
+% examine object
+add action
+bed room
+examine
+note
+lightOn=true, brickExamined=true
+noteExamined=true
+USE THIS BRICK TO BREAK YOURSELF OUT OF THE HOUSE. I DON’T KNOW WHAT’S GOING ON, BUT IT’S BAD. I THINK IT’S *unintelligible scribbles*
+
+
 
 % take backpack
 add action
@@ -126,6 +138,7 @@ take
 object
 lightOn=true, brickExamined=true, backpackTaken=true
 brickTaken=true
+You put the brick in the bag. Your parents must’ve wanted you to use it for something. It will surely come in handy. 
 You need to see what the object is, have somewhere to put it and be able to see it first.
 
 % examine boulder
@@ -154,7 +167,7 @@ push
 % item
 boulder
 % precond
-breakfeastEaten=true, paracetamolTaken=true, boulderExamined=true
+breakfeastEaten=true, paracetamolTaken=true, boulderExamined=true, boulderPushed=
 % postcond
 boulderPushed=true
 % message
@@ -170,7 +183,7 @@ pull
 % item
 boulder
 % precond
-boulderExamined=true
+breakfeastEaten=true, paracetamolTaken=true, boulderExamined=true, boulderPushed=
 % postcond
 boulderPushed=true
 % message
@@ -193,8 +206,167 @@ boulderPushed=true
 % postcond
 room=living room, leftFirstRoom=true
 % message
-You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows. A small piece of paper with a note is on the table in strange handwriting.
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting.
 % failmessage
 The boulder is in your way so you can't leave the room.
 
 % ALL ACTIONS BELOW ARE IN ROOM 2
+add room
+% name
+living room
+% items
+note [small], window [west], window [south], window [east], juice [green light acidic], room, backpack [blue]
+
+
+% all actions 
+
+% room
+% trigger
+% item
+% precond
+% postcond
+% message
+% failmessage
+
+add action
+% room
+living room
+% trigger
+examine
+% item
+note
+% precond
+leftFirstRoom=true
+% postcond
+livingNoteExamined=true
+% message
+These things. The only way you can stop them is through music. I don’t know what yet, but some form of music will fix all of this. 
+
+add action
+% room
+living room
+% trigger
+examine
+% item
+window_2
+% precond
+leftFirstRoom=true
+% postcond
+westWindowExamined=true, acidDiscovered=true
+% message
+The window has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
+
+
+add action
+% room
+living room
+% trigger
+examine
+% item
+window_2
+% precond
+leftFirstRoom=true
+% postcond
+southWindowExamined=true
+% message
+The window is reinforced with some strange material, as you suspected. 
+
+add action
+% room
+living room
+% trigger
+examine
+% item
+window_3
+% precond
+leftFirstRoom=true
+% postcond
+eastWindowExamined=true
+% message
+The window is reinforced with some strange material, as you suspected. 
+
+add action
+% room
+living room
+% trigger
+examine
+% item
+juice
+% precond
+acidDiscovered=true
+% postcond
+acidExamined=true
+% message
+You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
+
+
+add action
+% room
+living room
+% trigger
+put
+1
+% item
+juice
+% precond
+acidExamined=true
+% postcond
+acidPut=true
+% message
+You put the acidic juice as a coating on your brick bag.
+% failmessage
+Why would you put apple juice on your bag?
+
+% throw backpack at west window
+add action
+% room
+living room
+% trigger
+throw
+% item
+backpack, window
+% precond
+acidPut=true
+% postcond
+windowBroken=true
+% message
+You throw the acid-coated bag at the window with all your force. The instant the bag touches the window, the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+% failmessage
+You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm, how can I get through that reinforcement material?", you think as you pick the bag back up.
+
+% throw backpack at west window
+add action
+% room
+living room
+% trigger
+throw
+% item
+backpack, window_2
+% precond
+acidPut=true
+% postcond
+windowBroken=true
+% message
+You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
+% failmessage
+You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window. 
+
+
+
+add action
+% room
+living room
+% trigger
+leave
+% item
+room
+% precond
+acidPut=true
+% postcond
+windowBroken=true
+% message
+You throw the acid-coated bag at the window with all your force. The instant the bag touches the window, the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+% failmessage
+Why would you put apple juice on your bag?
+
+
