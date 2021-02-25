@@ -409,7 +409,7 @@ You can't go without your disguise. Listen to what Drof said.
 
 add room
 bar
-beer [polish bitter], glass
+beer [polish bitter], glass, Drof
 
 add action
 % room
@@ -422,5 +422,34 @@ beer, glass
 beerDrank=
 % postcond
 beerDrank=true
+% message
+You drink your beer quickly to quench your thirst. Some calmness begins to return to your mind. As you glance at Drof, you realize that it seems like you can finally ask him what the **** is going on.
+% failmessage
+You've already finished your beer.
+
+add action
+% room
+bar
+% trigger
+talk
+% item
+Drof
+% precond
+beerDrank=true
+% postcond
+drofTalkedTo=true
+% message
+Tceferp takes a deep breath and says, "You know, these people are actually robots. They call themselves Bostonian Saltases and they have been ordered to remove every inhabitant in town and lock up every house. All of this is to prepare for the demolition of the town to make space for an intercontinental super highway. Don't ask me how I know any of this. You don't want to know.". He continues “The only way these robots can be stopped is by playing their recall song. They've all been programmed to stop the project and return to base by their over lord if they hear one specific song”. Tceferp says that he has heard rumblings that the song may be called "Deplorable", but he most likely misheard this. "How does Drof know all of this?", you think before realizing that you need to act quickly to save your town. Drf points you to the back of the room, explaining that he thinks the recall speaker can be found somewhere here.
+% failmessage
+You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
+
+add action
+% room
+bar
+% trigger
+go
+% item
+% precond
+% postcond
 % message
 % failmessage

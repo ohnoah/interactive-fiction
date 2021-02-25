@@ -1,5 +1,6 @@
 package com.intfic.nlp;
 
+import com.intfic.game.enhanced.reasoning.ImplementedActionLogic;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -15,6 +16,7 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.Pair;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -199,6 +201,7 @@ public class EnhancedNLPEngine {
             adjectives.add(tok.word());
          }
          if (isNoun(tag)) {
+            // TODO: Allow multiple words here
             String noun = tok.word();
             if (corefRepresentative.containsValue(np)) {
                corefCache.put(np, new Pair<>(adjectives, noun));
@@ -332,6 +335,12 @@ public class EnhancedNLPEngine {
    }
 
    public static void main(String[] args) {
+      try {
+         System.out.println(EnhancedNLPEngine.parse("eat the living room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("apple juice"))));
+      }
+      catch (FailedParseException e) {
+         e.printStackTrace();
+      }
 /*      // set up pipeline properties
       Properties props = new Properties();
       props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse");
