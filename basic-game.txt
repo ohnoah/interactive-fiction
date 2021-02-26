@@ -409,7 +409,7 @@ You can't go without your disguise. Listen to what Drof said.
 
 add room
 bar
-beer [polish bitter], glass, Drof
+beer [polish bitter], glass, Drof, back
 
 add action
 % room
@@ -443,13 +443,266 @@ Tceferp takes a deep breath and says, "You know, these people are actually robot
 % failmessage
 You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
 
+
+add room
+back of bar
+tapas [spanish delicious], antechamber, stairs
+
 add action
 % room
 bar
 % trigger
 go
 % item
+back of bar
 % precond
+drofTalkedTo=true
+% postcond
+room=back of bar
+% message
+You make your way to the back of the room where you sit down and immediately get served a plate of tapas. The robotic bartender forgets to clear the table of an old plate of tortillas next to you, which annoys you slightly even though you have much bigger problems to worry about right now. To the right, there is an entrance to an antechamber of some sort and to the left is a staircase leading up to the staff area and kitchen of the bar. 
+% failmessage
+You should probably talk to your friend Drof before going there.
+
+add action
+% room
+back of bar
+% trigger
+eat
+% item
+tapas
+% precond
+tapasEaten=
+% postcond
+tapasEaten=true
+% message
+You enjoy the tapas slowly, despite the stressing nature of the situation you are in. There is nothing like good food, you think to yourself as you eat the last few bites of the dish
+% failmessage
+You've already eaten your tapas.
+
+% GO UPSTAIRS / GO TO THE STAIRCASE
+add action
+% room
+back of bar
+% trigger
+go
+% item
+upstairs
+% precond
+
+% postcond
+room=upstairs
+% message
+You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+% failmessage
+
+% GO UPSTAIRS / GO TO THE STAIRCASE
+add action
+% room
+back of bar
+% trigger
+go
+% item
+staircase
+% precond
+
+% postcond
+room=upstairs
+% message
+You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+% failmessage
+
+
+
+% UPSTAIRS ACTIONS
+add room
+upstairs
+player [vinyl], Depasito, Darkside, record [pink]
+
+% EXAMINE PLAYER
+add action
+% room
+upstairs
+% trigger
+examine
+% item
+player
+% precond
+
 % postcond
 % message
+The vinyl player is a beautiful mahogany design. It’s turned off.
 % failmessage
+
+% TURN ON  PLAYER
+add action
+% room
+upstairs
+% trigger
+turn
+0
+% item
+player
+% precond
+playerOn=
+% postcond
+playerOn=true
+% message
+You turn on the vinyl player. The wire between the player and the parabol dish makes a brief humming noise. A hatch opens, exposing the vinyl player’s internals and tracks that seem to fit the records on the table.
+% failmessage
+The player is already on.
+
+% examine the records
+add action
+% room
+upstairs
+% trigger
+examine
+% item
+records
+% precond
+
+% postcond
+recordsExamined=true
+% message
+There are three records on the table. Depasito by Fonzen and Jonas Beaver, Darkside by The Resurrectors and another obscure record with a pink cover.
+% failmessage
+
+% examine depasito
+add action
+% room
+upstairs
+% trigger
+examine
+% item
+depasito
+% precond
+
+% postcond
+depasitoExamined=true
+% message
+The cover of Depasito shows a picture of a Spanish-speaking musician, Fonzen, and Jonas Beaver. You remember that you heard it at a school fundraiser once.
+% failmessage
+
+% examine darkside
+add action
+% room
+upstairs
+% trigger
+examine
+% item
+depasito
+% precond
+
+% postcond
+darksideExamined=true
+% message
+The front of the Darkside record is dark and dull. You laugh at the cheap play on The Killers’ Mr.Brightside that this measly record represents.
+% failmessage
+
+% examine the pink record
+add action
+% room
+upstairs
+% trigger
+examine
+% item
+record
+% precond
+
+% postcond
+pinkrecordExamined=true
+% message
+To your surprise, the Pink cover is a Pink song.
+% failmessage
+
+% put depasito in the vinyl player
+add action
+% room
+upstairs
+% trigger
+put
+0
+% item
+depasito, player
+% precond
+playerOn=true
+% postcond
+playerFull=true, gameDone=true
+% message
+You play Depasito in the vinyl player. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. \n Thanks for playing this game.
+% failmessage
+The player is not on yet or its full.
+
+% put depasito in the vinyl player
+add action
+% room
+upstairs
+% trigger
+put
+0
+% item
+record, player
+% precond
+playerOn=true, playerFull=
+% postcond
+
+% message
+You try to play the pink record but nothing happens you so you put it back.
+% failmessage
+The player is not on yet or its full.
+
+% put depasito in the vinyl player
+add action
+% room
+upstairs
+% trigger
+put
+0
+% item
+Darkside, player
+% precond
+playerOn=true, playerFull=
+% postcond
+
+% message
+You play Darkside but nothing interesting happens you put it back.
+% failmessage
+The player is not on yet or its full.
+
+% GO TO ANTECHAMBER FROM BACK
+add action
+% room
+back of bar
+% trigger
+go
+% item
+antechamber
+% precond
+
+% postcond
+room=antechamber
+% message
+You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
+% failmessage
+
+
+add room
+antechamber
+
+add action
+% room
+antechamber
+% trigger
+examine
+% item
+door
+% precond
+
+% postcond
+room=antechamber
+% message
+You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots.
+% failmessage
+
+
