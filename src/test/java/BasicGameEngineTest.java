@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 
+import com.intfic.game.basic.BasicCondition;
 import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.basic.BasicGameDesignAction;
 import com.intfic.game.enhanced.EnhancedGameEngine;
@@ -11,6 +12,7 @@ import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +37,9 @@ public class BasicGameEngineTest {
       // Create key for action
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat, List.of(List.of(TestUtil.findItem(place1Items, "apple"))));
       // Create value for action
-      Map<String, String> preCond = new HashMap<>();
-      preCond.put("room", "place1");
+      List<BasicCondition> preCond = createPreconds("room", "place1", "PLACE 1 FAIL");
+/*      Map<String, String> preCond = new HashMap<>();
+      preCond.put("room", "place1");*/
       Map<String, String> postCond = new HashMap<>();
       postCond.put("random-state", "very-good");
       postCond.put("superset-state", "very-not-good");
@@ -45,6 +48,30 @@ public class BasicGameEngineTest {
       basicGameEngine.addAction(room, instantiatedGameAction, basicGameDesignAction);
 
       return basicGameEngine;
+   }
+
+   private static List<BasicCondition> createPreconds(String... strings) {
+      String key = "";
+      String desVal = "";
+      String errorMsg = "";
+      List<BasicCondition> conditions = new ArrayList<>();
+      if (strings.length % 3 != 0) {
+         throw new RuntimeException("PRECONDITION STRING NOT DIVISIBLE BY 3");
+      }
+      for (int i = 0; i < strings.length; i++) {
+         if (i % 3 == 0) {
+            key = strings[i];
+         }
+         else if (i % 3 == 1) {
+            desVal = strings[i];
+         }
+         else {
+            errorMsg = strings[i];
+            conditions.add(new BasicCondition(key, desVal, errorMsg));
+         }
+      }
+      conditions.add(new BasicCondition(key, desVal, errorMsg));
+      return conditions;
    }
 
    public static BasicGameEngine twoRoomTwoActions() {
@@ -65,8 +92,9 @@ public class BasicGameEngineTest {
       InstantiatedGameAction instantiatedGameAction1 = new InstantiatedGameAction(new ActionFormat("open"),
           List.of(List.of(TestUtil.findItem(room1Items, "banana"))));
       // Create value for action
-      Map<String, String> preCond = new HashMap<>();
-      preCond.put("room", "place1");
+/*      Map<String, String> preCond = new HashMap<>();
+      preCond.put("room", "place1");*/
+      List<BasicCondition> preCond = createPreconds("room", "place1", "PLACE 1 FAIl");
       Map<String, String> postCond = new HashMap<>();
       postCond.put("room", "room2");
       postCond.put("state", "random");
@@ -79,18 +107,20 @@ public class BasicGameEngineTest {
       InstantiatedGameAction eatAction = new InstantiatedGameAction(
           new ActionFormat("eat"), List.of(List.of(TestUtil.findItem(room2Items, "elephant"))));
       // Create value for action
-      Map<String, String> eatPrecond = new HashMap<>();
-      eatPrecond.put("room", "room2");
+/*      Map<String, String> eatPrecond = new HashMap<>();
+      eatPrecond.put("room", "room2");*/
+      List<BasicCondition> eatPrecond = createPreconds("room", "room2", "ROOM 2 FAIL");
       BasicGameDesignAction designEat = new BasicGameDesignAction(eatPrecond,
           "You did action 2", new HashMap<>());
 
       InstantiatedGameAction enterAction = new InstantiatedGameAction(
           new ActionFormat("enter"), List.of(List.of(TestUtil.findItem(room1Items, "banana"))));
       // Create value for action
-      Map<String, String> enterPrecond = new HashMap<>();
-      enterPrecond.put("random", "randomina");
+/*      Map<String, String> enterPrecond = new HashMap<>();
+      enterPrecond.put("random", "randomina");*/
+      List<BasicCondition> enterPrecond = createPreconds("random", "randomina", "RANDOMINA FAIL");
       BasicGameDesignAction designEnter = new BasicGameDesignAction(enterPrecond,
-          "You did action 3", "You failed with a custom fail message.", new HashMap<>());
+          "You did action 3", new HashMap<>());
 
 
       basicGameEngine.addAction(room, instantiatedGameAction1, basicGameDesignAction1);
@@ -102,7 +132,7 @@ public class BasicGameEngineTest {
    }
 
    @Test
-   public void errorMessageChangesAppropriately(){
+   public void errorMessageChangesAppropriately() {
       BasicGameEngine basicGameEngine = twoRoomTwoActions();
       ActionFormat burnActionFormat = basicGameEngine.findAction("burn").get(0);
       InstantiatedGameAction burnGameAction = new InstantiatedGameAction(burnActionFormat, List.of(List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "banana"))));
@@ -127,7 +157,7 @@ public class BasicGameEngineTest {
    }
 
    @Test
-   public void designedErrorMessage(){
+   public void designedErrorMessage() {
       BasicGameEngine basicGameEngine = twoRoomTwoActions();
       ActionFormat enterAF = basicGameEngine.findAction("enter").get(0);
       InstantiatedGameAction enterAction = new InstantiatedGameAction(enterAF,
@@ -135,9 +165,8 @@ public class BasicGameEngineTest {
       Justification justEnter = basicGameEngine.progressStory(enterAction);
 
       assertFalse(justEnter.isAccepted());
-      assertEquals("You failed with a custom fail message.", justEnter.getReasoning());
+      assertEquals("RANDOMINA FAIL", justEnter.getReasoning());
    }
-
 
 
    @Test
@@ -167,11 +196,12 @@ public class BasicGameEngineTest {
       InstantiatedGameAction instantiatedGameAction = new InstantiatedGameAction(actionFormat,
           List.of(List.of(TestUtil.findPossibleItemFromNoun(basicGameEngine, "apple"))));
       basicGameEngine.progressStory(instantiatedGameAction);
-      Map<String, String> postState = new HashMap<>();
+/*      Map<String, String> postState = new HashMap<>();
       postState.put("random-state", "very-good");
-      postState.put("room", "place1");
-      boolean validPrecond = basicGameEngine.validatePrecondition(postState);
-      assertTrue(validPrecond);
+      postState.put("room", "place1");*/
+      List<BasicCondition> postState = createPreconds("random-state", "very-good", "Very-GOOD FAIL", "room", "place1", "ROOM FAIL");
+      Justification justification = basicGameEngine.validatePrecondition(postState);
+      assertTrue(justification.isAccepted());
    }
 
    @Test
@@ -210,11 +240,12 @@ public class BasicGameEngineTest {
 
       basicGameEngine.progressStory(eatGameAction);
 
-      Map<String, String> postState = new HashMap<>();
+      /*Map<String, String> postState = new HashMap<>();
       postState.put("room", "room2");
-      postState.put("state", "random");
-      boolean validPrecond = basicGameEngine.validatePrecondition(postState);
-      assertTrue(validPrecond);
+      postState.put("state", "random");*/
+      List<BasicCondition> postState = createPreconds("room", "room2", "ROOM FAIL", "state", "random", "STATE FAIL");
+      Justification validPrecond = basicGameEngine.validatePrecondition(postState);
+      assertTrue(validPrecond.isAccepted());
    }
 
 }

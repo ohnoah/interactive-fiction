@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="EnhancedNLPEngineTest" tests="32" skipped="0" failures="0" errors="0" timestamp="2021-02-28T21:43:34" hostname="Noahs-MacBook-Pro.local" time="2.634">
+  <properties/>
+  <testcase name="findNounsFindsUnarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.7"/>
+  <testcase name="parseVerbSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.048"/>
+  <testcase name="parseCorefNounsOneSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.2"/>
+  <testcase name="parseCorefVerbsOneSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.113"/>
+  <testcase name="parseItDogSucceeds" classname="EnhancedNLPEngineTest" time="0.03"/>
+  <testcase name="parseItOtherActionSucceeds" classname="EnhancedNLPEngineTest" time="0.092"/>
+  <testcase name="parsePutSpaceNoun" classname="EnhancedNLPEngineTest" time="0.088"/>
+  <testcase name="findNounsFindsTernarySingleAdjective" classname="EnhancedNLPEngineTest" time="0.073"/>
+  <testcase name="parseTwoActionsVerbsWithThen" classname="EnhancedNLPEngineTest" time="0.066"/>
+  <testcase name="parseTwoActionsNounsWithThen" classname="EnhancedNLPEngineTest" time="0.082"/>
+  <testcase name="parseItActionVerb" classname="EnhancedNLPEngineTest" time="0.029"/>
+  <testcase name="findNounsFindsUnaryDefiniteNoun" classname="EnhancedNLPEngineTest" time="0.032"/>
+  <testcase name="findVerbFindsUnaryEat" classname="EnhancedNLPEngineTest" time="0.027"/>
+  <testcase name="parseCorefNounsTwoSentencesThreeActions" classname="EnhancedNLPEngineTest" time="0.132"/>
+  <testcase name="parseCorefVerbsTernarySingleSentenceThreeActions" classname="EnhancedNLPEngineTest" time="0.181"/>
+  <testcase name="findNounsFindsTernaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.1"/>
+  <testcase name="findMatchingGameItemNamesFailsTooManyAdjectives" classname="EnhancedNLPEngineTest" time="0.013"/>
+  <testcase name="findMatchingGameItemNamesFailsWrongNoun" classname="EnhancedNLPEngineTest" time="0.0"/>
+  <testcase name="parseMultipleWordNoun" classname="EnhancedNLPEngineTest" time="0.039"/>
+  <testcase name="parseCorefVerbsTwoSentencesThreeActions" classname="EnhancedNLPEngineTest" time="0.116"/>
+  <testcase name="findNounsFindsUnaryNoun" classname="EnhancedNLPEngineTest" time="0.019"/>
+  <testcase name="findNounsWithNoValidNounFails" classname="EnhancedNLPEngineTest" time="0.029"/>
+  <testcase name="findNounsFindsTernaryNouns" classname="EnhancedNLPEngineTest" time="0.043"/>
+  <testcase name="parseListenToRegex" classname="EnhancedNLPEngineTest" time="0.037"/>
+  <testcase name="findNounsFindsUnaryMultipleAdjectives" classname="EnhancedNLPEngineTest" time="0.058"/>
+  <testcase name="parseThreeSentences" classname="EnhancedNLPEngineTest" time="0.095"/>
+  <testcase name="findNounsFindsTernaryDefiniteNouns" classname="EnhancedNLPEngineTest" time="0.04"/>
+  <testcase name="parseNounWithDefiniteArticle" classname="EnhancedNLPEngineTest" time="0.041"/>
+  <testcase name="parseVerbSimpleTwoWords" classname="EnhancedNLPEngineTest" time="0.038"/>
+  <testcase name="findMatchingGameItemNamesNoSynonyms" classname="EnhancedNLPEngineTest" time="0.0"/>
+  <testcase name="parseNounSimpleWithExtraStuffAfter" classname="EnhancedNLPEngineTest" time="0.036"/>
+  <testcase name="whenNoMatchingGameVerbThrowFailedParseException" classname="EnhancedNLPEngineTest" time="0.029"/>
+  <system-out><![CDATA[Setting it up!
+{}
+{}
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (ADVP (RB quickly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+open	VB(-)
+the	DT(-)
+door	NN(-)
+quickly	RB(-)
+{}
+DT
+JJ
+NN
+{}
+{}
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (ADVP (RB quickly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+destroy	VB(-)
+the	DT(-)
+cave	NN(-)
+quickly	RB(-)
+{}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+(ROOT (S (VP (VP (VB put) (NP (DT the) (NN donkey)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB eat) (NP (PRP it))))))
+[(0,5), (7,8)]
+[(1,2), (4,5), (8,8)]
+DT
+NN
+DT
+NN
+put	VB(-)
+the	DT(-)
+donkey	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
+and	CC(-)
+eat	VB(-)
+it	PRP(-)
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+(ROOT (S (VP (VP (VB put) (NP (DT the) (NN donkey)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB eat) (NP (PRP it))))))
+[(0,5), (7,8)]
+[(1,2), (4,5), (8,8)]
+DT
+NN
+DT
+NN
+put	VB(-)
+the	DT(-)
+donkey	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
+and	CC(-)
+eat	VB(-)
+it	PRP(-)
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+{}
+{}
+(ROOT (S (VP (VB take) (NP (PRP it)))))
+[(0,1)]
+[(1,1)]
+take	VB(-)
+it	PRP(-)
+{}
+{}
+{}
+(ROOT (S (VP (VB take) (NP (DT the) (JJ fluffy) (NN dog)) (ADVP (RB graciously)))))
+[(0,4)]
+[(1,3)]
+DT
+JJ
+NN
+take	VB(-)
+the	DT(-)
+fluffy	JJ(-)
+dog	NN(-)
+graciously	RB(-)
+{}
+2147483648
+2147483648
+{}
+{}
+(ROOT (S (VP (VB put) (NP (DT the) (NN pen)) (PP (IN in) (NP (DT the) (NN box))))))
+[(0,5)]
+[(1,2), (4,5)]
+DT
+NN
+DT
+NN
+put	VB(-)
+the	DT(-)
+pen	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
+{}
+DT
+JJ
+NN
+DT
+JJ
+NN
+{}
+{}
+(ROOT (S (VP (VP (VB eat) (NP (DT the) (NN donkey))) (CC and) (ADVP (RB then)) (VP (VB examine) (NP (DT the) (NN key))))))
+[(0,2), (5,7)]
+[(1,2), (6,7)]
+DT
+NN
+DT
+NN
+eat	VB(-)
+the	DT(-)
+donkey	NN(-)
+and	CC(-)
+then	RB(-)
+examine	VB(-)
+the	DT(-)
+key	NN(-)
+{}
+{}
+{}
+(ROOT (S (VP (VP (VB eat) (NP (DT the) (NN donkey))) (CC and) (ADVP (RB then)) (VP (VB examine) (NP (DT the) (NN key))))))
+[(0,2), (5,7)]
+[(1,2), (6,7)]
+DT
+NN
+DT
+NN
+eat	VB(-)
+the	DT(-)
+donkey	NN(-)
+and	CC(-)
+then	RB(-)
+examine	VB(-)
+the	DT(-)
+key	NN(-)
+{}
+{}
+{}
+(ROOT (S (VP (VB destroy) (NP (PRP it)) (ADVP (RB quickly)))))
+[(0,2)]
+[(1,1)]
+destroy	VB(-)
+it	PRP(-)
+quickly	RB(-)
+{}
+DT
+NN
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 2]}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 2]}
+(ROOT (S (VP (VP (VB put) (NP (DT the) (NN donkey)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB eat) (NP (PRP it)))) (. .)))
+[(0,5), (7,8)]
+[(1,2), (4,5), (8,8)]
+DT
+NN
+DT
+NN
+(ROOT (S (VP (VB eat) (NP (DT the) (NN box))) (. .)))
+[(0,2)]
+[(1,2)]
+DT
+NN
+put	VB(-)
+the	DT(-)
+donkey	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
+and	CC(-)
+eat	VB(-)
+it	PRP(-)
+.	.(-)
+eat	VB(-)
+the	DT(-)
+box	NN(-)
+.	.(-)
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 2]}
+{2=CHAIN2-["the horse" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
+{2=CHAIN2-["the horse" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
+(ROOT (S (VP (VP (VP (VB put) (NP (DT the) (NN horse)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB drink) (NP (PRP it)) (PP (IN from) (NP (DT the) (NN box))))) (CC and) (VP (VBP examine) (NP (NN key)))) (. .)))
+[(0,5), (7,11), (13,14)]
+[(1,2), (4,5), (8,8), (10,11), (14,14)]
+DT
+NN
+DT
+NN
+NN
+put	VB(-)
+the	DT(-)
+horse	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
+and	CC(-)
+drink	VB(-)
+it	PRP(-)
+from	IN(-)
+the	DT(-)
+box	NN(-)
+and	CC(-)
+examine	VBP(-)
+key	NN(-)
+.	.(-)
+{2=CHAIN2-["the horse" in sentence 1, "it" in sentence 1], 3=CHAIN3-["the box" in sentence 1, "the box" in sentence 1]}
+DT
+JJR
+JJ
+NN
+DT
+JJS
+JJ
+NN
+{}
+{}
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN living) (NN room)) (ADVP (RB ferociously)))))
+[(0,4)]
+[(1,3)]
+DT
+NN
+NN
+destroy	VB(-)
+the	DT(-)
+living	NN(-)
+room	NN(-)
+ferociously	RB(-)
+{}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+(ROOT (S (VP (VP (VB put) (NP (DT the) (NN donkey)) (PP (IN in) (NP (DT the) (NN box)))) (CC and) (VP (VB eat) (NP (PRP it)))) (. .)))
+[(0,5), (7,8)]
+[(1,2), (4,5), (8,8)]
+DT
+NN
+DT
+NN
+(ROOT (S (VP (VB eat) (NP (NN box))) (. .)))
+[(0,1)]
+[(1,1)]
+NN
+put	VB(-)
+the	DT(-)
+donkey	NN(-)
+in	IN(-)
+the	DT(-)
+box	NN(-)
+and	CC(-)
+eat	VB(-)
+it	PRP(-)
+.	.(-)
+eat	VB(-)
+box	NN(-)
+.	.(-)
+{2=CHAIN2-["the donkey" in sentence 1, "it" in sentence 1]}
+NN
+PRP
+NN
+NN
+{}
+{}
+(ROOT (S (VP (VB listen) (PP (IN to) (NP (DT the) (NN dog))))))
+[(0,3)]
+[(2,3)]
+DT
+NN
+listen	VB(-)
+to	IN(-)
+the	DT(-)
+dog	NN(-)
+{}
+DT
+JJ
+CC
+JJ
+NN
+{}
+{}
+(ROOT (S (VP (VB eat) (NP (DT the) (NN donkey))) (. .)))
+[(0,2)]
+[(1,2)]
+DT
+NN
+(ROOT (S (VP (VB examine) (NP (DT the) (NN key))) (. .)))
+[(0,2)]
+[(1,2)]
+DT
+NN
+(ROOT (S (VP (VB open) (NP (DT the) (NN box))) (. .)))
+[(0,2)]
+[(1,2)]
+DT
+NN
+eat	VB(-)
+the	DT(-)
+donkey	NN(-)
+.	.(-)
+examine	VB(-)
+the	DT(-)
+key	NN(-)
+.	.(-)
+open	VB(-)
+the	DT(-)
+box	NN(-)
+.	.(-)
+{}
+DT
+NN
+DT
+NN
+{}
+{}
+(ROOT (S (VP (VB open) (NP (DT the) (NN door)) (ADVP (RB slowly)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+open	VB(-)
+the	DT(-)
+door	NN(-)
+slowly	RB(-)
+{}
+{}
+{}
+(ROOT (S (VP (VB take) (NP (DT the) (NN dog)) (ADVP (RB graciously)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+take	VB(-)
+the	DT(-)
+dog	NN(-)
+graciously	RB(-)
+{}
+{}
+{}
+(ROOT (S (VP (VB destroy) (NP (DT the) (NN cave)) (ADVP (RB ferociously)))))
+[(0,3)]
+[(1,2)]
+DT
+NN
+destroy	VB(-)
+the	DT(-)
+cave	NN(-)
+ferociously	RB(-)
+{}
+{}
+{}
+(ROOT (S (VP (VB eat) (NP (NN steak)))))
+[(0,1)]
+[(1,1)]
+]]></system-out>
+  <system-err><![CDATA[log4j:WARN No appenders could be found for logger (edu.stanford.nlp.pipeline.StanfordCoreNLP).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+ANTLR Tool version 4.9.1 used for code generation does not match the current runtime version 4.8ANTLR Tool version 4.9.1 used for code generation does not match the current runtime version 4.8]]></system-err>
+</testsuite>

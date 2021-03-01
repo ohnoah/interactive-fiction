@@ -24,8 +24,8 @@ bool
  : TRUE | FALSE
  ;
 
-TRUE       : 'TRUE' ;
-FALSE      : 'FALSE' ;
+TRUE       : 'TRUE' | 'true' ;
+FALSE      : 'FALSE' | 'false' ;
 QUOTE      : '"' ;
 STRING     : ["] [a-zA-Z0-9!#$%&()'*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;

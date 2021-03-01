@@ -364,6 +364,23 @@ public class EnhancedNLPEngineTest {
    }
 
    @Test
+   public void parseMultipleWordNoun() throws FailedParseException {
+      // Maybe destroy the livingRoom
+      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      String verb = "destroy";
+      String noun = "living room";
+      Item livingRoom = TestUtil.roomItem(noun);
+      possibleActionFormats.add(new ActionFormat(verb, null));
+      List<InstantiatedGameAction> instantiatedGameActions =
+          EnhancedNLPEngine.parse(String.format("%s the %s ferociously", verb, noun), possibleActionFormats, Set.of(livingRoom));
+      assertEquals(1, instantiatedGameActions.size());
+      List<Item> wantedArr = List.of(livingRoom);
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
+      List<Item> outArguments = Util.flatten(instantiatedGameAction.getPotentialArguments());
+      assertEquals(wantedArr, outArguments);
+   }
+
+   @Test
    public void parseThreeSentences() throws FailedParseException {
       List<InstantiatedGameAction> instantiatedGameActions =
           EnhancedNLPEngine.parse("eat the donkey. examine the key. open the box.",
@@ -512,10 +529,10 @@ public class EnhancedNLPEngineTest {
       Item panda = TestUtil.roomItem("panda");
       Item owl = TestUtil.roomItem("owl", Set.of("funny", "boring", "interesting"));
       Set<Item> gameItems = Set.of(
-              bear, panda, owl
+          bear, panda, owl
       );
       List<Item> foundItemNames = Util.flatten(EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems));
-      assertEquals(List.of(bear, panda, owl),foundItemNames);
+      assertEquals(List.of(bear, panda, owl), foundItemNames);
 
    }
 

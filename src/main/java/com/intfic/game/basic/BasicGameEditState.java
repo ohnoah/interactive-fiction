@@ -8,6 +8,7 @@ public enum BasicGameEditState {
    START_MESSAGE,
    ROOM_NAME,
    ROOM_ITEMS,
+   ITEM_SYNONYMS,
    ACTION_ROOM,
    ACTION_TRIGGER,
    ACTION_TRIGGER_CLARIFY,
@@ -15,5 +16,5 @@ public enum BasicGameEditState {
    ACTION_PRE,
    ACTION_POST,
    ACTION_MSG,
-   ACTION_FAIL_MSG
+   ITEM_SYNONYMS_SPECIFIED
 }

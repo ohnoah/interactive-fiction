@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
@@ -37,7 +38,7 @@ public class BasicNLPEngine {
       List<String> nouns = new ArrayList<>();
       List<Set<String>> adjectives = new ArrayList<>();
       try {
-         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, possibleItems.stream().map(Item::getName).collect(Collectors.toSet()));
+         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, Util.allItemNamesAndSynonyms(possibleItems));
       }
       catch (JWNLException e) {
          throw new FailedParseException("Dictionary error on the back end. Try again.");

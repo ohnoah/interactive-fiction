@@ -1,5 +1,8 @@
 package com.intfic.game.basic;
 
+import com.intfic.game.enhanced.EnhancedGameDesignAction;
+import com.intfic.game.enhanced.EnhancedGameEditState;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -14,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -36,6 +41,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.plaf.ActionMapUIResource;
+import net.sf.extjwnl.JWNLException;
+import net.sf.extjwnl.data.IndexWord;
+import net.sf.extjwnl.data.POS;
+import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.Word;
+import net.sf.extjwnl.dictionary.Dictionary;
 
 /**
  * com.interactivefiction.BasicGameEditor
@@ -61,6 +72,8 @@ public class BasicGameEditor extends JFrame {
 
    private JTextField input;
    private JTextArea history;
+   private Item synonymItem;
+   private ArrayList<String> synonymIds;
 
 
    private void initializeJFrame(ActionMap actionMap) {
@@ -181,6 +194,21 @@ public class BasicGameEditor extends JFrame {
       return false;
    }
 
+   private BasicCondition stringToCondition(String s) {
+      String[] parts = s.split("\\|");
+      if (parts.length != 2) {
+         return null;
+      }
+      String[] keyDesValue = parts[0].split("=");
+      if (keyDesValue.length != 2) {
+         return null;
+      }
+
+      String failureMessage = parts[1];
+      return new BasicCondition(keyDesValue[0], keyDesValue[1], failureMessage);
+   }
+
+
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
       List<String> clauses = splitByCommaAndTrim(cmd);
       for (String clause : clauses) {
@@ -273,6 +301,18 @@ public class BasicGameEditor extends JFrame {
                         output = "What start message do you want the player to see when they start a new game?";
                         basicGameEditState = BasicGameEditState.START_MESSAGE;
                         break;
+                     case "add synonyms":
+                        Map<String, Item> globalItems = gameEngine.globalItems();
+                        StringBuilder outBuilder = new StringBuilder();
+                        synonymIds = new ArrayList<>(globalItems.keySet());
+                        int i = 0;
+                        for (String key : synonymIds) {
+                           outBuilder.append(String.format("(%d) %s \n", i++, key));
+                        }
+                        output = outBuilder.toString();
+                        output += "Type the id of the item you want to add synonyms for.";
+                        basicGameEditState = BasicGameEditState.ITEM_SYNONYMS;
+                        break;
                      case "new action":
                         output = "What new action do you want to add? Specify the verb and any regex by a comma e.g. \"fly, MYREGEX\". If you wan't a unary action, simply type the verb.";
                         basicGameEditState = BasicGameEditState.ACTIONFORMAT;
@@ -294,9 +334,11 @@ public class BasicGameEditor extends JFrame {
                      fileOut.close();
                      output = String.format("Saved your game to disk with name: %s.", fileName);
                      saved = true;
+                     basicGameEditState = BasicGameEditState.OPEN;
                   }
                   catch (IOException i) {
                      i.printStackTrace();
+                     output = "Try again. IOEXception";
                   }
                   break;
                case LOAD:
@@ -483,8 +525,8 @@ public class BasicGameEditor extends JFrame {
                      if (validItems) {
                         Map<String, Item> roomItems = roomForAction.getItems();
                         instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
-                        output = "Enter the preconditions on the global state for this action " +
-                            "e.g. \"room=First room,player=yellow\".";
+                        output = "Enter the preconditions on the global state for this action and error messages " +
+                            "e.g. \"room=First room|Not in the right room,player=yellow|Player is not yellow.\".";
                         basicGameEditState = BasicGameEditState.ACTION_PRE;
                      }
                      else {
@@ -495,15 +537,32 @@ public class BasicGameEditor extends JFrame {
                case ACTION_PRE:
                   try {
                      effectAction = new BasicGameDesignAction();
-                     Map<String, String> splitPreconds = stringToMap(cmd);
-                     effectAction.setPreconditions(splitPreconds);
-                     output = "Enter the effect on the global state for this action " +
-                         "e.g. \"room=room2,player=red\".";
-                     basicGameEditState = BasicGameEditState.ACTION_POST;
+                     List<BasicCondition> preConds;
+                     // IF THE INPUT IS BLANK
+                     if (cmd.matches("\\s*")) {
+                        preConds = new ArrayList<>();
+                        effectAction.setPreconditions(preConds);
+                        output = "Enter the updates to the world state as a comma-separated set of equality statements \"key1=val1, banana=phone\"";
+                        basicGameEditState = BasicGameEditState.ACTION_POST;
+                     }
+                     else {
+                        List<String> splitPreconds = splitByCommaAndTrim(cmd);
+                        preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
+                        int indexNull = preConds.indexOf(null);
+                        if (indexNull != -1) {
+                           output = String.format("Invalid condition \"%s\". Remember the pipe symbol and error message.", splitPreconds.get(indexNull));
+                        }
+                        else {
+                           effectAction.setPreconditions(preConds);
+                           output = "Enter the updates to the world state as a comma-separated set of equality statements \"key1=val1, banana=phone\"";
+                           basicGameEditState = BasicGameEditState.ACTION_POST;
+                        }
+                     }
+
                   }
                   catch (IndexOutOfBoundsException e) {
-                     output = "Malformed string. Remember to separate each key of the world state" +
-                         " by a \",\" and the key and the value by a \"=\" with no excess spaces";
+                     output = "Malformed string. Remember to separate each condition string " +
+                         " by a \",\"";
                   }
                   break;
                case ACTION_POST:
@@ -520,21 +579,70 @@ public class BasicGameEditor extends JFrame {
                   break;
                case ACTION_MSG:
                   effectAction.setSuccessMessage(cmd);
-                  output = "Great. What message should show if the preconditions are not true? " +
-                      "Press enter to get the default, dynamic error message";
-                  basicGameEditState = BasicGameEditState.ACTION_FAIL_MSG;
-                  break;
-               case ACTION_FAIL_MSG:
-                  if (cmd.equals("")) {
-                     effectAction.setFailureMessage(null);
-                  }
-                  else {
-                     effectAction.setFailureMessage(cmd);
-                  }
                   gameEngine.addAction(roomForAction, instantiatedGameAction, effectAction);
                   basicGameEditState = BasicGameEditState.OPEN;
                   resetAdditions();
                   output = "Great. Adding your new action to the game";
+                  break;
+               case ITEM_SYNONYMS:
+                  Map<String, Item> globalItems = gameEngine.globalItems();
+                  // WORDNET
+
+                  String itemId;
+                  if (cmd.matches("(0|[1-9]\\d*)")) {
+                     int j = Integer.parseInt(cmd);
+                     if (j < synonymIds.size() && j >= 0) {
+                        itemId = synonymIds.get(j);
+                     }
+                     else {
+                        itemId = null;
+                     }
+                  }
+                  else {
+                     itemId = cmd;
+                  }
+                  if (globalItems.containsKey(itemId)) {
+                     this.synonymItem = globalItems.get(itemId);
+                     try {
+                        Dictionary d = Dictionary.getDefaultResourceInstance();
+                        IndexWord iw = d.lookupIndexWord(POS.NOUN, this.synonymItem.getName());
+                        if (iw == null) {
+                           output = "Couldn't load dictionary entry for " + this.synonymItem.getName() + ". Type some synonyms you want anyway.";
+                        }
+                        else {
+                           List<Synset> synsets = iw.getSenses();
+                           StringBuilder outputBuilder = new StringBuilder();
+                           for (Synset synset : synsets) {
+                              outputBuilder.append(synset.getWords().stream().
+                                  map(w -> w.getLemma().equals(synonymItem.getName()) ? null : w.getLemma()).
+                                  filter(s -> !Objects.isNull(s)).
+                                  collect(Collectors.joining(","))).
+                                  append("\n");
+                           }
+                           output = "---- \n " + outputBuilder.toString() + "---- \n";
+                           output += String.format(" are some suggested synonyms for %s. " +
+                               "Type those that you want and any more synonyms you wish as a comma-separated list.", this.synonymItem.getName());
+                        }
+                     }
+                     catch (JWNLException e) {
+                        output = "Couldn't load dictionary " + e.getMessage() + ". Type some synonyms you want anyway.";
+                     }
+                     basicGameEditState = BasicGameEditState.ITEM_SYNONYMS_SPECIFIED;
+                  }
+                  else {
+                     output = "Invalid index specified or misspelled ID of item.";
+                  }
+                  break;
+               case ITEM_SYNONYMS_SPECIFIED:
+                  if (!cmd.matches("\\s*")) {
+                     List<String> splitList = splitByCommaAndTrim(cmd);
+                     this.synonymItem.getSynonyms().addAll(splitList);
+                     output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();
+                  }
+                  else {
+                     output = "Not adding any synonyms";
+                  }
+                  basicGameEditState = BasicGameEditState.OPEN;
                   break;
                default:
                   output = "Invalid game-developing state. Consult the game developer.";

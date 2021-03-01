@@ -68,15 +68,16 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       return new HashSet<>(this.currentRoom.getItems().values());
    }
 
-   public boolean validatePrecondition(Map<String, String> wantedGlobalState) {
-      for (Map.Entry<String, String> entry : wantedGlobalState.entrySet()) {
-         String key = entry.getKey();
-         String wantedValue = entry.getValue();
-         if (!worldState.getOrDefault(key, "").equals(wantedValue)) {
-            return false;
+   public Justification validatePrecondition(List<BasicCondition> wantedGlobalState) {
+      for (BasicCondition condition : wantedGlobalState) {
+         String key = condition.getKey();
+         String wantedValue = condition.getDesiredValue();
+         if (!worldState.getOrDefault(key, "NULL").equals(wantedValue)) {
+            String errorMessage = condition.getErrorMessage();
+            return new Justification(false, errorMessage);
          }
       }
-      return true;
+      return new Justification(true, "");
    }
 
    // set after effects
@@ -96,13 +97,14 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       if (designAction == null) {
          return new Justification(false, worldState.get("errorMessage"));
       }
-      Map<String, String> wantedGlobalState = new HashMap<>(designAction.getPreconditions());
+      List<BasicCondition> wantedGlobalState = designAction.getPreconditions();
 
-      boolean preCondSatisfied = validatePrecondition(wantedGlobalState);
-      if (!preCondSatisfied) {
-         String errorMessage = designAction.getFailureMessage() != null ?
+      Justification preCondSatisfied = validatePrecondition(wantedGlobalState);
+      if (!preCondSatisfied.isAccepted()) {
+         return preCondSatisfied;
+/*         String errorMessage = designAction.getFailureMessage() != null ?
              designAction.getFailureMessage() : "You are not allowed to do that yet.";
-         return new Justification(false, errorMessage);
+         return new Justification(false, errorMessage);*/
       }
       String message = designAction.getSuccessMessage();
 
@@ -126,9 +128,9 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       return this.currentRoom;
    }
 
-   protected void getPreconditionedState(BasicGameDesignAction designAction, Map<String, String> globalStateCondition) {
+/*   protected void getPreconditionedState(BasicGameDesignAction designAction, Map<String, String> globalStateCondition) {
       globalStateCondition.putAll(designAction.getPreconditions());
-   }
+   }*/
 
    protected BasicGameDesignAction getGameDesignAction(InstantiatedGameAction gameAction, Room currentRoom) {
       if (designerActions.containsKey(currentRoom)) {

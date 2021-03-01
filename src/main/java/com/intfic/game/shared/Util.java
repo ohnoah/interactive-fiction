@@ -24,6 +24,11 @@ public final class Util {
       return collection.stream().noneMatch(c -> c.size() != 1);
    }
 
+   public static Set<String> allItemNamesAndSynonyms(Set<Item> items) {
+      return items.stream().flatMap(i -> Stream.concat(Stream.of(i.getName()), i.getSynonyms().stream()))
+          .collect(Collectors.toSet());
+   }
+
    public static <T> List<T> flatten(List<List<T>> collection) {
       return collection.stream().map(x -> x.get(0)).collect(Collectors.toList());
    }
