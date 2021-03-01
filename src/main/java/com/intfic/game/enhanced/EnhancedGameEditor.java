@@ -1,5 +1,6 @@
 package com.intfic.game.enhanced;
 
+import com.intfic.game.basic.BasicGameEditState;
 import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
@@ -17,12 +18,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -38,6 +41,7 @@ import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 import net.sf.extjwnl.dictionary.Dictionary;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,6 +76,7 @@ public class EnhancedGameEditor extends JFrame {
    private JTextField input;
    private JTextArea history;
    private Item synonymItem;
+   private ArrayList<String> synonymIds;
 
    public int getNumEdits() {
       return numEdits;
@@ -321,8 +326,10 @@ public class EnhancedGameEditor extends JFrame {
                      case "add synonyms":
                         Map<String, Item> globalItems = gameEngine.globalItems();
                         StringBuilder outBuilder = new StringBuilder();
-                        for (String key : globalItems.keySet()) {
-                           outBuilder.append(String.format("%s \n", key));
+                        synonymIds = new ArrayList<>(globalItems.keySet());
+                        int i = 0;
+                        for (String key : synonymIds) {
+                           outBuilder.append(String.format("(%d) %s \n", i++, key));
                         }
                         output = outBuilder.toString();
                         output += "Type the id of the item you want to add synonyms for.";
@@ -349,6 +356,7 @@ public class EnhancedGameEditor extends JFrame {
                      fileOut.close();
                      output = String.format("Saved your game to disk with name: %s.", fileName);
                      saved = true;
+                     enhancedGameEditState = EnhancedGameEditState.OPEN;
                   }
                   catch (NotSerializableException e) {
                      output = "Not serializable exception found: " + e.getMessage() + ". Maybe some user code doesn't implement serializable";
@@ -449,7 +457,7 @@ public class EnhancedGameEditor extends JFrame {
                         List<Item> items = new ArrayList<>();
                         for (int i = 0; i < names.size(); i++) {
                            Item item = new Item(names.get(i), adjectives.get(i));
-                           if(!items.contains(item)) {
+                           if (!items.contains(item)) {
                               items.add(item);
                            }
                         }
@@ -474,12 +482,26 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case ITEM_SYNONYMS:
                   Map<String, Item> globalItems = gameEngine.globalItems();
-                  if (globalItems.containsKey(cmd)) {
-                     // WORDNET
-                     this.synonymItem = globalItems.get(cmd);
+                  // WORDNET
+
+                  String itemId;
+                  if (cmd.matches("(0|[1-9]\\d*)")) {
+                     int k = Integer.parseInt(cmd);
+                     if (k < synonymIds.size() && k >= 0) {
+                        itemId = synonymIds.get(k);
+                     }
+                     else {
+                        itemId = null;
+                     }
+                  }
+                  else {
+                     itemId = cmd;
+                  }
+                  if (globalItems.containsKey(itemId)) {
+                     this.synonymItem = globalItems.get(itemId);
                      try {
                         Dictionary d = Dictionary.getDefaultResourceInstance();
-                        IndexWord iw = d.getIndexWord(POS.NOUN, this.synonymItem.getName());
+                        IndexWord iw = d.lookupIndexWord(POS.NOUN, this.synonymItem.getName());
                         if (iw == null) {
                            output = "Couldn't load dictionary entry for " + this.synonymItem.getName() + ". Type some synonyms you want anyway.";
                         }
@@ -487,7 +509,11 @@ public class EnhancedGameEditor extends JFrame {
                            List<Synset> synsets = iw.getSenses();
                            StringBuilder outputBuilder = new StringBuilder();
                            for (Synset synset : synsets) {
-                              outputBuilder.append(synset.getWords().stream().map(Word::getLemma).collect(Collectors.joining(","))).append("\n");
+                              outputBuilder.append(synset.getWords().stream().
+                                  map(w -> w.getLemma().equals(synonymItem.getName()) ? null : w.getLemma()).
+                                  filter(s -> !Objects.isNull(s)).
+                                  collect(Collectors.joining(","))).
+                                  append("\n");
                            }
                            output = "---- \n " + outputBuilder.toString() + "---- \n";
                            output += String.format(" are some suggested synonyms for %s. " +
@@ -500,19 +526,19 @@ public class EnhancedGameEditor extends JFrame {
                      enhancedGameEditState = EnhancedGameEditState.ITEM_SYNONYMS_SPECIFIED;
                   }
                   else {
-                     output = "That's not a valid item ID. Try again.";
+                     output = "Invalid index specified or misspelled ID of item.";
                   }
                   break;
                case ITEM_SYNONYMS_SPECIFIED:
-                  if (cmd.equals("")) {
-                     output = "Invalid synonyms comma-separated list. Try again";
-                  }
-                  else {
+                  if (!cmd.matches("\\s*")) {
                      List<String> splitList = splitByCommaAndTrim(cmd);
                      this.synonymItem.getSynonyms().addAll(splitList);
                      output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();
-                     enhancedGameEditState = EnhancedGameEditState.OPEN;
                   }
+                  else {
+                     output = "Not adding any synonyms";
+                  }
+                  enhancedGameEditState = EnhancedGameEditState.OPEN;
                   break;
                case ACTION_ROOM:
                   List<Room> matchedRooms = gameEngine.findRoom(cmd);
@@ -604,7 +630,8 @@ public class EnhancedGameEditor extends JFrame {
                   try {
                      effectAction = new EnhancedGameDesignAction();
                      List<Condition> preConds;
-                     if (cmd.equals("")) {
+                     // IF THE INPUT IS BLANK
+                     if (cmd.matches("\\s*")) {
                         preConds = new ArrayList<>();
                         effectAction.setPreconditions(preConds);
                         output = "Enter the updates to the knowledgebase as comma-separated KnowledgeUpdate strings" +

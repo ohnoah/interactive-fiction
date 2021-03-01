@@ -41,7 +41,7 @@ public class EnhancedNLPEngine {
       outer:
       for (Constituent constituent : treeConstituents) {
          if (constituent.label() != null &&
-             (constituent.label().toString().equals("VP") || (constituent.label().toString().equals("NP")))) {
+             (constituent.label().toString().equals("VP"))) {
             for (int j = 0; j < vpsConstituent.size(); j++) {
                Constituent c = vpsConstituent.get(j);
                if (c != null && c.contains(constituent)) {
@@ -57,13 +57,30 @@ public class EnhancedNLPEngine {
                vps.add(new Pair<>(constituent.start(), constituent.end()));
                vpsConstituent.add(constituent);
             }
-            else if (constituent.label().toString().equals("NP")) {
+/*            else if (constituent.label().toString().equals("NP")) {
                nps.add(new Pair<>(constituent.start(), constituent.end()));
                npsConstituent.add(constituent);
-            }
+            }*/
             //System.err.println(tree.getLeaves().subList(constituent.start(), constituent.end() + 1));
          }
+         else if (constituent.label() != null &&
+             ((constituent.label().toString().equals("NP")))) {
+            // We want the NP to be maximal but VP to be minimal
+            for (int j = 0; j < npsConstituent.size(); j++) {
+               Constituent c = npsConstituent.get(j);
+               if (c != null && c.contains(constituent)) {
+                  continue outer;
+               }
+               else if (c != null && constituent.contains(c)) {
+                  npsConstituent.set(j, null);
+                  nps.set(j, null);
+               }
+            }
+            nps.add(new Pair<>(constituent.start(), constituent.end()));
+            npsConstituent.add(constituent);
+         }
       }
+      // remove null values
       boolean status = true;
       while (status) {
          status = vps.remove(null);
@@ -193,6 +210,8 @@ public class EnhancedNLPEngine {
          return adjAndNouns.second;
       }
       List<CoreLabel> tokens = sentence.tokens();
+      List<String> itemStrings = new ArrayList<>();
+      boolean foundNoun = false;
       for (int i = np.first; i <= np.second; i++) {
          CoreLabel tok = tokens.get(i);
          String tag = tok.tag();
@@ -202,12 +221,17 @@ public class EnhancedNLPEngine {
          }
          if (isNoun(tag)) {
             // TODO: Allow multiple words here
+            foundNoun = true;
             String noun = tok.word();
-            if (corefRepresentative.containsValue(np)) {
-               corefCache.put(np, new Pair<>(adjectives, noun));
-            }
-            return noun;
+            itemStrings.add(noun);
          }
+      }
+      if (foundNoun) {
+         String item = String.join(" ", itemStrings);
+         if (corefRepresentative.containsValue(np)) {
+            corefCache.put(np, new Pair<>(adjectives, item));
+         }
+         return item;
       }
 
       throw new FailedParseException(String.format("Couldn't find any item in words: %s",
@@ -336,7 +360,9 @@ public class EnhancedNLPEngine {
 
    public static void main(String[] args) {
       try {
-         System.out.println(EnhancedNLPEngine.parse("eat the living room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("apple juice"))));
+         System.out.println(EnhancedNLPEngine.parse("eat the back of the living room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("apple juice"))));
+         System.out.println(EnhancedNLPEngine.parse("eat the onepiece", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
+         System.out.println(EnhancedNLPEngine.parse("eat the paracetamol", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
       }
       catch (FailedParseException e) {
          e.printStackTrace();
