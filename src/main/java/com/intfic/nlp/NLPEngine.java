@@ -45,7 +45,7 @@ public abstract class NLPEngine {
             continue;
          }
          for (Item item : possibleItems) {
-            if (item.getSynonyms().contains(noun)) {
+            if (item.getSynonyms().contains(noun.toLowerCase())) {
                nounMatch = true;
                long adjectiveMatch = adjectivesMatch(adjectives.get(i), item.getAdjectives());
                if (adjectiveMatch == numGivenAdjectives) {

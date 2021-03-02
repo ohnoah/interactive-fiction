@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -155,7 +156,16 @@ public class BasicGameEditor extends JFrame {
    }
 
    private List<String> splitByCommaAndTrim(String raw) {
-      return Arrays.asList(raw.split(",")).stream().map(s -> s.trim()).collect(Collectors.toList());
+      return splitByCommaAndTrim(raw, false);
+   }
+
+   private List<String> splitByCommaAndTrim(String raw, boolean lowerCase) {
+      if (lowerCase) {
+         return Arrays.stream(raw.split(",")).map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
+      }
+      else {
+         return Arrays.stream(raw.split(",")).map(s -> s.trim()).collect(Collectors.toList());
+      }
    }
 
    private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException {
@@ -210,7 +220,7 @@ public class BasicGameEditor extends JFrame {
 
 
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
-      List<String> clauses = splitByCommaAndTrim(cmd);
+      List<String> clauses = splitByCommaAndTrim(cmd, true);
       for (String clause : clauses) {
          if (clause.contains("[") || clause.contains("]")) {
             Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s-]+)]$");
@@ -635,8 +645,9 @@ public class BasicGameEditor extends JFrame {
                   break;
                case ITEM_SYNONYMS_SPECIFIED:
                   if (!cmd.matches("\\s*")) {
-                     List<String> splitList = splitByCommaAndTrim(cmd);
-                     this.synonymItem.getSynonyms().addAll(splitList);
+                     List<String> splitList = splitByCommaAndTrim(cmd, true);
+                     this.synonymItem.addSynonyms(splitList);
+                     this.synonymItem.getParentRoom().addItem(this.synonymItem);
                      output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();
                   }
                   else {

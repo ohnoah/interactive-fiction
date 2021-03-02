@@ -12,6 +12,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Util {
+
+   public static String capitalize(String s) {
+      if (s.length() > 0) {
+         return s.substring(0, 1).toUpperCase() + s.substring(1);
+      }
+      else {
+         return s;
+      }
+   }
+
    public static <T, S> Map<S, T> collectionToMap(Collection<T> collection, Function<T, S> fn) {
       return collection.stream().collect(Collectors.toMap(fn, value -> value));
    }

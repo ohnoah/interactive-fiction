@@ -5,6 +5,7 @@ import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
+import com.intfic.game.shared.Util;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -68,12 +69,15 @@ public class BasicGameEngine extends GameEngine implements Serializable {
       return new HashSet<>(this.currentRoom.getItems().values());
    }
 
+
+
+
    public Justification validatePrecondition(List<BasicCondition> wantedGlobalState) {
       for (BasicCondition condition : wantedGlobalState) {
          String key = condition.getKey();
          String wantedValue = condition.getDesiredValue();
-         if (!worldState.getOrDefault(key, "NULL").equals(wantedValue)) {
-            String errorMessage = condition.getErrorMessage();
+         if (!worldState.getOrDefault(key, "NULL").equalsIgnoreCase(wantedValue)) {
+            String errorMessage = Util.capitalize(condition.getErrorMessage());
             return new Justification(false, errorMessage);
          }
       }
