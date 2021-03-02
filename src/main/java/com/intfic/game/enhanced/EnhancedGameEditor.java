@@ -532,7 +532,8 @@ public class EnhancedGameEditor extends JFrame {
                case ITEM_SYNONYMS_SPECIFIED:
                   if (!cmd.matches("\\s*")) {
                      List<String> splitList = splitByCommaAndTrim(cmd);
-                     this.synonymItem.getSynonyms().addAll(splitList);
+                     this.synonymItem.addSynonyms(splitList);
+                     this.synonymItem.getParentRoom().addItem(this.synonymItem);
                      output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();
                   }
                   else {

@@ -142,4 +142,7 @@ public class Item implements Serializable {
       this.name = name;
    }
 
+   public void addSynonyms(List<String> splitList) {
+      synonyms.addAll(splitList);
+   }
 }
