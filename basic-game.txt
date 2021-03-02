@@ -238,7 +238,7 @@ living room
 % trigger
 examine
 % item
-window_2
+window
 % precond
 
 % postcond
@@ -247,6 +247,7 @@ westWindowExamined=true, acidDiscovered=true
 The window has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
 
 
+% EXAMINE WINDOW_2
 add action
 % room
 living room
@@ -261,6 +262,7 @@ southWindowExamined=true
 % message
 The window is reinforced with some strange material, as you suspected. 
 
+% EXAMINE WINDOW_3
 add action
 % room
 living room
@@ -275,6 +277,7 @@ eastWindowExamined=true
 % message
 The window is reinforced with some strange material, as you suspected. 
 
+%EXAMIEN ACID
 add action
 % room
 living room
@@ -289,7 +292,7 @@ acidExamined=true
 % message
 You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
 
-
+% PUT ACID ON 
 add action
 % room
 living room
