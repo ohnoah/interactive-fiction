@@ -390,7 +390,7 @@ onePieceOn=NULL|You already have the onepiece on.
 % postcond
 onePieceOn=true, errorMessage=Why would you do that? You need to follow Drof.
 % message
-You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.
+You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.\n Drof yells at you: "FOLLOW ME! QUICKLY!".
 % failmessage
 
 add action
@@ -405,7 +405,7 @@ onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
 % postcond
 room=bar, errorMessage=You can't do that.
 % message
-Drof hurries you along through the cul-de-sacs neighbourhood where you have lived all your life. As you yell explicatives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar.
+Drof hurries you along through the cul-de-sacs neighbourhood where you have lived all your life. As you yell explicatives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
 
 add room
 bar
@@ -456,7 +456,7 @@ You make your way to the back of the room where you sit down and immediately get
 
 add room
 back of bar
-tapas [spanish delicious], antechamber, stairs, upstairs
+tapas [spanish delicious], antechamber, upstairs [staircase stairs]
 
 add action
 % room
@@ -578,7 +578,7 @@ upstairs
 % trigger
 examine
 % item
-depasito
+darkside
 % precond
 
 % postcond
@@ -600,7 +600,7 @@ record
 % postcond
 pinkrecordExamined=true
 % message
-To your surprise, the Pink cover is a Pink song.
+To your surprise, the pink cover is a P!nk song.
 % failmessage
 
 % put depasito in the vinyl player
@@ -674,9 +674,26 @@ You enter the antechamber. There are many of these strange humanoids in the room
 % failmessage
 
 
+% ENTER ANTECHAMBER
+add action
+% room
+back of bar
+% trigger
+enter
+% item
+antechamber
+% precond
+
+% postcond
+room=antechamber
+% message
+You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
+% failmessage
+
+
 add room
 antechamber
-room, door [distantmbrown]
+room, door [distant brown]
 
 add action
 % room
@@ -690,7 +707,7 @@ door
 % postcond
 
 % message
-You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots.
+You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots. Maybe the stairs are more interesting and you should leave this room.
 % failmessage
 
 % LEAVE ROOM ANTECHAMBER

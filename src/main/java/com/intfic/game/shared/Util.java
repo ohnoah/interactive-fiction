@@ -2,6 +2,7 @@ package com.intfic.game.shared;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,19 @@ public final class Util {
       }
       return s.toString();
    }
+    public static List<String> splitByCommaAndTrim(String raw) {
+      return splitByCommaAndTrim(raw, false);
+   }
+
+   public static List<String> splitByCommaAndTrim(String raw, boolean lowerCase) {
+      if (lowerCase) {
+         return Arrays.stream(raw.split(",")).map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
+      }
+      else {
+         return Arrays.stream(raw.split(",")).map(s -> s.trim()).collect(Collectors.toList());
+      }
+   }
+
 
 
    public static <T, S> Map<S, List<T>> collectionToMapList(Collection<T> collection, Function<T, S> fn) {

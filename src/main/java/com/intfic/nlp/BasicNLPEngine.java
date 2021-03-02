@@ -1,5 +1,6 @@
 package com.intfic.nlp;
 
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -33,26 +34,41 @@ public class BasicNLPEngine {
       catch (JWNLException e) {
          e.printStackTrace();
       }
-      ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
+      List<ActionFormat> actionFormats = findMatchingGameVerb(verb, possibleActionFormats);
 
-      List<String> nouns = new ArrayList<>();
-      List<Set<String>> adjectives = new ArrayList<>();
-      try {
-         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, Util.allItemNamesAndSynonyms(possibleItems));
-      }
-      catch (JWNLException e) {
-         throw new FailedParseException("Dictionary error on the back end. Try again.");
-      }
-      List<List<Item>> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
+      String message = "";
+      for (int i = 0; i < actionFormats.size(); i++) {
+         ActionFormat actionFormat = actionFormats.get(i);
+         List<String> nouns = new ArrayList<>();
+         List<Set<String>> adjectives = new ArrayList<>();
+         try {
+            Justification justification = findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, Util.allItemNamesAndSynonyms(possibleItems));
+            if (justification.isAccepted()) {
+               List<List<Item>> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
 
-      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
+               InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
+               return Collections.singletonList(command);
+            }
+            else{
+               if(actionFormats.size() == 1){
+                  message = justification.getReasoning();
+               }
+               else{
+                  message = "Identified verb: " + verb + " but none of the formats matched what you entered.";
+               }
+            }
+         }
+         catch (JWNLException e) {
+            throw new FailedParseException("Dictionary error on the back end. Try again.");
+         }
+      }
+      throw new FailedParseException(message);
       // Use that to look for a VB and a NN and populate a Command
       // just look for the possible commands using WordNet otherwise return Error
       // enhanced engine can be more informative if a supplementary word happens
       // FAIL flag if command is fake
 
 
-      return Collections.singletonList(command);
    }
 
 
@@ -97,8 +113,8 @@ public class BasicNLPEngine {
       return noun;
    }
 
-   public static void findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake,
-                                             List<String> nouns, List<Set<String>> adjectives, Set<String> possibleItemNames) throws JWNLException, FailedParseException {
+   public static Justification findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake,
+                                                      List<String> nouns, List<Set<String>> adjectives, Set<String> possibleItemNames) throws JWNLException, FailedParseException {
       // Either do a regex match for PUT IN
       if (actionToTake.isTernary()) {
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
@@ -114,7 +130,8 @@ public class BasicNLPEngine {
             }
          }
          else {
-            throw new FailedParseException("Argument structure after the verb was wrong.");
+            return new Justification(false, " Argument structure after the verb was wrong.");
+            /* throw new FailedParseException("Argument structure after the verb was wrong.");*/
          }
       }
       // Or just find the noun if its a unary
@@ -124,18 +141,24 @@ public class BasicNLPEngine {
          nouns.add(noun);
          adjectives.add(currentAdjectives);
          if (nouns.size() != 1) { // no nullary operator allowed
-            throw new FailedParseException("Expected 1 noun as argument but got " + nouns.size() + ".");
+            return new Justification(false, "Expected 1 noun as argument but got " + nouns.size() + ".");
+            /* throw new FailedParseException("Expected 1 noun as argument but got " + nouns.size() + ".");*/
          }
       }
+      return new Justification(true, "");
    }
 
    // This fails for e.g. TURN it ON, TURN the box
-   public static ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
+   public static List<ActionFormat> findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
       // Word net in here
+      List<ActionFormat> actionFormats = new ArrayList<>();
       for (ActionFormat af : possibleActionFormats) {
          if (af.getVerb().equals(verb)) {
-            return af;
+            actionFormats.add(af);
          }
+      }
+      if (actionFormats.size() != 0) {
+         return actionFormats;
       }
       throw new FailedParseException("No action corresponds to the verb: " + verb);
    }

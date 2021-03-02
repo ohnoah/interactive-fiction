@@ -1,6 +1,7 @@
 package com.intfic.game.shared;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -81,6 +82,22 @@ public class ActionFormat implements Serializable {
       }
       else{
          return this.getVerb() + " [0]";
+      }
+   }
+
+   public String fillToString(List<String> arguments) {
+      if(arguments.size() != this.getDegree()){
+         return this.toString() + ". Invalid num argument specified.";
+      }
+      if (regExpr != null) {
+         Pattern p = Pattern.compile("([(](?!\\?\\:)[\\w\\p{Punct}]*)[)]");
+         Matcher m = p.matcher(regExpr);
+         AtomicInteger filler = new AtomicInteger();
+         String replaced = m.replaceAll(match -> "[ +"  + arguments.get(filler.getAndIncrement()) + "]");
+         return replaced.replaceAll("[$^]", "");
+      }
+      else{
+         return this.getVerb() + arguments.get(0);
       }
    }
 }
