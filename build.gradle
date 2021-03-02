@@ -2,11 +2,22 @@ plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.6.5'
     id 'antlr'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
+
+shadowJar {
+    archiveBaseName.set('shadow')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+    mainClassName="com.intfic.EnhancedGamePlayer"
+}
+mainClassName="com.intfic.EnhancedGamePlayer"
 
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+
 
 repositories {
     mavenCentral()
@@ -38,5 +49,5 @@ test{
     //useJUnit()
     maxHeapSize = "2048m"
 }
-
+mainClassName = "com.intfic.EnhancedGamePlayer"
 

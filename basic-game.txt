@@ -70,6 +70,7 @@ breakfeastEaten=true|What paracetamol?, lightOn=true|You can't find the paraceta
 paracetamolEaten=true
 % message
 You swallow the paracetamol and the headache immediately goes away. What a power pill!
+
 add action
 % room
 bed room
@@ -78,12 +79,11 @@ eat
 % item
 paracetamol
 % precond
-lightOn=true, breakfeastEaten=true
+breakfeastEaten=true|What paracetamol?, lightOn=true|You can't find the paracetamol in the dark.
 % postcond
 paracetamolEaten=true
 % message
 You swallow the paracetamol and the headache immediately goes away. What a power pill!
-
 
 % turn light off
 add action
@@ -125,6 +125,7 @@ take
 backpack
 lightOn=true|You reach for your backpack but miss it in the dark.
 backpackTaken=true
+You take the backpack.
 
 
 % take object
@@ -205,7 +206,7 @@ add room
 % name
 living room
 % items
-note [small], window [west], window [south], window [east], juice [green light acidic], room, backpack [blue]
+note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue]
 
 
 % all actions 
@@ -300,7 +301,7 @@ living room
 put
 1
 % item
-juice
+juice, backpack
 % precond
 acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
 % postcond
@@ -319,14 +320,14 @@ throw
 % item
 backpack, window
 % precond
-acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm, how can I get through that reinforcement material?", you think as you pick the bag back up.
+acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?", you think as you pick the bag back up.
 % postcond
 windowBroken=true
 % message
 You throw the acid-coated bag at the window with all your force. The instant the bag touches the window, the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
 
 
-% throw backpack at west window
+% throw backpack at  window_2
 add action
 % room
 living room
@@ -494,7 +495,7 @@ back of bar
 % trigger
 go
 % item
-staircase
+upstairs
 % precond
 
 % postcond
@@ -507,7 +508,7 @@ You go upstairs to realise that the robots have completely changed the interior 
 % UPSTAIRS ACTIONS
 add room
 upstairs
-player [vinyl], Depasito, Darkside, record [pink]
+player [vinyl], Depasito, Darkside, record [pink], records
 
 % EXAMINE PLAYER
 add action
