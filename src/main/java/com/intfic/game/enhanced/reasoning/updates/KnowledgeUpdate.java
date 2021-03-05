@@ -92,7 +92,7 @@ public class KnowledgeUpdate implements Serializable {
 
    private boolean isConstant(String secondOperand) {
       return Pattern.matches(
-          String.format("%s|%s|%s|%s|TRUE|FALSE",
+          String.format("%s|%s|%s|%s|TRUE|FALSE|true|false",
               KnowledgeRegex.STRING_EXPR, KnowledgeRegex.NUMBER_EXPR, KnowledgeRegex.NUMBER_LIST_EXPR, KnowledgeRegex.STRING_LIST_EXPR),
           secondOperand);
    }
@@ -165,7 +165,7 @@ public class KnowledgeUpdate implements Serializable {
       }
       else {
          Pattern constant = Pattern.compile(
-             String.format("^%s %s (%s|%s|%s|%s|TRUE|FALSE)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
+             String.format("^%s %s (%s|%s|%s|%s|TRUE|FALSE|true|false)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
          );
          Matcher constantMatcher = constant.matcher(expr);
          if (constantMatcher.matches()) {

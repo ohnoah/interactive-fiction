@@ -616,6 +616,7 @@ public class EnhancedGameEditor extends JFrame {
                      List<String> formattedItemNames = new ArrayList<>();
                      String roomPrefix = Item.roomId(roomForAction.getName());
                      for (String s : splitArgs) {
+                        s = s.toLowerCase();
                         String formatted = !s.startsWith(roomPrefix) ? roomPrefix + "." + s : s;
                         formattedItemNames.add(formatted);
                      }

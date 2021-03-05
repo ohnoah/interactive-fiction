@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,14 @@ public class TransformGame {
       List<String> splitList = Util.splitByCommaAndTrim(line);
       splitList = splitList.stream().map(l -> "world::" + l).collect(Collectors.toList());
       return String.join(",", splitList);
+   }
+   private static String makeString(String s){
+      String[] parts = s.split("=");
+      String secondPart = parts[1];
+      if (!(parts[1].equals("true") || parts[1].equals("false") || parts[1].equals("TRUE") || parts[1].equals("FALSE"))) {
+         secondPart = "\"" + secondPart + "\"";
+      }
+      return (parts[0] + " := " + secondPart);
    }
 
    private static String commentRegex = "%[\\w\\p{Punct}\\s]*";
@@ -40,14 +49,19 @@ public class TransformGame {
                Files.write(file.toPath(), List.of(line), StandardOpenOption.APPEND);
                line = reader.readLine();
             }*/
-            newLine = line;
+            newLine = line.replaceAll("NULL", "\"NULL\"");
 
             if(line.contains("|")){
-               newLine = appendWorld(line);
+               newLine = appendWorld(newLine);
             }
             else if(line.contains("=")){
-               newLine = appendWorld(line);
-               newLine = newLine.replaceAll("=", " := ");
+               newLine = appendWorld(newLine);
+               String[] commas = newLine.split(",");
+               List<String> statements = new ArrayList<>();
+               for(String s : commas) {
+                  statements.add(makeString(s));
+               }
+               newLine = String.join(",", statements);
             }
 /*            if (searching) {
                if (line.matches("\\w*add action\\w*")) {
