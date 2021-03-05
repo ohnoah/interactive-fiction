@@ -12,6 +12,7 @@ import com.intfic.game.enhanced.reasoning.visitors.TypeConvertVisitor;
 import com.intfic.game.enhanced.reasoning.VisitorHelper;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.shared.*;
+import gherkin.lexer.Kn;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -155,7 +156,7 @@ public class EnhancedGameEditor extends JFrame {
    }
 
    private List<String> splitByCommaAndTrim(String raw) {
-      return Arrays.asList(raw.split(",")).stream().map(s -> s.trim()).collect(Collectors.toList());
+      return Arrays.stream(raw.split(",")).map(String::trim).collect(Collectors.toList());
    }
 
    private Condition stringToCondition(String s) {
@@ -164,12 +165,18 @@ public class EnhancedGameEditor extends JFrame {
          return null;
       }
       String booleanExpr = parts[0];
+      if(!booleanExpr.contains("::")){
+         booleanExpr = "world::" + booleanExpr;
+      }
       String failureMessage = parts[1];
       return new Condition(booleanExpr, failureMessage);
    }
 
    private KnowledgeUpdate stringToKnowledgeUpdate(String raw) {
       try {
+         if(!raw.contains("::")){
+            raw = "world::" + raw;
+         }
          return new KnowledgeUpdate(raw);
       }
       catch (KnowledgeException e) {
@@ -256,9 +263,6 @@ public class EnhancedGameEditor extends JFrame {
       String output = null;
       cmd = cmd.replace("\\n", "\n");
       switch (cmd) {
-         case "":
-            output = "";
-            break;
          case "quit":
             if (!saved) {
                output = "Warning: you have not saved your progress. If you still want to quit type quit again.";
@@ -276,6 +280,7 @@ public class EnhancedGameEditor extends JFrame {
             output = "Cleared your status.";
             gameEngine = new EnhancedGameEngine();
             resetAdditions();
+            enhancedGameEditState = EnhancedGameEditState.OPEN;
             break;
          case "list":
             output = gameEngine.getPossibleActionFormats().stream()
@@ -378,7 +383,7 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.OPEN;
                         while (myReader.hasNextLine()) {
                            String line = myReader.nextLine().trim();
-                           if (!((line.equals("") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
+                           if (!((line.matches("\\s*") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
                               String runningSofar = history.getText();
                               res = editGame(line, runningSofar);
                               writeToTerminal(res.get(0), res.get(1), res.get(2));
@@ -644,6 +649,8 @@ public class EnhancedGameEditor extends JFrame {
                         preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
                         int indexNull = preConds.indexOf(null);
                         if (indexNull != -1) {
+                           System.out.println("EMPTY LINE");
+                           System.out.println("----" + cmd + "---");
                            output = String.format("Invalid condition \"%s\". Remember the pipe symbol and error message.", splitPreconds.get(indexNull));
                         }
                         else {
@@ -663,17 +670,27 @@ public class EnhancedGameEditor extends JFrame {
                case ACTION_POST:
                   try {
                      // TODO: accept empty string
-                     List<String> splitPostconds = splitByCommaAndTrim(cmd);
-                     List<KnowledgeUpdate> postConds = splitPostconds.stream().map(this::stringToKnowledgeUpdate).collect(Collectors.toList());
-                     int indexNull = postConds.indexOf(null);
-                     if (indexNull != -1) {
-                        output = String.format("Invalid KnowledgeUpdate string \"%s\"", splitPostconds.get(indexNull));
-                     }
-                     else {
+                     List<KnowledgeUpdate> postConds;
+                     if (cmd.matches("\\s*")) {
+                        postConds = new ArrayList<>();
                         effectAction.setUpdateState(postConds);
                         output = "Enter the message to display to the user after taking this action.";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_MSG;
                      }
+                     else {
+                        List<String> splitPostconds = splitByCommaAndTrim(cmd);
+                        postConds = splitPostconds.stream().map(this::stringToKnowledgeUpdate).collect(Collectors.toList());
+                        int indexNull = postConds.indexOf(null);
+                        if (indexNull != -1) {
+                           output = String.format("Invalid KnowledgeUpdate string \"%s\"", splitPostconds.get(indexNull));
+                        }
+                        else {
+                           effectAction.setUpdateState(postConds);
+                           output = "Enter the message to display to the user after taking this action.";
+                           enhancedGameEditState = EnhancedGameEditState.ACTION_MSG;
+                        }
+                     }
+
                   }
                   catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each KnowledgeUpdate" +

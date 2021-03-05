@@ -13,9 +13,20 @@ import java.util.stream.Collectors;
 
 public class TransformGame {
 
+   private static String appendWorld(String line) {
+      if (line.matches("[\\w]*")) {
+         return line;
+      }
+      List<String> splitList = Util.splitByCommaAndTrim(line);
+      splitList = splitList.stream().map(l -> "world::" + l).collect(Collectors.toList());
+      return String.join(",", splitList);
+   }
+
+   private static String commentRegex = "%[\\w\\p{Punct}\\s]*";
 
    public static void main(String[] args) throws IOException {
       File file = new File("enhanced-game-REPLACED.txt");
+      boolean result = Files.deleteIfExists(file.toPath());
       file.createNewFile();
       BufferedReader reader;
       try {
@@ -25,33 +36,61 @@ public class TransformGame {
          int searchLine = 0;
          String newLine;
          while (line != null) {
+/*            while (line != null && line.startsWith("!")) {
+               Files.write(file.toPath(), List.of(line), StandardOpenOption.APPEND);
+               line = reader.readLine();
+            }*/
             newLine = line;
-            if(searching){
-               if(line.matches("\\w*add action\\w*")){
+
+            if(line.contains("|")){
+               newLine = appendWorld(line);
+            }
+            else if(line.contains("=")){
+               newLine = appendWorld(line);
+               newLine = newLine.replaceAll("=", " := ");
+            }
+/*            if (searching) {
+               if (line.matches("\\w*add action\\w*")) {
                   searchLine = 4;
                   searching = false;
                }
             }
-            else{
-               if(searchLine > 0) {
+            else {
+               if (searchLine > 0) {
                   searchLine--;
                }
-               else{
-                  if(!line.matches("%[\\w\\p{Punct}\\s]*") && line.contains("|")){
-                     System.out.println(line);
-                     List<String> splitList = Util.splitByCommaAndTrim(line);
-                     splitList = splitList.stream().map(l -> "world::" +l ).collect(Collectors.toList());
-                     newLine = String.join(",", splitList);
-                     System.out.println(newLine);
+               else {
+                  if (!line.matches(commentRegex) && (line.contains("|") || line.equals(""))) {
+                     System.out.println("PRECOND:" + line);
+                     newLine = appendWorld(line);
+                     System.out.println("PRECOND EDIT:" + newLine);
+
+                     Files.write(file.toPath(), List.of(newLine), StandardOpenOption.APPEND);
+
+                     // POST CONDS
+                     line = reader.readLine();
+                     while (line.startsWith("%") || !line.contains("=")) {
+                        Files.write(file.toPath(), List.of(line), StandardOpenOption.APPEND);
+                        line = reader.readLine();
+                     }
+                     System.out.println("POSTCOND: " + line);
+                     newLine = appendWorld(line);
+                     newLine = newLine.replaceAll("=", " := ");
+                     newLine = appendWorld(line);
+                     System.out.println("POSTCOND: " + newLine);
+
+
                      searching = true;
+
                   }
                }
-            }
+            }*/
             Files.write(file.toPath(), List.of(newLine), StandardOpenOption.APPEND);
             line = reader.readLine();
          }
          reader.close();
-      } catch (IOException e) {
+      }
+      catch (IOException e) {
          e.printStackTrace();
       }
    }

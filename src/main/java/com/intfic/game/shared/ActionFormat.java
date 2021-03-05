@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ActionFormat implements Serializable {
-   /* private static final long serialVersionUID = -7020054998734425443L;*/
+    private static final long serialVersionUID = -1143489992904563813L;
    private String verb;
    private String regExpr;
 

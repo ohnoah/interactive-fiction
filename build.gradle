@@ -4,6 +4,7 @@ plugins {
     id 'antlr'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'edu.sc.seis.launch4j' version '2.4.9'
 }
 
 shadowJar {
@@ -16,7 +17,10 @@ mainClassName="com.intfic.EnhancedGamePlayer"
 
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 
 repositories {
@@ -44,6 +48,8 @@ patchPluginXml {
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
 }
+
+
 
 test{
     //useJUnit()
