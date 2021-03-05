@@ -13,7 +13,6 @@ breakfast [english full], paracetamol, light, backpack [blue], object [strange r
 % precond
 % postcond
 % message
-% failmessage
 
 % turn the light on
 add action
@@ -166,8 +165,6 @@ world::breakfeastEaten=true|You need more strength to push the boulder out of th
 world::boulderPushed := true
 % message
 You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
-% failmessage
-You need to gather sufficient strength and look closer at the boulder before moving it out of the way.
 
 % push/ pull boulder
 add action
@@ -217,7 +214,6 @@ note [small], window [west stained], window [south], window [east], juice [green
 % precond
 % postcond
 % message
-% failmessage
 
 add action
 % room
@@ -301,15 +297,13 @@ living room
 put
 1
 % item
-juice, backpack
+juice, bed_room.backpack
 % precond
 world::acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
 % postcond
 world::acidPut := true
 % message
 You put the acidic juice as a coating on your brick bag.
-% failmessage
-Why would you put apple juice on your bag?
 
 % throw backpack at west window
 add action
@@ -318,7 +312,7 @@ living room
 % trigger
 throw
 % item
-backpack, window
+bed_room.backpack, window
 % precond
 world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
@@ -334,7 +328,7 @@ living room
 % trigger
 throw
 % item
-backpack, window_2
+bed_room.backpack, window_2
 % precond
 world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
@@ -349,7 +343,7 @@ living room
 % trigger
 throw
 % item
-backpack, window_3
+bed_room.backpack, window_3
 % precond
 world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
@@ -391,7 +385,6 @@ world::onePieceOn="NULL"|You already have the onepiece on.
 world::onePieceOn := true,world::errorMessage := "Why would you do that? You need to follow Drof."
 % message
 You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.\n Drof yells at you: "FOLLOW ME! QUICKLY!".
-% failmessage
 
 add action
 % room
@@ -486,7 +479,6 @@ upstairs
 world::room := "upstairs"
 % message
 You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
-% failmessage
 
 % GO UPSTAIRS / GO TO THE STAIRCASE
 add action
@@ -585,7 +577,6 @@ darkside
 world::darksideExamined := true
 % message
 The front of the Darkside record is dark and dull. You laugh at the cheap play on The Killers’ Mr.Brightside that this measly record represents.
-% failmessage
 
 % examine the pink record
 add action
@@ -601,7 +592,6 @@ record
 world::pinkrecordExamined := true
 % message
 To your surprise, the pink cover is a P!nk song.
-% failmessage
 
 % put depasito in the vinyl player
 add action
@@ -618,7 +608,6 @@ world::playerOn=true|The player is not on yet.,world::playerFull="NULL"|The play
 world::playerFull := true,world::gameDone := true
 % message
 You play Depasito in the vinyl player. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. \n Thanks for playing this game.
-% failmessage
 
 
 % put depasito in the vinyl player
@@ -636,8 +625,6 @@ world::playerOn=true|The player is not on.,world::playerFull="NULL"|The player i
 
 % message
 You try to play the pink record but nothing happens you so you put it back.
-% failmessage
-The player is not on yet or its full.
 
 % put depasito in the vinyl player
 add action
@@ -654,8 +641,6 @@ world::playerOn=true|The player is not on.,world::playerFull="NULL"|The player i
 
 % message
 You play Darkside but nothing interesting happens you put it back.
-% failmessage
-The player is not on yet or its full.
 
 % GO TO ANTECHAMBER FROM BACK
 add action
@@ -671,7 +656,6 @@ antechamber
 world::room := "antechamber"
 % message
 You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
-% failmessage
 
 
 % ENTER ANTECHAMBER
@@ -688,7 +672,6 @@ antechamber
 world::room := "antechamber"
 % message
 You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
-% failmessage
 
 
 add room
@@ -708,7 +691,6 @@ door
 
 % message
 You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots. Maybe the stairs are more interesting and you should leave this room.
-% failmessage
 
 % LEAVE ROOM ANTECHAMBER
 add action
@@ -724,7 +706,6 @@ room
 world::room := "back of bar"
 % message
 You leave the antechamber, having found nothing interesting.
-% failmessage
 
 
 add synonyms
@@ -744,9 +725,6 @@ add synonyms
 bed_room.backpack
 rucksack, bag
 
-add synonyms
-living_room.backpack
-rucksack, bag
 
 
 add synonyms
@@ -773,67 +751,82 @@ bed_room.backpack
 container
 
 edit knowledge
+parents
 bar.beer
 drinkable
 
 edit knowledge
+parents
 back_of_bar.tapas
 edible
 
 edit knowledge
+parents
 upstairs.player
 container
 
 
 edit knowledge
+parents
 bar.glass
-isTakeable
+takeable
 
 
 edit knowledge
+parents
 living_room.note
-isTakeable
+takeable
 
 edit knowledge
+parents
 bed_room.note
-isTakeable
+takeable
 
 edit knowledge
+parents
 garden.onepiece
-isTakeable
+takeable
 
 
 edit knowledge
+parents
 upstairs.records
-isTakeable
+takeable
 
 edit knowledge
+parents
 back_of_bar.tapas
-isTakeable
+takeable
 
 edit knowledge
+parents
 bed_room.breakfast
-isTakeable
+takeable
 
 edit knowledge
+parents
 bed_room.backpack
-isTakeable
+takeable
 
 edit knowledge
+parents
 bed_room.paracetamol
-isTakeable
+takeable
 
 edit knowledge
+parents
 living_room.juice
-isTakeable
+takeable
 
 edit knowledge
+parents
 upstairs.depasito
-isTakeable
+takeable
 
 edit knowledge
+parents
 bed_room.object
-isTakeable
+takeable
 
 edit knowledge
 fillers
@@ -841,4 +834,4 @@ living_room.note::mass := 10,bed_room.note::mass := 10, bed_room.paracetamol::ma
 
 edit knowledge
 fillers
-bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.object::volume := 
+bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.object::volume := 10, upstairs.record::volume := 5, upstairs.depasito::volume := 5, upstairs.darkside::volume := 5, garden.onepiece := 30, back_of_bar.tapas::volume := 10, bed_room.breakfast := 10, bar.glass::internalVolume := 10, bar.beer::volume := 10, bed_room.bag::volume := 100, bed_room.paracetamol::volume := 5, living_room.juice::volume := 5, living_room.juice::state := "liquid"

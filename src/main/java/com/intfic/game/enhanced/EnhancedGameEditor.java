@@ -231,6 +231,14 @@ public class EnhancedGameEditor extends JFrame {
       }
       return new Justification(true, "");
    }
+   public static boolean isValidItemIdentifierList(Map<String, Item> globalItems, List<String> items) {
+      for(String s : items){
+         if(!globalItems.containsKey(s)){
+            return false;
+         }
+      }
+      return true;
+   }
 
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
       List<String> clauses = splitByCommaAndTrim(cmd);
@@ -617,13 +625,14 @@ public class EnhancedGameEditor extends JFrame {
                      String roomPrefix = Item.roomId(roomForAction.getName());
                      for (String s : splitArgs) {
                         s = s.toLowerCase();
-                        String formatted = !s.startsWith(roomPrefix) ? roomPrefix + "." + s : s;
+                        String formatted = !s.contains(".") ? roomPrefix + "." + s : s;
                         formattedItemNames.add(formatted);
                      }
-                     boolean validItems = roomForAction.isValidItemIdentifierList(formattedItemNames);
+
+                     Map<String, Item> allItems = gameEngine.globalItems();
+                     boolean validItems = EnhancedGameEditor.isValidItemIdentifierList(allItems, formattedItemNames);
                      if (validItems) {
-                        Map<String, Item> roomItems = roomForAction.getItems();
-                        instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
+                        instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(allItems::get).collect(Collectors.toList()));
                         output = "Enter the preconditions on the knowledge base (and failure explanations) for this action as a comma-separated list of conditions of the form " +
                             "e.g. \"world::numDoors = 4|The number of doors isn't 4, it's world::numDoors\".";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_PRE;

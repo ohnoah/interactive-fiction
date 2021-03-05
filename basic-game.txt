@@ -13,7 +13,6 @@ breakfast [english full], paracetamol, light, backpack [blue], object [strange r
 % precond
 % postcond
 % message
-% failmessage
 
 % turn the light on
 add action
@@ -166,8 +165,6 @@ breakfeastEaten=true|You need more strength to push the boulder out of the way.,
 boulderPushed=true
 % message
 You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
-% failmessage
-You need to gather sufficient strength and look closer at the boulder before moving it out of the way.
 
 % push/ pull boulder
 add action
@@ -217,7 +214,6 @@ note [small], window [west stained], window [south], window [east], juice [green
 % precond
 % postcond
 % message
-% failmessage
 
 add action
 % room
@@ -308,8 +304,6 @@ acidExamined=true|You want to have a closer look at the juice before putting it 
 acidPut=true
 % message
 You put the acidic juice as a coating on your brick bag.
-% failmessage
-Why would you put apple juice on your bag?
 
 % throw backpack at west window
 add action
@@ -391,7 +385,6 @@ onePieceOn=NULL|You already have the onepiece on.
 onePieceOn=true, errorMessage=Why would you do that? You need to follow Drof.
 % message
 You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.\n Drof yells at you: "FOLLOW ME! QUICKLY!".
-% failmessage
 
 add action
 % room
@@ -486,7 +479,6 @@ upstairs
 room=upstairs
 % message
 You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
-% failmessage
 
 % GO UPSTAIRS / GO TO THE STAIRCASE
 add action
@@ -585,7 +577,6 @@ darkside
 darksideExamined=true
 % message
 The front of the Darkside record is dark and dull. You laugh at the cheap play on The Killers’ Mr.Brightside that this measly record represents.
-% failmessage
 
 % examine the pink record
 add action
@@ -601,7 +592,6 @@ record
 pinkrecordExamined=true
 % message
 To your surprise, the pink cover is a P!nk song.
-% failmessage
 
 % put depasito in the vinyl player
 add action
@@ -618,7 +608,6 @@ playerOn=true|The player is not on yet.,playerFull=NULL|The player is full.
 playerFull=true, gameDone=true
 % message
 You play Depasito in the vinyl player. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. \n Thanks for playing this game.
-% failmessage
 
 
 % put depasito in the vinyl player
@@ -636,8 +625,6 @@ playerOn=true|The player is not on., playerFull=NULL|The player is full.
 
 % message
 You try to play the pink record but nothing happens you so you put it back.
-% failmessage
-The player is not on yet or its full.
 
 % put depasito in the vinyl player
 add action
@@ -654,8 +641,6 @@ playerOn=true|The player is not on., playerFull=NULL|The player is full.
 
 % message
 You play Darkside but nothing interesting happens you put it back.
-% failmessage
-The player is not on yet or its full.
 
 % GO TO ANTECHAMBER FROM BACK
 add action
@@ -671,7 +656,6 @@ antechamber
 room=antechamber
 % message
 You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
-% failmessage
 
 
 % ENTER ANTECHAMBER
@@ -688,7 +672,6 @@ antechamber
 room=antechamber
 % message
 You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
-% failmessage
 
 
 add room
@@ -708,7 +691,6 @@ door
 
 % message
 You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots. Maybe the stairs are more interesting and you should leave this room.
-% failmessage
 
 % LEAVE ROOM ANTECHAMBER
 add action
@@ -724,7 +706,6 @@ room
 room=back of bar
 % message
 You leave the antechamber, having found nothing interesting.
-% failmessage
 
 
 add synonyms
