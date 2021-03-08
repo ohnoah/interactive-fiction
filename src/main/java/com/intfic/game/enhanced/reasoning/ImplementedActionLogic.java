@@ -341,7 +341,7 @@ public class ImplementedActionLogic implements Serializable {
          Condition eatConditionNotContained = new Condition("NOT !arg0::isContained",
              "You can't eat the !arg0 because it is inside of something else.");
          implementedConditionsMap.put(eat, List.of(eatConditionEdible, eatConditionNotContained));
-         implementedSuccessMessageMap.put(eat, "You eat up the !arg0. It tastes !arg0::taste.");
+         implementedSuccessMessageMap.put(eat, "You eat the !arg0. It tastes !arg0::taste.");
          try {
             KnowledgeUpdate deleteItem = new KnowledgeUpdate("world::items -= !arg0");
             implementedKnowledgeUpdateMap.put(eat, List.of(deleteItem));

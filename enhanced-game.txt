@@ -1,9 +1,9 @@
 start message
-You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you waken, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further.
+You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further.
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room, note, bed, window, floor, living room, door
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room [bed], note, bed, window, floor, room [living], door
 
 % all actions 
 
@@ -76,7 +76,7 @@ world::breakfeastEaten|What paracetamol?,world::lightOn|You can't find the parac
 % postcond
 world::paracetamolEaten := true, world::items -= "bed_room.paracetamol"
 % message
-You swallow the paracetamol and the headache immediately goes away. What a power pill!
+The headache immediately goes away. What a power pill!
 
 add action
 % room
@@ -221,7 +221,7 @@ bed room
 % trigger
 go
 % item
-living room
+room_2
 % precond
 world::boulderPushed|You can't get out because the boulder is in your way.
 % postcond
@@ -892,6 +892,11 @@ add synonyms
 bed_room.paracetamol
 pill
 
+
+add synonyms
+bed_room.room_2
+living room
+
 add synonyms
 back_of_bar.tapas
 food, plate
@@ -924,6 +929,16 @@ edit knowledge
 parents
 bar.beer
 drinkable
+
+edit knowledge
+parents
+bed_room.breakfast
+edible
+
+edit knowledge
+parents
+bed_room.paracetamol
+edible
 
 edit knowledge
 parents
@@ -1009,4 +1024,4 @@ bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.floor::v
 
 edit knowledge
 fillers
-bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious"
+bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine"

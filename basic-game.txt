@@ -1,5 +1,5 @@
 start message
-You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you waken, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further.
+You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further.
 
 add room
 bed room
