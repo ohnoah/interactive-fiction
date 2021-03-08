@@ -1,6 +1,10 @@
 package com.intfic.nlp;
 
+import static com.intfic.nlp.NLPEngine.findMatchingGameVerb;
+
+
 import com.intfic.game.enhanced.reasoning.ImplementedActionLogic;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -147,7 +151,7 @@ public class EnhancedNLPEngine {
             Pair<Integer, Integer> firstNP = nps.get(0);
             if (firstNP.second - firstNP.first == 0) {
                CoreLabel firstTokenNP = sentence.tokens().get(firstNP.first);
-               if (firstTokenNP.tag().equals("PRP") && firstTokenNP.word().toLowerCase().equals("it")) {
+               if (firstTokenNP.tag().equals("PRP") && firstTokenNP.word().equalsIgnoreCase("it")) {
                   corefCache.put(firstNP, it);
                   corefRepresentative.put(firstNP, firstNP);
                }
@@ -161,24 +165,36 @@ public class EnhancedNLPEngine {
             int start = vpStartEnd.first;
             int end = vpStartEnd.second;
             String verb = findVerb(sentence, start, end);
-            ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
+            List<ActionFormat> actionFormats = findMatchingGameVerb(verb, possibleActionFormats);
 
-            List<String> nouns = new ArrayList<>();
-            List<Set<String>> adjectives = new ArrayList<>();
-            List<Pair<Integer, Integer>> npsInVP = nps.stream().filter(np -> start <= np.first && np.second <= end).collect(Collectors.toList());
-            Pair<Set<String>, String> itToSet = firstCommand ? new Pair<>(new HashSet<>(), "") : null;
-            findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
-
-            //TODO: do the wordnet stuff here for nouns
-            List<List<Item>> gameItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
-
-
-            InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
-            if (firstCommand) {
-               command.setIt(itToSet);
-               firstCommand = false;
+            String message = "Identified verb: " + verb + " but none of the formats matched what you entered.";
+            boolean oneSuccessfulAction = false;
+            for(ActionFormat actionFormat : actionFormats) {
+               List<String> nouns = new ArrayList<>();
+               List<Set<String>> adjectives = new ArrayList<>();
+               List<Pair<Integer, Integer>> npsInVP = nps.stream().filter(np -> start <= np.first && np.second <= end).collect(Collectors.toList());
+               Pair<Set<String>, String> itToSet = firstCommand ? new Pair<>(new HashSet<>(), "") : null;
+               Justification justification = findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
+               if(justification.isAccepted()) {
+                  //TODO: do the wordnet stuff here for nouns
+                  List<List<Item>> gameItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
+                  InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
+                  if (firstCommand) {
+                     command.setIt(itToSet);
+                     firstCommand = false;
+                  }
+                  commands.add(command);
+                  oneSuccessfulAction = true;
+               }
+               else{
+                  if(actionFormats.size() == 1){
+                     message = justification.getReasoning();
+                  }
+               }
             }
-            commands.add(command);
+            if(!oneSuccessfulAction){
+               throw new FailedParseException(message);
+            }
          }
       }
       for (CoreLabel tok : document.tokens()) {
@@ -255,17 +271,17 @@ public class EnhancedNLPEngine {
 
    // TODO: Both cases should match against possibleActionNames with Wordnet
    // TODO: Rule out put the box in the box
-   public static void findNounsAndAdjectives(CoreSentence sentence, int vpStart, int vpEnd,
-                                             List<Pair<Integer, Integer>> npsInVP,
-                                             ActionFormat actionToTake, List<String> nouns,
-                                             List<Set<String>> adjectives, Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
-                                             Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative, Pair<Set<String>, String> itToSet) throws FailedParseException {
+   public static Justification findNounsAndAdjectives(CoreSentence sentence, int vpStart, int vpEnd,
+                                                      List<Pair<Integer, Integer>> npsInVP,
+                                                      ActionFormat actionToTake, List<String> nouns,
+                                                      List<Set<String>> adjectives, Map<Pair<Integer, Integer>, Pair<Set<String>, String>> corefCache,
+                                                      Map<Pair<Integer, Integer>, Pair<Integer, Integer>> corefRepresentative, Pair<Set<String>, String> itToSet) throws FailedParseException {
       // TODO: Both cases should match against possibleActionNames with Wordnet
       // Word net in here
       // Either do a regex match for PUT IN
 
       if (npsInVP.size() != actionToTake.getDegree()) {
-         throw new FailedParseException(String.format("Expected %d arguments for verb %s but got %d",
+         return new Justification(false, String.format("Expected %d arguments for verb %s but got %d",
              actionToTake.getDegree(), actionToTake.getVerb(), npsInVP.size()));
       }
 
@@ -287,7 +303,7 @@ public class EnhancedNLPEngine {
                int matcherStart = m.start(i);
                int matcherEnd = m.end(i);
                if (npStartCharIndex != matcherStart || npEndCharIndex != matcherEnd) {
-                  throw new FailedParseException(String.format("Non-noun phrase specified in the %d:th slot of verb %s", i, actionToTake.getVerb()));
+                  return new Justification(false, String.format("Non-noun phrase specified in the %d:th slot of verb %s", i, actionToTake.getVerb()));
                }
                /*appendMatchingGroupNoun(nouns, adjectives, sentence, np, corefCache, corefRepresentative, it);*/
                Set<String> currentAdjectives = new HashSet<>();
@@ -297,7 +313,7 @@ public class EnhancedNLPEngine {
             }
          }
          else {
-            throw new FailedParseException(String.format("Argument structure after the verb %s was wrong.", actionToTake.getVerb()));
+            return new Justification(false, String.format("Argument structure after the verb %s was wrong.", actionToTake.getVerb()));
          }
       }
       // Or just find the noun
@@ -313,6 +329,7 @@ public class EnhancedNLPEngine {
          nouns.add(noun);
          adjectives.add(currentAdjectives);
       }
+      return new Justification(true, "");
    }
 
    private static boolean isNoun(String tag) {
@@ -334,16 +351,6 @@ public class EnhancedNLPEngine {
       adjectives.add(currentAdjectives);
    }
 
-   // This fails for e.g. TURN it ON, TURN the box
-   private static ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
-      // TODO: ADD Word net in here
-      for (ActionFormat af : possibleActionFormats) {
-         if (af.getVerb().equals(verb)) {
-            return af;
-         }
-      }
-      throw new FailedParseException(String.format("No action corresponds to the verb: %s", verb));
-   }
 
    // TODO: Think about ignoring everyhing after found
    public static String findVerb(CoreSentence sentence, int start, int end) throws FailedParseException {

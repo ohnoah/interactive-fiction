@@ -930,7 +930,7 @@ public class EnhancedGameEngineTest {
       InstantiatedGameAction eatGameAction = new InstantiatedGameAction(eat, List.of(banana), true);
       Justification justification = enhancedGameEngine.progressStory(eatGameAction);
       String message = justification.getReasoning();
-      assertEquals("You eat up the banana. It tastes sweet. Nothing important happens.", message);
+      assertEquals("You eat the banana. It tastes sweet. Nothing important happens.", message);
       assertTrue(justification.isAccepted());
       assertFalse(enhancedGameEngine.findRoom("Taking Room").get(0).getItems().containsValue(banana));
    }

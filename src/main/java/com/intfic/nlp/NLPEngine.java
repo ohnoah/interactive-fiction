@@ -1,5 +1,6 @@
 package com.intfic.nlp;
 
+import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.Util;
 import com.intfic.game.shared.Item;
 import java.util.ArrayList;
@@ -70,6 +71,21 @@ public abstract class NLPEngine {
          }
       }
       return matchingGameItems;
+   }
+
+   // This fails for e.g. TURN it ON, TURN the box
+   public static List<ActionFormat> findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
+      // Word net in here
+      List<ActionFormat> actionFormats = new ArrayList<>();
+      for (ActionFormat af : possibleActionFormats) {
+         if (af.getVerb().equals(verb)) {
+            actionFormats.add(af);
+         }
+      }
+      if (actionFormats.size() != 0) {
+         return actionFormats;
+      }
+      throw new FailedParseException("No action corresponds to the verb: " + verb);
    }
 
    private static long adjectivesMatch(Set<String> userAdjectives, Set<String> itemAdjectives) {

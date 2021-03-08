@@ -505,7 +505,7 @@ public class EnhancedNLPEngineTest {
       Item donkey = TestUtil.roomItem("donkey");
       Item box = TestUtil.roomItem("box");
       List<InstantiatedGameAction> instantiatedGameActions =
-          EnhancedNLPEngine.parse("put the donkey in the box and eat it. eat box.",
+          EnhancedNLPEngine.parse("put the donkey on the box and eat it. eat box.",
               new BasicGameEngine().getPossibleActionFormats(), Set.of(donkey, key, box));
       assertEquals(3, instantiatedGameActions.size());
       InstantiatedGameAction putAction = instantiatedGameActions.get(0);

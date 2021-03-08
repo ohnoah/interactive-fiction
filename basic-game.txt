@@ -786,7 +786,7 @@ lights, lamp
 
 add synonyms
 bed_room.curtains 
-blinds
+blinds, curtain
 
 add synonyms
 bed_room.backpack

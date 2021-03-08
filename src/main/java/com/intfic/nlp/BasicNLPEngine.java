@@ -1,5 +1,8 @@
 package com.intfic.nlp;
 
+import static com.intfic.nlp.NLPEngine.findMatchingGameVerb;
+
+
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
@@ -36,7 +39,7 @@ public class BasicNLPEngine {
       }
       List<ActionFormat> actionFormats = findMatchingGameVerb(verb, possibleActionFormats);
 
-      String message = "";
+      String message = "Identified verb: " + verb + " but none of the formats matched what you entered.";
       for (int i = 0; i < actionFormats.size(); i++) {
          ActionFormat actionFormat = actionFormats.get(i);
          List<String> nouns = new ArrayList<>();
@@ -52,9 +55,6 @@ public class BasicNLPEngine {
             else{
                if(actionFormats.size() == 1){
                   message = justification.getReasoning();
-               }
-               else{
-                  message = "Identified verb: " + verb + " but none of the formats matched what you entered.";
                }
             }
          }
@@ -149,20 +149,7 @@ public class BasicNLPEngine {
       return new Justification(true, "");
    }
 
-   // This fails for e.g. TURN it ON, TURN the box
-   public static List<ActionFormat> findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
-      // Word net in here
-      List<ActionFormat> actionFormats = new ArrayList<>();
-      for (ActionFormat af : possibleActionFormats) {
-         if (af.getVerb().equals(verb)) {
-            actionFormats.add(af);
-         }
-      }
-      if (actionFormats.size() != 0) {
-         return actionFormats;
-      }
-      throw new FailedParseException("No action corresponds to the verb: " + verb);
-   }
+
 
    public static String findVerb(String rawCommand) throws JWNLException, FailedParseException {
       Dictionary d = null;

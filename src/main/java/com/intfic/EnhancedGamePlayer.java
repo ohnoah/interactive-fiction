@@ -1,6 +1,7 @@
 package com.intfic;
 
 
+import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.FileErrorHandler;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
@@ -52,6 +53,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    private boolean isClarifying;
    private List<Item> clarifiedArguments;
    private InstantiatedGameAction clarifyingAction;
+   private boolean enhanced;
 
 
    private void attemptToLoadGameEngine(String cmd, String sofar) {
@@ -60,6 +62,12 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          FileInputStream fileIn = new FileInputStream(cmd);
          ObjectInputStream in = new ObjectInputStream(fileIn);
          gameEngine = (GameEngine) in.readObject();
+         if(gameEngine instanceof EnhancedGameEngine){
+            this.enhanced = true;
+         }
+         else{
+            this.enhanced = false;
+         }
          in.close();
          fileIn.close();
          String startMessage = gameEngine.getStartMessage() != null ? gameEngine.getStartMessage() : "";
@@ -163,7 +171,9 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
                   attemptToLoadGameEngine(cmd, history.getText());
                   if (gameEngine != null) {
                      try {
-                        BasicNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
+                        if(enhanced) {
+                           EnhancedNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
+                        }
                      }
                      catch (FailedParseException ignored) {
                      }
@@ -255,7 +265,12 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       List<InstantiatedGameAction> gameActions = null;
 
       try {
-         gameActions = BasicNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         if(enhanced) {
+            gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         }
+         else{
+            gameActions = BasicNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         }
          if (gameActions.size() > 0) {
             it = gameActions.get(0).getIt();
          }
