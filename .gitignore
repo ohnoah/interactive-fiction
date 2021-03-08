@@ -36,3 +36,4 @@ question-transcript-*
 build/libs/shadow.jar
 build/launc4j
 build/distributions
+.gradle/6.8.3/javaCompile/
