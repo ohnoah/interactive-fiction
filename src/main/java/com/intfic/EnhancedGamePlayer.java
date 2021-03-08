@@ -298,6 +298,10 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    private String clarify(String cmd) {
       int nextClarify = clarifiedArguments.size();
       List<List<Item>> potentialArgs = clarifyingAction.getPotentialArguments();
+      while (nextClarify < potentialArgs.size() && potentialArgs.get(nextClarify).size() == 1) {
+         clarifiedArguments.add(potentialArgs.get(nextClarify).get(0));
+         nextClarify++;
+      }
       try {
          int i = Integer.parseInt(cmd);
          if (!(i >= 0 && i < potentialArgs.get(nextClarify).size())) {
@@ -311,6 +315,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       }
 
       while (nextClarify < potentialArgs.size() && potentialArgs.get(nextClarify).size() == 1) {
+         clarifiedArguments.add(potentialArgs.get(nextClarify).get(0));
          nextClarify++;
       }
       if (nextClarify == potentialArgs.size()) {
@@ -335,7 +340,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       try {
          List<Item> first = gameAction.getPotentialArguments().stream().filter(l -> l.size() != 1).findFirst().
              orElseThrow(() -> new FailedParseException("Internal error when clarifying. Contact game admin."));
-         return String.format("Couldn't uniquely identify the first arguments when taking action %s. Choose the one you meant by writing a number from the list below." +
+         return String.format("Couldn't uniquely identify the below argument when taking action %s. Choose the one you meant by writing a number from the list below." +
                  " Write only a number e.g. \"0\" or \"3\" to clarify what you meant and perform the right action." +
                  " \n %s"
              , gameAction.getAbstractActionFormat(), Util.selectionList(first));

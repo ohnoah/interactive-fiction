@@ -54,6 +54,7 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat breakIt = new ActionFormat("break");
       ActionFormat burn = new ActionFormat("burn");
       ActionFormat enter = new ActionFormat("enter");
+      ActionFormat hint = new ActionFormat("hint", "hint$");
       ActionFormat leave = new ActionFormat("leave");
       ActionFormat search = new ActionFormat("search");
       ActionFormat unlockWith = new ActionFormat("unlock", "unlock ([\\w\\s]+) with ([\\w\\s]+)$");
@@ -62,7 +63,7 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
 
       defaultActionFormats = List.of(examine, push, take, talk, pull, follow, go, drop, turnOn, turnOn1, turnOff, turnOff1, open, feel, putIn,
-          putOn, putOnSingle, eat, climb, drink, wave, /*fill,*/ wear, smell, throwAt, listenTo, breakIt, burn, enter, leave, search, unlockWith, remove, transfer);
+          putOn, putOnSingle, eat, climb, drink, wave, /*fill,*/ wear, smell, throwAt, listenTo, breakIt, burn, enter, hint, leave, search, unlockWith, remove, transfer);
       implementedConditionsMap = new HashMap<>();
       implementedSuccessMessageMap = new HashMap<>();
       implementedKnowledgeUpdateMap = new HashMap<>();

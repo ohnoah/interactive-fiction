@@ -20,7 +20,7 @@ bed room
 turn
 0
 light
-world::lightOn=false|The light is already on.
+NOT world::lightOn|The light is already on.
 world::lightOn := true
 As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
@@ -29,7 +29,7 @@ bed room
 turn
 1
 light
-world::lightOn=false|The light is already on.
+NOT world::lightOn|The light is already on.
 world::lightOn := true
 As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
@@ -39,7 +39,7 @@ bed room
 open
 curtains
 %preconds
-world::curtainsOpen=false|The curtains are already open
+NOT world::curtainsOpen|The curtains are already open
 % postconds
 world::lightOn := true,world::curtainsOpen := true
 % message
@@ -56,7 +56,7 @@ eat
 % item
 breakfast
 % precond
-world::lightOn=true|You reach out for the full English but miss it in the dark.
+world::lightOn|You reach out for the full English but miss it in the dark.
 % postcond
 world::breakfeastEaten := true
 % message
@@ -72,7 +72,7 @@ take
 % item
 paracetamol
 % precond
-world::breakfeastEaten=true|What paracetamol?,world::lightOn=true|You can't find the paracetamol in the dark.
+world::breakfeastEaten|What paracetamol?,world::lightOn|You can't find the paracetamol in the dark.
 % postcond
 world::paracetamolEaten := true, world::items -= "bed_room.paracetamol"
 % message
@@ -86,7 +86,7 @@ eat
 % item
 paracetamol
 % precond
-world::breakfeastEaten=true|What paracetamol?,world::lightOn=true|You can't find the paracetamol in the dark.
+world::breakfeastEaten|What paracetamol?,world::lightOn|You can't find the paracetamol in the dark.
 % postcond
 world::paracetamolEaten := true, world::liftingPower += 10
 % message
@@ -98,7 +98,7 @@ bed room
 turn
 2
 light
-world::lightOn=true|The light isn't on.
+world::lightOn|The light isn't on.
 
 Why would you do that?
 
@@ -107,7 +107,7 @@ bed room
 turn
 3
 light
-world::lightOn=true|The light isn't on.
+world::lightOn|The light isn't on.
 
 Why would you do that?
 
@@ -117,7 +117,7 @@ add action
 bed room
 examine
 object
-world::lightOn=true|You can't quite see the object in the dark.
+world::lightOn|You can't quite see the object in the dark.
 world::brickExamined := true
 The brick is a standard red brick that your mum keeps in her work shed around the back of the house. It’s not that large and would easily fit in your backpack that you see sticking out under your bed next to the brick. As you are about to put the brick down, you see a small handwritten note under where the brick was.
 You squint but can't make out anything about the object in the dark.
@@ -127,7 +127,7 @@ add action
 bed room
 examine
 note
-world::lightOn=true|You can't see the note in the dark.,world::brickExamined=true|You can't do that right now.
+world::lightOn|You can't see the note in the dark.,world::brickExamined|You can't do that right now.
 world::noteExamined := true
 USE THIS BRICK TO BREAK YOURSELF OUT OF THE HOUSE. I DON’T KNOW WHAT’S GOING ON, BUT IT’S BAD. I THINK IT’S *unintelligible scribbles*
 
@@ -138,7 +138,7 @@ add action
 bed room
 take
 backpack
-world::lightOn=true|You reach for your backpack but miss it in the dark.
+world::lightOn|You reach for your backpack but miss it in the dark.
 world::backpackTaken := true
 You take the backpack.
 
@@ -148,7 +148,7 @@ bed room
 put
 1
 object, backpack
-world::lightOn=true|You reach for the object but miss it in the dark.,world::brickExamined=true|You need to take a closer look before you pick it up.,world::backpackTaken=true|You need to have something to put the object in.
+world::lightOn|You reach for the object but miss it in the dark.,world::brickExamined|You need to take a closer look before you pick it up.,world::backpackTaken|You need to have something to put the object in.
 world::brickTaken := true
 Your parents must’ve wanted you to use it for something. It will surely come in handy.
 
@@ -161,7 +161,7 @@ examine
 % item
 boulder
 % precond
-world::lightOn=true|You can't do that.
+world::lightOn|You can't do that.
 % postcond
 world::boulderExamined := true
 % message
@@ -176,7 +176,7 @@ push
 % item
 boulder
 % precond
-world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolEaten=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed=false|You've already pushed it out of the way.
+world::breakfeastEaten|You need more strength to push the boulder out of the way.,world::paracetamolEaten|You need to alleviate your headache before moving the boulder.,world::boulderExamined|You want to have a closer look before you do that.,NOT world::boulderPushed|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
 % message
@@ -191,7 +191,7 @@ pull
 % item
 boulder
 % precond
-world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolTaken=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed=false|You've already pushed it out of the way.
+world::breakfeastEaten|You need more strength to push the boulder out of the way.,world::paracetamolTaken|You need to alleviate your headache before moving the boulder.,world::boulderExamined|You want to have a closer look before you do that.,NOT world::boulderPushed|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
 % message
@@ -208,7 +208,7 @@ leave
 % item
 room
 % precond
-world::boulderPushed=true|You can't get out because the boulder is in your way.
+world::boulderPushed|You can't get out because the boulder is in your way.
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
@@ -223,7 +223,7 @@ go
 % item
 living room
 % precond
-world::boulderPushed=true|You can't get out because the boulder is in your way.
+world::boulderPushed|You can't get out because the boulder is in your way.
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
@@ -238,7 +238,7 @@ open
 % item
 door
 % precond
-world::boulderPushed=true|You can't open the door because the boulder is in the way.
+world::boulderPushed|You can't open the door because the boulder is in the way.
 % postcond
 
 % message
@@ -360,11 +360,29 @@ put
 % item
 juice, bed_room.backpack
 % precond
-world::acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
+world::acidExamined|You want to have a closer look at the juice before putting it on your precious bag.
 % postcond
 world::acidPut := true
 % message
 You put the acidic juice as a coating on your brick bag.
+
+% PUT ACID ON BRICK
+add action
+% room
+living room
+% trigger
+put
+1
+% item
+juice, bed_room.object
+% precond
+world::acidExamined|You want to have a closer look at the juice before putting it on your precious bag.
+% postcond
+world::acidPutBrick := true
+% message
+You put the acidic juice as a coating on your brick bag.
+
+
 
 % throw backpack at west window
 add action
@@ -375,7 +393,7 @@ throw
 % item
 bed_room.backpack, window
 % precond
-world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
+\"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
 world::windowBroken := true
 % message
@@ -391,7 +409,7 @@ throw
 % item
 bed_room.backpack, window_2
 % precond
-world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+\"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
 world::windowBroken := true
 % message
@@ -407,11 +425,62 @@ throw
 % item
 bed_room.backpack, window_3
 % precond
-world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+\"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
 world::windowBroken := true
 % message
 You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
+
+
+% THROWING BRICK INSTAED
+
+% throw brick at west window
+add action
+% room
+living room
+% trigger
+throw
+% item
+bed_room.backpack, window
+% precond
+world::acidPutBrick|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
+% postcond
+world::windowBroken := true
+% message
+You throw the acid-coated bag at the window with all your force. The instant the bag touches the window the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+
+
+% throw brick at  window_2
+add action
+% room
+living room
+% trigger
+throw
+% item
+bed_room.backpack, window_2
+% precond
+world::acidPutBrick|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+% postcond
+world::windowBroken := true
+% message
+You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window" you think to yourself.
+
+
+% throw brick at south window_3
+add action
+% room
+living room
+% trigger
+throw
+% item
+bed_room.object, window_3
+% precond
+world::acidPutBrick|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+% postcond
+world::windowBroken := true
+% message
+You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
+
 
 % LEAVE ROOM
 add action
@@ -422,7 +491,7 @@ leave
 % item
 room
 % precond
-world::windowBroken=true|You can't leave the living room because the windows and doors are locked and reinforced.
+world::windowBroken|You can't leave the living room because the windows and doors are locked and reinforced.
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
@@ -437,7 +506,7 @@ go
 % item
 outside
 % precond
-world::windowBroken=true|You can't go outside the living room because the windows and doors are locked and reinforced.
+world::windowBroken|You can't go outside the living room because the windows and doors are locked and reinforced.
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
@@ -457,7 +526,7 @@ put
 % item
 onepiece
 % precond
-world::onePieceOn=false|You already have the onepiece on.
+NOT world::onePieceOn|You already have the onepiece on.
 % postcond
 world::onePieceOn := true,world::errorMessage := "Why would you do that? You need to follow Drof."
 % message
@@ -471,7 +540,7 @@ follow
 % item
 Drof
 % precond
-world::onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
+world::onePieceOn|You can't go without your disguise. Listen to what Drof said.
 % postcond
 world::room := "bar",world::errorMessage := "You can't do that."
 % message
@@ -489,7 +558,7 @@ drink
 % item
 beer, glass
 % precond
-world::beerDrank=false|You've already had your beer.
+NOT world::beerDrank|You've already had your beer.
 % postcond
 world::beerDrank := true
 % message
@@ -504,7 +573,7 @@ talk
 % item
 Drof
 % precond
-world::beerDrank=true|You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
+world::beerDrank|You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
 % postcond
 world::drofTalkedTo := true
 % message
@@ -518,7 +587,7 @@ go
 % item
 back
 % precond
-world::drofTalkedTo=true|You should probably talk to your friend Drof before going there.
+world::drofTalkedTo|You should probably talk to your friend Drof before going there.
 % postcond
 world::room := "back of bar"
 % message
@@ -594,7 +663,7 @@ turn
 % item
 vinyl player
 % precond
-world::playerOn=false|The player is already on.
+NOT world::playerOn|The player is already on.
 % postcond
 world::playerOn := true
 % message
@@ -609,7 +678,7 @@ turn
 % item
 vinyl player
 % precond
-world::playerOn=false|The player is already on.
+NOT world::playerOn|The player is already on.
 % postcond
 world::playerOn := true
 % message
@@ -643,7 +712,6 @@ depasito
 
 % postcond
 world::depasitoExamined := true
-depasitoExamined=true
 % message
 The cover of Depasito shows a picture of a Spanish-speaking musician, Fonzen, and Jonas Beaver. You remember that you heard it at a school fundraiser once.
 
@@ -688,7 +756,7 @@ put
 % item
 depasito, vinyl player
 % precond
-world::playerOn=true|The player is not on yet.
+world::playerOn|The player is not on yet.
 % postcond
 world::gameDone := true
 % message
@@ -706,7 +774,7 @@ put
 % item
 record, vinyl player
 % precond
-world::playerOn=true|The player is not on.
+world::playerOn|The player is not on.
 % postcond
 
 % message
@@ -722,7 +790,7 @@ put
 % item
 Darkside, vinyl player
 % precond
-world::playerOn=true|The player is not on.
+world::playerOn|The player is not on.
 % postcond
 
 % message
