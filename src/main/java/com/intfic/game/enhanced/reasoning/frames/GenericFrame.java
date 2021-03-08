@@ -39,8 +39,13 @@ public class GenericFrame implements Serializable {
    @Override
    public String toString() {
       return "GenericFrame{" +
+<<<<<<< HEAD
           " id='" + id + '\'' +
           " ,\n slots=" + slots +
+=======
+          "id='" + id + '\'' +
+          ", slots=" + slots +
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
           '}';
    }
 }

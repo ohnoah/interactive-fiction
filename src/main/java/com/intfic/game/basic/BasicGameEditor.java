@@ -7,7 +7,10 @@ import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
+<<<<<<< HEAD
 import com.intfic.game.shared.Util;
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -156,6 +159,21 @@ public class BasicGameEditor extends JFrame {
       input.setText("");
    }
 
+<<<<<<< HEAD
+=======
+   private List<String> splitByCommaAndTrim(String raw) {
+      return splitByCommaAndTrim(raw, false);
+   }
+
+   private List<String> splitByCommaAndTrim(String raw, boolean lowerCase) {
+      if (lowerCase) {
+         return Arrays.stream(raw.split(",")).map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
+      }
+      else {
+         return Arrays.stream(raw.split(",")).map(s -> s.trim()).collect(Collectors.toList());
+      }
+   }
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
    private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException {
       List<String> splitByComma = Arrays.asList(cmd.split(","));
@@ -209,7 +227,11 @@ public class BasicGameEditor extends JFrame {
 
 
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
+<<<<<<< HEAD
       List<String> clauses = Util.splitByCommaAndTrim(cmd, true);
+=======
+      List<String> clauses = splitByCommaAndTrim(cmd, true);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       for (String clause : clauses) {
          if (clause.contains("[") || clause.contains("]")) {
             Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s-]+)]$");
@@ -413,7 +435,11 @@ public class BasicGameEditor extends JFrame {
                   }
                   break;
                case ROOM_ITEMS:
+<<<<<<< HEAD
                   //List<String> splitItems = Util.splitByCommaAndTrim(cmd);
+=======
+                  //List<String> splitItems = splitByCommaAndTrim(cmd);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                   List<String> names = new ArrayList<>();
                   List<Set<String>> adjectives = new ArrayList<>();
                   boolean validText = itemNamesAndAdjectives(cmd, names, adjectives);
@@ -505,7 +531,11 @@ public class BasicGameEditor extends JFrame {
                   }
                   break;
                case ACTION_ARGS:
+<<<<<<< HEAD
                   List<String> splitArgs = Util.splitByCommaAndTrim(cmd);
+=======
+                  List<String> splitArgs = splitByCommaAndTrim(cmd);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                   int numArgs = instantiatedGameAction.getAbstractActionFormat().getDegree();
                   int givenArgs = cmd.equals("") ? 0 : splitArgs.size();
                   if (givenArgs != numArgs) {
@@ -545,7 +575,11 @@ public class BasicGameEditor extends JFrame {
                         basicGameEditState = BasicGameEditState.ACTION_POST;
                      }
                      else {
+<<<<<<< HEAD
                         List<String> splitPreconds = Util.splitByCommaAndTrim(cmd);
+=======
+                        List<String> splitPreconds = splitByCommaAndTrim(cmd);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                         preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
                         int indexNull = preConds.indexOf(null);
                         if (indexNull != -1) {
@@ -634,7 +668,11 @@ public class BasicGameEditor extends JFrame {
                   break;
                case ITEM_SYNONYMS_SPECIFIED:
                   if (!cmd.matches("\\s*")) {
+<<<<<<< HEAD
                      List<String> splitList = Util.splitByCommaAndTrim(cmd, true);
+=======
+                     List<String> splitList = splitByCommaAndTrim(cmd, true);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                      this.synonymItem.addSynonyms(splitList);
                      this.synonymItem.getParentRoom().addItem(this.synonymItem);
                      output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();

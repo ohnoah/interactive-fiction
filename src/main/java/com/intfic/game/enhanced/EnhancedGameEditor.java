@@ -12,7 +12,10 @@ import com.intfic.game.enhanced.reasoning.visitors.TypeConvertVisitor;
 import com.intfic.game.enhanced.reasoning.VisitorHelper;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.shared.*;
+<<<<<<< HEAD
 import gherkin.lexer.Kn;
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -156,7 +159,11 @@ public class EnhancedGameEditor extends JFrame {
    }
 
    private List<String> splitByCommaAndTrim(String raw) {
+<<<<<<< HEAD
       return Arrays.stream(raw.split(",")).map(String::trim).collect(Collectors.toList());
+=======
+      return Arrays.asList(raw.split(",")).stream().map(s -> s.trim()).collect(Collectors.toList());
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
    }
 
    private Condition stringToCondition(String s) {
@@ -165,18 +172,24 @@ public class EnhancedGameEditor extends JFrame {
          return null;
       }
       String booleanExpr = parts[0];
+<<<<<<< HEAD
       if(!booleanExpr.contains("::")){
          booleanExpr = "world::" + booleanExpr;
       }
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       String failureMessage = parts[1];
       return new Condition(booleanExpr, failureMessage);
    }
 
    private KnowledgeUpdate stringToKnowledgeUpdate(String raw) {
       try {
+<<<<<<< HEAD
          if(!raw.contains("::")){
             raw = "world::" + raw;
          }
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
          return new KnowledgeUpdate(raw);
       }
       catch (KnowledgeException e) {
@@ -231,6 +244,7 @@ public class EnhancedGameEditor extends JFrame {
       }
       return new Justification(true, "");
    }
+<<<<<<< HEAD
    public static boolean isValidItemIdentifierList(Map<String, Item> globalItems, List<String> items) {
       for(String s : items){
          if(!globalItems.containsKey(s)){
@@ -239,6 +253,8 @@ public class EnhancedGameEditor extends JFrame {
       }
       return true;
    }
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
       List<String> clauses = splitByCommaAndTrim(cmd);
@@ -271,6 +287,12 @@ public class EnhancedGameEditor extends JFrame {
       String output = null;
       cmd = cmd.replace("\\n", "\n");
       switch (cmd) {
+<<<<<<< HEAD
+=======
+         case "":
+            output = "";
+            break;
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
          case "quit":
             if (!saved) {
                output = "Warning: you have not saved your progress. If you still want to quit type quit again.";
@@ -288,7 +310,10 @@ public class EnhancedGameEditor extends JFrame {
             output = "Cleared your status.";
             gameEngine = new EnhancedGameEngine();
             resetAdditions();
+<<<<<<< HEAD
             enhancedGameEditState = EnhancedGameEditState.OPEN;
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
             break;
          case "list":
             output = gameEngine.getPossibleActionFormats().stream()
@@ -391,7 +416,11 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.OPEN;
                         while (myReader.hasNextLine()) {
                            String line = myReader.nextLine().trim();
+<<<<<<< HEAD
                            if (!((line.matches("\\s*") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
+=======
+                           if (!((line.equals("") && enhancedGameEditState.equals(EnhancedGameEditState.OPEN)) || line.startsWith("#") || line.startsWith("%"))) {
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                               String runningSofar = history.getText();
                               res = editGame(line, runningSofar);
                               writeToTerminal(res.get(0), res.get(1), res.get(2));
@@ -624,6 +653,7 @@ public class EnhancedGameEditor extends JFrame {
                      List<String> formattedItemNames = new ArrayList<>();
                      String roomPrefix = Item.roomId(roomForAction.getName());
                      for (String s : splitArgs) {
+<<<<<<< HEAD
                         s = s.toLowerCase();
                         String formatted = !s.contains(".") ? roomPrefix + "." + s : s;
                         formattedItemNames.add(formatted);
@@ -633,6 +663,15 @@ public class EnhancedGameEditor extends JFrame {
                      boolean validItems = EnhancedGameEditor.isValidItemIdentifierList(allItems, formattedItemNames);
                      if (validItems) {
                         instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(allItems::get).collect(Collectors.toList()));
+=======
+                        String formatted = !s.startsWith(roomPrefix) ? roomPrefix + "." + s : s;
+                        formattedItemNames.add(formatted);
+                     }
+                     boolean validItems = roomForAction.isValidItemIdentifierList(formattedItemNames);
+                     if (validItems) {
+                        Map<String, Item> roomItems = roomForAction.getItems();
+                        instantiatedGameAction.setActualArguments(formattedItemNames.stream().map(roomItems::get).collect(Collectors.toList()));
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                         output = "Enter the preconditions on the knowledge base (and failure explanations) for this action as a comma-separated list of conditions of the form " +
                             "e.g. \"world::numDoors = 4|The number of doors isn't 4, it's world::numDoors\".";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_PRE;
@@ -659,8 +698,11 @@ public class EnhancedGameEditor extends JFrame {
                         preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
                         int indexNull = preConds.indexOf(null);
                         if (indexNull != -1) {
+<<<<<<< HEAD
                            System.out.println("EMPTY LINE");
                            System.out.println("----" + cmd + "---");
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                            output = String.format("Invalid condition \"%s\". Remember the pipe symbol and error message.", splitPreconds.get(indexNull));
                         }
                         else {
@@ -680,13 +722,24 @@ public class EnhancedGameEditor extends JFrame {
                case ACTION_POST:
                   try {
                      // TODO: accept empty string
+<<<<<<< HEAD
                      List<KnowledgeUpdate> postConds;
                      if (cmd.matches("\\s*")) {
                         postConds = new ArrayList<>();
+=======
+                     List<String> splitPostconds = splitByCommaAndTrim(cmd);
+                     List<KnowledgeUpdate> postConds = splitPostconds.stream().map(this::stringToKnowledgeUpdate).collect(Collectors.toList());
+                     int indexNull = postConds.indexOf(null);
+                     if (indexNull != -1) {
+                        output = String.format("Invalid KnowledgeUpdate string \"%s\"", splitPostconds.get(indexNull));
+                     }
+                     else {
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                         effectAction.setUpdateState(postConds);
                         output = "Enter the message to display to the user after taking this action.";
                         enhancedGameEditState = EnhancedGameEditState.ACTION_MSG;
                      }
+<<<<<<< HEAD
                      else {
                         List<String> splitPostconds = splitByCommaAndTrim(cmd);
                         postConds = splitPostconds.stream().map(this::stringToKnowledgeUpdate).collect(Collectors.toList());
@@ -701,6 +754,8 @@ public class EnhancedGameEditor extends JFrame {
                         }
                      }
 
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                   }
                   catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each KnowledgeUpdate" +
@@ -743,7 +798,11 @@ public class EnhancedGameEditor extends JFrame {
                         gameEngine.updateKnowledgeBaseMultiple(knowledgeUpdate);
                      }
                      catch (KnowledgeException e) {
+<<<<<<< HEAD
                         outputBuilder.append(String.format("\n ------------ \n Didn't complete update \"%s\" because it has an invalid form %s. \n -------  \n", s, e.getMessage()));
+=======
+                        outputBuilder.append(String.format("Didn't complete update \"%s\" because it has an invalid form %s.\n", s, e.getMessage()));
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
                      }
                   }
                   output = outputBuilder.toString();

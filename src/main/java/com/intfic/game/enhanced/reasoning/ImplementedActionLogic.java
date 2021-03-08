@@ -34,9 +34,13 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat go = new ActionFormat("go", "go to ([\\w\\s]+)$");
       ActionFormat drop = new ActionFormat("drop");
       ActionFormat turnOn = new ActionFormat("turn", "turn ([\\w\\s]+) on$");
+<<<<<<< HEAD
       ActionFormat turnOn1 = new ActionFormat("turn", "turn on ([\\w\\s]+)$");
       ActionFormat turnOff = new ActionFormat("turn", "turn ([\\w\\s]+) off$");
       ActionFormat turnOff1 = new ActionFormat("turn", "turn off ([\\w\\s]+)$");
+=======
+      ActionFormat turnOff = new ActionFormat("turn", "turn ([\\w\\s]+) off$");
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       ActionFormat open = new ActionFormat("open");
       ActionFormat feel = new ActionFormat("feel");
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
@@ -61,7 +65,11 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
       ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
 
+<<<<<<< HEAD
       defaultActionFormats = List.of(examine, push, take, talk, pull, follow, go, drop, turnOn, turnOn1, turnOff, turnOff1, open, feel, putIn,
+=======
+      defaultActionFormats = List.of(examine, push, take, talk, pull, follow, go, drop, turnOn, turnOff, open, feel, putIn,
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
           putOn, putOnSingle, eat, climb, drink, wave, /*fill,*/ wear, smell, throwAt, listenTo, breakIt, burn, enter, leave, search, unlockWith, remove, transfer);
       implementedConditionsMap = new HashMap<>();
       implementedSuccessMessageMap = new HashMap<>();
@@ -74,9 +82,12 @@ public class ImplementedActionLogic implements Serializable {
          /*ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");*/
          Condition putConditionNotContained0 = new Condition("NOT !arg0::isContained",
              "The !arg0 is already inside of something.");
+<<<<<<< HEAD
 
          Condition putConditionIsTakeable = new Condition("!arg0::isTakeable",
              "The !arg0 is not an item you can move.");
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
          Condition putConditionIsContainer = new Condition("!arg1::isContainer",
              "You can't do that because !arg1 is not a container.");
          Condition putConditionArg0SolidOrLiquid = new Condition("!arg0::state = \"solid\" OR !arg0::state = \"liquid\"",
@@ -92,7 +103,11 @@ public class ImplementedActionLogic implements Serializable {
          // We can use knowledgeEngine constructs here
 
          implementedSuccessMessageMap.put(putIn, "You put the !arg0 in the !arg1.");
+<<<<<<< HEAD
          implementedConditionsMap.put(putIn, List.of(putConditionNotContained0, putConditionIsTakeable,
+=======
+         implementedConditionsMap.put(putIn, List.of(putConditionNotContained0,
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
              putConditionIsContainer, putConditionArg0SolidOrLiquid, putConditionArg1SolidOrLiquid,
              putConditionVolume, putConditionNotContained1, putConditionMass));
          try {
@@ -114,15 +129,22 @@ public class ImplementedActionLogic implements Serializable {
          /*ActionFormat putOn = new ActionFormat("put", "put ([\\w\\s]+) on ([\\w\\s]+)$");*/
          Condition putConditionNotContained = new Condition("NOT !arg0::isContained",
              "You can't put the !arg0 on !arg1 because !arg0 is inside of something.");
+<<<<<<< HEAD
          Condition putConditionIsTakeable = new Condition("!arg0::isTakeable",
              "The !arg0 is not an item you can move.");
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
          Condition putConditionArg0SolidOrLiquid = new Condition("!arg0::state = \"solid\" OR !arg0::state = \"liquid\"",
              "You can't put the !arg0 anywhere because it's not solid or liquid.");
          Condition putConditionArg1Solid = new Condition("!arg0::state = \"solid\"",
              "You can't put !arg0 on the !arg1 because !arg1 is not solid.");
          Condition putConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
              "The !arg0 is too heavy for you to put on the !arg1.");
+<<<<<<< HEAD
          implementedConditionsMap.put(putOn, List.of(putConditionNotContained, putConditionIsTakeable, putConditionArg0SolidOrLiquid, putConditionArg1Solid, putConditionMass));
+=======
+         implementedConditionsMap.put(putOn, List.of(putConditionNotContained, putConditionArg0SolidOrLiquid, putConditionArg1Solid, putConditionMass));
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
          implementedSuccessMessageMap.put(putOn, "You put the !arg0 on the !arg1.");
       }
 

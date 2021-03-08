@@ -13,6 +13,10 @@ breakfast [english full], paracetamol, light, backpack [blue], object [strange r
 % precond
 % postcond
 % message
+<<<<<<< HEAD
+=======
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % turn the light on
 add action
@@ -21,6 +25,7 @@ turn
 0
 light
 
+<<<<<<< HEAD
 world::lightOn := true
 As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
@@ -32,6 +37,10 @@ light
 
 world::lightOn := true
 As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+=======
+lightOn=true
+As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps. 
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % open the curtains
 add action
@@ -39,11 +48,19 @@ bed room
 open
 curtains
 %preconds
+<<<<<<< HEAD
 world::curtainsOpen="NULL"|The curtains are already open
 % postconds
 world::lightOn := true,world::curtainsOpen := true
 % message
 You open the curtain and light rushes into the room. Yet, your hand briefly touches the window and it feels unusual.
+=======
+curtainsOpen=NULL|The curtains are already open
+% postconds
+lightOn=true, curtainsOpen=true
+% message
+You open the curtain and light rushes into the room. Yet, your hand briefly touches the window and it feels unusual. As the room grows lighter, you make out the object next to your bed as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 
 % LIGHT ON BELOW THIS POINT
@@ -57,9 +74,15 @@ eat
 % item
 breakfast
 % precond
+<<<<<<< HEAD
 world::lightOn=true|You reach out for the full English but miss it in the dark.
 % postcond
 world::breakfeastEaten := true
+=======
+lightOn=true|You reach out for the full English but miss it in the dark.
+% postcond
+breakfeastEaten=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You devour the whole plate and feel energised. Your head still feels slightly strange though. Luckily, you spot a Paracetamol next to the plate.
 
@@ -73,12 +96,20 @@ take
 % item
 paracetamol
 % precond
+<<<<<<< HEAD
 world::breakfeastEaten=true|What paracetamol?,world::lightOn=true|You can't find the paracetamol in the dark.
 % postcond
 world::paracetamolEaten := true
 % message
 You swallow the paracetamol and the headache immediately goes away. What a power pill!
 
+=======
+breakfeastEaten=true|What paracetamol?, lightOn=true|You can't find the paracetamol in the dark.
+% postcond
+paracetamolEaten=true
+% message
+You swallow the paracetamol and the headache immediately goes away. What a power pill!
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add action
 % room
 bed room
@@ -87,23 +118,40 @@ eat
 % item
 paracetamol
 % precond
+<<<<<<< HEAD
 world::breakfeastEaten=true|What paracetamol?,world::lightOn=true|You can't find the paracetamol in the dark.
 % postcond
 world::paracetamolEaten := true
 % message
 You swallow the paracetamol and the headache immediately goes away. What a power pill!
 
+=======
+lightOn=true, breakfeastEaten=true
+% postcond
+paracetamolEaten=true
+% message
+You swallow the paracetamol and the headache immediately goes away. What a power pill!
+
+
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % turn light off
 add action
 bed room
 turn
+<<<<<<< HEAD
 2
 light
 world::lightOn=true|The light isn't on.
+=======
+1
+light
+lightOn=true|The light isn't on.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 Why would you do that? 
 The light isn't on.
 
+<<<<<<< HEAD
 add action
 bed room
 turn
@@ -114,14 +162,21 @@ world::lightOn=true|The light isn't on.
 Why would you do that?
 The light isn't on.
 
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % examine object
 add action
 bed room
 examine
 object
+<<<<<<< HEAD
 world::lightOn=true|You can't quite see the object in the dark.
 world::brickExamined := true
+=======
+lightOn=true|You can't quite see the object in the dark.
+brickExamined=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 The brick is a standard red brick that your mum keeps in her work shed around the back of the house. It’s not that large and would easily fit in your backpack that you see sticking out under your bed next to the brick. As you are about to put the brick down, you see a small handwritten note under where the brick was.
 You squint but can't make out anything about the object in the dark.
 
@@ -130,8 +185,13 @@ add action
 bed room
 examine
 note
+<<<<<<< HEAD
 world::lightOn=true|You can't see the note in the dark.,world::brickExamined=true|You can't do that right now.
 world::noteExamined := true
+=======
+lightOn=true|You can't see the note in the dark., brickExamined=true|You can't do that right now.
+noteExamined=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 USE THIS BRICK TO BREAK YOURSELF OUT OF THE HOUSE. I DON’T KNOW WHAT’S GOING ON, BUT IT’S BAD. I THINK IT’S *unintelligible scribbles*
 
 
@@ -141,9 +201,14 @@ add action
 bed room
 take
 backpack
+<<<<<<< HEAD
 world::lightOn=true|You reach for your backpack but miss it in the dark.
 world::backpackTaken := true
 You take the backpack.
+=======
+lightOn=true|You reach for your backpack but miss it in the dark.
+backpackTaken=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 
 % take object
@@ -151,8 +216,13 @@ add action
 bed room
 take
 object
+<<<<<<< HEAD
 world::lightOn=true|You reach for the object but miss it in the dark.,world::brickExamined=true|You need to take a closer look before you pick it up.,world::backpackTaken=true|You need to have something to put the object in.
 world::brickTaken := true
+=======
+lightOn=true|You reach for the object but miss it in the dark., brickExamined=true|You need to take a closer look before you pick it up., backpackTaken=true|You need to have something to put the object in.
+brickTaken=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 You put the brick in the bag. Your parents must’ve wanted you to use it for something. It will surely come in handy. 
 
 % examine boulder
@@ -164,9 +234,15 @@ examine
 % item
 boulder
 % precond
+<<<<<<< HEAD
 world::lightOn=true|You can't do that.
 % postcond
 world::boulderExamined := true
+=======
+lightOn=true|You can't do that.
+% postcond
+boulderExamined=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 The boulder is a huge metallic boulder. You might be able to move it, but its at the very edge of what you could manage. You think back to the last time you helped mum out with a car repair and remember how important it was that you ate a big breakfast before that time.
 
@@ -179,11 +255,21 @@ push
 % item
 boulder
 % precond
+<<<<<<< HEAD
 world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolEaten=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed="NULL"|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
 % message
 You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
+=======
+breakfeastEaten=true|You need more strength to push the boulder out of the way., paracetamolTaken=true|You need to alleviate your headache before moving the boulder., boulderExamined=true|You want to have a closer look before you do that., boulderPushed=NULL|You've already pushed it out of the way.
+% postcond
+boulderPushed=true
+% message
+You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
+% failmessage
+You need to gather sufficient strength and look closer at the boulder before moving it out of the way.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % push/ pull boulder
 add action
@@ -194,9 +280,15 @@ pull
 % item
 boulder
 % precond
+<<<<<<< HEAD
 world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolTaken=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed="NULL"|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
+=======
+breakfeastEaten=true|You need more strength to push the boulder out of the way., paracetamolTaken=true|You need to alleviate your headache before moving the boulder., boulderExamined=true|You want to have a closer look before you do that., boulderPushed=NULL|You've already pushed it out of the way.
+% postcond
+boulderPushed=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
 
@@ -211,9 +303,15 @@ leave
 % item
 room
 % precond
+<<<<<<< HEAD
 world::boulderPushed=true|You can't get out because the boulder is in your way.
 % postcond
 world::room := "living room",world::leftFirstRoom := true
+=======
+boulderPushed=true|You can't get out because the boulder is in your way.
+% postcond
+room=living room, leftFirstRoom=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting.
 
@@ -222,7 +320,11 @@ add room
 % name
 living room
 % items
+<<<<<<< HEAD
 note [small], window [west stained], window [south], window [east], juice [green light acidic], room
+=======
+note [small], window [west], window [south], window [east], juice [green light acidic], room, backpack [blue]
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 
 % all actions 
@@ -233,6 +335,10 @@ note [small], window [west stained], window [south], window [east], juice [green
 % precond
 % postcond
 % message
+<<<<<<< HEAD
+=======
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 add action
 % room
@@ -242,9 +348,15 @@ examine
 % item
 note
 % precond
+<<<<<<< HEAD
 
 % postcond
 world::livingNoteExamined := true
+=======
+leftFirstRoom=true|You can't do that yet.
+% postcond
+livingNoteExamined=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 These things. The only way you can stop them is through music. I don’t know what yet, but some form of music will fix all of this. 
 
@@ -254,16 +366,27 @@ living room
 % trigger
 examine
 % item
+<<<<<<< HEAD
 window
 % precond
 
 % postcond
 world::westWindowExamined := true
+=======
+window_2
+% precond
+leftFirstRoom=true|You can't do that yet.
+% postcond
+westWindowExamined=true, acidDiscovered=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 The window has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
 
 
+<<<<<<< HEAD
 % EXAMINE WINDOW_2
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add action
 % room
 living room
@@ -272,6 +395,7 @@ examine
 % item
 window_2
 % precond
+<<<<<<< HEAD
 
 % postcond
 world::southWindowExamined := true
@@ -279,6 +403,14 @@ world::southWindowExamined := true
 The window is reinforced with some strange material, as you suspected. 
 
 % EXAMINE WINDOW_3
+=======
+leftFirstRoom=true|You can't do that yet.
+% postcond
+southWindowExamined=true
+% message
+The window is reinforced with some strange material, as you suspected. 
+
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add action
 % room
 living room
@@ -287,6 +419,7 @@ examine
 % item
 window_3
 % precond
+<<<<<<< HEAD
 
 % postcond
 world::eastWindowExamined := true
@@ -294,6 +427,14 @@ world::eastWindowExamined := true
 The window is reinforced with some strange material, as you suspected. 
 
 %EXAMIEN ACID
+=======
+leftFirstRoom=true|You can't do that yet.
+% postcond
+eastWindowExamined=true
+% message
+The window is reinforced with some strange material, as you suspected. 
+
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add action
 % room
 living room
@@ -302,6 +443,7 @@ examine
 % item
 juice
 % precond
+<<<<<<< HEAD
 
 % postcond
 world::acidExamined := true
@@ -309,6 +451,15 @@ world::acidExamined := true
 You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
 
 % PUT ACID ON 
+=======
+acidDiscovered=true|You can't do that.
+% postcond
+acidExamined=true
+% message
+You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
+
+
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add action
 % room
 living room
@@ -316,6 +467,7 @@ living room
 put
 1
 % item
+<<<<<<< HEAD
 juice, bed_room.backpack
 % precond
 world::acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
@@ -323,6 +475,17 @@ world::acidExamined=true|You want to have a closer look at the juice before putt
 world::acidPut := true
 % message
 You put the acidic juice as a coating on your brick bag.
+=======
+juice
+% precond
+acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
+% postcond
+acidPut=true
+% message
+You put the acidic juice as a coating on your brick bag.
+% failmessage
+Why would you put apple juice on your bag?
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % throw backpack at west window
 add action
@@ -331,6 +494,7 @@ living room
 % trigger
 throw
 % item
+<<<<<<< HEAD
 bed_room.backpack, window
 % precond
 world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
@@ -341,12 +505,25 @@ You throw the acid-coated bag at the window with all your force. The instant the
 
 
 % throw backpack at  window_2
+=======
+backpack, window
+% precond
+acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm, how can I get through that reinforcement material?", you think as you pick the bag back up.
+% postcond
+windowBroken=true
+% message
+You throw the acid-coated bag at the window with all your force. The instant the bag touches the window, the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+
+
+% throw backpack at west window
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add action
 % room
 living room
 % trigger
 throw
 % item
+<<<<<<< HEAD
 bed_room.backpack, window_2
 % precond
 world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
@@ -354,6 +531,15 @@ world::acidPut=true|You throw the bag in a futile attempt to break the window. T
 world::windowBroken := true
 % message
 You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window" you think to yourself.
+=======
+backpack, window_2
+% precond
+acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+% postcond
+windowBroken=true
+% message
+You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % throw backpack at south window_3
 add action
@@ -362,11 +548,19 @@ living room
 % trigger
 throw
 % item
+<<<<<<< HEAD
 bed_room.backpack, window_3
 % precond
 world::acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
 world::windowBroken := true
+=======
+backpack, window_3
+% precond
+acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+% postcond
+windowBroken=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
 
@@ -378,9 +572,15 @@ leave
 % item
 room
 % precond
+<<<<<<< HEAD
 world::windowBroken=true|You can't leave the living room because the windows and doors are locked and reinforced.
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
+=======
+windowBroken=true|You can't leave the living room because the windows and doors are locked and reinforced.
+% postcond
+room=garden, errorMessage=Why would you do that? Drof is yelling at you to put the onepiece one.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
 
@@ -399,11 +599,20 @@ put
 % item
 onepiece
 % precond
+<<<<<<< HEAD
 world::onePieceOn="NULL"|You already have the onepiece on.
 % postcond
 world::onePieceOn := true,world::errorMessage := "Why would you do that? You need to follow Drof."
 % message
 You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.\n Drof yells at you: "FOLLOW ME! QUICKLY!".
+=======
+onePieceOn=NULL|You already have the onepiece on.
+% postcond
+onePieceOn=true, errorMessage=Why would you do that? You need to follow Drof.
+% message
+You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 add action
 % room
@@ -413,11 +622,19 @@ follow
 % item
 Drof
 % precond
+<<<<<<< HEAD
 world::onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
 % postcond
 world::room := "bar",world::errorMessage := "You can't do that."
 % message
 Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
+=======
+onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
+% postcond
+room=bar, errorMessage=You can't do that.
+% message
+Drof hurries you along through the cul-de-sacs neighbourhood where you have lived all your life. As you yell explicatives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 add room
 bar
@@ -431,11 +648,19 @@ drink
 % item
 beer, glass
 % precond
+<<<<<<< HEAD
 world::beerDrank="NULL"|You've already had your beer.
 % postcond
 world::beerDrank := true
 % message
 You drink your beer quickly to quench your thirst. Some calmness begins to return to your mind. As you glance at Drof you realize that it seems like you can finally ask him what the **** is going on.
+=======
+beerDrank=NULL|You've already had your beer.
+% postcond
+beerDrank=true
+% message
+You drink your beer quickly to quench your thirst. Some calmness begins to return to your mind. As you glance at Drof, you realize that it seems like you can finally ask him what the **** is going on.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 add action
 % room
@@ -445,9 +670,15 @@ talk
 % item
 Drof
 % precond
+<<<<<<< HEAD
 world::beerDrank=true|You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
 % postcond
 world::drofTalkedTo := true
+=======
+beerDrank=true|You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
+% postcond
+drofTalkedTo=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 Tceferp takes a deep breath and says, "You know, these people are actually robots. They call themselves Bostonian Saltases and they have been ordered to remove every inhabitant in town and lock up every house. All of this is to prepare for the demolition of the town to make space for an intercontinental super highway. Don't ask me how I know any of this. You don't want to know.". He continues “The only way these robots can be stopped is by playing their recall song. They've all been programmed to stop the project and return to base by their over lord if they hear one specific song”. Tceferp says that he has heard rumblings that the song may be called "Deplorable", but he most likely misheard this. "How does Drof know all of this?", you think before realizing that you need to act quickly to save your town. Drf points you to the back of the room, explaining that he thinks the recall speaker can be found somewhere here.
 
@@ -459,16 +690,26 @@ go
 % item
 back
 % precond
+<<<<<<< HEAD
 world::drofTalkedTo=true|You should probably talk to your friend Drof before going there.
 % postcond
 world::room := "back of bar"
+=======
+drofTalkedTo=true|You should probably talk to your friend Drof before going there.
+% postcond
+room=back of bar
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You make your way to the back of the room where you sit down and immediately get served a plate of tapas. The robotic bartender forgets to clear the table of an old plate of tortillas next to you, which annoys you slightly even though you have much bigger problems to worry about right now. To the right, there is an entrance to an antechamber of some sort and to the left is a staircase leading up to the staff area and kitchen of the bar. 
 
 
 add room
 back of bar
+<<<<<<< HEAD
 tapas [spanish delicious], antechamber, upstairs [staircase stairs]
+=======
+tapas [spanish delicious], antechamber, stairs, upstairs
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 add action
 % room
@@ -478,9 +719,15 @@ eat
 % item
 tapas
 % precond
+<<<<<<< HEAD
 world::tapasEaten="NULL"|You've already eaten your tapas.
 % postcond
 world::tapasEaten := true
+=======
+tapasEaten=NULL|You've already eaten your tapas.
+% postcond
+tapasEaten=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You enjoy the tapas slowly, despite the stressing nature of the situation you are in. There is nothing like good food, you think to yourself as you eat the last few bites of the dish
 
@@ -495,9 +742,16 @@ upstairs
 % precond
 
 % postcond
+<<<<<<< HEAD
 world::room := "upstairs"
 % message
 You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+=======
+room=upstairs
+% message
+You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % GO UPSTAIRS / GO TO THE STAIRCASE
 add action
@@ -506,11 +760,19 @@ back of bar
 % trigger
 go
 % item
+<<<<<<< HEAD
 upstairs
 % precond
 
 % postcond
 world::room := "upstairs"
+=======
+staircase
+% precond
+
+% postcond
+room=upstairs
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
 
@@ -519,7 +781,11 @@ You go upstairs to realise that the robots have completely changed the interior 
 % UPSTAIRS ACTIONS
 add room
 upstairs
+<<<<<<< HEAD
 player [vinyl], Depasito, Darkside, record [pink], records
+=======
+player [vinyl], Depasito, Darkside, record [pink]
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % EXAMINE PLAYER
 add action
@@ -545,6 +811,7 @@ turn
 % item
 player
 % precond
+<<<<<<< HEAD
 world::playerOn="NULL"|The player is already on.
 % postcond
 world::playerOn := true
@@ -563,6 +830,11 @@ player
 world::playerOn="NULL"|The player is already on.
 % postcond
 world::playerOn := true
+=======
+playerOn=NULL|The player is already on.
+% postcond
+playerOn=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 You turn on the vinyl player. The wire between the player and the parabol dish makes a brief humming noise. A hatch opens, exposing the vinyl player’s internals and tracks that seem to fit the records on the table.
 
@@ -578,7 +850,11 @@ records
 % precond
 
 % postcond
+<<<<<<< HEAD
 world::recordsExamined := true
+=======
+recordsExamined=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 There are three records on the table. Depasito by Fonzen and Jonas Beaver, Darkside by The Resurrectors and another obscure record with a pink cover.
 
@@ -593,7 +869,11 @@ depasito
 % precond
 
 % postcond
+<<<<<<< HEAD
 world::depasitoExamined := true
+=======
+depasitoExamined=true
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % message
 The cover of Depasito shows a picture of a Spanish-speaking musician, Fonzen, and Jonas Beaver. You remember that you heard it at a school fundraiser once.
 
@@ -604,6 +884,7 @@ upstairs
 % trigger
 examine
 % item
+<<<<<<< HEAD
 darkside
 % precond
 
@@ -611,6 +892,16 @@ darkside
 world::darksideExamined := true
 % message
 The front of the Darkside record is dark and dull. You laugh at the cheap play on The Killers’ Mr.Brightside that this measly record represents.
+=======
+depasito
+% precond
+
+% postcond
+darksideExamined=true
+% message
+The front of the Darkside record is dark and dull. You laugh at the cheap play on The Killers’ Mr.Brightside that this measly record represents.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % examine the pink record
 add action
@@ -623,9 +914,16 @@ record
 % precond
 
 % postcond
+<<<<<<< HEAD
 world::pinkrecordExamined := true
 % message
 To your surprise, the pink cover is a P!nk song.
+=======
+pinkrecordExamined=true
+% message
+To your surprise, the Pink cover is a Pink song.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % put depasito in the vinyl player
 add action
@@ -637,11 +935,20 @@ put
 % item
 depasito, player
 % precond
+<<<<<<< HEAD
 world::playerOn=true|The player is not on yet.,world::playerFull="NULL"|The player is full.
 % postcond
 world::playerFull := true,world::gameDone := true
 % message
 You play Depasito in the vinyl player. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. \n Thanks for playing this game.
+=======
+playerOn=true|The player is not on yet.,playerFull=NULL|The player is full.
+% postcond
+playerFull=true, gameDone=true
+% message
+You play Depasito in the vinyl player. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. \n Thanks for playing this game.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 
 % put depasito in the vinyl player
@@ -654,11 +961,20 @@ put
 % item
 record, player
 % precond
+<<<<<<< HEAD
 world::playerOn=true|The player is not on.,world::playerFull="NULL"|The player is full.
+=======
+playerOn=true|The player is not on., playerFull=NULL|The player is full.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % postcond
 
 % message
 You try to play the pink record but nothing happens you so you put it back.
+<<<<<<< HEAD
+=======
+% failmessage
+The player is not on yet or its full.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % put depasito in the vinyl player
 add action
@@ -670,11 +986,20 @@ put
 % item
 Darkside, player
 % precond
+<<<<<<< HEAD
 world::playerOn=true|The player is not on.,world::playerFull="NULL"|The player is full.
+=======
+playerOn=true|The player is not on., playerFull=NULL|The player is full.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 % postcond
 
 % message
 You play Darkside but nothing interesting happens you put it back.
+<<<<<<< HEAD
+=======
+% failmessage
+The player is not on yet or its full.
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % GO TO ANTECHAMBER FROM BACK
 add action
@@ -687,6 +1012,7 @@ antechamber
 % precond
 
 % postcond
+<<<<<<< HEAD
 world::room := "antechamber"
 % message
 You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
@@ -706,11 +1032,21 @@ antechamber
 world::room := "antechamber"
 % message
 You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
+=======
+room=antechamber
+% message
+You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 
 add room
 antechamber
+<<<<<<< HEAD
 room, door [distant brown]
+=======
+room, door [distantmbrown]
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 add action
 % room
@@ -724,7 +1060,12 @@ door
 % postcond
 
 % message
+<<<<<<< HEAD
 You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots. Maybe the stairs are more interesting and you should leave this room.
+=======
+You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots.
+% failmessage
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 % LEAVE ROOM ANTECHAMBER
 add action
@@ -737,6 +1078,7 @@ room
 % precond
 
 % postcond
+<<<<<<< HEAD
 world::room := "back of bar"
 % message
 You leave the antechamber, having found nothing interesting.
@@ -747,6 +1089,15 @@ bed_room.object
 brick
 
 add synonyms
+=======
+room=back of bar
+% message
+You leave the antechamber, having found nothing interesting.
+% failmessage
+
+
+add synonyms
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 bed_room.curtains 
 blinds
 
@@ -756,11 +1107,17 @@ bed_room.curtains
 blinds
 
 add synonyms
+<<<<<<< HEAD
 bed_room.backpack
 rucksack, bag
 
 
 
+=======
+living_room.backpack
+rucksack, bag
+
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 add synonyms
 bed_room.paracetamol
 pill
@@ -777,6 +1134,7 @@ suit
 add synonyms
 garden.drof
 friend, tcefer, buddy
+<<<<<<< HEAD
 
 
 edit knowledge
@@ -869,3 +1227,5 @@ living_room.note::mass := 10,bed_room.note::mass := 10, bed_room.paracetamol::ma
 edit knowledge
 fillers
 bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.object::volume := 10, upstairs.record::volume := 5, upstairs.depasito::volume := 5, upstairs.darkside::volume := 5, garden.onepiece::volume := 30, back_of_bar.tapas::volume := 10, bed_room.breakfast::volume := 10, bar.glass::internalVolume := 10, bar.beer::volume := 10, bed_room.bag::volume := 100, bed_room.paracetamol::volume := 5, living_room.juice::volume := 5, living_room.juice::state := "liquid"
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e

@@ -297,6 +297,7 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void missingSlotThrowsException() throws KnowledgeException, MissingKnowledgeException {
+<<<<<<< HEAD
       String expression = "(Test491::Apple = \"\")";
       KnowledgeBase kb = new KnowledgeBase();
       kb.addSpecificFrame(new SpecificFrame("Test491"));
@@ -309,12 +310,20 @@ public class ConditionEvaluationVisitorTest {
 
    @Test
    public void defaultBooleanFalse() throws KnowledgeException, MissingKnowledgeException {
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       String expression = "(Test491::Apple)";
       KnowledgeBase kb = new KnowledgeBase();
       kb.addSpecificFrame(new SpecificFrame("Test491"));
 
+<<<<<<< HEAD
       Boolean result = produceBooleanResult(kb, expression);
       assertFalse(result);
+=======
+      exceptionRule.expect(MissingKnowledgeException.class);
+      exceptionRule.expectMessage("Error when parsing expression \"(Test491::Apple)\". Item: Test491 doesn't have a \"Apple\"");
+      Boolean result = produceBooleanResult(kb, expression);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
    }
 
    @Test

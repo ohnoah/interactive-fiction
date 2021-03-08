@@ -6,7 +6,10 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class BasicCondition implements Serializable {
+<<<<<<< HEAD
    private static final long serialVersionUID = -7286922177455175715L;
+=======
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
    private String key;
    private String desiredValue;
    private String errorMessage;

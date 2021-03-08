@@ -92,7 +92,11 @@ public class KnowledgeUpdate implements Serializable {
 
    private boolean isConstant(String secondOperand) {
       return Pattern.matches(
+<<<<<<< HEAD
           String.format("%s|%s|%s|%s|TRUE|FALSE|true|false",
+=======
+          String.format("%s|%s|%s|%s|TRUE|FALSE",
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
               KnowledgeRegex.STRING_EXPR, KnowledgeRegex.NUMBER_EXPR, KnowledgeRegex.NUMBER_LIST_EXPR, KnowledgeRegex.STRING_LIST_EXPR),
           secondOperand);
    }
@@ -165,7 +169,11 @@ public class KnowledgeUpdate implements Serializable {
       }
       else {
          Pattern constant = Pattern.compile(
+<<<<<<< HEAD
              String.format("^%s %s (%s|%s|%s|%s|TRUE|FALSE|true|false)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
+=======
+             String.format("^%s %s (%s|%s|%s|%s|TRUE|FALSE)$", knowledgeExpr, setTypeExpr, numberExpr, stringExpr, stringListExpr, numberListExpr)
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
          );
          Matcher constantMatcher = constant.matcher(expr);
          if (constantMatcher.matches()) {

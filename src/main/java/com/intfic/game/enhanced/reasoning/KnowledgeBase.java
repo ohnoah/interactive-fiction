@@ -339,6 +339,7 @@ public class KnowledgeBase implements Serializable {
 
    @Override
    public String toString() {
+<<<<<<< HEAD
       return "KnowledgeBase{ \n " +
           "genericFrames=" + genericFrames +
           ",\n specificFrames=" + specificFrames +
@@ -348,6 +349,16 @@ public class KnowledgeBase implements Serializable {
    // THIS IS THE ONLY FUNCTION THAT RETURNS A DEFAULT VALUE.
    public Boolean queryBoolean(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = findSpecificFrame(stripExclamationMark(frame)).getFiller(slot, false);
+=======
+      return "KnowledgeBase{" +
+          "genericFrames=" + genericFrames +
+          ", specificFrames=" + specificFrames +
+          '}';
+   }
+
+   public Boolean queryBoolean(@NotNull String frame, @NotNull String slot) throws KnowledgeException, MissingKnowledgeException {
+      Object queryResult = this.query(frame, slot);
+>>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       if (queryResult instanceof Boolean) {
          return (Boolean) queryResult;
       }
