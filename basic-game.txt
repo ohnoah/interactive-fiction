@@ -3,7 +3,7 @@ You wake up in your bed feeling well rested after a good’s night sleep.  The s
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, note
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid rectangular], boulder [large metallic silver huge], curtains [hanging], room, note
 
 % all actions 
 
@@ -22,7 +22,16 @@ turn
 light
 
 lightOn=true
-As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps. 
+As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+
+add action
+bed room
+turn
+1
+light
+
+lightOn=true
+As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
 % open the curtains
 add action
@@ -88,12 +97,20 @@ You swallow the paracetamol and the headache immediately goes away. What a power
 add action
 bed room
 turn
-1
+2
 light
 lightOn=true|The light isn't on.
 
-Why would you do that? 
-The light isn't on.
+Why would you do that?
+
+add action
+bed room
+turn
+3
+light
+lightOn=true|The light isn't on.
+
+Why would you do that?
 
 
 % examine object
@@ -104,7 +121,6 @@ object
 lightOn=true|You can't quite see the object in the dark.
 brickExamined=true
 The brick is a standard red brick that your mum keeps in her work shed around the back of the house. It’s not that large and would easily fit in your backpack that you see sticking out under your bed next to the brick. As you are about to put the brick down, you see a small handwritten note under where the brick was.
-You squint but can't make out anything about the object in the dark.
 
 % examine object
 add action
@@ -398,7 +414,7 @@ onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
 % postcond
 room=bar, errorMessage=You can't do that.
 % message
-Drof hurries you along through the cul-de-sacs neighbourhood where you have lived all your life. As you yell explicatives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
+Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
 
 add room
 bar
@@ -523,6 +539,22 @@ upstairs
 % trigger
 turn
 0
+% item
+player
+% precond
+playerOn=NULL|The player is already on.
+% postcond
+playerOn=true
+% message
+You turn on the vinyl player. The wire between the player and the parabol dish makes a brief humming noise. A hatch opens, exposing the vinyl player’s internals and tracks that seem to fit the records on the table.
+
+% TURN ON  PLAYER
+add action
+% room
+upstairs
+% trigger
+turn
+1
 % item
 player
 % precond

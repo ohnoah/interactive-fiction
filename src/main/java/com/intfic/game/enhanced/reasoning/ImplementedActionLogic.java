@@ -34,7 +34,9 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat go = new ActionFormat("go", "go to ([\\w\\s]+)$");
       ActionFormat drop = new ActionFormat("drop");
       ActionFormat turnOn = new ActionFormat("turn", "turn ([\\w\\s]+) on$");
+      ActionFormat turnOn1 = new ActionFormat("turn", "turn on ([\\w\\s]+)$");
       ActionFormat turnOff = new ActionFormat("turn", "turn ([\\w\\s]+) off$");
+      ActionFormat turnOff1 = new ActionFormat("turn", "turn off ([\\w\\s]+)$");
       ActionFormat open = new ActionFormat("open");
       ActionFormat feel = new ActionFormat("feel");
       ActionFormat putIn = new ActionFormat("put", "put ([\\w\\s]+) in ([\\w\\s]+)$");
@@ -59,7 +61,7 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
       ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
 
-      defaultActionFormats = List.of(examine, push, take, talk, pull, follow, go, drop, turnOn, turnOff, open, feel, putIn,
+      defaultActionFormats = List.of(examine, push, take, talk, pull, follow, go, drop, turnOn, turnOn1, turnOff, turnOff1, open, feel, putIn,
           putOn, putOnSingle, eat, climb, drink, wave, /*fill,*/ wear, smell, throwAt, listenTo, breakIt, burn, enter, leave, search, unlockWith, remove, transfer);
       implementedConditionsMap = new HashMap<>();
       implementedSuccessMessageMap = new HashMap<>();

@@ -32,3 +32,7 @@ error-log*
 
 game-transcript-*
 question-transcript-*
+
+build/libs/shadow.jar
+build/launc4j
+build/distributions
