@@ -39,8 +39,8 @@ public class GenericFrame implements Serializable {
    @Override
    public String toString() {
       return "GenericFrame{" +
-          "id='" + id + '\'' +
-          ", slots=" + slots +
+          " id='" + id + '\'' +
+          " ,\n slots=" + slots +
           '}';
    }
 }

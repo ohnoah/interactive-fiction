@@ -743,7 +743,7 @@ public class EnhancedGameEditor extends JFrame {
                         gameEngine.updateKnowledgeBaseMultiple(knowledgeUpdate);
                      }
                      catch (KnowledgeException e) {
-                        outputBuilder.append(String.format("Didn't complete update \"%s\" because it has an invalid form %s.\n", s, e.getMessage()));
+                        outputBuilder.append(String.format("\n ------------ \n Didn't complete update \"%s\" because it has an invalid form %s. \n -------  \n", s, e.getMessage()));
                      }
                   }
                   output = outputBuilder.toString();
