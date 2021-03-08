@@ -51,13 +51,10 @@ public class SpecificFrame implements Serializable {
       }
    }
 
-<<<<<<< HEAD
    public Object getFiller(String slotName, Object def) throws MissingKnowledgeException {
       return slots.getOrDefault(slotName, def);
    }
 
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
    public void setSlots(Map<String, Object> slots) {
       this.slots = new HashMap<>(slots);
    }
@@ -88,13 +85,8 @@ public class SpecificFrame implements Serializable {
    @Override
    public String toString() {
       return "SpecificFrame{" +
-<<<<<<< HEAD
           " id='" + id + '\'' +
           ",\n slots=" + slots +
-=======
-          "id='" + id + '\'' +
-          ", slots=" + slots +
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
           '}';
    }
 }

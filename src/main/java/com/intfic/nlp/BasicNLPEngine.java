@@ -1,9 +1,6 @@
 package com.intfic.nlp;
 
-<<<<<<< HEAD
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
@@ -37,7 +34,6 @@ public class BasicNLPEngine {
       catch (JWNLException e) {
          e.printStackTrace();
       }
-<<<<<<< HEAD
       List<ActionFormat> actionFormats = findMatchingGameVerb(verb, possibleActionFormats);
 
       String message = "";
@@ -67,31 +63,12 @@ public class BasicNLPEngine {
          }
       }
       throw new FailedParseException(message);
-=======
-      ActionFormat actionFormat = findMatchingGameVerb(verb, possibleActionFormats);
 
-      List<String> nouns = new ArrayList<>();
-      List<Set<String>> adjectives = new ArrayList<>();
-      try {
-         findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, Util.allItemNamesAndSynonyms(possibleItems));
-      }
-      catch (JWNLException e) {
-         throw new FailedParseException("Dictionary error on the back end. Try again.");
-      }
-      List<List<Item>> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
-
-      InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       // Use that to look for a VB and a NN and populate a Command
       // just look for the possible commands using WordNet otherwise return Error
       // enhanced engine can be more informative if a supplementary word happens
       // FAIL flag if command is fake
 
-
-<<<<<<< HEAD
-=======
-      return Collections.singletonList(command);
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
    }
 
 
@@ -136,13 +113,8 @@ public class BasicNLPEngine {
       return noun;
    }
 
-<<<<<<< HEAD
    public static Justification findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake,
                                                       List<String> nouns, List<Set<String>> adjectives, Set<String> possibleItemNames) throws JWNLException, FailedParseException {
-=======
-   public static void findNounsAndAdjectives(String rawCommand, ActionFormat actionToTake,
-                                             List<String> nouns, List<Set<String>> adjectives, Set<String> possibleItemNames) throws JWNLException, FailedParseException {
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       // Either do a regex match for PUT IN
       if (actionToTake.isTernary()) {
          Pattern p = Pattern.compile(actionToTake.getRegExpr());
@@ -158,12 +130,9 @@ public class BasicNLPEngine {
             }
          }
          else {
-<<<<<<< HEAD
             return new Justification(false, " Argument structure after the verb was wrong.");
             /* throw new FailedParseException("Argument structure after the verb was wrong.");*/
-=======
-            throw new FailedParseException("Argument structure after the verb was wrong.");
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
+
          }
       }
       // Or just find the noun if its a unary
@@ -173,7 +142,6 @@ public class BasicNLPEngine {
          nouns.add(noun);
          adjectives.add(currentAdjectives);
          if (nouns.size() != 1) { // no nullary operator allowed
-<<<<<<< HEAD
             return new Justification(false, "Expected 1 noun as argument but got " + nouns.size() + ".");
             /* throw new FailedParseException("Expected 1 noun as argument but got " + nouns.size() + ".");*/
          }
@@ -193,21 +161,6 @@ public class BasicNLPEngine {
       if (actionFormats.size() != 0) {
          return actionFormats;
       }
-=======
-            throw new FailedParseException("Expected 1 noun as argument but got " + nouns.size() + ".");
-         }
-      }
-   }
-
-   // This fails for e.g. TURN it ON, TURN the box
-   public static ActionFormat findMatchingGameVerb(String verb, List<ActionFormat> possibleActionFormats) throws FailedParseException {
-      // Word net in here
-      for (ActionFormat af : possibleActionFormats) {
-         if (af.getVerb().equals(verb)) {
-            return af;
-         }
-      }
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       throw new FailedParseException("No action corresponds to the verb: " + verb);
    }
 
@@ -218,10 +171,7 @@ public class BasicNLPEngine {
       for (String word : splitWords) {
          IndexWord iw = null;
          iw = d.lookupIndexWord(POS.VERB, word);
-         if (iw == null) { // not a verb
-            continue;
-         }
-         else {
+         if (iw != null) {
             return iw.getLemma().trim();
          }
       }

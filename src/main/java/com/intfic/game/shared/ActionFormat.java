@@ -1,21 +1,14 @@
 package com.intfic.game.shared;
 
 import java.io.Serializable;
-<<<<<<< HEAD
 import java.util.List;
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ActionFormat implements Serializable {
-<<<<<<< HEAD
     private static final long serialVersionUID = -1143489992904563813L;
-=======
-   /* private static final long serialVersionUID = -7020054998734425443L;*/
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
    private String verb;
    private String regExpr;
 
@@ -91,7 +84,6 @@ public class ActionFormat implements Serializable {
          return this.getVerb() + " [0]";
       }
    }
-<<<<<<< HEAD
 
    public String fillToString(List<String> arguments) {
       if(arguments.size() != this.getDegree()){
@@ -108,6 +100,4 @@ public class ActionFormat implements Serializable {
          return this.getVerb() + arguments.get(0);
       }
    }
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 }

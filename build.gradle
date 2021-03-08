@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.6.5'
     id 'antlr'
-<<<<<<< HEAD
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'edu.sc.seis.launch4j' version '2.4.9'
@@ -23,13 +22,10 @@ compileJava {
     targetCompatibility = '1.8'
 }
 
-=======
-}
 
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 
 repositories {
     mavenCentral()
@@ -57,18 +53,11 @@ patchPluginXml {
       <em>most HTML tags may be used</em>"""
 }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 test{
     //useJUnit()
     maxHeapSize = "2048m"
 }
-<<<<<<< HEAD
 mainClassName = "com.intfic.EnhancedGamePlayer"
-=======
-
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
 

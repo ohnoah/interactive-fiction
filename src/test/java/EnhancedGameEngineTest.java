@@ -118,14 +118,11 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.setCurrentRoom(room);
       // TODO: Look at making defaults for this
       assertTrue(enhancedGameEngine.addParent("putting_room.box", "container"));
-<<<<<<< HEAD
       // TAKEABLE
       assertTrue(enhancedGameEngine.addParent("putting_room.box", "takeable"));
       assertTrue(enhancedGameEngine.addParent("putting_room.apple", "takeable"));
       assertTrue(enhancedGameEngine.addParent("putting_room.ball", "takeable"));
       assertTrue(enhancedGameEngine.addParent("putting_room.pen", "takeable"));
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       enhancedGameEngine.updateKnowledgeBaseMultiple(
           new KnowledgeUpdate("putting_room.box::internalVolume := 10"),
           new KnowledgeUpdate("putting_room.box::volume := 10"),
@@ -181,10 +178,7 @@ public class EnhancedGameEngineTest {
       assertTrue(enhancedGameEngine.addParent("taking_room.pen", "takeable"));
       assertTrue(enhancedGameEngine.addParent("taking_room.ball", "takeable"));
       assertTrue(enhancedGameEngine.addParent("taking_room.apple", "takeable"));
-<<<<<<< HEAD
       assertTrue(enhancedGameEngine.addParent("taking_room.bucket", "takeable"));
-=======
->>>>>>> e1294131b4990c04471c8d8454121ab033af946e
       assertTrue(enhancedGameEngine.addParent("taking_room.box", "takeable"));
       assertTrue(enhancedGameEngine.addParent("taking_room.banana", "edible"));
       assertTrue(enhancedGameEngine.addParent("taking_room.coke", "drinkable"));
