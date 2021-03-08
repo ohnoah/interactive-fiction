@@ -33,9 +33,4 @@ error-log*
 game-transcript-*
 question-transcript-*
 
-build/libs/shadow.jar
-build/launc4j
-build/distributions
-.gradle/6.8.3/javaCompile/
-build/tmp
-.gradle/5.2.1/
+build
