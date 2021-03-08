@@ -49,7 +49,7 @@ public class TransformGame {
                Files.write(file.toPath(), List.of(line), StandardOpenOption.APPEND);
                line = reader.readLine();
             }*/
-            newLine = line.replaceAll("NULL", "\"NULL\"");
+            newLine = line.replaceAll("NULL", "false");
 
             if(line.contains("|")){
                newLine = appendWorld(newLine);

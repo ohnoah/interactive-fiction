@@ -84,12 +84,12 @@ public class Item implements Serializable {
       Item item = (Item) o;
       return getName().equals(item.getName()) &&
           getAdjectives().equals(item.getAdjectives()) &&
-          getParentRoom().equals(item.getParentRoom());
+          getOriginalRoom().equals(item.getOriginalRoom());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(getName(), getAdjectives(), getParentRoom());
+      return Objects.hash(getName(), getAdjectives(), getOriginalRoom());
    }
 
 /*   @Override

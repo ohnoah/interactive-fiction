@@ -3,7 +3,7 @@ You wake up in your bed feeling well rested after a good’s night sleep.  The s
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge], curtains [hanging], room, note, bed, window, floor, living room
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room, note, bed, window, floor, living room, door
 
 % all actions 
 
@@ -20,7 +20,7 @@ bed room
 turn
 0
 light
-
+world::lightOn=false|The light is already on.
 world::lightOn := true
 As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
@@ -29,7 +29,7 @@ bed room
 turn
 1
 light
-
+world::lightOn=false|The light is already on.
 world::lightOn := true
 As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
@@ -39,7 +39,7 @@ bed room
 open
 curtains
 %preconds
-world::curtainsOpen="NULL"|The curtains are already open
+world::curtainsOpen=false|The curtains are already open
 % postconds
 world::lightOn := true,world::curtainsOpen := true
 % message
@@ -176,7 +176,7 @@ push
 % item
 boulder
 % precond
-world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolEaten=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed="NULL"|You've already pushed it out of the way.
+world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolEaten=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed=false|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
 % message
@@ -191,7 +191,7 @@ pull
 % item
 boulder
 % precond
-world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolTaken=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed="NULL"|You've already pushed it out of the way.
+world::breakfeastEaten=true|You need more strength to push the boulder out of the way.,world::paracetamolTaken=true|You need to alleviate your headache before moving the boulder.,world::boulderExamined=true|You want to have a closer look before you do that.,world::boulderPushed=false|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
 % message
@@ -249,7 +249,7 @@ add room
 % name
 living room
 % items
-note [small], window [west stained], window [south], window [east], juice [green light acidic], room, bed room
+note [small], window [west stained], window [south], window [east], juice [green light acidic], room, bed room, outside
 
 
 % all actions 
@@ -413,6 +413,7 @@ world::windowBroken := true
 % message
 You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
 
+% LEAVE ROOM
 add action
 % room
 living room
@@ -427,6 +428,20 @@ world::room := "garden",world::errorMessage := "Why would you do that? Drof is y
 % message
 You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
 
+% GO OUTSIDE
+add action
+% room
+living room
+% trigger
+go
+% item
+outside
+% precond
+world::windowBroken=true|You can't go outside the living room because the windows and doors are locked and reinforced.
+% postcond
+world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
+% message
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
 
 % GARDENTIME
 add room
@@ -442,7 +457,7 @@ put
 % item
 onepiece
 % precond
-world::onePieceOn="NULL"|You already have the onepiece on.
+world::onePieceOn=false|You already have the onepiece on.
 % postcond
 world::onePieceOn := true,world::errorMessage := "Why would you do that? You need to follow Drof."
 % message
@@ -474,7 +489,7 @@ drink
 % item
 beer, glass
 % precond
-world::beerDrank="NULL"|You've already had your beer.
+world::beerDrank=false|You've already had your beer.
 % postcond
 world::beerDrank := true
 % message
@@ -515,20 +530,6 @@ back of bar
 tapas [spanish delicious], antechamber, upstairs [staircase stairs]
 
 
-add action
-% room
-back of bar
-% trigger
-eat
-% item
-tapas
-% precond
-world::tapasEaten="NULL"|You've already eaten your tapas.
-% postcond
-world::tapasEaten := true
-% message
-You enjoy the tapas slowly, despite the stressing nature of the situation you are in. There is nothing like good food, you think to yourself as you eat the last few bites of the dish
-
 % GO UPSTAIRS / GO TO THE STAIRCASE
 add action
 % room
@@ -565,7 +566,7 @@ You go upstairs to realise that the robots have completely changed the interior 
 % UPSTAIRS ACTIONS
 add room
 upstairs
-player [vinyl], Depasito, Darkside, record [pink], records
+vinyl player [vinyl old], Depasito, Darkside, record [pink], records
 
 
 % EXAMINE PLAYER
@@ -575,10 +576,11 @@ upstairs
 % trigger
 examine
 % item
-player
+vinyl player
 % precond
 
 % postcond
+
 % message
 The vinyl player is a beautiful mahogany design. It’s turned off.
 
@@ -590,9 +592,9 @@ upstairs
 turn
 0
 % item
-player
+vinyl player
 % precond
-world::playerOn="NULL"|The player is already on.
+world::playerOn=false|The player is already on.
 % postcond
 world::playerOn := true
 % message
@@ -605,9 +607,9 @@ upstairs
 turn
 1
 % item
-player
+vinyl player
 % precond
-world::playerOn="NULL"|The player is already on.
+world::playerOn=false|The player is already on.
 % postcond
 world::playerOn := true
 % message
@@ -684,11 +686,11 @@ upstairs
 put
 0
 % item
-depasito, player
+depasito, vinyl player
 % precond
-world::playerOn=true|The player is not on yet.,world::playerFull="NULL"|The player is full.
+world::playerOn=true|The player is not on yet.
 % postcond
-world::playerFull := true,world::gameDone := true
+world::gameDone := true
 % message
 You play Depasito in the vinyl player. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. \n Thanks for playing this game.
 
@@ -702,9 +704,9 @@ upstairs
 put
 0
 % item
-record, player
+record, vinyl player
 % precond
-world::playerOn=true|The player is not on.,world::playerFull="NULL"|The player is full.
+world::playerOn=true|The player is not on.
 % postcond
 
 % message
@@ -718,9 +720,9 @@ upstairs
 put
 0
 % item
-Darkside, player
+Darkside, vinyl player
 % precond
-world::playerOn=true|The player is not on.,world::playerFull="NULL"|The player is full.
+world::playerOn=true|The player is not on.
 % postcond
 
 % message
@@ -792,6 +794,13 @@ world::room := "back of bar"
 % message
 You leave the antechamber, having found nothing interesting.
 
+add synonyms
+bed_room.light
+lights, lamp
+
+add synonyms
+bed_room.breakfast
+full english
 
 add synonyms
 bed_room.object 
@@ -811,7 +820,6 @@ bed_room.backpack
 rucksack, bag
 
 
-
 add synonyms
 bed_room.paracetamol
 pill
@@ -828,6 +836,15 @@ suit
 add synonyms
 garden.drof
 friend, tcefer, buddy
+
+add synonyms
+upstairs.vinyl_player
+player, record player
+
+add synonyms
+back_of_bar.upstairs
+staircase, stairs, up the stairs
+
 
 
 edit knowledge
@@ -920,3 +937,8 @@ world::liftingPower := 300, living_room.note::mass := 10,bed_room.note::mass := 
 edit knowledge
 fillers
 bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.floor::volume := 500, bed_room.window::volume := 200, bed_room.object::volume := 10, upstairs.record::volume := 5, upstairs.depasito::volume := 5, upstairs.darkside::volume := 5, garden.onepiece::volume := 30, back_of_bar.tapas::volume := 10, bed_room.breakfast::volume := 10, bar.glass::internalVolume := 10, bar.beer::volume := 10, bed_room.bag::volume := 100, bed_room.paracetamol::volume := 5, living_room.juice::volume := 5, living_room.juice::state := "liquid"
+
+
+edit knowledge
+fillers
+bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious"

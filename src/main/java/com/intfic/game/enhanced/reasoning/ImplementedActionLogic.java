@@ -31,7 +31,7 @@ public class ImplementedActionLogic implements Serializable {
       ActionFormat talk = new ActionFormat("talk", "talk to ([\\w\\s]+)$");
       ActionFormat pull = new ActionFormat("pull");
       ActionFormat follow = new ActionFormat("follow");
-      ActionFormat go = new ActionFormat("go", "go to ([\\w\\s]+)$");
+      ActionFormat go = new ActionFormat("go", "go (?:to)? ([\\w\\s]+)$");
       ActionFormat drop = new ActionFormat("drop");
       ActionFormat turnOn = new ActionFormat("turn", "turn ([\\w\\s]+) on$");
       ActionFormat turnOn1 = new ActionFormat("turn", "turn on ([\\w\\s]+)$");

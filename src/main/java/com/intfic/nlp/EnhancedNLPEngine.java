@@ -215,6 +215,13 @@ public class EnhancedNLPEngine {
       for (int i = np.first; i <= np.second; i++) {
          CoreLabel tok = tokens.get(i);
          String tag = tok.tag();
+
+         if(foundNoun){
+            String noun = tok.word();
+            itemStrings.add(noun);
+            continue;
+         }
+
          System.out.println(tag);
          if (isAdjective(tag)) {
             adjectives.add(tok.word());
@@ -362,7 +369,7 @@ public class EnhancedNLPEngine {
       try {
          System.out.println(EnhancedNLPEngine.parse("eat the back of the living room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("apple juice"))));
          System.out.println(EnhancedNLPEngine.parse("eat the onepiece", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
-         System.out.println(EnhancedNLPEngine.parse("eat the paracetamol", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
+         System.out.println(EnhancedNLPEngine.parse("go to the back of the room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
       }
       catch (FailedParseException e) {
          e.printStackTrace();

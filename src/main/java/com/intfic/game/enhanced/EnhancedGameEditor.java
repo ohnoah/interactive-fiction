@@ -223,9 +223,9 @@ public class EnhancedGameEditor extends JFrame {
 
    private static Justification validNames(List<String> names) {
       for (String name : names) {
-         name = name.replace(' ', '-');
-         if (!(name.length() > 0 && name.charAt(0) != '_' && !name.contains("-") && !name.contains(" ") && Pattern.matches(KnowledgeRegex.FRAME_NAME_EXPR, name))) {
-            return new Justification(false, String.format("%s is not a valid name. It should only contain letters and numbers", name.replace('-', ' ')));
+         name = name.replace(' ', '_');
+         if (!(name.length() > 0 && name.charAt(0) != '_' && !name.contains("-") && Pattern.matches(KnowledgeRegex.FRAME_NAME_EXPR, name))) {
+            return new Justification(false, String.format("%s is not a valid item name. It should only contain letters and numbers", name.replace('-', ' ')));
          }
       }
       return new Justification(true, "");
@@ -623,7 +623,7 @@ public class EnhancedGameEditor extends JFrame {
                      List<String> formattedItemNames = new ArrayList<>();
                      String roomPrefix = Item.roomId(roomForAction.getName());
                      for (String s : splitArgs) {
-                        s = s.toLowerCase();
+                        s = s.toLowerCase().replace(' ', '_');
                         String formatted = !(s.contains(".")) ? roomPrefix + "." + s : s;
                         formattedItemNames.add(formatted);
                      }

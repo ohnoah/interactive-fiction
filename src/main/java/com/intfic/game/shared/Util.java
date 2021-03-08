@@ -44,6 +44,14 @@ public final class Util {
       return collection.stream().map(x -> x.get(0)).collect(Collectors.toList());
    }
 
+   public static int occurencesOfSubstring(String text, String find) {
+      int index = 0, count = 0, length = find.length();
+      while( (index = text.indexOf(find, index)) != -1 ) {
+         index += length; count++;
+      }
+      return count;
+   }
+
    public static <T> String selectionList(List<T> list) {
       StringBuilder s = new StringBuilder();
       for (int i = 0; i < list.size(); i++) {

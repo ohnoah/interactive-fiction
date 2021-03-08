@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 
 import com.intfic.game.basic.BasicGameEngine;
 import com.intfic.game.enhanced.EnhancedGameEngine;
+import com.intfic.game.enhanced.reasoning.ImplementedActionLogic;
 import com.intfic.game.shared.Util;
 import com.intfic.nlp.EnhancedNLPEngine;
 import com.intfic.nlp.FailedParseException;
@@ -205,6 +206,42 @@ public class EnhancedNLPEngineTest {
       ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
       String outVerb = abstractAF.getVerb();
       assertEquals(verb, outVerb);
+   }
+
+
+   @Test
+   public void parseLongMultipleWords() throws FailedParseException {
+      // take dog
+      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      Item backOfRoom = TestUtil.roomItem("back of the room");
+      ActionFormat go = new ActionFormat("go", "go to ([\\w\\s]+)$");
+      possibleActionFormats.add(go);
+      possibleActionFormats.add(new ActionFormat("fly", null));
+      List<InstantiatedGameAction> instantiatedGameActions =
+          EnhancedNLPEngine.parse("go to the back of the room", possibleActionFormats, Set.of(backOfRoom));
+      assertEquals(1, instantiatedGameActions.size());
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
+      ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
+      String outVerb = abstractAF.getVerb();
+      assertEquals("go", outVerb);
+   }
+
+   @Test
+   public void parseLongMultipleWordsDescriptorAfter() throws FailedParseException {
+      exceptionRule.expect(FailedParseException.class);
+      exceptionRule.expectMessage("Non-noun phrase specified in the 1:th slot of verb go");
+      List<ActionFormat> possibleActionFormats = new ArrayList<ActionFormat>();
+      Item backOfRoom = TestUtil.roomItem("back of the room");
+      ActionFormat go = new ActionFormat("go", "go to ([\\w\\s]+)$");
+      possibleActionFormats.add(go);
+      possibleActionFormats.add(new ActionFormat("fly", null));
+      List<InstantiatedGameAction> instantiatedGameActions =
+          EnhancedNLPEngine.parse("go to the back of the room quickly", possibleActionFormats, Set.of(backOfRoom));
+      assertEquals(1, instantiatedGameActions.size());
+      InstantiatedGameAction instantiatedGameAction = instantiatedGameActions.get(0);
+      ActionFormat abstractAF = instantiatedGameAction.getAbstractActionFormat();
+      String outVerb = abstractAF.getVerb();
+      assertEquals("go", outVerb);
    }
 
    @Test

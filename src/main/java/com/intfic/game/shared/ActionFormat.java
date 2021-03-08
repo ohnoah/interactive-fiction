@@ -28,7 +28,7 @@ public class ActionFormat implements Serializable {
          return 1;
       }
       else {
-         return (int) regExpr.chars().filter(c -> c == '(').count();
+         return (int) regExpr.chars().filter(c -> c == '(').count() - Util.occurencesOfSubstring(regExpr, "(?:");
       }
 
    }
