@@ -333,11 +333,11 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       this.clarifiedArguments = new ArrayList<>();
       this.clarifyingAction = gameAction;
       try {
-         List<Item> first = gameAction.getPotentialArguments().stream().filter(l -> l.size() != 0).findFirst().
+         List<Item> first = gameAction.getPotentialArguments().stream().filter(l -> l.size() != 1).findFirst().
              orElseThrow(() -> new FailedParseException("Internal error when clarifying. Contact game admin."));
-         return String.format("Couldn't uniquely identify the first arguments when taking action %s." +
-                 " Write a number e.g. \"0\" or \"1\" to clarify what you meant and perform the right action." +
-                 " Choose the one you meant by writing a number from the list below.\n %s"
+         return String.format("Couldn't uniquely identify the first arguments when taking action %s. Choose the one you meant by writing a number from the list below." +
+                 " Write only a number e.g. \"0\" or \"3\" to clarify what you meant and perform the right action." +
+                 " \n %s"
              , gameAction.getAbstractActionFormat(), Util.selectionList(first));
       }
       catch (FailedParseException e) {

@@ -20,9 +20,19 @@ public class Item implements Serializable {
    private Room parentRoom;
 
 
+   private Room originalRoom;
+
+
    private String id;
    private static char SEPARATOR = '_';
 
+   public Room getOriginalRoom() {
+      return originalRoom;
+   }
+
+   public void setOriginalRoom(Room originalRoom) {
+      this.originalRoom = originalRoom;
+   }
 
    public static String roomId(@NotNull String roomName) {
       return roomName.replaceAll(" ", String.valueOf(SEPARATOR)).toLowerCase();
@@ -60,7 +70,7 @@ public class Item implements Serializable {
 
    @Override
    public String toString() {
-      return String.format("[%s] %s", String.join(",", adjectives), name);
+      return String.format("[%s] %s from room: %s", String.join(",", adjectives), name, originalRoom != null ? originalRoom.getName() : "");
    }
 
    @Override
@@ -127,11 +137,12 @@ public class Item implements Serializable {
       return parentRoom;
    }
 
-   public void setParentRoom(@NotNull Room originalRoom, @NotNull List<Item> currentItems) {
+   public void setParentRoom(@NotNull Room newRoom, @NotNull List<Item> currentItems) {
       if (this.parentRoom == null || this.parentRoom.equals(EnhancedGameEngine.unassignedItemRoom)) {
-         this.id = idGenerator(originalRoom.getName(), currentItems);
+         this.id = idGenerator(newRoom.getName(), currentItems);
+         setOriginalRoom(newRoom);
       }
-      this.parentRoom = originalRoom;
+      this.parentRoom = newRoom;
    }
 
    public String getName() {
