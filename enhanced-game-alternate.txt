@@ -3,7 +3,7 @@ You wake up in your bed feeling well rested after a good’s night sleep.  The s
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room [bed], note, bed, window, floor, room [living], door
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room [bed], note, bed, window, floor, room [living], door, hockey stick [black]
 
 add action
 % room
@@ -17,7 +17,7 @@ hint
 % postcond
 
 % message
-You need to turn the light on, have your breakfast and pill, pick up the backpack and take the brick or put the brick in the backpack. Once that is done, you can push/pull the boulder and leave the room.
+You need to turn the light on, have your breakfast and pill, pick up the backpack and take the brick or put the brick in the backpack. Once that is done, you need the stick so you can push/pull the boulder and leave the room.
 
 % all actions 
 
@@ -36,7 +36,7 @@ turn
 light
 NOT world::lightOn|The light is already on.
 world::lightOn := true
-As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+As you flick the light switch, you make out the object as a red brick. Someone also seems to have moved your hockey stick from the corner of the room next to your bed. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
 add action
 bed room
@@ -45,7 +45,7 @@ turn
 light
 NOT world::lightOn|The light is already on.
 world::lightOn := true
-As you flick the light switch, you make out the object as a red brick. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+As you flick the light switch, you make out the object as a red brick. Someone also seems to have moved your hockey stick from the corner of the room next to your bed. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
 
 % open the curtains
 add action
@@ -181,6 +181,26 @@ world::boulderExamined := true
 % message
 The boulder is a huge metallic spherical boulder. You might be able to move it, but its at the very edge of what you could manage. You think back to the last time you helped mum out with a car repair and remember how important it was that you ate a big breakfast before that time.
 
+
+% ALTERNATE
+
+% take hockey stick
+add action
+% room
+bed room
+% trigger
+take
+% item
+stick
+% precond
+world::lightOn=true|You reach out for the hockey stick but miss it in the dark., world::stickTaken=false|You've already taken the stick.
+% postcond
+world::stickTaken := true
+% message
+It usually comes in handy when pushing things.
+
+% ALTERNATE
+
 % push/ pull boulder
 add action
 % room
@@ -190,7 +210,7 @@ push
 % item
 boulder
 % precond
-world::breakfeastEaten|You need more strength to push the boulder out of the way.,world::paracetamolEaten|You need to alleviate your headache before moving the boulder.,world::boulderExamined|You want to have a closer look before you do that.,NOT world::boulderPushed|You've already pushed it out of the way.
+"bed_room.hockey_stick" IN world::inventory|You need something like a lever to help you unstick the boulder from the ground as you push. Try again when you've found it,world::breakfeastEaten|You need more strength to push the boulder out of the way.,world::paracetamolEaten|You need to alleviate your headache before moving the boulder.,world::boulderExamined|You want to have a closer look before you do that.,NOT world::boulderPushed|You've already pushed it out of the way.
 % postcond
 world::boulderPushed := true
 % message
@@ -538,12 +558,12 @@ world::windowBroken|You can't go outside the living room because the windows and
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a pair of gray robot shoes and a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
 
 % GARDENTIME
 add room
 garden
-Drof [Tcefer angry], onepiece [halloween cotton]
+Drof [Tcefer angry], onepiece [halloween cotton], robot shoes [gray grey]
 
 add action
 % room
@@ -557,7 +577,27 @@ hint
 % postcond
 
 % message
-Put the onepiece on and then follow Drof.
+Put the onepiece and shoes on and then follow Drof.
+
+% ALTERNATE
+
+
+
+% PUT ON SHOES
+add action
+% room
+garden
+% trigger
+put
+2
+% item
+robot shoes
+% precond
+NOT world::shoesOn|You already have the shoes on.
+% postcond
+world::shoesOn := true,world::errorMessage := "Why would you do that? You need to follow Drof."
+% message
+You put on the shoes and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.\n Drof yells at you: "FOLLOW ME! QUICKLY!".
 
 add action
 % room
@@ -568,11 +608,11 @@ put
 % item
 onepiece
 % precond
-NOT world::onePieceOn|You already have the onepiece on.
+world::shoesOn|Why would you put your onepiece on before putting on your shoes? Are you crazy?, NOT world::onePieceOn|You already have the onepiece on.
 % postcond
-world::onePieceOn := true,world::errorMessage := "Why would you do that? You need to follow Drof."
+world::onePieceOn := true,world::errorMessage := "Why would you do that? You need to put on your shoes."
 % message
-You put on the onepiece and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.\n Drof yells at you: "FOLLOW ME! QUICKLY!".
+You put on the onepiece. Now you just need to get the rest of the outfit on.
 
 add action
 % room
@@ -582,11 +622,13 @@ follow
 % item
 Drof
 % precond
-world::onePieceOn|You can't go without your disguise. Listen to what Drof said.
+world::shoesOn|You can't go without your disguise. Listen to what Drof said.
 % postcond
 world::room := "bar",world::errorMessage := "You can't do that.", world::leftGarden := true
 % message
 Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
+
+% ALTERNATE
 
 add room
 bar
@@ -947,6 +989,10 @@ world::room := "back of bar"
 You leave the antechamber, having found nothing interesting.
 
 add synonyms
+garden.robot_shoes
+shoes
+
+add synonyms
 bed_room.light
 lights, lamp
 
@@ -1013,6 +1059,9 @@ add synonyms
 back_of_bar.upstairs
 staircase, stairs, up the stairs
 
+add synonyms
+bed_room.hockey_stick
+stick
 
 
 edit knowledge
