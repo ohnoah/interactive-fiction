@@ -283,7 +283,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       if (gameActions.size() == 1) {
          InstantiatedGameAction gameAction = gameActions.get(0);
          if (!Util.isFlat(gameAction.getPotentialArguments())) {
-            return needClarification(gameAction);
+            return needClarification(gameAction, "");
          }
          justification = gameEngine.progressStory(gameAction);
          gameMessage = justification.getReasoning();
@@ -295,7 +295,7 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
          StringBuilder gameMessageBuilder = new StringBuilder();
          for (InstantiatedGameAction gameAction : gameActions) {
             if (!Util.isFlat(gameAction.getPotentialArguments())) {
-               return needClarification(gameAction);
+               return needClarification(gameAction, gameMessageBuilder.toString());
             }
             justification = gameEngine.progressStory(gameAction);
             gameMessageBuilder.append(justification.getReasoning());
@@ -348,14 +348,14 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
 
    }
 
-   private String needClarification(InstantiatedGameAction gameAction) {
+   private String needClarification(InstantiatedGameAction gameAction, String message) {
       this.isClarifying = true;
       this.clarifiedArguments = new ArrayList<>();
       this.clarifyingAction = gameAction;
       try {
          List<Item> first = gameAction.getPotentialArguments().stream().filter(l -> l.size() != 1).findFirst().
              orElseThrow(() -> new FailedParseException("Internal error when clarifying. Contact game admin."));
-         return String.format("Couldn't uniquely identify the below argument when taking action %s. Choose the one you meant by writing a number from the list below." +
+         return String.format(message + "Couldn't uniquely identify the below argument when taking action %s. Choose the one you meant by writing a number from the list below." +
                  " Write only a number e.g. \"0\" or \"3\" to clarify what you meant and perform the right action." +
                  " \n %s"
              , gameAction.getAbstractActionFormat(), Util.selectionList(first));

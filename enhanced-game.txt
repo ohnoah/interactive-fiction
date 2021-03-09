@@ -364,7 +364,7 @@ world::acidExamined|You want to have a closer look at the juice before putting i
 % postcond
 world::acidPut := true
 % message
-You put the acidic juice as a coating on your brick bag.
+It acts as a coating on your brick bag.
 
 % PUT ACID ON BRICK
 add action
@@ -441,7 +441,7 @@ living room
 % trigger
 throw
 % item
-bed_room.backpack, window
+bed_room.object, window
 % precond
 world::acidPutBrick|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
@@ -457,7 +457,7 @@ living room
 % trigger
 throw
 % item
-bed_room.backpack, window_2
+bed_room.object, window_2
 % precond
 world::acidPutBrick|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
@@ -515,7 +515,7 @@ You leave the house through the window and notice a big machine the size of a bu
 % GARDENTIME
 add room
 garden
-Drof [Tcefer], onepiece [halloween cotton]
+Drof [Tcefer angry], onepiece [halloween cotton]
 
 add action
 % room
@@ -542,7 +542,7 @@ Drof
 % precond
 world::onePieceOn|You can't go without your disguise. Listen to what Drof said.
 % postcond
-world::room := "bar",world::errorMessage := "You can't do that."
+world::room := "bar",world::errorMessage := "You can't do that.", world::leftGarden := true
 % message
 Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
 
@@ -881,6 +881,20 @@ blinds, curtain
 
 
 add synonyms
+living_room.window
+west window
+
+
+add synonyms
+living_room.window_2
+south window
+
+
+add synonyms
+living_room.window_3
+east window
+
+add synonyms
 bed_room.backpack
 rucksack, bag
 
@@ -905,7 +919,7 @@ suit
 
 add synonyms
 garden.drof
-friend, tcefer, buddy
+friend, tcefer, buddy, drof tcefer, tcefer drof
 
 add synonyms
 upstairs.vinyl_player

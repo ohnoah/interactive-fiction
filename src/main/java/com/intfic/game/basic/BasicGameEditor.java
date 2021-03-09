@@ -514,9 +514,15 @@ public class BasicGameEditor extends JFrame {
                   }
                   break;
                case ACTION_ARGS:
-                  List<String> splitArgs = Util.splitByCommaAndTrim(cmd);
+                  List<String> splitArgs;
+                  if(cmd.matches("\\s*")){
+                     splitArgs = new ArrayList<>();
+                  }
+                  else {
+                     splitArgs = Util.splitByCommaAndTrim(cmd);
+                  }
                   int numArgs = instantiatedGameAction.getAbstractActionFormat().getDegree();
-                  int givenArgs = cmd.equals("") ? 0 : splitArgs.size();
+                  int givenArgs = splitArgs.size();
                   if (givenArgs != numArgs) {
                      output = String.format("Incorrect argument list. You need to enter " +
                          "exactly %d argument(s).", numArgs);

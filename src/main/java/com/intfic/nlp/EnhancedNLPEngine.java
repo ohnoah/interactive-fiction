@@ -120,6 +120,10 @@ public class EnhancedNLPEngine {
 
    public static List<InstantiatedGameAction> parse(@NotNull String rawCommand, @NotNull List<ActionFormat> possibleActionFormats, Set<Item> possibleItems, Pair<Set<String>, String> it) throws FailedParseException {
 
+      if(rawCommand.trim().equals("hint")){
+         return Collections.singletonList(new InstantiatedGameAction(findMatchingGameVerb("hint", possibleActionFormats).get(0), new ArrayList<>()));
+      }
+
       CoreDocument document = generateCoreDocumentFromString(rawCommand); //lemma stuff
 
       Comparator<Pair<Integer, Integer>> pairComparator = Pair::compareTo;

@@ -5,6 +5,18 @@ add room
 bed room
 breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid rectangular], boulder [large metallic silver huge], curtains [hanging], room, note, door
 
+add action
+% room
+bed room
+% trigger
+hint
+% item
+
+% precond
+
+% postcond
+% message
+
 % all actions 
 
 % room
@@ -444,7 +456,7 @@ Drof
 % precond
 onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
 % postcond
-room=bar, errorMessage=You can't do that.
+room=bar, errorMessage=You can't do that., leftGarden=true
 % message
 Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
 

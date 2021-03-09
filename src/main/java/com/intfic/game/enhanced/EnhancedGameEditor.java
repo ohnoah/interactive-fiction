@@ -154,9 +154,6 @@ public class EnhancedGameEditor extends JFrame {
       input.setText("");
    }
 
-   private List<String> splitByCommaAndTrim(String raw) {
-      return Arrays.stream(raw.split(",")).map(String::trim).collect(Collectors.toList());
-   }
 
    private Condition stringToCondition(String s) {
       String[] parts = s.split("\\|");
@@ -240,7 +237,7 @@ public class EnhancedGameEditor extends JFrame {
    }
 
    public boolean itemNamesAndAdjectives(String cmd, List<String> names, List<Set<String>> adjectives) {
-      List<String> clauses = splitByCommaAndTrim(cmd);
+      List<String> clauses = Util.splitByCommaAndTrim(cmd);
       for (String clause : clauses) {
          if (clause.contains("[") || clause.contains("]")) {
             Pattern p = Pattern.compile("([\\w\\s]+) \\[([\\w\\s]+)\\]$");
@@ -543,7 +540,7 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case ITEM_SYNONYMS_SPECIFIED:
                   if (!cmd.matches("\\s*")) {
-                     List<String> splitList = splitByCommaAndTrim(cmd);
+                     List<String> splitList = Util.splitByCommaAndTrim(cmd);
                      this.synonymItem.addSynonyms(splitList);
                      this.synonymItem.getParentRoom().addItem(this.synonymItem);
                      output = "Added synonyms " + String.join("|", splitList) + " to the item " + this.synonymItem.getName();
@@ -612,9 +609,15 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   break;
                case ACTION_ARGS:
-                  List<String> splitArgs = splitByCommaAndTrim(cmd);
+                  List<String> splitArgs;
+                  if(cmd.matches("\\s*")){
+                     splitArgs = new ArrayList<>();
+                  }
+                  else {
+                     splitArgs = Util.splitByCommaAndTrim(cmd);
+                  }
                   int numArgs = instantiatedGameAction.getAbstractActionFormat().getDegree();
-                  int givenArgs = cmd.equals("") ? 0 : splitArgs.size();
+                  int givenArgs = splitArgs.size();
                   if (givenArgs != numArgs) {
                      output = String.format("Incorrect argument list. You need to enter " +
                          "exactly %d argument(s).", numArgs);
@@ -654,7 +657,7 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.ACTION_POST;
                      }
                      else {
-                        List<String> splitPreconds = splitByCommaAndTrim(cmd);
+                        List<String> splitPreconds = Util.splitByCommaAndTrim(cmd);
                         preConds = splitPreconds.stream().map(this::stringToCondition).collect(Collectors.toList());
                         int indexNull = preConds.indexOf(null);
                         if (indexNull != -1) {
@@ -687,7 +690,7 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.ACTION_MSG;
                      }
                      else {
-                        List<String> splitPostconds = splitByCommaAndTrim(cmd);
+                        List<String> splitPostconds = Util.splitByCommaAndTrim(cmd);
                         postConds = splitPostconds.stream().map(this::stringToKnowledgeUpdate).collect(Collectors.toList());
                         int indexNull = postConds.indexOf(null);
                         if (indexNull != -1) {
@@ -734,7 +737,7 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   break;
                case FILLERS:
-                  List<String> knowledgeUpdates = splitByCommaAndTrim(cmd);
+                  List<String> knowledgeUpdates = Util.splitByCommaAndTrim(cmd);
                   StringBuilder outputBuilder = new StringBuilder();
                   for (String s : knowledgeUpdates) {
                      try {

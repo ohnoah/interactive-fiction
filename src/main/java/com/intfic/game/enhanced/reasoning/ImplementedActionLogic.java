@@ -68,6 +68,7 @@ public class ImplementedActionLogic implements Serializable {
       implementedSuccessMessageMap = new HashMap<>();
       implementedKnowledgeUpdateMap = new HashMap<>();
 
+
       /* PUT IN
       --------
        */
@@ -118,7 +119,7 @@ public class ImplementedActionLogic implements Serializable {
              "The !arg0 is not an item you can move.");
          Condition putConditionArg0SolidOrLiquid = new Condition("!arg0::state = \"solid\" OR !arg0::state = \"liquid\"",
              "You can't put the !arg0 anywhere because it's not solid or liquid.");
-         Condition putConditionArg1Solid = new Condition("!arg0::state = \"solid\"",
+         Condition putConditionArg1Solid = new Condition("!arg1::state = \"solid\"",
              "You can't put !arg0 on the !arg1 because !arg1 is not solid.");
          Condition putConditionMass = new Condition("!world::liftingPower >= !arg0::mass",
              "The !arg0 is too heavy for you to put on the !arg1.");
