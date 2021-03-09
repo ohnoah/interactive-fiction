@@ -578,7 +578,7 @@ beerDrank=true|You need a drink before you talk to Drof to quench your thirst an
 % postcond
 drofTalkedTo=true
 % message
-Tceferp takes a deep breath and says, "You know, these people are actually robots. They call themselves Bostonian Saltases and they have been ordered to remove every inhabitant in town and lock up every house. All of this is to prepare for the demolition of the town to make space for an intercontinental super highway. Don't ask me how I know any of this. You don't want to know.". He continues “The only way these robots can be stopped is by playing their recall song. They've all been programmed to stop the project and return to base by their over lord if they hear one specific song”. Tceferp says that he has heard rumblings that the song may be called "Deplorable", but he most likely misheard this. "How does Drof know all of this?", you think before realizing that you need to act quickly to save your town. Drf points you to the back of the room, explaining that he thinks the recall speaker can be found somewhere here.
+Tcefer takes a deep breath and says, "You know, these people are actually robots. They call themselves Bostonian Saltases and they have been ordered to remove every inhabitant in town and lock up every house. All of this is to prepare for the demolition of the town to make space for an intercontinental super highway. Don't ask me how I know any of this. You don't want to know.". He continues “The only way these robots can be stopped is by playing their recall song. They've all been programmed to stop the project and return to base by their over lord if they hear one specific song”. Tceferp says that he has heard rumblings that the song may be called "Deplorable", but he most likely misheard this. "How does Drof know all of this?", you think before realizing that you need to act quickly to save your town. Drf points you to the back of the room, explaining that he thinks the recall speaker can be found somewhere here.
 
 add action
 % room
@@ -612,7 +612,7 @@ hint
 % postcond
 
 % message
-You can either go to the antechamber from here or go upstairs. If you go to the antechamber, you can return by writing "LEAVE ROOM".
+You want to head through the antechamber. If you go to the antechamber, you can return by writing "LEAVE ROOM".
 
 
 
@@ -641,24 +641,10 @@ upstairs
 % precond
 
 % postcond
-room=upstairs
-% message
-You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
 
-% GO UPSTAIRS / GO TO THE STAIRCASE
-add action
-% room
-back of bar
-% trigger
-go
-% item
-upstairs
-% precond
-
-% postcond
-room=upstairs
 % message
-You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+% You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+You try heading up the stairs but someone has blocked them by glueing big boulders to the walls of the staircase. If only there was another way to get upstairs...
 
 
 
@@ -874,7 +860,24 @@ You enter the antechamber. There are many of these strange humanoids in the room
 
 add room
 antechamber
-room, door [distant brown]
+room, door [distant brown], upstairs, back
+
+% GO UPSTAIRS / GO TO THE STAIRCASE
+add action
+% room
+antechamber
+% trigger
+go
+% item
+upstairs
+% precond
+
+% postcond
+room=upstairs
+% message
+You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+
+
 
 add action
 % room
@@ -888,7 +891,22 @@ door
 % postcond
 
 % message
-You look at the door from a distance and notice there is no way you’ll be able to get there through the crowd of robots. Maybe the stairs are more interesting and you should leave this room.
+You walk up to the door and peek inside quickly as the others look away. It seems to lead to a staircase.
+
+add action
+% room
+antechamber
+% trigger
+open
+% item
+door
+% precond
+
+% postcond
+
+% message
+You open the door and see that it leads to a staircase.
+
 
 % LEAVE ROOM ANTECHAMBER
 add action
@@ -899,12 +917,28 @@ leave
 % item
 room
 % precond
-
+notPopulatedState=true|Where would you like to go? Write "go to THAT ROOM" instead.
 % postcond
 room=back of bar
 % message
 You leave the antechamber, having found nothing interesting.
 
+% GO TO THE BACK
+add action
+% room
+antechamber
+% trigger
+go
+% item
+back
+% precond
+
+% postcond
+room=back of bar
+% message
+You head back to the back of the bar from the antechamber.
+
+% ALTERNATE
 
 add synonyms
 bed_room.object 
@@ -958,3 +992,14 @@ add synonyms
 back_of_bar.upstairs
 staircase, stairs
 
+% ALTERNATE
+
+add synonyms
+antechamber.back
+back of the bar, backside of bar, back of bar
+
+add synonyms
+antechamber.upstairs
+staircase, stairs
+
+% ALTERNATE

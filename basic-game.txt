@@ -250,7 +250,7 @@ add room
 % name
 living room
 % items
-note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue], outside
+note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue], outside, ladder
 
 add action
 % room
@@ -303,7 +303,7 @@ window
 % postcond
 westWindowExamined=true
 % message
-The window has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
+The west window is high up and out-of-reach. It has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
 
 
 % EXAMINE WINDOW_2
@@ -367,6 +367,7 @@ acidPut=true
 You put the acidic juice as a coating on your brick bag.
 
 
+% ALTERNATE CHANGE
 % throw backpack at west window
 add action
 % room
@@ -376,7 +377,7 @@ throw
 % item
 backpack, window
 % precond
-acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
+ladderClimbed=true|You try to throw the bag at the window but it's too high up. As you pick up the bag you realize you need to get higher up before trying again., acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
 windowBroken=true
 % message
@@ -421,7 +422,7 @@ leave
 % item
 room
 % precond
-windowBroken=true|You can't leave the living room because the windows and doors are locked and reinforced.
+windowBroken=true|You can't leave the living room because the windows and doors are locked and reinforced., ladderClimbed=true|You can't leave the room through the broken window unless you climb up to it.
 % postcond
 room=garden, errorMessage=Why would you do that? Drof is yelling at you to put the onepiece one.
 % message
