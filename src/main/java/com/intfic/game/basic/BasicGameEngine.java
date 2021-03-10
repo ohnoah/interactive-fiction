@@ -61,7 +61,11 @@ public class BasicGameEngine extends GameEngine implements Serializable {
 
    @Override
    public boolean getWorldBoolean(String key) {
-      return Boolean.parseBoolean(worldState.getOrDefault(key, "false"));
+      System.out.println(key);
+      System.out.println(worldState);
+      boolean result = Boolean.parseBoolean(worldState.getOrDefault(key, "false"));
+      System.out.println(result);
+      return result;
    }
 
    @Override

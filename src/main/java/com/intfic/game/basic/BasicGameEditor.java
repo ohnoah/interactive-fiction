@@ -166,20 +166,7 @@ public class BasicGameEditor extends JFrame {
       }
    }
 
-   private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException {
-      List<String> splitByComma = Arrays.asList(cmd.split(","));
-      Map<String, String> splitMap = null;
-      if (!cmd.equals("")) {
-         splitMap = splitByComma.stream()
-             .map(s -> s.split("="))
-             .collect(Collectors.toMap(split -> split[0], split -> (split.length
-                 == 2) ? split[1] : ""));
-      }
-      else {
-         splitMap = new HashMap<>();
-      }
-      return splitMap;
-   }
+
 
    private void resetAdditions() {
       roomToAdd = null;
@@ -581,7 +568,7 @@ public class BasicGameEditor extends JFrame {
                   break;
                case ACTION_POST:
                   try {
-                     Map<String, String> splitPostconds = stringToMap(cmd);
+                     Map<String, String> splitPostconds = Util.stringToMap(cmd);
                      effectAction.setUpdateState(splitPostconds);
                      output = "Enter the message to display to the user after taking this action.";
                      basicGameEditState = BasicGameEditState.ACTION_MSG;

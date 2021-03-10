@@ -176,8 +176,13 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
                if (!isAskingQuestion) {
                   lastResult = processCmd(cmd);
                   writeToTerminal(cmd, history.getText(), lastResult);
-                  boolean timeToAskQuestion = (questionBreakpoints != null && breakpointHit(gameEngine)) ||
-                      (questionBreakpoints == null && getIntStatistics("acceptedCommands") % questionFreq == (questionFreq - 1));
+                  boolean timeToAskQuestion;
+                  if(questionBreakpoints != null){
+                     timeToAskQuestion = breakpointHit(gameEngine);
+                  }
+                  else{
+                     timeToAskQuestion = getIntStatistics("acceptedCommands") % questionFreq == (questionFreq - 1);
+                  }
                   if (timeToAskQuestion) {
                      askQuestion();
                   }

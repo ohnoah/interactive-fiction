@@ -180,19 +180,6 @@ public class EnhancedGameEditor extends JFrame {
       }
    }
 
-   private Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException {
-      List<String> splitByComma = Arrays.asList(cmd.split(","));
-      Map<String, String> splitMap = null;
-      if (!cmd.equals("")) {
-         splitMap = splitByComma.stream()
-             .map(s -> s.split("="))
-             .collect(Collectors.toMap(split -> split[0], split -> split[1]));
-      }
-      else {
-         splitMap = new HashMap<>();
-      }
-      return splitMap;
-   }
 
    private void resetAdditions() {
       roomToAdd = null;
@@ -798,7 +785,7 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case PARENTS_NEW_SLOTS:
                   try {
-                     Map<String, String> slotMap = stringToMap(cmd);
+                     Map<String, String> slotMap = Util.stringToMap(cmd);
                      TypeConvertVisitor typeConvertVisitor = new TypeConvertVisitor();
                      for (Map.Entry<String, String> entry : slotMap.entrySet()) {
                         String slot = entry.getKey();

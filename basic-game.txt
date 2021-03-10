@@ -227,7 +227,7 @@ boulderPushed=true|You can't get out because the boulder is in your way.
 % postcond
 room=living room, leftFirstRoom=true
 % message
-You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting.
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is stood up against the east wall.
 
 % open
 add action
@@ -685,6 +685,7 @@ player
 % precond
 
 % postcond
+
 % message
 The vinyl player is a beautiful mahogany design. It’s turned off.
 

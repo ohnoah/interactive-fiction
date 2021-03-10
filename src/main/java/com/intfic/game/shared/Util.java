@@ -46,8 +46,9 @@ public final class Util {
 
    public static int occurencesOfSubstring(String text, String find) {
       int index = 0, count = 0, length = find.length();
-      while( (index = text.indexOf(find, index)) != -1 ) {
-         index += length; count++;
+      while ((index = text.indexOf(find, index)) != -1) {
+         index += length;
+         count++;
       }
       return count;
    }
@@ -59,8 +60,25 @@ public final class Util {
       }
       return s.toString();
    }
-    public static List<String> splitByCommaAndTrim(String raw) {
+
+   public static List<String> splitByCommaAndTrim(String raw) {
       return splitByCommaAndTrim(raw, false);
+   }
+
+
+   public static Map<String, String> stringToMap(String cmd) throws IndexOutOfBoundsException {
+      List<String> splitByComma = Arrays.asList(cmd.split(","));
+      Map<String, String> splitMap = null;
+      if (!cmd.equals("")) {
+         splitMap = splitByComma.stream()
+             .map(s -> s.split("="))
+             .collect(Collectors.toMap(split -> split[0].trim(), split -> (split.length
+                 == 2) ? split[1].trim() : ""));
+      }
+      else {
+         splitMap = new HashMap<>();
+      }
+      return splitMap;
    }
 
    public static List<String> splitByCommaAndTrim(String raw, boolean lowerCase) {
@@ -68,10 +86,9 @@ public final class Util {
          return Arrays.stream(raw.split(",")).map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
       }
       else {
-         return Arrays.stream(raw.split(",")).map(s -> s.trim()).collect(Collectors.toList());
+         return Arrays.stream(raw.split(",")).map(String::trim).collect(Collectors.toList());
       }
    }
-
 
 
    public static <T, S> Map<S, List<T>> collectionToMapList(Collection<T> collection, Function<T, S> fn) {

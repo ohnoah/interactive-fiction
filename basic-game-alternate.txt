@@ -245,7 +245,7 @@ leave
 % item
 room
 % precond
-boulderPushed=true|You can't get out because the boulder is in your way.
+boulderPushed=true|You can't get out because the boulder is in your way., brickTaken=true|Are you not forgetting to bring something along?
 % postcond
 room=living room, leftFirstRoom=true
 % message
@@ -367,6 +367,7 @@ examine
 % item
 juice
 % precond
+
 % postcond
 acidExamined=true
 % message
