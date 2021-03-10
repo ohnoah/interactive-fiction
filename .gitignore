@@ -34,3 +34,4 @@ game-transcript-*
 question-transcript-*
 
 build
+.gradle

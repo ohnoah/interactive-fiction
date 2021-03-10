@@ -1,6 +1,7 @@
 package com.intfic;
 
 
+import com.intfic.game.enhanced.EnhancedGameEditState;
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.FileErrorHandler;
@@ -17,9 +18,13 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +37,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.JFrame;
 import javax.swing.plaf.ActionMapUIResource;
 
 /**
@@ -131,11 +137,34 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
       return false;
    }
 
+   private void saveGame(){
+      String fileName = (String.format("latest-save-%s.ser", startTime.format(dateTimeFormatter)));
+      try {
+         FileOutputStream fileOut =
+             new FileOutputStream(fileName);
+         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+         out.writeObject(gameEngine);
+         out.close();
+         fileOut.close();
+      }
+      catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
+
    public EnhancedGamePlayer() {
       super(progname);
       prepareSwing();
 
       ActionMap actionMap = new ActionMapUIResource();
+
+      addWindowListener(new java.awt.event.WindowAdapter() {
+         public void windowClosed(java.awt.event.WindowEvent evt) {
+            writeStatisticsAndTranscriptToFile();
+            saveGame();
+         }
+      });
+
       actionMap.put("enter", new AbstractAction() {
          @Override
          public void actionPerformed(ActionEvent e) {

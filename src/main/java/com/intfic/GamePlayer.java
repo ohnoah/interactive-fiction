@@ -1,5 +1,6 @@
 package com.intfic;
 
+import com.intfic.game.enhanced.EnhancedGameEditState;
 import com.intfic.game.shared.GameEngine;
 import com.intfic.game.shared.Util;
 import java.awt.BorderLayout;
@@ -9,7 +10,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -139,15 +143,11 @@ public abstract class GamePlayer extends JFrame implements Serializable {
       addToTranscript("-!-!- " + Util.formatDuration(between));
    }
 
+
+
    void initializeJFrame(ActionMap actionMap) {
 
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      addWindowListener(new java.awt.event.WindowAdapter() {
-         public void windowClosed(java.awt.event.WindowEvent evt) {
-            writeStatisticsAndTranscriptToFile();
-         }
-      });
-
 
       InputMap keyMap = input.getInputMap();
       input.getActionMap().put("enter", actionMap.get("enter"));
