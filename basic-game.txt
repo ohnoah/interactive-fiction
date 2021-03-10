@@ -250,7 +250,7 @@ add room
 % name
 living room
 % items
-note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue], outside, ladder
+note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue], outside, ladder [wooden], down
 
 add action
 % room
@@ -266,22 +266,8 @@ hint
 % message
 The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows to break it and then LEAVE ROOm.
 
-add action
-% room
-living room
-% trigger
-hint
-% item
 
-% precond
-
-% postcond
-
-% message
-The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows to break it and then LEAVE ROOm.
-
-
-% all actions 
+% all actions
 
 % room
 % trigger
@@ -291,6 +277,7 @@ The juice is actually not a juice, its an acid to PUT ON the backpack. You can t
 % message
 
 
+% EXAMINE NOTE
 add action
 % room
 living room
@@ -299,11 +286,11 @@ examine
 % item
 note
 % precond
-
+ladderClimbed=NULL|You need to go down before you do that.
 % postcond
 livingNoteExamined=true
 % message
-These things. The only way you can stop them is through music. I don’t know what yet, but some form of music will fix all of this. 
+These things. The only way you can stop them is through music. I don’t know what yet, but some form of music will fix all of this.
 
 add action
 % room
@@ -333,7 +320,7 @@ window_2
 % postcond
 southWindowExamined=true
 % message
-The window is reinforced with some strange material, as you suspected. 
+The window is reinforced with some strange material, as you suspected.
 
 % EXAMINE WINDOW_3
 add action
@@ -348,8 +335,9 @@ window_3
 % postcond
 eastWindowExamined=true
 % message
-The window is reinforced with some strange material, as you suspected. 
+The window is reinforced with some strange material, as you suspected.
 
+% ALTERNATE CHANGE TO LADDERCLIMBED
 %EXAMIEN ACID
 add action
 % room
@@ -359,12 +347,13 @@ examine
 % item
 juice
 % precond
+ladderClimbed=NULL|You need to go down before you do that.
 % postcond
 acidExamined=true
 % message
 You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
 
-% PUT ACID ON 
+% PUT ACID ON
 add action
 % room
 living room
@@ -374,12 +363,44 @@ put
 % item
 juice, backpack
 % precond
-acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
+ladderClimbed=NULL|You need to go down before you do that., acidExamined=true|You want to have a closer look at the juice before putting it on your precious bag.
 % postcond
 acidPut=true
 % message
 You put the acidic juice as a coating on your brick bag.
 
+% ALTERNATE ALLOS YOU TO CLIMB UP AND DOWN LADDER
+% climb ladder
+add action
+% room
+living room
+% trigger
+climb
+% item
+ladder
+% precond
+ladderClimbed=NULL|You are already on the ladder.
+% postcond
+ladderClimbed=true
+% message
+You climb up the ladder.
+
+% climb ladder
+add action
+% room
+living room
+% trigger
+go
+% item
+down
+% precond
+ladderClimbed=true|You are not on the ladder.
+% postcond
+ladderClimbed=NULL
+% message
+You climb down the ladder.
+
+% ALTERNATE END
 
 % ALTERNATE CHANGE
 % throw backpack at west window
@@ -565,7 +586,7 @@ drofTalkedTo=true|You should probably talk to your friend Drof before going ther
 % postcond
 room=back of bar
 % message
-You make your way to the back of the room where you sit down and immediately get served a plate of tapas. The robotic bartender forgets to clear the table of an old plate of tortillas next to you, which annoys you slightly even though you have much bigger problems to worry about right now. To the right, there is an entrance to an antechamber of some sort and to the left is a staircase leading up to the staff area and kitchen of the bar. 
+You make your way to the back of the room where you sit down and immediately get served a plate of tapas. The robotic bartender forgets to clear the table of an old plate of tortillas next to you, which annoys you slightly even though you have much bigger problems to worry about right now. To the right, there is an entrance to an antechamber of some sort and to the left is a staircase leading up to the staff area and kitchen of the bar.
 
 
 add room
@@ -637,7 +658,7 @@ You go upstairs to realise that the robots have completely changed the interior 
 % UPSTAIRS ACTIONS
 add room
 upstairs
-player [vinyl], Depasito, Darkside, record [pink], records
+player [vinyl], Depasito, Darkside, record [pink], records, socket [electrical white]
 
 add action
 % room
@@ -667,6 +688,41 @@ player
 % message
 The vinyl player is a beautiful mahogany design. It’s turned off.
 
+% ALTERNATE
+% CONNECT PLAYER TO SOCKET
+add action
+% room
+upstairs
+% trigger
+connect
+% item
+player, socket
+% precond
+playerConnected=NULL|The player is already connected to the socket.
+% postcond
+playerConnected=true
+% message
+You plug the player cable into the socket.
+
+% PLUG PLAYER INTO SOCKET
+add action
+% room
+upstairs
+% trigger
+plug
+% item
+player, socket
+% precond
+playerConnected=NULL|The player is already connected to the socket.
+% postcond
+playerConnected=true
+% message
+You plug the player cable into the socket.
+
+% ALTERNATE END
+
+
+
 % TURN ON  PLAYER
 add action
 % room
@@ -677,7 +733,7 @@ turn
 % item
 player
 % precond
-playerOn=NULL|The player is already on.
+playerConnected=true|You try to turn the vinyl player on but realize its not plugged into the socket., playerOn=NULL|The player is already on.
 % postcond
 playerOn=true
 % message
@@ -693,7 +749,7 @@ turn
 % item
 player
 % precond
-playerOn=NULL|The player is already on.
+playerConnected=true|You try to turn the vinyl player on but realize its not plugged into the socket., playerOn=NULL|The player is already on.
 % postcond
 playerOn=true
 % message
@@ -879,8 +935,13 @@ You leave the antechamber, having found nothing interesting.
 
 
 add synonyms
-bed_room.object 
+bed_room.object
 brick
+
+
+add synonyms
+living_room.down
+floor
 
 add synonyms
 bed_room.light
@@ -888,7 +949,7 @@ lights, lamp
 
 
 add synonyms
-bed_room.curtains 
+bed_room.curtains
 blinds, curtain
 
 add synonyms
@@ -919,7 +980,7 @@ food, plate
 
 
 add synonyms
-garden.onepiece 
+garden.onepiece
 suit
 
 add synonyms
@@ -930,3 +991,7 @@ add synonyms
 back_of_bar.upstairs
 staircase, stairs
 
+
+add synonyms
+upstairs.socket
+plug, cable
