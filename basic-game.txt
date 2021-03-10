@@ -15,7 +15,9 @@ hint
 % precond
 
 % postcond
+
 % message
+You need to turn the light on, have your breakfast and pill, pick up the backpack and take the brick or put the brick in the backpack. Once that is done, you can push/pull the boulder and leave the room.
 
 % all actions 
 
@@ -250,6 +252,20 @@ living room
 % items
 note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue], outside
 
+add action
+% room
+living room
+% trigger
+hint
+% item
+
+% precond
+
+% postcond
+
+% message
+The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows to break it and then LEAVE ROOm.
+
 
 % all actions 
 
@@ -431,6 +447,22 @@ add room
 garden
 Drof [Tcefer], onepiece [halloween cotton]
 
+
+add action
+% room
+garden
+% trigger
+hint
+% item
+
+% precond
+
+% postcond
+
+% message
+Put the onepiece on and then follow Drof.
+
+
 add action
 % room
 garden
@@ -463,6 +495,20 @@ Drof hurries you along through the cul-de-sac neighbourhood where you have lived
 add room
 bar
 beer [polish bitter], glass, Drof, back
+
+add action
+% room
+bar
+% trigger
+hint
+% item
+
+% precond
+
+% postcond
+
+% message
+You need to drink your beer FROM THE GLASS, talk to Drof and then GO TO back of bar.
 
 add action
 % room
@@ -515,6 +561,22 @@ add action
 % room
 back of bar
 % trigger
+hint
+% item
+
+% precond
+
+% postcond
+
+% message
+You can either go to the antechamber from here or go upstairs. If you go to the antechamber, you can return by writing "LEAVE ROOM".
+
+
+
+add action
+% room
+back of bar
+% trigger
 eat
 % item
 tapas
@@ -561,6 +623,20 @@ You go upstairs to realise that the robots have completely changed the interior 
 add room
 upstairs
 player [vinyl], Depasito, Darkside, record [pink], records
+
+add action
+% room
+upstairs
+% trigger
+hint
+% item
+
+% precond
+
+% postcond
+
+% message
+Examine the player, turn it on, then examine each record and try to use "PUT X IN Y" to put the right record in the player.
 
 % EXAMINE PLAYER
 add action

@@ -61,9 +61,11 @@ public class ImplementedActionLogic implements Serializable {
       // Noah's own
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
       ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");
+      ActionFormat connect = new ActionFormat("connect", "connect ([\\w\\s]+) to ([\\w\\s]+)");
+      ActionFormat plug = new ActionFormat("plug", "plug ([\\w\\s]+) into ([\\w\\s]+)");
 
       defaultActionFormats = List.of(examine, push, take, talk, pull, follow, go, drop, turnOn, turnOn1, turnOff, turnOff1, open, feel, putIn,
-          putOn, putOnSingle, eat, climb, drink, wave, /*fill,*/ wear, smell, throwAt, listenTo, breakIt, burn, enter, hint, leave, search, unlockWith, remove, transfer);
+          putOn, putOnSingle, eat, climb, drink, wave, /*fill,*/ wear, smell, throwAt, listenTo, breakIt, burn, enter, hint, leave, search, unlockWith, remove, transfer, connect, plug);
       implementedConditionsMap = new HashMap<>();
       implementedSuccessMessageMap = new HashMap<>();
       implementedKnowledgeUpdateMap = new HashMap<>();
