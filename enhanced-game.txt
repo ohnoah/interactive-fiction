@@ -738,7 +738,7 @@ You go upstairs to realise that the robots have completely changed the interior 
 % UPSTAIRS ACTIONS
 add room
 upstairs
-player [vinyl], Depasito, Darkside, record [pink], records, socket [electrical white], room, floor
+vinyl player [vinyl old], Depasito, Darkside, record [pink], records, socket [electrical white], room, floor
 
 add action
 % room

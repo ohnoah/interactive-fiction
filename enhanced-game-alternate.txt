@@ -733,7 +733,7 @@ You try heading up the stairs but someone has blocked them by glueing big boulde
 % UPSTAIRS ACTIONS
 add room
 upstairs
-vinyl player [vinyl old], Depasito, Darkside, record [pink], records
+vinyl player [vinyl old], Depasito, Darkside, record [pink], records, room, floor
 
 add action
 % room

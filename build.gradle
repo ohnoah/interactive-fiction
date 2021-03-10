@@ -8,7 +8,7 @@ plugins {
 }
 
 shadowJar {
-    archiveBaseName.set('shadow')
+    archiveBaseName.set('gameplayer')
     archiveClassifier.set('')
     archiveVersion.set('')
     mainClassName="com.intfic.EnhancedGamePlayer"

@@ -138,6 +138,9 @@ public class EnhancedGamePlayer extends GamePlayer implements Serializable {
    }
 
    private void saveGame(){
+      if(getIntStatistics("numCommands") < 10){
+         return;
+      }
       String fileName = (String.format("latest-save-%s.ser", startTime.format(dateTimeFormatter)));
       try {
          FileOutputStream fileOut =
