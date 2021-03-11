@@ -1,5 +1,5 @@
 start message
-You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further.
+You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further. \n Type "help" to see a list of possible actions. \n Type "hint" if you get stuck and need help.
 
 add room
 bed room
@@ -164,7 +164,17 @@ take
 object
 lightOn=true|You reach for the object but miss it in the dark., brickExamined=true|You need to take a closer look before you pick it up., backpackTaken=true|You need to have something to put the object in.
 brickTaken=true
-You put the brick in the bag. Your parents must’ve wanted you to use it for something. It will surely come in handy. 
+You put the brick in the bag. Your parents must’ve wanted you to use it for something. It will surely come in handy.
+
+% put brick in backpack
+add action
+bed room
+put
+0
+object, backpack
+brickTaken=NULL|You've already put the brick in the bag., lightOn=true|You reach for the object but miss it in the dark., brickExamined=true|You need to take a closer look before you pick it up., backpackTaken=true|You need to have something to put the object in.
+brickTaken=true
+You put the brick in the bag. Your parents must’ve wanted you to use it for something. It will surely come in handy.
 
 % examine boulder
 add action
@@ -250,7 +260,7 @@ add room
 % name
 living room
 % items
-note [small], window [west stained], window [south], window [east], juice [green light acidic], room, backpack [blue], outside, ladder [wooden], down
+note [small], window [west stained], window [south], window [east], juice [green light acidic], room [living], backpack [blue], outside, ladder [wooden], down
 
 add action
 % room
@@ -264,7 +274,7 @@ hint
 % postcond
 
 % message
-The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows to break it and then LEAVE ROOm.
+The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows after writing "climb ladder" to break it and then write "leave room" to LEAVE ROOm.
 
 
 % all actions
@@ -276,6 +286,20 @@ The juice is actually not a juice, its an acid to PUT ON the backpack. You can t
 % postcond
 % message
 
+
+add action
+% room
+living room
+% trigger
+examine
+% item
+ladder
+% precond
+
+% postcond
+
+% message
+The ladder is a regular wooden ladder. If you stood at the top, you would be at about the same height as the west window.
 
 % EXAMINE NOTE
 add action
@@ -412,7 +436,7 @@ throw
 % item
 backpack, window
 % precond
-ladderClimbed=true|You try to throw the bag at the window but it's too high up. As you pick up the bag you realize you need to get higher up before trying again., acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
+ladderClimbed=true|You try to throw the bag at the window but it's too high up. As you pick up the bag you realize you need to get higher up before trying again. Maybe you could climb something?, acidPut=true|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
 windowBroken=true
 % message
@@ -448,6 +472,52 @@ acidPut=true|You throw the bag in a futile attempt to break the window. The rein
 windowBroken=true
 % message
 You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
+
+
+% THROW JUICE AT WEST WINDOW
+add action
+% room
+living room
+% trigger
+throw
+% item
+juice, window
+% precond
+
+% postcond
+
+% message
+Good idea, but just the juice won't be enough to break through the window. If only you could combine the juice with something heavy and hard to throw at the window.
+
+% THROW JUICE AT EAST WINDOW
+add action
+% room
+living room
+% trigger
+throw
+% item
+juice, window_2
+% precond
+
+% postcond
+
+% message
+That was a good idea, but you realize that this window is too well reinforced for you to be able to get through.
+
+% THROW JUICE AT EAST WINDOW
+add action
+% room
+living room
+% trigger
+throw
+% item
+juice, window_3
+% precond
+
+% postcond
+
+% message
+That was a good idea, but you realize that this window is too well reinforced for you to be able to get through.
 
 add action
 % room
@@ -961,6 +1031,9 @@ add synonyms
 living_room.backpack
 rucksack, bag
 
+add synonyms
+living_room.room
+living room
 
 add synonyms
 bed_room.note

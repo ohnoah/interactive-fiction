@@ -1,5 +1,5 @@
 start message
-You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further.
+You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further. \n Type "help" to see a list of possible actions. \n Type "hint" if you get stuck and need help. \n Note that when you take things in this game, they will end up in your inventory and you can carry them around.
 
 add room
 bed room
@@ -298,7 +298,7 @@ add room
 % name
 living room
 % items
-note [small], window [west stained], window [south], window [east], juice [green light acidic], room, bed room, outside
+note [small], window [west stained], window [south], window [east], juice [green light acidic], room, bed room, outside, bars [metallic iron solid]
 
 add action
 % room
@@ -543,6 +543,51 @@ world::acidPutBrick|You throw the bag in a futile attempt to break the window. T
 world::windowBroken := true
 % message
 You throw the acid-coated bag at the window with all your force. To your surprise, the reinforcement is too strong and the bag drops to the floor. "Maybe I can try another window", you think to yourself.
+
+% THROW JUICE AT WEST WINDOW
+add action
+% room
+living room
+% trigger
+throw
+% item
+juice, window
+% precond
+
+% postcond
+
+% message
+Good idea, but just the juice won't be enough to break through the window. If only you could combine the juice with something heavy and hard to throw at the window.
+
+% THROW JUICE AT EAST WINDOW
+add action
+% room
+living room
+% trigger
+throw
+% item
+juice, window_2
+% precond
+
+% postcond
+
+% message
+That was a good idea, but you realize that this window is too well reinforced for you to be able to get through.
+
+% THROW JUICE AT EAST WINDOW
+add action
+% room
+living room
+% trigger
+throw
+% item
+juice, window_3
+% precond
+
+% postcond
+
+% message
+That was a good idea, but you realize that this window is too well reinforced for you to be able to get through.
 
 
 % LEAVE ROOM
@@ -1053,6 +1098,10 @@ south window
 add synonyms
 living_room.window_3
 east window
+
+add synonyms
+living_room.room
+living room
 
 add synonyms
 bed_room.backpack
