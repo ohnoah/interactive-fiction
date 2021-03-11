@@ -1,14 +1,32 @@
-The responses of the game engine to my commands are ____
+While playing I have felt ____ moments of frustration
 
-Absolutely     	Marvelousa
-frustrating    	fantastic
-   and         	beautiful
-  awful        	and amazing
+No          	Constantly
+frustration 	frustrated
+and         	and very
+zero        	frequent
     0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
 ^
-This game play session was ____
+So far, I felt that the game's responses when my actions failed were ____
 
-Thorougly      	Not fun 
-enjoyable      	at all 
+Wholly un-     	Highly
+informative    	informative
+   and         	   and
+illogical      	logical
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+^
+So far, while playing I have felt ____ moments of frustration
+
+No          	Constantly
+frustration 	frustrated
+and         	and very
+zero        	frequent
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+^
+So far, I felt that the game's responses when my actions failed were ____
+
+Wholly un-     	Highly
+informative    	informative
+   and         	   and
+illogical      	logical
     0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
 ^

@@ -185,6 +185,23 @@ boulderExamined=true
 The boulder is a huge metallic boulder. It seems that it has been super-glued to the ground. You might be able to move it, but its at the very edge of what you could manage. However, without some long object to put under the boulder and push against the glue you have no chance. You also think back to the last time you helped mum out with a car repair and remember how important it was that you ate a big breakfast before that time.
 
 % ALTERNATE
+
+% examine hockey stick
+add action
+% room
+bed room
+% trigger
+examine
+% item
+stick
+% precond
+
+% postcond
+
+% message
+The hockey stick is a black, 2 m long MCC hockey stick.
+
+
 % take hockey stick
 add action
 % room
@@ -198,7 +215,7 @@ lightOn=true|You reach out for the hockey stick but miss it in the dark., stickT
 % postcond
 stickTaken=true
 % message
-You take the hockey stick. It usually comes in handy when pushing things.
+You take the hockey stick. It usually comes in handy when playing hockey or when pushing things.
 
 % ALTERNATE
 
@@ -462,7 +479,7 @@ windowBroken=true|You can't leave the living room because the windows and doors 
 % postcond
 room=garden, errorMessage=Why would you do that? Drof is yelling at you to put the onepiece one.
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a pair of gray robot shoes and a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a pair of gray robot shoes and a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece and shoes on quickly, or we’re screwed”.
 
 
 % GARDENTIME
@@ -497,7 +514,7 @@ put
 % item
 shoes
 % precond
-shoesOn=NULL|You already have the shoes on.
+shoesOn=NULL|You already have the shoes on.,onePieceOn=true|Why would you put your shoes on before putting on your onepiece? Are you crazy?
 % postcond
 shoesOn=true, errorMessage=Why would you do that? You need to follow Drof.
 % message
@@ -513,7 +530,7 @@ put
 % item
 onepiece
 % precond
-shoesOn=true|Why would you put your onepiece on before putting on your shoes? Are you crazy?, onePieceOn=NULL|You already have the onepiece on.
+onePieceOn=NULL|You already have the onepiece on.
 % postcond
 onePieceOn=true, errorMessage=Why would you do that? You need to put on shoes.
 % message
@@ -679,6 +696,7 @@ player
 % precond
 
 % postcond
+
 % message
 The vinyl player is a beautiful mahogany design. It’s turned off.
 

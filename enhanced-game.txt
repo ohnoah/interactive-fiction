@@ -72,9 +72,9 @@ breakfast
 % precond
 world::lightOn|You reach out for the full English but miss it in the dark.
 % postcond
-world::breakfeastEaten := true
+world::breakfeastEaten := true, world::liftingPower += 25
 % message
-You devour the whole plate and feel energised. Your head still feels slightly strange though. Luckily, you spot a Paracetamol next to the plate.
+After devouring the whole plate you feel stronger and energised. Your head still feels slightly strange though. Luckily, you spot a Paracetamol next to the plate.
 
 
 % take/eat paracetamol
@@ -88,7 +88,7 @@ paracetamol
 % precond
 world::breakfeastEaten|What paracetamol?,world::lightOn|You can't find the paracetamol in the dark.
 % postcond
-world::paracetamolEaten := true, world::items -= "bed_room.paracetamol"
+world::paracetamolEaten := true, world::items -= "bed_room.paracetamol", world::liftingPower += 25
 % message
 The headache immediately goes away. What a power pill!
 
@@ -102,7 +102,7 @@ paracetamol
 % precond
 world::breakfeastEaten|What paracetamol?,world::lightOn|You can't find the paracetamol in the dark.
 % postcond
-world::paracetamolEaten := true, world::liftingPower += 10
+world::paracetamolEaten := true, world::liftingPower += 25
 % message
 You swallow the paracetamol and the headache immediately goes away. What a power pill!
 
@@ -181,7 +181,7 @@ world::boulderExamined := true
 % message
 The boulder is a huge metallic spherical boulder. You might be able to move it, but its at the very edge of what you could manage. You think back to the last time you helped mum out with a car repair and remember how important it was that you ate a big breakfast before that time.
 
-% push/ pull boulder
+% PUSH BOULDER
 add action
 % room
 bed room
@@ -196,7 +196,7 @@ world::boulderPushed := true
 % message
 You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
 
-% push/ pull boulder
+% PULL BOULDER
 add action
 % room
 bed room
@@ -222,7 +222,8 @@ leave
 % item
 room
 % precond
-(world::brickTaken OR (world::backpackTaken AND "bed_room.object" IN bed_room.backpack::contains))|Are you not forgetting to bring something along?, world::boulderPushed|You can't get out because the boulder is in your way.
+("bed_room.object" IN world::inventory OR ("bed_room.backpack" IN world::inventory AND "bed_room.object" IN bed_room.backpack::contains))|Are you not forgetting to bring something along?, world::boulderPushed|You can't get out because the boulder is in your way.
+
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
@@ -778,7 +779,7 @@ upstairs
 % trigger
 connect
 % item
-player, socket
+vinyl player, socket
 % precond
 NOT world::playerConnected|The player is already connected to the socket.
 % postcond
@@ -793,7 +794,7 @@ upstairs
 % trigger
 plug
 % item
-player, socket
+vinyl player, socket
 % precond
 NOT world::playerConnected|The player is already connected to the socket.
 % postcond
@@ -1181,11 +1182,11 @@ takeable
 
 edit knowledge
 fillers
-world::liftingPower := 300, living_room.note::mass := 10,bed_room.note::mass := 10, bed_room.paracetamol::mass := 20, bed_room.breakfast::mass := 50, bar.cider::mass := 50, bar.glass::mass := 60, back_of_bar.tapas::mass := 50, garden.onepiece::mass := 100, bed_room.object::mass := 100, bed_room.backpack::mass := 50, upstairs.depasito::mass := 50, upstairs.record::mass := 50, upstairs.darkside::mass := 50, bed_room.floor::mass := 10000, bed_room.window::mass := 1000, bed_room.bed::mass := 1000
+world::liftingPower := 300, living_room.note::mass := 10,bed_room.note::mass := 10, bed_room.paracetamol::mass := 20, bed_room.breakfast::mass := 50, bar.cider::mass := 50, bar.glass::mass := 60, back_of_bar.tapas::mass := 50, garden.onepiece::mass := 100, bed_room.object::mass := 100, bed_room.backpack::mass := 50, upstairs.depasito::mass := 50, upstairs.record::mass := 50, upstairs.darkside::mass := 50, bed_room.floor::mass := 10000, bed_room.window::mass := 1000, bed_room.bed::mass := 1000, upstairs.socket::mass := 100, living_room.ladder::mass := 800, bed_room.boulder::mass := 350
 
 edit knowledge
 fillers
-bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.floor::volume := 500, bed_room.window::volume := 200, bed_room.object::volume := 10, upstairs.record::volume := 5, upstairs.depasito::volume := 5, upstairs.darkside::volume := 5, garden.onepiece::volume := 30, back_of_bar.tapas::volume := 10, bed_room.breakfast::volume := 10, bar.glass::internalVolume := 10, bar.cider::volume := 10, bed_room.bag::volume := 100, bed_room.paracetamol::volume := 5, living_room.juice::volume := 5, living_room.juice::state := "liquid"
+bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.floor::volume := 500, bed_room.window::volume := 200, bed_room.object::volume := 10, upstairs.record::volume := 5, upstairs.depasito::volume := 5, upstairs.darkside::volume := 5, garden.onepiece::volume := 30, back_of_bar.tapas::volume := 10, bed_room.breakfast::volume := 10, bar.glass::internalVolume := 10, bar.cider::volume := 10, bed_room.bag::volume := 100, bed_room.paracetamol::volume := 5, living_room.juice::volume := 5, living_room.juice::state := "liquid", upstairs.socket::volume := 5, living_room.ladder::volume := 300, bed_room.boulder::volume := 600
 
 
 edit knowledge

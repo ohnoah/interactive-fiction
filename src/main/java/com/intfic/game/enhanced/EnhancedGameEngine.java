@@ -58,8 +58,11 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    private String notDesignedImplementedFollow(String message) {
-      if (message.contains("You pull") || message.contains("You push")) {
-         return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you put it back.";
+      if (message.contains("You pull") ) {
+         return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you pull it back.";
+      }
+      else if (message.contains("You push")) {
+         return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you push it back.";
       }
       else if (message.contains("You listen")) {
          return message.substring(0, message.length() - 1) + " but hear nothing of interest.";

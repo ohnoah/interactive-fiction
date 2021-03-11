@@ -1,0 +1,126 @@
+-!-!- 0:00:09
+basic-game-alternate
+That isn't a valid readable file in your file system. Try again.
+-!-!- 0:00:15
+Trying to load game file. Please wait
+-!-!- 0:00:24
+turn light on
+As you flick the light switch, you make out the object as a red brick. Someone also seems to have moved your hockey stick from the corner of the room next to your bed. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=1, acceptedCommands=1}
+-!-!- 0:00:27
+examine stick
+You can't do that.
+-!-!- 0:00:33
+eat english
+I couldn't find english in your environment.
+-!-!- 0:00:36
+eat breakfast
+You devour the whole plate and feel energised. Your head still feels slightly strange though. Luckily, you spot a Paracetamol next to the plate.
+-!-!- 0:00:41
+take paracetamol
+You swallow the paracetamol and the headache immediately goes away. What a power pill!
+-!-!- 0:00:46
+examine objcet
+Expected last word to be a noun but was: objcet
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=6, acceptedCommands=3, deniedCommands=1}
+-!-!- 0:00:50
+examine object
+The brick is a standard red brick that your mum keeps in her work shed around the back of the house. It’s not that large and would easily fit in your backpack that you see sticking out under your bed next to the brick. As you are about to put the brick down, you see a small handwritten note under where the brick was.
+-!-!- 0:00:52
+take brick
+You need to have something to put the object in.
+-!-!- 0:00:57
+take backpack
+You take the backpack.
+-!-!- 0:00:58
+take brick
+You put the brick in the bag. Your parents must’ve wanted you to use it for something. It will surely come in handy.
+-!-!- 0:01:01
+take hockey stick
+You take the hockey stick. It usually comes in handy when pushing things.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=11, acceptedCommands=7, deniedCommands=2}
+-!-!- 0:01:07
+examine boulder
+The boulder is a huge metallic boulder. It seems that it has been super-glued to the ground. You might be able to move it, but its at the very edge of what you could manage. However, without some long object to put under the boulder and push against the glue you have no chance. You also think back to the last time you helped mum out with a car repair and remember how important it was that you ate a big breakfast before that time.
+-!-!- 0:01:09
+push boulder
+You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
+-!-!- 0:01:43
+leave room
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting.
+-!-!- 0:01:43
+--------User study survey question interruption--------
+The responses of the game engine to my commands are ____
+
+Absolutely     	Marvelousa
+frustrating    	fantastic
+   and         	beautiful
+  awful        	and amazing
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+
+
+-!-!- 0:02:15
+1010
+-!-!- 0:02:15
+1010
+Invalid response. Write a number in the range 0 to 10 inclusive.
+-!-!- 0:02:17
+10
+-!-!- 0:02:17
+--------User study survey question interruption--------
+
+This game play session was ____
+
+Thorougly      	Not fun 
+enjoyable      	at all 
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+
+
+-!-!- 0:02:36
+2
+-!-!- 0:02:36
+
+ Resuming game. 
+--------------
+-!-!- 0:02:42
+examine table
+I couldn't find table in your environment.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=16, acceptedCommands=11, deniedCommands=2}
+-!-!- 0:02:44
+examine ladder
+I couldn't find ladder in your environment.
+-!-!- 0:02:47
+examine west window
+The window has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
+-!-!- 0:02:52
+climb ladder
+I couldn't find ladder in your environment.
+-!-!- 0:02:55
+take jucie
+Expected last word to be a noun but was: jucie
+-!-!- 0:02:56
+take juice
+You can't do that.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=21, acceptedCommands=12, deniedCommands=3}
+-!-!- 0:03:02
+examine juice
+You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
+-!-!- 0:03:07
+take juice
+You can't do that.
+-!-!- 0:03:15
+put juice on backpack
+You put the acidic juice as a coating on your brick bag.
+-!-!- 0:03:21
+climb ladder
+I couldn't find ladder in your environment.
+-!-!- 0:03:30
+throw backpack at west window
+You throw the acid-coated bag at the window with all your force. The instant the bag touches the window the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=26, acceptedCommands=15, deniedCommands=4}
