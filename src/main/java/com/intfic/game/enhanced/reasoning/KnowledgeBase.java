@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
@@ -340,8 +341,8 @@ public class KnowledgeBase implements Serializable {
    @Override
    public String toString() {
       return "KnowledgeBase{ \n " +
-          "genericFrames=" + genericFrames +
-          ",\n specificFrames=" + specificFrames +
+          "genericFrames=" + String.join(",\n", genericFrames.values().stream().map(GenericFrame::toString).collect(Collectors.toList())) +
+          ",\n specificFrames=" + String.join(",\n", specificFrames.values().stream().map(SpecificFrame::toString).collect(Collectors.toList()) ) +
           '}';
    }
 

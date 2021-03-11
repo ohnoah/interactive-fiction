@@ -314,9 +314,8 @@ public class EnhancedGameEditor extends JFrame {
                         enhancedGameEditState = EnhancedGameEditState.SAVE_FILENAME;
                         break;
                      case "edit knowledge":
-                        output = String.format("%s is the state of your current KnowledgeBase. " +
-                            "Type \"fillers\" to update SpecificFrame values or \"parents\" " +
-                            "to update and inherit with Generic Frames", knowledgeBase.toString());
+                        output = "Type \"fillers\" to update SpecificFrame values or \"parents\" " +
+                            "to update and inherit with Generic Frames. Type print knowledge to print the current state.";
                         enhancedGameEditState = EnhancedGameEditState.EDIT_KNOWLEDGE;
                         break;
                      case "add synonyms":
@@ -705,7 +704,7 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case EDIT_KNOWLEDGE:
                   if (cmd.equals("fillers")) {
-                     output = "Update the fillers of the current SpecificFrames " + knowledgeBase.getSpecificFrames().values().toString() +
+                     output = "Update the fillers of the current SpecificFrames " + knowledgeBase.getSpecificFrames().values().stream().map(SpecificFrame::getId).collect(Collectors.joining(",\n")) +
                          " with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
                      enhancedGameEditState = EnhancedGameEditState.FILLERS;
                   }

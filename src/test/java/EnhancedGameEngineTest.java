@@ -689,7 +689,7 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.progressStory(pushGameAction);
       Justification justification = enhancedGameEngine.progressStory(pushGameAction);
       String message = justification.getReasoning();
-      assertEquals("You push the pen slightly but nothing interesting happens so you put it back.", message);
+      assertEquals("You push the pen slightly but nothing interesting happens so you push it back.", message);
       assertTrue(justification.isAccepted());
    }
 
@@ -726,7 +726,7 @@ public class EnhancedGameEngineTest {
       enhancedGameEngine.progressStory(pullGameAction);
       Justification justification = enhancedGameEngine.progressStory(pullGameAction);
       String message = justification.getReasoning();
-      assertEquals("You pull the pen slightly but nothing interesting happens so you put it back.", message);
+      assertEquals("You pull the pen slightly but nothing interesting happens so you pull it back.", message);
       assertTrue(justification.isAccepted());
    }
 

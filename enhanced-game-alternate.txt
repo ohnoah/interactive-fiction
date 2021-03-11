@@ -3,7 +3,7 @@ You wake up in your bed feeling well rested after a good’s night sleep.  The s
 
 add room
 bed room
-breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room [bed], note, bed, window, floor, room [living], door, hockey stick [black]
+breakfast [english full], paracetamol, light, backpack [blue], object [strange red solid], boulder [large metallic silver huge spherical], curtains [hanging], room [bed], note, bed, window, floor, living room [living], door, hockey stick [black]
 
 add action
 % room
@@ -191,7 +191,7 @@ bed room
 % trigger
 examine
 % item
-stick
+hockey stick
 % precond
 
 % postcond
@@ -206,9 +206,9 @@ bed room
 % trigger
 take
 % item
-stick
+hockey stick
 % precond
-world::lightOn=true|You reach out for the hockey stick but miss it in the dark., world::stickTaken=false|You've already taken the stick.
+world::lightOn|You reach out for the hockey stick but miss it in the dark., NOT world::stickTaken|You've already taken the stick.
 % postcond
 world::stickTaken := true
 % message
@@ -270,7 +270,7 @@ bed room
 % trigger
 go
 % item
-room_2
+living room
 % precond
 world::brickTaken|Are you not forgetting to bring something along?, world::boulderPushed|You can't get out because the boulder is in your way.
 % postcond
@@ -970,7 +970,7 @@ upstairs
 % precond
 
 % postcond
-room=upstairs
+world::room := "upstairs"
 % message
 You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
 
@@ -1015,7 +1015,7 @@ back
 % precond
 
 % postcond
-world::room="back of bar"
+world::room:="back of bar"
 % message
 You head back to the back of the bar from the antechamber.
 
@@ -1038,7 +1038,6 @@ brick
 add synonyms
 bed_room.curtains
 blinds, curtain
-
 
 
 add synonyms
@@ -1064,10 +1063,6 @@ add synonyms
 bed_room.paracetamol
 pill
 
-
-add synonyms
-bed_room.room_2
-living room
 
 add synonyms
 back_of_bar.tapas
@@ -1141,6 +1136,22 @@ container
 edit knowledge
 parents
 bar.glass
+takeable
+
+edit knowledge
+parents
+bed_room.bed
+takeable
+
+
+edit knowledge
+parents
+bed_room.hockey_stick
+takeable
+
+edit knowledge
+parents
+bed_room.boulder
 takeable
 
 
