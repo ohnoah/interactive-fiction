@@ -154,7 +154,7 @@ take
 backpack
 world::lightOn|You reach for your backpack but miss it in the dark.
 world::backpackTaken := true
-It might come in handy for bringing things along.
+It might come in handy for bringing things along or as a container for heavier items.
 
 % take object
 add action
@@ -272,7 +272,7 @@ go
 % item
 living room
 % precond
-world::brickTaken|Are you not forgetting to bring something along?, world::boulderPushed|You can't get out because the boulder is in your way.
+("bed_room.object" IN world::inventory OR ("bed_room.backpack" IN world::inventory AND "bed_room.object" IN bed_room.backpack::contains))|Are you not forgetting to bring something along?, world::boulderPushed|You can't get out because the boulder is in your way.
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
@@ -411,7 +411,7 @@ juice
 % postcond
 world::acidExamined := true
 % message
-You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
+It seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class and you can feel the same strong smell coming from the west window. Perhaps you could use this to break out of here, but you still need something heavy to break the window with. If only there was a way to put this on the outside of a heavy object...
 
 % PUT ACID ON 
 add action
@@ -456,7 +456,7 @@ throw
 % item
 bed_room.backpack, window
 % precond
-\"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
+"bed_room.object" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
 world::windowBroken := true
 % message
@@ -472,7 +472,7 @@ throw
 % item
 bed_room.backpack, window_2
 % precond
-\"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+"bed_room.object" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
 world::windowBroken := true
 % message
@@ -488,7 +488,7 @@ throw
 % item
 bed_room.backpack, window_3
 % precond
-\"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
+"bed_room.object" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. It seems impossible that you would find a way to break this window.
 % postcond
 world::windowBroken := true
 % message
@@ -1021,7 +1021,7 @@ You head back to the back of the bar from the antechamber.
 
 add synonyms
 garden.robot_shoes
-shoes
+shoes, shoe, boots, rest of outfit
 
 add synonyms
 bed_room.light
@@ -1129,7 +1129,7 @@ edible
 
 edit knowledge
 parents
-upstairs.player
+upstairs.vinyl_player
 container
 
 

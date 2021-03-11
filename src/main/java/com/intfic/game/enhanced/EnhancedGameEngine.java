@@ -327,13 +327,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    @Override
    public boolean getWorldBoolean(String key) {
       try {
-         return knowledgeBase.conditionSucceeds("!world::" + key);
+         return getKnowledgeBase().queryBoolean("world", key);
       }
-      catch (KnowledgeException e) {
+      catch (KnowledgeException | MissingKnowledgeException e) {
          FileErrorHandler.printExceptionToLog(e);
-         return false;
-      }
-      catch (MissingKnowledgeException e) {
          return false;
       }
    }

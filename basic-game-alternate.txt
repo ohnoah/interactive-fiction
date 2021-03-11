@@ -157,7 +157,7 @@ take
 backpack
 lightOn=true|You reach for your backpack but miss it in the dark.
 backpackTaken=true
-You take the backpack.
+You take the backpack. It might come in handy for bringing things along or as a container for heavier items.
 
 
 % take object
@@ -388,7 +388,7 @@ juice
 % postcond
 acidExamined=true
 % message
-You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
+You take a closer look at the juice and it seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class and you can feel the same strong smell coming from the west window. Perhaps you could use this to break out of here, but you still need something heavy to break the window with. If only there was a way to put this on the outside of a heavy object...
 
 % PUT ACID ON 
 add action

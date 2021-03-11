@@ -209,7 +209,7 @@ public class ImplementedActionLogic implements Serializable {
          Condition takeConditionSolid = new Condition("!arg0::state = \"solid\"",
              "You can't take the !arg0 because it's not solid.");
          Condition takeConditionIsTakeable = new Condition("!arg0::isTakeable",
-             "You can't take the !arg0 right now.");
+             "You are not allowed to take !arg0");
          Condition takeConditionNotContained = new Condition("NOT !arg0::isContained",
              "The !arg0 is inside of something else.");
          Condition takeConditionMass = new Condition("!world::liftingPower >= !arg0::mass",

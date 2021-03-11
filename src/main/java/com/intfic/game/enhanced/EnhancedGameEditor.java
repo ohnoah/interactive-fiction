@@ -78,6 +78,9 @@ public class EnhancedGameEditor extends JFrame {
    private Item synonymItem;
    private ArrayList<String> synonymIds;
 
+   private boolean firstParent = true;
+   private boolean firstFiller = true;
+
    public int getNumEdits() {
       return numEdits;
    }
@@ -161,7 +164,7 @@ public class EnhancedGameEditor extends JFrame {
          return null;
       }
       String booleanExpr = parts[0];
-      if(!booleanExpr.contains("::")){
+      if (!booleanExpr.contains("::")) {
          booleanExpr = "world::" + booleanExpr;
       }
       String failureMessage = parts[1];
@@ -170,7 +173,7 @@ public class EnhancedGameEditor extends JFrame {
 
    private KnowledgeUpdate stringToKnowledgeUpdate(String raw) {
       try {
-         if(!raw.contains("::")){
+         if (!raw.contains("::")) {
             raw = "world::" + raw;
          }
          return new KnowledgeUpdate(raw);
@@ -214,9 +217,10 @@ public class EnhancedGameEditor extends JFrame {
       }
       return new Justification(true, "");
    }
+
    public static boolean isValidItemIdentifierList(Map<String, Item> globalItems, List<String> items) {
-      for(String s : items){
-         if(!globalItems.containsKey(s)){
+      for (String s : items) {
+         if (!globalItems.containsKey(s)) {
             return false;
          }
       }
@@ -269,6 +273,7 @@ public class EnhancedGameEditor extends JFrame {
             break;
          case "clear":
             output = "Cleared your status.";
+            history.setText(">");
             gameEngine = new EnhancedGameEngine();
             resetAdditions();
             enhancedGameEditState = EnhancedGameEditState.OPEN;
@@ -596,7 +601,7 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case ACTION_ARGS:
                   List<String> splitArgs;
-                  if(cmd.matches("\\s*")){
+                  if (cmd.matches("\\s*")) {
                      splitArgs = new ArrayList<>();
                   }
                   else {
@@ -654,7 +659,7 @@ public class EnhancedGameEditor extends JFrame {
                         else {
                            effectAction.setPreconditions(preConds);
                            output = "Enter the updates to the knowledgebase as comma-separated KnowledgeUpdate strings" +
-                               "e.g. \"world::numDoors += 1, box::contains = [\"apple\"]\".";
+                               "e.g. \"world::numDoors += 1, box::contains := [\"apple\"]\".";
                            enhancedGameEditState = EnhancedGameEditState.ACTION_POST;
                         }
                      }
@@ -704,22 +709,30 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case EDIT_KNOWLEDGE:
                   if (cmd.equals("fillers")) {
-                     output = "Update the fillers of the current SpecificFrames " + knowledgeBase.getSpecificFrames().values().stream().map(SpecificFrame::getId).collect(Collectors.joining(",\n")) +
-                         " with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
+                     output = "Update the fillers of the current SpecificFrames ";
+                     if(firstFiller) {
+                        output += knowledgeBase.getSpecificFrames().values().stream().map(SpecificFrame::getId).collect(Collectors.joining(",\n"));
+                        firstFiller = false;
+                     }
+                     output += " with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
                      enhancedGameEditState = EnhancedGameEditState.FILLERS;
                   }
                   else if (cmd.equals("parents")) {
                      specificFrames = new ArrayList<>(knowledgeBase.getSpecificFrames().values());
-                     StringBuilder outputBuilder = new StringBuilder();
-                     for (int i = 0; i < specificFrames.size(); i++) {
-                        outputBuilder.append(String.format("(%d) %s \n", i, specificFrames.get(i).getId()));
+                     output = "";
+                     if(firstParent) {
+                        StringBuilder outputBuilder = new StringBuilder();
+                        for (int i = 0; i < specificFrames.size(); i++) {
+                           outputBuilder.append(String.format("(%d) %s \n", i, specificFrames.get(i).getId()));
+                           output = outputBuilder.toString() + "are the current Specific Frames.";
+                        }
                      }
-                     output = outputBuilder.toString();
-                     output += "are the current Specific Frames. Enter the name of the one you wish to add a parent to";
+                     output += "Enter the name of the specific frame one you wish to add a parent to";
                      enhancedGameEditState = EnhancedGameEditState.PARENTS_CHILD;
                   }
                   else {
-                     output = "Invalid choice. Enter \"parents\" or \"fillers\"";
+                     output = "Invalid choice. Enter \"parents\" or \"fillers\" \n !!!!!!!! \n !!!!!!!!!!";
+
                   }
                   break;
                case FILLERS:
@@ -741,16 +754,21 @@ public class EnhancedGameEditor extends JFrame {
                case PARENTS_CHILD:
                   child = findSpecificFrameByName(specificFrames, cmd);
                   if (child == null) {
-                     output = "That is not a valid name. Enter the id of one of the items you have created that were listed above.";
+                     output = "That is not a valid name. Enter the id of one of the items you have created that were listed above. \n --------------------- \n !!!!!!!!";
                   }
                   else {
                      StringBuilder outBuilder = new StringBuilder();
                      genericFrames = new ArrayList<>(knowledgeBase.getGenericFrames().values());
-                     for (int i = 0; i < genericFrames.size(); i++) {
-                        outBuilder.append(String.format("(%d) %s \n", i, genericFrames.get(i).getId()));
+                     output = "";
+                     if (firstParent) {
+                        for (int i = 0; i < genericFrames.size(); i++) {
+                           outBuilder.append(String.format("(%d) %s \n", i, genericFrames.get(i).getId()));
+                        }
+                        output = outBuilder.toString();
+                        output += "are your current generic frames.";
+                        firstParent = false;
                      }
-                     output = outBuilder.toString();
-                     output += "are your current generic frames. Enter \"new\" " +
+                     output += "Enter \"new\" " +
                          "if you wish to create a new parent or the name of a current Generic Frame if you wish to add one as the parent of " + child.getId();
                      enhancedGameEditState = EnhancedGameEditState.PARENTS_PARENT;
                   }
@@ -775,7 +793,7 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case PARENTS_NEW_NAME:
                   if (knowledgeBase.getGenericFrames().getOrDefault(cmd, null) != null) {
-                     output = "That Generic Frame name already exists. Try again.";
+                     output = "That Generic Frame name already exists. Try again. \n !!!!!!!! \n !!!!!";
                   }
                   else {
                      parent = new GenericFrame(cmd);
@@ -800,11 +818,11 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   catch (IndexOutOfBoundsException e) {
                      output = "Malformed string. Remember to separate each slot and filler pair" +
-                         " by a \",\" and the slot and the filler by a \"=\" with no excess spaces";
+                         " by a \",\" and the slot and the filler by a \"=\" with no excess spaces \n !!!!!!!! \n !!!! \n !!!!!";
                   }
                   catch (ParseCancellationException e) {
                      output = "Malformed filler value for string " + e.getMessage()
-                         + ". Fillers can only be strings, numbers and lists of strings or numbers";
+                         + ". Fillers can only be strings, numbers and lists of strings or numbers \n !!!!! \n !!!!!! \n !!!!!!";
                   }
                   break;
                default:
@@ -813,6 +831,7 @@ public class EnhancedGameEditor extends JFrame {
             }
       }
 
+      assert output != null;
       return List.of(cmd, sofar, output);
 
    }
