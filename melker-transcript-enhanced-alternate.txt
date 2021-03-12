@@ -1,0 +1,268 @@
+-!-!- 0:00:04
+load
+That isn't a valid readable file in your file system. Try again.
+-!-!- 0:00:08
+Trying to load game file. Please wait
+-!-!- 0:02:13
+turn light on
+You turn on the light.As you flick the light switch, you make out the object as a red brick. Someone also seems to have moved your hockey stick from the corner of the room next to your bed. To your surprise, you also see a large boulder blocking your doorway. “How did that end up there?”, you think as your heart rate jumps.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=1, acceptedCommands=1}
+-!-!- 0:02:18
+examine brick
+You examine the object.The brick is a standard red brick that your mum keeps in her work shed around the back of the house. It’s not that large and would easily fit in your backpack that you see sticking out under your bed next to the brick. As you are about to put the brick down, you see a small handwritten note under where the brick was.
+-!-!- 0:02:20
+take backpack
+You take the backpack.It might come in handy for bringing things along or as a container for heavier items.
+-!-!- 0:02:21
+take brick
+You take the object. Nothing important happens.
+-!-!- 0:02:28
+put brick in backpack
+You put the object in the backpack.Your parents must’ve wanted you to use it for something. It will surely come in handy.
+-!-!- 0:02:29
+
+
+-!-!- 0:02:43
+eat breakfast
+You eat the breakfast. It tastes succulent.After devouring the whole plate you feel stronger and energised. Your head still feels slightly strange though. Luckily, you spot a Paracetamol next to the plate.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=6, acceptedCommands=6}
+-!-!- 0:02:48
+take paracetamol
+You take the paracetamol.The headache immediately goes away and you feel even stronger. What a power pill!
+-!-!- 0:04:03
+examine boulder
+You examine the boulder.The boulder is a huge metallic spherical boulder. You might be able to move it, but its at the very edge of what you could manage. You think back to the last time you helped mum out with a car repair and remember how important it was that you ate a big breakfast before that time.
+-!-!- 0:04:08
+push boulder
+You need a lever to help you unstick the boulder from the ground as you push. Try again when you've found it
+-!-!- 0:04:13
+examine hockey stick
+You examine the hockey stick.The hockey stick is a black, 2 m long MCC hockey stick.
+-!-!- 0:04:18
+take hockey stick
+You take the hockey stick.It usually comes in handy when playing hockey or when pushing things.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=11, acceptedCommands=10, deniedCommands=1}
+-!-!- 0:04:23
+push boulder
+You push the boulder.You gather all your power to push the boulder out the way, which exposes your door ever so slightly so that you can open it and leave the room if you wish.
+-!-!- 0:04:27
+leave room
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting.
+-!-!- 0:04:27
+--------User study survey question interruption--------
+While playing I have felt ____ moments of frustration
+
+No          	Constantly
+frustration 	frustrated
+and         	and very
+zero        	frequent
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+
+
+-!-!- 0:04:29
+0
+-!-!- 0:04:29
+--------User study survey question interruption--------
+
+So far, I felt that the game's responses when my actions failed were ____
+
+Wholly un-     	Highly
+informative    	informative
+   and         	   and
+illogical      	logical
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+
+
+-!-!- 0:04:30
+10
+-!-!- 0:04:30
+
+ Resuming game. 
+--------------
+-!-!- 0:04:47
+examine note
+You examine the note.These things. The only way you can stop them is through music. I don’t know what yet, but some form of music will fix all of this.
+-!-!- 0:05:03
+examine the west window
+You examine the window.The window has a light green stain in the top-right in the same color as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=16, acceptedCommands=15, deniedCommands=1}
+-!-!- 0:05:21
+examine juice
+You examine the juice.It seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class and you can feel the same strong smell coming from the west window. Perhaps you could use this to break out of here, but you still need something heavy to break the window with. If only there was a way to put this on the outside of a heavy object...
+-!-!- 0:05:23
+drink juice
+Error. No valid game verb specified.
+-!-!- 0:05:27
+drink juice from glass
+Error. No valid game verb specified.
+-!-!- 0:06:26
+take juice
+You can't take the juice because it's not solid.
+-!-!- 0:06:30
+put juice on backpack
+You put the juice on the backpack.It acts as a coating on your brick bag.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=21, acceptedCommands=17, deniedCommands=2}
+-!-!- 0:06:34
+climb ladder
+Error. No valid game verb specified.
+-!-!- 0:06:37
+climb the ladder
+I couldn't find ladder in your environment.
+-!-!- 0:06:43
+throw backpack at west window
+You throw the acid-coated bag at the window with all your force. The instant the bag touches the window the reinforcement seems to dissolve and a moment later the brick bag tumbles through the window to a loud crashing sound. Light pours in through the window and you can see the front of your garden.
+-!-!- 0:06:47
+leave room
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. 
+All of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+-!-!- 0:06:56
+put on onepiece
+No action corresponds to the verb: put on
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=26, acceptedCommands=19, deniedCommands=2}
+-!-!- 0:07:02
+put on the onepiece
+You put on the onepiece. Now you just need to get the rest of the outfit on.
+-!-!- 0:07:07
+put on the shoes
+I couldn't find shoes in your environment.
+-!-!- 0:07:32
+put on shoes
+No action corresponds to the verb: put on
+-!-!- 0:07:36
+put on the rest of the outfit
+I couldn't find rest of the outfit in your environment.
+-!-!- 0:09:14
+put on the robot shoes
+You put on the shoes and you make out a smile on Drof's face through the eye slits in the suit. Although your facial expression is full of panic under the suit, you know look like a bad costume version of one of the strange machine-operating robots on the outside.
+ Drof yells at you: "FOLLOW ME! QUICKLY!".
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=31, acceptedCommands=21, deniedCommands=2}
+-!-!- 0:11:59
+follow Drof
+Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
+-!-!- 0:11:59
+--------User study survey question interruption--------
+
+So far, while playing I have felt ____ moments of frustration
+
+No          	Constantly
+frustration 	frustrated
+and         	and very
+zero        	frequent
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+
+
+-!-!- 0:12:01
+0
+-!-!- 0:12:01
+--------User study survey question interruption--------
+
+So far, I felt that the game's responses when my actions failed were ____
+
+Wholly un-     	Highly
+informative    	informative
+   and         	   and
+illogical      	logical
+    0-----1-----2-----3-----4-----5-----6-----7-----8-----9-----10
+
+
+-!-!- 0:12:02
+10
+-!-!- 0:12:02
+
+ Resuming game. 
+--------------
+-!-!- 0:12:07
+drink the beer
+Expected 2 arguments for verb drink but got 1
+-!-!- 0:12:11
+drink the beer from the glass
+You drink the beer. It tastes bitter but refreshing.You drink your beer quickly to quench your thirst. Some calmness begins to return to your mind. As you glance at Drof you realize that it seems like you can finally ask him what the **** is going on.
+-!-!- 0:12:15
+talk to Drof
+Tcefer takes a deep breath and says, "You know, these people are actually robots. They call themselves Bostonian Saltases and they have been ordered to remove every inhabitant in town and lock up every house. All of this is to prepare for the demolition of the town to make space for an intercontinental super highway. Don't ask me how I know any of this. You don't want to know.". He continues “The only way these robots can be stopped is by playing their recall song. They've all been programmed to stop the project and return to base by their over lord if they hear one specific song”. Tceferp says that he has heard rumblings that the song may be called "Deplorable", but he most likely misheard this. "How does Drof know all of this?", you think before realizing that you need to act quickly to save your town. Drf points you to the back of the room, explaining that he thinks the recall speaker can be found somewhere here.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=36, acceptedCommands=25, deniedCommands=2}
+-!-!- 0:12:27
+go to the back
+You make your way to the back of the room where you sit down and immediately get served a plate of tapas. The robotic bartender forgets to clear the table of an old plate of tortillas next to you, which annoys you slightly even though you have much bigger problems to worry about right now. To the right, there is an entrance to an antechamber of some sort and to the left is a staircase leading up to the staff area and kitchen of the bar.
+-!-!- 0:12:36
+eat the tortillas
+I couldn't find tortillas in your environment.
+-!-!- 0:12:39
+eat tortilas
+I couldn't find tortilas in your environment.
+-!-!- 0:12:42
+eat tortillas
+I couldn't find tortillas in your environment.
+-!-!- 0:12:45
+eat the tortilla
+I couldn't find tortilla in your environment.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=41, acceptedCommands=26, deniedCommands=2}
+-!-!- 0:12:53
+eat the plate of tortillas
+I couldn't find plate of tortillas in your environment.
+-!-!- 0:12:58
+go to staircase
+You try heading up the stairs but someone has blocked them by glueing big boulders to the walls of the staircase. If only there was another way to get upstairs...
+-!-!- 0:13:03
+push boulder
+I couldn't find boulder in your environment.
+-!-!- 0:13:06
+push the boulders
+I couldn't find boulders in your environment.
+-!-!- 0:13:18
+go to antechamber
+You enter the antechamber. There are many of these strange humanoids in the room and you see a door at the end of the room that seems to lead somewhere. You wonder how they could’ve built this into the bar so quickly. As you enter, a grayish-tinted robot whispers something to its conversation partner about a  pop-song in Spanish made in the 2010s and the room goes completely silent for a few seconds before the buzz of conversation returns.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=46, acceptedCommands=28, deniedCommands=2}
+-!-!- 0:13:36
+go to the door
+You can't do that.
+-!-!- 0:13:40
+examine door
+You examine the door.You walk up to the door and peek inside quickly as the others look away. It seems to lead to a staircase.
+-!-!- 0:13:43
+go to the door
+You can't do that.
+-!-!- 0:13:46
+go to door
+You can't do that.
+-!-!- 0:13:48
+go to staircase
+You go upstairs to realise that the robots have completely changed the interior of the second floor from when you worked here a few years ago over the summer.  In the middle of the room is a parabol dish connected to a vinyl player and three vinyl records.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=51, acceptedCommands=30, deniedCommands=5}
+-!-!- 0:13:53
+examine player
+You examine the vinyl player.The vinyl player is a beautiful mahogany design. It’s turned off.
+-!-!- 0:13:55
+examine records
+You examine the records.There are three records on the table. Depasito by Fonzen and Jonas Beaver, Darkside by The Resurrectors and another obscure record with a pink cover.
+-!-!- 0:14:04
+plug player into socket
+Error. No valid game verb specified.
+-!-!- 0:14:13
+plug the player into the socket
+I couldn't find a  socket in your environment.
+-!-!- 0:14:18
+turn player on
+You turn on the vinyl player.You turn on the vinyl player. The wire between the player and the parabol dish makes a brief humming noise. A hatch opens, exposing the vinyl player’s internals and tracks that seem to fit the records on the table.
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=56, acceptedCommands=33, deniedCommands=5}
+-!-!- 0:14:31
+put Depasito in player
+You put the Depasito in the vinyl player.Depasito starts playing. The parabol dish makes some strange noises for a few seconds until you hear a cheesy guitar riff play outside. The sound from outside seems like its being broadcast from space to the whole town. As you look out the window, you see the city's invading robots mounting their bulldozer-like machines and driving off in myriad directions. You have saved the day, and saved your town. 
+ Thanks for playing this game.
+-!-!- 0:14:44
+save
+No action corresponds to the verb: save
+STRING-STATISTICS:{}
+INTEGER-STATISTICS:{numCommands=58, acceptedCommands=34, deniedCommands=5}

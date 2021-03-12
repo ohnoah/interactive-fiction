@@ -275,6 +275,7 @@ public class EnhancedGameEditor extends JFrame {
             output = "Cleared your status.";
             history.setText(">");
             gameEngine = new EnhancedGameEngine();
+            knowledgeBase = gameEngine.getKnowledgeBase();
             resetAdditions();
             enhancedGameEditState = EnhancedGameEditState.OPEN;
             break;

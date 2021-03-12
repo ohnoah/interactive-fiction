@@ -624,7 +624,7 @@ hint
 % postcond
 
 % message
-You need to drink your beer FROM THE GLASS, talk to Drof and then GO TO back of bar.
+You need to drink your beer FROM THE GLASS, talk to Drof and then write "go to back".
 
 add action
 % room

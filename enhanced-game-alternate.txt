@@ -1,5 +1,5 @@
 start message
-You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further. \n Type "help" to see a list of possible actions. \n Type "hint" if you get stuck and need help. \n Note that when you take things in this game, they will end up in your inventory and you can carry them around.
+You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further. \n \n Type "help" to see a list of possible actions. \n Type "hint" if you get stuck and need help. \n Note that when you take things in this game, they will end up in your inventory and you can carry them around. \n Remember to write GRAMMATICAL English.
 
 add room
 bed room
@@ -603,7 +603,7 @@ world::windowBroken|You can't leave the living room because the windows and door
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a pair of gray robot shoes and a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece and the shoes on quickly, or we’re screwed”.
 
 % GO OUTSIDE
 add action
@@ -618,7 +618,7 @@ world::windowBroken|You can't go outside the living room because the windows and
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a pair of gray robot shoes and a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a pair of gray robot shoes and a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece and the shoes on on quickly, or we’re screwed”.
 
 % GARDENTIME
 add room
@@ -637,7 +637,7 @@ hint
 % postcond
 
 % message
-Put the onepiece and shoes on and then follow Drof.
+Write "put on the onepiece" and then "put on the robot shoes" or just "put on the shoes" and then "follow Drof" with capital D.
 
 % ALTERNATE
 
@@ -706,7 +706,7 @@ hint
 % postcond
 
 % message
-You need to drink your beer FROM THE GLASS, talk to Drof and then GO TO back of bar
+You need to drink your beer FROM THE GLASS, talk to Drof and then write "go to back".
 
 add action
 % room
@@ -1189,6 +1189,11 @@ takeable
 
 edit knowledge
 parents
+bar.glass
+container
+
+edit knowledge
+parents
 bed_room.bed
 takeable
 
@@ -1271,4 +1276,4 @@ bed_room.hockey_stick::volume := 200, bed_room.note::volume := 0.1, living_room.
 
 edit knowledge
 fillers
-bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine", bar.glass::contains += "bar.beer", bar.beer:isContained := true
+bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine", bar.glass::contains += "bar.beer", bar.beer::isContained := true

@@ -1,5 +1,5 @@
 start message
-You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further. \n Type "help" to see a list of possible actions. \n Type "hint" if you get stuck and need help. \n Note that when you take things in this game, they will end up in your inventory and you can carry them around.
+You wake up in your bed feeling well rested after a good’s night sleep.  The summer warmth has made your room awfully hot, so you head hurts slightly. Your room is completely dark and as usual, you’ve woken up slightly late. You quickly sit up, realising that you need to quickly get to school after eating the full English on your bed side table that your dad always leaves there before heading to work. \n \nYet, as you wake, you see a strange rectangular object that someone has left on the floor next to your bed. Some light from the window or overhead lights might be useful to examine it further. \n \n Type "help" to see a list of possible actions. \n Type "hint" if you get stuck and need help. \n Note that when you take things in this game, they will end up in your inventory and you can carry them around. \n Remember to write GRAMMATICAL English. Capitalize names and titles of e.g. songs.
 
 add room
 bed room
@@ -654,7 +654,7 @@ hint
 % postcond
 
 % message
-Put the onepiece on and then follow Drof.
+Write "put on the onepiece" and then "follow Drof"
 
 add action
 % room
@@ -701,7 +701,7 @@ hint
 % postcond
 
 % message
-You need to drink your cider FROM THE GLASS, talk to Drof and then GO TO back of bar
+You need to drink your cider FROM THE GLASS, talk to Drof and then write "go to back".
 
 add action
 % room
@@ -1185,6 +1185,12 @@ parents
 bar.glass
 takeable
 
+
+edit knowledge
+parents
+bar.glass
+container
+
 edit knowledge
 parents
 bed_room.bed
@@ -1263,4 +1269,4 @@ bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.floor::v
 
 edit knowledge
 fillers
-bar.cider::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine", bar.glass::contains += "bar.cider", bar.cider:isContained := true
+bar.cider::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine", bar.glass::contains += "bar.cider", bar.cider::isContained := true
