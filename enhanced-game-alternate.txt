@@ -1271,4 +1271,4 @@ bed_room.hockey_stick::volume := 200, bed_room.note::volume := 0.1, living_room.
 
 edit knowledge
 fillers
-bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine"
+bar.beer::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine", bar.glass::contains += "bar.beer", bar.beer:isContained := true

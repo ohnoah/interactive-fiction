@@ -226,7 +226,7 @@ room
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
-You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is stood up against the east wall.
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is on the kitchen floor stood up against the east wall.
 
 % go to living room
 add action
@@ -241,7 +241,7 @@ living room
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
-You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is stood up against the east wall.
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is on the kitchen floor stood up against the east wall.
 
 % open
 add action
@@ -347,7 +347,8 @@ window
 % postcond
 world::westWindowExamined := true
 % message
-It seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class and you can feel the same strong smell coming from the west window. Perhaps you could use this to break out of here, but you still need something heavy to break the window with. If only there was a way to put this on the outside of a heavy object...
+The west window is high up and out-of-reach. It has a light green stain in the top-right with the same color and smell as the juice your parents seemed to have left on the table. The window seems reinforced like the others, but the job seems sloppier. Maybe you could get out through it if you could find a way to break it with something heavy.
+
 
 
 % EXAMINE WINDOW_2
@@ -393,7 +394,7 @@ NOT world::ladderClimbed|You need to go down before you do that.
 % postcond
 world::acidExamined := true
 % message
-It seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class.
+It seems to be some sort of chemical soup, not apple juice. It is bright, neon green like the stain on the window. The smell of it reminds you of hydrochloric acid from chemistry class and you can feel the same strong smell coming from the west window. Perhaps you could use this to break out of here, but you still need something heavy to break the window with. If only there was a way to put this on the outside of a heavy object...
 
 % PUT ACID ON
 add action
@@ -469,7 +470,7 @@ throw
 % item
 bed_room.backpack, window
 % precond
-world::ladderClimbed|You try to throw the bag at the window but it's too high up. As you pick up the bag you realize you need to get higher up before trying again. Maybe you could climb something?, \"bed_room.object\" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
+world::ladderClimbed|You try to throw the bag at the window but it's too high up. As you pick up the bag you realize you need to get higher up before trying again. Maybe you could climb something?, "bed_room.object" IN bed_room.backpack::contains|There is nothing hard inside the backpack., world::acidPut|You throw the bag in a futile attempt to break the window. The reinforced window barely bulges. "Hmmmm. How can I get through that reinforcement material?" you think as you pick the bag back up.
 % postcond
 world::windowBroken := true
 % message
@@ -1262,4 +1263,4 @@ bed_room.note::volume := 0.1, living_room.note::volume := 0.1, bed_room.floor::v
 
 edit knowledge
 fillers
-bar.cider::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine"
+bar.cider::taste := "bitter but refreshing", back_of_bar.tapas::taste := "delicious", bed_room.breakfast::taste := "succulent", bed_room.paracetamol::taste := "like medicine", bar.glass::contains += "bar.cider", bar.cider:isContained := true
