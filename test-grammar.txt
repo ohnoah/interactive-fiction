@@ -1,0 +1,50 @@
+start{
+	"first room";
+	"Welcome to the first room";
+}
+
+room{
+	.name "first room";
+	.actions #(putActionOne), #(examineTwo);
+	.items "banana", #(apple);
+}
+
+item{
+	(apple);
+	.room "first room"
+	.
+	
+}
+
+precond{
+	(appleMass);
+	'first_room.apple::mass > 4.0' ("The mass is not right");
+}
+
+postcond{
+	(appleNewMass);
+	"first_room.apple::mass := 5.0";
+}
+
+
+action{
+	(putActionOne);
+	.room "first room";
+	.triggers put 0, put 1;
+	.args "banana" "apple"
+	.preconds [#(appleMass), 'first_room.apple::isContainer' ("The apple is not a container")];
+	.postconds [#(appleNewMass), "first_room.apple::isContainer := true"];
+	.success_msg "You succeeded";
+}
+
+genericframe{
+	"fruit";
+	[fruitiness=4.0, elasticity="high"];
+}
+
+knowledge{
+	.parents [(apple), "first_room.banana"] inherits "fruit", [(apple)] inherits "container";
+	.initial ["first_room.banana::mass := 1000", "first_room.apple::name := "apple""];
+}
+
+

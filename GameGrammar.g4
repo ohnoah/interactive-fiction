@@ -1,6 +1,6 @@
 grammar GameGrammar;
 
-ID : LPAREN ALPHABETIC RPAREN;
+ID : LPAREN ALPHANUMERIC RPAREN;
 
 new_message
     : MESSAGE
@@ -9,7 +9,7 @@ new_message
     STRING SEMICOLON
     RCURLY;
 
-message_id : MESSAGE_ID;
+message_id : ID;
 
 message_text : STRING;
 
@@ -19,7 +19,7 @@ message_ref
 message : message_ref | message_text;
 
 trigger:
-    ALPHABETIC ( INTEGER)?
+    ALPHANUMERIC ( INTEGER)?
 ;
 
 
@@ -32,6 +32,8 @@ new_precond : PRECOND LCURLY
 
 // UPDATE TO USE EXPRESSION
 precond_body : SINGLE_QUOTE STRING SINGLE_QUOTE (LPAREN STRING RPAREN);
+precond :  precond_body | precond_ref
+;
 
 
 postcond_id : ID;
@@ -39,8 +41,8 @@ postcond_ref : HASH postcond_id;
 // UPDATE
 postcond_body : STRING;
 new_postcond : POSTCOND LCURLY postcond_id SEMICOLON postcond_body SEMICOLON RCURLY;
-precond :  | precond_ref
-;
+
+postcond : postcond_body | postcond_ref;
 
 preconds:
   LSQUARE (precond (COMMA precond)*)? RSQUARE
@@ -50,13 +52,18 @@ triggers
     :
     trigger (COMMA trigger)*;
 
-postconds: LSQUARE;
+postconds: LSQUARE (postcond (COMMA postcond))? RSQUARE;
+
+argument : item_ref | STRING;
+arguments : (argument (COMMA ARGUMENTS)*)?;
 
 new_action
     : ACTION
     LCURLY
     action_id SEMICOLON
+    DOT ROOM room_name SEMICOLON
     DOT TRIGGERS triggers SEMICOLON
+    DOT ARGUMENTS arguments SEMICOLON
     DOT preconds SEMICOLON
     DOT postconds SEMICOLON
     DOT SUCCESSMESSAGE message SEMICOLON
@@ -64,7 +71,7 @@ new_action
 
 actionformat:
    LCURLY
-   ALPHABETIC SEMICOLON
+   ALPHANUMERIC SEMICOLON
    (STRING SEMICOLON)?
    RCURLY
    ;
@@ -78,8 +85,12 @@ actions: (action (COMMA action)*)? ;
 
 item_id : ID;
 item_ref : HASH item_id;
-item : STRING | item_ref;
+item_name : STRING;
+item : item_name | item_ref;
 items: (item (COMMA item)*)?;
+
+
+new_item : LCURLY item_id SEMICOLON DOT ROOM room_name DOT NAME item_name SEMICOLON DOT INITIAL knowledge_updates SEMICOLON RCURLY;
 
 room_name : STRING;
 
@@ -91,14 +102,33 @@ new_room:
     RCURLY
     ;
 
+
+genericframe_name : STRING;
+map_entry : ALPHANUMERIC EQUALS (DECIMAL|STRING|STRINGLIST|NUMBERLIST|BOOLEAN);
+new_genericframe : GENERICFRAME LCURLY genericframe_name SEMICOLON LSQUARE (map_entry (COMMA map_entry)*)? RSQUARE SEMICOLON RCURLY;
+
+
+knowledge_updates : DOT INITIAL LSQUARE (STRING (COMMA STRING)*)? RSQUARE;
+// CHANGE TO EXPRESSION
+
+global_item : item_id | STRING;
+global_items : global_item (COMMA global_item)*?;
+inheritance : LSQUARE global_items RSQUARE INHERITS SEMICOLON;
 knowledge:
     LCURLY
+    DOT PARENTS  inheritance (COMMA inheritance)
+    knowledge_updates?
     RCURLY
 ;
 
+start : START LCURLY room_name SEMICOLON STRING SEMICOLON RCURLY;
+
 game
- : START (new_message|new_action|new_room|knowledge|actionformat|new_postcond|new_precond) EOF
+ : start (new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond)* new_genericframe* knowledge? EOF
  ;
+
+// Parsing should go something like ITEMS -> ROOMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS ->
+// NEED ERROR if same item is given to multiple rooms
 
 // TOP-LEVEL STARTER BLOCKS
 START      : 'start';
@@ -108,9 +138,8 @@ ROOM       : 'room';
 KNOWLEDGE  : 'knowledge';
 PRECOND    : 'precond';
 POSTCOND   : 'postcond';
+GENERICFRAME   : 'generic_frame';
 
-MESSAGE_ID : LPAREN STRING RPAREN;
-MESSAGE_REF : HASH MESSAGE_ID;
 
 LCURLY     : '{' ;
 RCURLY     : '}' ;
@@ -123,7 +152,8 @@ SEMICOLON  : ';';
 DOT        : '.';
 QUOTE      : '"' ;
 SINGLE_QUOTE      : '\'' ;
-ALPHABETIC : [a-zA-Z]+;
+EQUALS     : '=';
+ALPHANUMERIC : [a-zA-Z0-9]+;
 STRING     : QUOTE [a-zA-Z0-9'!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* QUOTE;
 INTEGER    : [0-9]+;
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
@@ -134,6 +164,10 @@ ITEMS    : 'items';
 NAME    : 'name';
 SUCCESSMESSAGE    : 'success_msg';
 TRIGGERS : 'triggers';
+ARGUMENTS : 'args';
+PARENTS   : 'parents';
+INHERITS  : 'inherits';
+INITIAL   : 'initial';
 
 IDENTIFIER : [!]? ([a-zA-Z0-9_.]+) [:] [:] [a-zA-Z0-9]+;
 
