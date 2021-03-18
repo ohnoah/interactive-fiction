@@ -317,7 +317,7 @@ public class EnhancedNLPEngine {
             }
          }
          else {
-            return new Justification(false, String.format("Argument structure after the verb %s was wrong.", actionToTake.getVerb()));
+            return new Justification(false, String.format("Argument structure after the verb %s was wrong. Expected: %s", actionToTake.getVerb(), actionToTake.toString()));
          }
       }
       // Or just find the noun

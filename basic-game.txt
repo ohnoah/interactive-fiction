@@ -237,7 +237,7 @@ boulderPushed=true|You can't get out because the boulder is in your way.
 % postcond
 room=living room, leftFirstRoom=true
 % message
-You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is on the kitchen floor stood up against the east wall.
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is INDOORS in this room on the kitchen floor stood up against the east wall.
 % open
 add action
 % room
@@ -273,7 +273,7 @@ hint
 % postcond
 
 % message
-The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows after writing "climb ladder" to break it and then write "leave room" to LEAVE ROOm.
+After examinig the west window, you will find out about a juice that is on the table. The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows after writing "climb ladder" to break it and then write "leave room" to LEAVE ROOm.
 
 
 % all actions
@@ -530,7 +530,7 @@ windowBroken=true|You can't leave the living room because the windows and doors 
 % postcond
 room=garden, errorMessage=Why would you do that? Drof is yelling at you to put the onepiece one.
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume onepiece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece on quickly, or we’re screwed”.
 
 add action
 % room
@@ -544,7 +544,7 @@ windowBroken=true|You can't leave the living room because the windows and doors 
 % postcond
 room=garden, errorMessage=Why would you do that? Drof is yelling at you to put the onepiece one.
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume onepiece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece on quickly, or we’re screwed”.
 
 
 % GARDENTIME
@@ -595,11 +595,11 @@ onePieceOn=true|You can't go without your disguise. Listen to what Drof said.
 % postcond
 room=bar, errorMessage=You can't do that., leftGarden=true
 % message
-Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a beer in front of you.
+Drof hurries you along through the cul-de-sac neighbourhood where you have lived all your life. As you yell expletives and questions at him, he shakes his head slowly and yells back at you to follow him and ask questions later. On the way, you see 4 more bulldozer-sized reinforcement machines going away at houses. Drof tells you to wave at every driver, and repeat what seems to be the ubiquitious greeting, "Praise be to Salta". After a few minutes, you arrive at the neighbourhood bar. You pass some robots in the smoking area who seem to be taking puffs from what looks like a power bank. Drof hurries you inside and you sit down at the bar. A robot arm places a cider in front of you.
 
 add room
 bar
-beer [polish bitter], glass, Drof, back
+cider [polish bitter], glass, Drof, back
 
 add action
 % room
@@ -621,13 +621,13 @@ bar
 % trigger
 drink
 % item
-beer, glass
+cider, glass
 % precond
-beerDrank=NULL|You've already had your beer.
+ciderDrank=NULL|You've already had your cider.
 % postcond
-beerDrank=true
+ciderDrank=true
 % message
-You drink your beer quickly to quench your thirst. Some calmness begins to return to your mind. As you glance at Drof you realize that it seems like you can finally ask him what the **** is going on.
+You drink your cider quickly to quench your thirst. Some calmness begins to return to your mind. As you glance at Drof you realize that it seems like you can finally ask him what the **** is going on.
 
 add action
 % room
@@ -637,7 +637,7 @@ talk
 % item
 Drof
 % precond
-beerDrank=true|You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
+ciderDrank=true|You need a drink before you talk to Drof to quench your thirst and soothe your nerves.
 % postcond
 drofTalkedTo=true
 % message

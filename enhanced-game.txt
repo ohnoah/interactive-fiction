@@ -226,7 +226,7 @@ room
 % postcond
 world::room := "living room",world::leftFirstRoom := true
 % message
-You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is on the kitchen floor stood up against the east wall.
+You leave the room and enter the living room. To add to your state of shock, you find that solid metallic bars have been placed on the inside of the three windows to the West, East and South. A small piece of paper with a note is on the table in strange handwriting. For some reason, the ladder from the garden is INDOORS in the room on the kitchen floor stood up against the east wall.
 
 % go to living room
 add action
@@ -277,7 +277,7 @@ hint
 % postcond
 
 % message
-The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows after writing "climb ladder" to break it and then write "leave room" to LEAVE ROOm.
+After examinig the west window, you will find out about a juice that is on the table. The juice is actually not a juice, its an acid to PUT ON the backpack. You can then hurl the backpack at one of the windows after writing "climb ladder" to break it and then write "leave room" to LEAVE ROOm.
 
 
 % all actions
@@ -620,7 +620,7 @@ world::windowBroken|You can't leave the living room because the windows and door
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume onepiece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece on quickly, or we’re screwed”.
 
 % GO OUTSIDE
 add action
@@ -635,7 +635,7 @@ world::windowBroken|You can't go outside the living room because the windows and
 % postcond
 world::room := "garden",world::errorMessage := "Why would you do that? Drof is yelling at you to put the onepiece one."
 % message
-You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume one-piece of the white humanoid robot in the bulldozer-like machine. He yells “Put the one-piece on quickly, or we’re screwed”.
+You leave the house through the window and notice a big machine the size of a bulldozer equipped with a weird construction at the front with those metallic bars on the inside of your windows and doors. The driver is a white humanoid robot, who seems surprised that you are there but only yells for you to get out the way as he moves the construction towards the second floor windows of your house. \nAll of a sudden, your friend Tcefer Drof from school emerges in your garden. He throws you a onepiece which resembles a halloween costume onepiece of the white humanoid robot in the bulldozer-like machine. He yells “Put the onepiece on quickly, or we’re screwed”.
 
 % GARDENTIME
 add room

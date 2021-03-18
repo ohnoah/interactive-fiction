@@ -1,5 +1,6 @@
 grammar SimpleBoolean;
 
+
 parse
  : expression EOF
  ;
