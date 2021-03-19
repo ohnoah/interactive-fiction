@@ -58,25 +58,7 @@ public class GenericFrame implements Serializable {
          return false;
       }
       GenericFrame that = (GenericFrame) o;
-      Map<String, Object> thatSlots = that.getSlots();
-      for(Map.Entry<String, Object> entry : this.slots.entrySet()){
-         String key = entry.getKey();
-         Object value = entry.getValue();
-         if(!thatSlots.containsKey(key)){
-            return false;
-         }
-         Object otherVal = that.slots.get(key);
-         if(value instanceof Double && otherVal instanceof Double){
-            return ((Double) value).equals((Double) otherVal);
-         }
-         else if(value instanceof Double && otherVal instanceof Double){
-
-         }
-         else if(value instanceof List && otherVal instanceof List){
-            return ((List) value).equals((List) otherVal);
-         }
-      }
-      return id.equals(that.id);
+      return this.getId().equals(that.getId()) && Util.objectMapEquals(this.getSlots(), that.getSlots());
    }
 
    @Override

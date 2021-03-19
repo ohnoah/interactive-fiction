@@ -232,10 +232,20 @@ public class EnhancedGameEngineTest {
       assertEquals(takingPushingPullingRoom(), takingPushingPullingRoom());
    }
 
+   @Test
+   public void genericFrameEquals() throws KnowledgeException {
+      assertEquals(takingPushingPullingRoom().getKnowledgeBase().getGenericFrames().get("container"),
+          takingPushingPullingRoom().getKnowledgeBase().getGenericFrames().get("container"));
+   }
+
+   @Test
+   public void specificFrameEquals() throws KnowledgeException {
+      assertEquals(takingPushingPullingRoom().getKnowledgeBase().getSpecificFrames().get("taking_room.box")
+          , takingPushingPullingRoom().getKnowledgeBase().getSpecificFrames().get("taking_room.box"));
+   }
 
    @Test
    public void selfEqualsTakingPushingPullingRoomKB() throws KnowledgeException {
-      assertEquals(takingPushingPullingRoom().getKnowledgeBase().getGenericFrames().values(), takingPushingPullingRoom().getKnowledgeBase().getGenericFrames().values());
       assertEquals(takingPushingPullingRoom().getKnowledgeBase(), takingPushingPullingRoom().getKnowledgeBase());
    }
 

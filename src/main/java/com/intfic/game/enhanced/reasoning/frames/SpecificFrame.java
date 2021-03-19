@@ -1,11 +1,14 @@
 package com.intfic.game.enhanced.reasoning.frames;
 
 import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
+import com.intfic.game.shared.Util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class SpecificFrame implements Serializable {
@@ -28,6 +31,24 @@ public class SpecificFrame implements Serializable {
       }
    }
 
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      SpecificFrame that = (SpecificFrame) o;
+      return this.getId().equals(that.getId()) &&
+          Util.objectMapEquals(this.getSlots(), that.getSlots()) &&
+          CollectionUtils.isEqualCollection(this.getParents(), that.getParents());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(id, slots, parents);
+   }
 
    public String getId() {
       return id;
@@ -67,7 +88,6 @@ public class SpecificFrame implements Serializable {
          this.slots.put(slotName, filler);
       }
    }
-
 
 
    // WARNING: Whatever is in the slots map DOES NOT take precedence over inheritance that is added

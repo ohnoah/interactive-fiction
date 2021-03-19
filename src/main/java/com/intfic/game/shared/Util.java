@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,5 +129,44 @@ public final class Util {
 
    public static boolean isPotentiallyDoubleList(Object object) {
       return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof Double));
+   }
+
+   public static boolean objectMapEquals(Map<String, Object> slots, Map<String, Object> thatSlots) {
+      for (Map.Entry<String, Object> entry : slots.entrySet()) {
+         String key = entry.getKey();
+         Object value = entry.getValue();
+         if (!thatSlots.containsKey(key)) {
+            return false;
+         }
+         Object otherVal = thatSlots.get(key);
+         boolean equal = (value instanceof Double && otherVal instanceof Double && ((Double) value).equals((Double) otherVal))
+             || (value instanceof String && otherVal instanceof String && ((String) value).equals((String) otherVal))
+             || (value instanceof List && otherVal instanceof List && ((List) value).equals((List) otherVal))
+             || (value instanceof Boolean && otherVal instanceof Boolean && ((Boolean) value).equals((Boolean) otherVal));
+         if (!equal) {
+            return false;
+         }
+      }
+      return slots.size() == thatSlots.size();
+   }
+   public static boolean equalLists(List<String> first, List<String> second){
+      if (first == null && second == null){
+         return true;
+      }
+
+      if((first == null && second != null)
+          || first != null && second == null
+          || first.size() != second.size()){
+         return false;
+      }
+
+      //to avoid messing the order of the lists we will use a copy
+      //as noted in comments by A. R. S.
+      first = new ArrayList<String>(first);
+      second = new ArrayList<String>(second);
+
+      Collections.sort(first);
+      Collections.sort(second);
+      return first.equals(second);
    }
 }
