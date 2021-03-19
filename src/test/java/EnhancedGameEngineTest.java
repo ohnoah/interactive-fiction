@@ -212,6 +212,50 @@ public class EnhancedGameEngineTest {
    }
 
    @Test
+   public void selfEqualsOneRoomOneAction() throws KnowledgeException {
+      assertEquals(oneRoomOneAction(), oneRoomOneAction());
+   }
+
+   @Test
+   public void selfEqualstwoRoomTwoActions() throws KnowledgeException {
+      assertEquals(twoRoomTwoActions(), twoRoomTwoActions());
+   }
+
+   @Test
+   public void selfEqualsPuttingNoDesignRoom() throws KnowledgeException {
+      assertEquals(puttingNoDesignRoom(), puttingNoDesignRoom());
+
+   }
+
+   @Test
+   public void selfTakingPushingPullingRoom() throws KnowledgeException {
+      assertEquals(takingPushingPullingRoom(), takingPushingPullingRoom());
+   }
+
+
+   @Test
+   public void selfEqualsTakingPushingPullingRoomKB() throws KnowledgeException {
+      assertEquals(takingPushingPullingRoom().getKnowledgeBase().getGenericFrames().values(), takingPushingPullingRoom().getKnowledgeBase().getGenericFrames().values());
+      assertEquals(takingPushingPullingRoom().getKnowledgeBase(), takingPushingPullingRoom().getKnowledgeBase());
+   }
+
+   @Test
+   public void selfEqualsTakingPushingPullingRoom() throws KnowledgeException {
+      assertEquals(takingPushingPullingRoom(), takingPushingPullingRoom());
+   }
+
+   @Test
+   public void assertDifferentEqualsPushingPutting() throws KnowledgeException {
+      assertNotEquals(takingPushingPullingRoom(), puttingNoDesignRoom());
+   }
+
+   @Test
+   public void assertDifferentEqualsOneRoomTwoRoom() throws KnowledgeException {
+      assertNotEquals(oneRoomOneAction(), twoRoomTwoActions());
+   }
+
+
+   @Test
    public void possibleItemNamesWorks() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = oneRoomOneAction();
       Set<Item> items = enhancedGameEngine.possibleItems();

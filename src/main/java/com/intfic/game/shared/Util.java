@@ -121,4 +121,12 @@ public final class Util {
           absSeconds % 60);
       return seconds < 0 ? "-" + positive : positive;
    }
+
+   public static boolean isPotentiallyStringList(Object object) {
+      return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof String));
+   }
+
+   public static boolean isPotentiallyDoubleList(Object object) {
+      return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof Double));
+   }
 }

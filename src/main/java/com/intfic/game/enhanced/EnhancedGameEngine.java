@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -322,6 +323,23 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          }
       }
       return new Justification(valid, reasoning);
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      EnhancedGameEngine that = (EnhancedGameEngine) o;
+      return designerActions.equals(that.designerActions) && knowledgeBase.equals(that.knowledgeBase) && inventoryItems.equals(that.inventoryItems);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(designerActions, knowledgeBase, inventoryItems);
    }
 
    @Override

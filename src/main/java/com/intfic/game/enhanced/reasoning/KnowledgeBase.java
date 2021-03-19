@@ -10,12 +10,14 @@ import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.visitors.ConditionEvaluationVisitor;
 import com.intfic.game.shared.Item;
+import com.intfic.game.shared.Util;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -239,7 +241,7 @@ public class KnowledgeBase implements Serializable {
                result = (String) addValue + (String) rhsValue;
             }
             else if (addValue instanceof List && rhsValue instanceof Double) {
-               if (isPotentiallyDoubleList(addValue)) {
+               if (Util.isPotentiallyDoubleList(addValue)) {
                   ((List) addValue).add(rhsValue);
                }
                else {
@@ -250,7 +252,7 @@ public class KnowledgeBase implements Serializable {
                result = addValue;
             }
             else if (addValue instanceof List && rhsValue instanceof String) {
-               if (isPotentiallyStringList(addValue)) {
+               if (Util.isPotentiallyStringList(addValue)) {
                   ((List) addValue).add(rhsValue);
                }
                else {
@@ -267,7 +269,7 @@ public class KnowledgeBase implements Serializable {
                result = (Double) subtractValue - (Double) rhsValue;
             }
             else if (subtractValue instanceof List && rhsValue instanceof String) {
-               if (isPotentiallyStringList(subtractValue)) {
+               if (Util.isPotentiallyStringList(subtractValue)) {
                   ((List) subtractValue).remove(rhsValue);
                }
                else {
@@ -278,7 +280,7 @@ public class KnowledgeBase implements Serializable {
                result = subtractValue;
             }
             else if (subtractValue instanceof List && rhsValue instanceof Double) {
-               if (isPotentiallyDoubleList(subtractValue)) {
+               if (Util.isPotentiallyDoubleList(subtractValue)) {
                   ((List) subtractValue).remove(rhsValue);
                }
                else {
@@ -359,17 +361,11 @@ public class KnowledgeBase implements Serializable {
       }
    }
 
-   private boolean isPotentiallyStringList(Object object) {
-      return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof String));
-   }
 
-   private boolean isPotentiallyDoubleList(Object object) {
-      return object instanceof List && ((((List) object).size() == 0) || (((List) object).size() > 0 && ((List) object).get(0) instanceof Double));
-   }
 
    public List<Double> queryDoubleList(String frame, String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
-      if (isPotentiallyDoubleList(queryResult)) {
+      if (Util.isPotentiallyDoubleList(queryResult)) {
          return (List<Double>) queryResult;
       }
       else {
@@ -391,7 +387,7 @@ public class KnowledgeBase implements Serializable {
 
    public List<String> queryStringList(String frame, String slot) throws KnowledgeException, MissingKnowledgeException {
       Object queryResult = this.query(frame, slot);
-      if (isPotentiallyStringList(queryResult)) {
+      if (Util.isPotentiallyStringList(queryResult)) {
          return (List<String>) queryResult;
       }
       else {
@@ -417,47 +413,24 @@ public class KnowledgeBase implements Serializable {
       return this.addSpecificFrame(specificFrame);
    }
 
-   public static void main(String[] args) {
-
-      String[] expressions = {
-          "1 = 2",
-          "1 > 2",
-          "1 >= 1.0",
-          "\"HI\" = \"HI\"",
-          "TRUE = FALSE",
-          "test::test = FALSE",/*
-          "A OR B",
-          "B",
-          "A = B",
-          "c = C",
-          "E > D",
-          "B OR (c = B OR (A = A AND c = C AND E > D))",
-          "(A = a OR B = b OR C = c AND ((D = d AND E = e) OR (F = f AND G = g)))"*/
-      };
-
-      for (String expression : expressions) {
-         SimpleBooleanLexer lexer = new SimpleBooleanLexer(CharStreams.fromString(expression));
-         try {
-            SimpleBooleanParser parser = new SimpleBooleanParser(new CommonTokenStream(lexer));
-            Object result = new ConditionEvaluationVisitor(new KnowledgeBase()).visit(parser.parse());
-            System.out.printf("%-70s -> %s\n", expression, result);
-         }
-         catch (RecognitionException e) {
-            System.out.println("Couldn't parse");
-            e.printStackTrace();
-         }
-         catch (NullPointerException e) {
-            System.out.println("Null pointer expection. Probably due to invalid syntax " + e.getMessage());
-            throw e;
-         }
-         catch (RuntimeException e) {
-            System.out.println("Invalid syntax " + e.getMessage());
-         }
-      }
-   }
-
-
    public SpecificFrame removeSpecificFrame(String itemName) {
       return this.specificFrames.remove(itemName);
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      KnowledgeBase that = (KnowledgeBase) o;
+      return genericFrames.equals(that.genericFrames) && specificFrames.equals(that.specificFrames);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(genericFrames, specificFrames);
    }
 }
