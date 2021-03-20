@@ -1,2 +1,4 @@
-package com.intfic.game.enhanced.gamebuilder.compiler;public class GameCompiler {
+package com.intfic.game.enhanced.gamebuilder.compiler;
+
+public class GameCompiler {
 }

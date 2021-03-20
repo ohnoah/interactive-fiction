@@ -18,8 +18,11 @@ message_ref
 
 message : message_ref | message_text;
 
+
+trigger_selector : TRIGGER_SELECTOR;
+
 trigger:
-    ALPHANUMERIC TRIGGER_SELECTOR?
+    ALPHANUMERIC trigger_selector?
 ;
 
 
@@ -187,7 +190,7 @@ ROOM_NAME : 'room_name';
 ITEM_NAME : 'item_name';
 ITEM_KNOWLEDGE : 'item_knowledge';
 GENERIC_INHERITANCE : 'generic_inheritance';
-TRIGGER_SELECTOR : [-]INTEGER;
+TRIGGER_SELECTOR : DASH INTEGER;
 
 
 SINGLE_STRING     : SINGLE_QUOTE ["a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* SINGLE_QUOTE;
@@ -201,7 +204,7 @@ RPAREN     : ')' ;
 SEMICOLON  : ';';
 DOT        : '.';
 EQUALS     : '<-';
-DASH     : '-';
+fragment DASH     : '-';
 fragment QUOTE      : '"' ;
 fragment SINGLE_QUOTE      : '\'' ;
 
