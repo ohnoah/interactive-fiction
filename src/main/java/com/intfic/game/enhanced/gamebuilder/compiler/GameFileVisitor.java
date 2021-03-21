@@ -1,5 +1,6 @@
 package com.intfic.game.enhanced.gamebuilder.compiler;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.intfic.game.enhanced.EnhancedGameDesignAction;
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarBaseVisitor;
@@ -42,6 +43,14 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       messages.put(id, content);
    }
 
+
+   private void addPrecond(String id, Condition cond){
+      if(preconds.containsKey(id)){
+         throw new RuntimeException(String.format("Duplicate ID %s encountered for messages", id));
+      }
+      preconds.put(id, cond);
+   }
+
    @Override
    public String visitNew_message(GameGrammarParser.New_messageContext ctx) {
       String messageId = visitMessage_id(ctx.message_id());
@@ -67,7 +76,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       if(messages.containsKey(id)){
          return messages.get(id);
       }
-      throw new RuntimeException(String.format("Reference to invalid id: %s", id));
+      throw new RuntimeException(String.format("Reference to invalid message id: %s", id));
    }
 
    @Override
@@ -90,28 +99,55 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       if(potentialActions.size() == 0){
          throw new RuntimeException("Reference to invalid trigger word : " + verb);
       }
-      int number = ctx.TRIGGER_SELECTOR();
-      if()
+      int index = visitTrigger_selector(ctx.trigger_selector());
+      if(index >= 0 && index < potentialActions.size()){
+         return potentialActions.get(index);
+      }
+      else{
+         throw new RuntimeException(String.format("Number is outside the range of the size of the actions with that trigger." +
+             " Size of action formats with trigger %s is %d but you specified %d", verb, potentialActions.size(), index));
+      }
    }
 
    @Override
-   public Object visitPrecond_id(GameGrammarParser.Precond_idContext ctx) {
-      return super.visitPrecond_id(ctx);
+   public Integer visitTrigger_selector(GameGrammarParser.Trigger_selectorContext ctx) {
+      String stringNum = ctx.TRIGGER_SELECTOR().getText().substring(1);
+      try{
+         return Integer.parseInt(stringNum);
+      }
+      catch (NumberFormatException e){
+         throw new NumberFormatException("Invalid number selector for trigger: " + stringNum);
+      }
    }
 
    @Override
-   public Object visitPrecond_ref(GameGrammarParser.Precond_refContext ctx) {
-      return super.visitPrecond_ref(ctx);
+   public String visitPrecond_id(GameGrammarParser.Precond_idContext ctx) {
+      return asString(ctx.ID());
+   }
+
+
+   @Override
+   public Condition visitPrecond_ref(GameGrammarParser.Precond_refContext ctx) {
+      String id = visitPrecond_id(ctx.precond_id());
+      if(preconds.containsKey(id)){
+         return preconds.get(id);
+      }
+      throw new RuntimeException(String.format("Reference to invalid precond id: %s", id));
    }
 
    @Override
-   public Object visitNew_precond(GameGrammarParser.New_precondContext ctx) {
-      return super.visitNew_precond(ctx);
+   public Condition visitNew_precond(GameGrammarParser.New_precondContext ctx) {
+      String id = visitPrecond_id(ctx.precond_id());
+      Condition c = visitPrecond_body(ctx.precond_body());
+      addPrecond(id, c);
+      return c;
    }
 
    @Override
-   public Object visitPrecond_body(GameGrammarParser.Precond_bodyContext ctx) {
-      return super.visitPrecond_body(ctx);
+   public Condition visitPrecond_body(GameGrammarParser.Precond_bodyContext ctx) {
+      String booleanExpr = asString(ctx.SINGLE_STRING());
+      String errorMsg = asString(ctx.STRING());
+      return new Condition(booleanExpr, errorMsg);
    }
 
    @Override
