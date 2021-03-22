@@ -5,19 +5,23 @@ import com.intfic.game.enhanced.EnhancedGameDesignAction;
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarBaseVisitor;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarParser;
+import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.updates.KnowledgeUpdate;
 import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.shared.ActionFormat;
+import gherkin.lexer.Kn;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Action;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.jetbrains.annotations.NotNull;
 
 public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements Serializable {
 
-   private static String asString(TerminalNode tn){
+   private static String asString(TerminalNode tn) {
       return tn.getText();
    }
 
@@ -36,20 +40,28 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
 
-   private void addMessage(String id, String content){
-      if(messages.containsKey(id)){
+   private void addMessage(@NotNull String id, @NotNull String content) {
+      if (messages.containsKey(id)) {
          throw new RuntimeException(String.format("Duplicate ID %s encountered for messages", id));
       }
       messages.put(id, content);
    }
 
 
-   private void addPrecond(String id, Condition cond){
-      if(preconds.containsKey(id)){
-         throw new RuntimeException(String.format("Duplicate ID %s encountered for messages", id));
+   private void addPrecond(@NotNull String id, @NotNull Condition cond) {
+      if (preconds.containsKey(id)) {
+         throw new RuntimeException(String.format("Duplicate ID %s encountered for precond", id));
       }
       preconds.put(id, cond);
    }
+
+   private void addPostCond(@NotNull String id, @NotNull KnowledgeUpdate cond) {
+      if (knowledgeUpdates.containsKey(id)) {
+         throw new RuntimeException(String.format("Duplicate ID %s encountered for postcond", id));
+      }
+      knowledgeUpdates.put(id, cond);
+   }
+
 
    @Override
    public String visitNew_message(GameGrammarParser.New_messageContext ctx) {
@@ -63,7 +75,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public String visitMessage_id(GameGrammarParser.Message_idContext ctx) {
       return ctx.ID().getText();
-  }
+   }
 
    @Override
    public String visitMessage_text(GameGrammarParser.Message_textContext ctx) {
@@ -73,7 +85,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public String visitMessage_ref(GameGrammarParser.Message_refContext ctx) {
       String id = visitMessage_id(ctx.message_id());
-      if(messages.containsKey(id)){
+      if (messages.containsKey(id)) {
          return messages.get(id);
       }
       throw new RuntimeException(String.format("Reference to invalid message id: %s", id));
@@ -81,13 +93,13 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
 
    @Override
    public String visitMessage(GameGrammarParser.MessageContext ctx) {
-      if(ctx.message_ref() != null){
+      if (ctx.message_ref() != null) {
          return visitMessage_ref(ctx.message_ref());
       }
-      else if(ctx.message_text() != null){
+      else if (ctx.message_text() != null) {
          return visitMessage_text(ctx.message_text());
       }
-      else{
+      else {
          throw new RuntimeException("Invalid message type for message " + ctx.getText());
       }
    }
@@ -96,14 +108,14 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    public ActionFormat visitTrigger(GameGrammarParser.TriggerContext ctx) {
       String verb = asString(ctx.ALPHANUMERIC());
       List<ActionFormat> potentialActions = gameEngine.findAction(verb);
-      if(potentialActions.size() == 0){
+      if (potentialActions.size() == 0) {
          throw new RuntimeException("Reference to invalid trigger word : " + verb);
       }
       int index = visitTrigger_selector(ctx.trigger_selector());
-      if(index >= 0 && index < potentialActions.size()){
+      if (index >= 0 && index < potentialActions.size()) {
          return potentialActions.get(index);
       }
-      else{
+      else {
          throw new RuntimeException(String.format("Number is outside the range of the size of the actions with that trigger." +
              " Size of action formats with trigger %s is %d but you specified %d", verb, potentialActions.size(), index));
       }
@@ -112,10 +124,10 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public Integer visitTrigger_selector(GameGrammarParser.Trigger_selectorContext ctx) {
       String stringNum = ctx.TRIGGER_SELECTOR().getText().substring(1);
-      try{
+      try {
          return Integer.parseInt(stringNum);
       }
-      catch (NumberFormatException e){
+      catch (NumberFormatException e) {
          throw new NumberFormatException("Invalid number selector for trigger: " + stringNum);
       }
    }
@@ -129,7 +141,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public Condition visitPrecond_ref(GameGrammarParser.Precond_refContext ctx) {
       String id = visitPrecond_id(ctx.precond_id());
-      if(preconds.containsKey(id)){
+      if (preconds.containsKey(id)) {
          return preconds.get(id);
       }
       throw new RuntimeException(String.format("Reference to invalid precond id: %s", id));
@@ -151,48 +163,90 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public Object visitPrecond(GameGrammarParser.PrecondContext ctx) {
-      return super.visitPrecond(ctx);
+   public Condition visitPrecond(GameGrammarParser.PrecondContext ctx) {
+      Condition c;
+      if (ctx.precond_body() != null) {
+         c = visitPrecond_body(ctx.precond_body());
+      }
+      else if (ctx.precond_ref() != null) {
+         c = visitPrecond_ref(ctx.precond_ref());
+      }
+      else {
+         throw new RuntimeException("Invalid precond type");
+      }
+      return c;
    }
 
    @Override
-   public Object visitPostcond_id(GameGrammarParser.Postcond_idContext ctx) {
-      return super.visitPostcond_id(ctx);
+   public String visitPostcond_id(GameGrammarParser.Postcond_idContext ctx) {
+      return asString(ctx.ID());
    }
 
    @Override
-   public Object visitPostcond_ref(GameGrammarParser.Postcond_refContext ctx) {
-      return super.visitPostcond_ref(ctx);
+   public KnowledgeUpdate visitPostcond_ref(GameGrammarParser.Postcond_refContext ctx) {
+      String id = visitPostcond_id(ctx.postcond_id());
+      if (knowledgeUpdates.containsKey(id)) {
+         return knowledgeUpdates.get(id);
+      }
+      throw new RuntimeException(String.format("Reference to invalid postcond id: %s", id));
    }
 
    @Override
-   public Object visitPostcond_body(GameGrammarParser.Postcond_bodyContext ctx) {
-      return super.visitPostcond_body(ctx);
+   public KnowledgeUpdate visitPostcond_body(GameGrammarParser.Postcond_bodyContext ctx) {
+      try {
+         return new KnowledgeUpdate(asString(ctx.SINGLE_STRING()));
+      }
+      catch (KnowledgeException e) {
+         throw new RuntimeException(e.getMessage() + ". Error when visiting postcond body.");
+      }
    }
 
    @Override
-   public Object visitNew_postcond(GameGrammarParser.New_postcondContext ctx) {
-      return super.visitNew_postcond(ctx);
+   public KnowledgeUpdate visitNew_postcond(GameGrammarParser.New_postcondContext ctx) {
+      String id = visitPostcond_id(ctx.postcond_id());
+      KnowledgeUpdate postcond = visitPostcond_body(ctx.postcond_body());
+      addPostCond(id, postcond);
+      return postcond;
    }
 
    @Override
-   public Object visitPostcond(GameGrammarParser.PostcondContext ctx) {
-      return super.visitPostcond(ctx);
+   public KnowledgeUpdate visitPostcond(GameGrammarParser.PostcondContext ctx) {
+      if(ctx.postcond_body() != null){
+         return visitPostcond_body(ctx.postcond_body());
+      }
+      else if(ctx.postcond_ref() != null){
+         return visitPostcond_ref(ctx.postcond_ref());
+      }
+      else{
+         throw new RuntimeException("Invalid postcond type");
+      }
    }
 
    @Override
-   public Object visitPreconds(GameGrammarParser.PrecondsContext ctx) {
-      return super.visitPreconds(ctx);
+   public List<Condition> visitPreconds(GameGrammarParser.PrecondsContext ctx) {
+      List<Condition> conditions = new ArrayList<>();
+      for( GameGrammarParser.PrecondContext precondContext: ctx.precond()){
+         conditions.add(visitPrecond(precondContext));
+      }
+      return conditions;
    }
 
    @Override
-   public Object visitTriggers(GameGrammarParser.TriggersContext ctx) {
-      return super.visitTriggers(ctx);
+   public List<ActionFormat> visitTriggers(GameGrammarParser.TriggersContext ctx) {
+      List<ActionFormat> triggers = new ArrayList<>();
+      for( GameGrammarParser.TriggerContext triggerContext: ctx.trigger()){
+         triggers.add(visitTrigger(triggerContext));
+      }
+      return triggers;
    }
 
    @Override
-   public Object visitPostconds(GameGrammarParser.PostcondsContext ctx) {
-      return super.visitPostconds(ctx);
+   public List<KnowledgeUpdate> visitPostconds(GameGrammarParser.PostcondsContext ctx) {
+      List<KnowledgeUpdate> postconds = new ArrayList<>();
+      for( GameGrammarParser.PostcondContext postcondContext: ctx.postcond()){
+         postconds.add(visitPostcond(postcondContext));
+      }
+      return postconds;
    }
 
    @Override
