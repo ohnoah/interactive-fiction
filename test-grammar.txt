@@ -13,6 +13,8 @@ item{
 	(apple);
 	.room "first room";
 	.item_name "apple";
+	.adjectives [sour, green];
+	.synonyms ["green fruit"];
 	.item_knowledge ['first_room.apple::randomTrait9 := "happy"', 'first_room.apple::preliminary := 4.0'];
 }
 custom_trigger{
@@ -41,6 +43,13 @@ action{
 	.success_msg "You succeeded";
 }
 
+add_trigger{
+	#(putActionOne);
+	.room "first room";
+	.action_triggers [eat, open];
+	.args ["banana"];
+}
+
 generic_frame{
 	"fruit";
 	[fruitiness<-4.0, elasticity<-"high"];
@@ -50,4 +59,5 @@ knowledge{
 	.generic_inheritance [(apple), "first_room.banana"] inherits "fruit", [(apple)] inherits "container";
 	.initial ['first_room.banana::mass := 1000', 'first_room.apple::name := "apple"'];
 }
+
 

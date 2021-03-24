@@ -149,6 +149,12 @@ public interface GameGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNew_action(GameGrammarParser.New_actionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#add_trigger}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdd_trigger(GameGrammarParser.Add_triggerContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GameGrammarParser#actionformat}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -208,6 +214,30 @@ public interface GameGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitItems(GameGrammarParser.ItemsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#item_adjective}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitItem_adjective(GameGrammarParser.Item_adjectiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#item_adjectives}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitItem_adjectives(GameGrammarParser.Item_adjectivesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#item_synonym}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitItem_synonym(GameGrammarParser.Item_synonymContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#item_synonyms}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitItem_synonyms(GameGrammarParser.Item_synonymsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GameGrammarParser#new_item}.
 	 * @param ctx the parse tree

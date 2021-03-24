@@ -238,6 +238,16 @@ public interface GameGrammarListener extends ParseTreeListener {
 	 */
 	void exitNew_action(GameGrammarParser.New_actionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#add_trigger}.
+	 * @param ctx the parse tree
+	 */
+	void enterAdd_trigger(GameGrammarParser.Add_triggerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#add_trigger}.
+	 * @param ctx the parse tree
+	 */
+	void exitAdd_trigger(GameGrammarParser.Add_triggerContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GameGrammarParser#actionformat}.
 	 * @param ctx the parse tree
 	 */
@@ -337,6 +347,46 @@ public interface GameGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitItems(GameGrammarParser.ItemsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#item_adjective}.
+	 * @param ctx the parse tree
+	 */
+	void enterItem_adjective(GameGrammarParser.Item_adjectiveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#item_adjective}.
+	 * @param ctx the parse tree
+	 */
+	void exitItem_adjective(GameGrammarParser.Item_adjectiveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#item_adjectives}.
+	 * @param ctx the parse tree
+	 */
+	void enterItem_adjectives(GameGrammarParser.Item_adjectivesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#item_adjectives}.
+	 * @param ctx the parse tree
+	 */
+	void exitItem_adjectives(GameGrammarParser.Item_adjectivesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#item_synonym}.
+	 * @param ctx the parse tree
+	 */
+	void enterItem_synonym(GameGrammarParser.Item_synonymContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#item_synonym}.
+	 * @param ctx the parse tree
+	 */
+	void exitItem_synonym(GameGrammarParser.Item_synonymContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#item_synonyms}.
+	 * @param ctx the parse tree
+	 */
+	void enterItem_synonyms(GameGrammarParser.Item_synonymsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#item_synonyms}.
+	 * @param ctx the parse tree
+	 */
+	void exitItem_synonyms(GameGrammarParser.Item_synonymsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GameGrammarParser#new_item}.
 	 * @param ctx the parse tree

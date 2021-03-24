@@ -292,6 +292,18 @@ public class GameGrammarBaseListener implements GameGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAdd_trigger(GameGrammarParser.Add_triggerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAdd_trigger(GameGrammarParser.Add_triggerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterActionformat(GameGrammarParser.ActionformatContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -407,6 +419,54 @@ public class GameGrammarBaseListener implements GameGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitItems(GameGrammarParser.ItemsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterItem_adjective(GameGrammarParser.Item_adjectiveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitItem_adjective(GameGrammarParser.Item_adjectiveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterItem_adjectives(GameGrammarParser.Item_adjectivesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitItem_adjectives(GameGrammarParser.Item_adjectivesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterItem_synonym(GameGrammarParser.Item_synonymContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitItem_synonym(GameGrammarParser.Item_synonymContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterItem_synonyms(GameGrammarParser.Item_synonymsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitItem_synonyms(GameGrammarParser.Item_synonymsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

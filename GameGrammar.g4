@@ -72,6 +72,13 @@ new_action
     DOT SUCCESSMESSAGE message SEMICOLON
     RCURLY;
 
+add_trigger : ADD_TRIGGER
+ LCURLY action_ref SEMICOLON
+  DOT ROOM room_name SEMICOLON
+  DOT TRIGGERS_SYNTAX triggers SEMICOLON
+  DOT ARGUMENTS arguments SEMICOLON
+  RCURLY;
+
 actionformat:
    CUSTOM_TRIGGER
    LCURLY
@@ -94,12 +101,21 @@ item : item_name | item_ref;
 items: (item (COMMA item)*)?;
 
 
+item_adjective : ALPHANUMERIC;
+item_adjectives : item_adjective (COMMA item_adjective)*;
+
+
+item_synonym : STRING;
+item_synonyms : item_synonym (COMMA item_synonym)*;
+
 new_item :
     ITEM
     LCURLY
     item_id SEMICOLON
     DOT ROOM room_name SEMICOLON
     DOT ITEM_NAME item_name SEMICOLON
+    DOT ITEM_ADJECTIVES LSQUARE item_adjectives? RSQUARE SEMICOLON
+    DOT ITEM_SYNONYMS LSQUARE item_synonyms? RSQUARE SEMICOLON
     DOT ITEM_KNOWLEDGE knowledge_updates SEMICOLON
     RCURLY;
 
@@ -148,7 +164,7 @@ start : START
  RCURLY;
 
 game
- : start (new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond)* new_genericframe* knowledge? EOF
+ : start (new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond|add_trigger)* new_genericframe* knowledge? EOF
  ;
 
 // Parsing should go something like ITEMS -> ROOMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS ->
@@ -175,6 +191,8 @@ CUSTOM_TRIGGER    : 'custom_trigger';
 INITIAL : 'initial';
 POSTCONDS : 'postconds';
 PRECONDS  : 'preconds';
+ITEM_ADJECTIVES : 'adjectives';
+ITEM_SYNONYMS : 'synonyms';
 
 
 COMMA  : ',';
@@ -190,6 +208,7 @@ ROOM_NAME : 'room_name';
 ITEM_NAME : 'item_name';
 ITEM_KNOWLEDGE : 'item_knowledge';
 GENERIC_INHERITANCE : 'generic_inheritance';
+ADD_TRIGGER : 'add_trigger';
 TRIGGER_SELECTOR : DASH INTEGER;
 
 

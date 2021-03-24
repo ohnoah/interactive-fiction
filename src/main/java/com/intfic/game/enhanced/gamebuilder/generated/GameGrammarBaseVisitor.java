@@ -178,6 +178,13 @@ public class GameGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitAdd_trigger(GameGrammarParser.Add_triggerContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitActionformat(GameGrammarParser.ActionformatContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -242,6 +249,34 @@ public class GameGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitItems(GameGrammarParser.ItemsContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitItem_adjective(GameGrammarParser.Item_adjectiveContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitItem_adjectives(GameGrammarParser.Item_adjectivesContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitItem_synonym(GameGrammarParser.Item_synonymContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitItem_synonyms(GameGrammarParser.Item_synonymsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
