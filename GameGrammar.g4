@@ -64,8 +64,8 @@ new_action
     : ACTION
     LCURLY
     action_id SEMICOLON
-    DOT ROOM room_name SEMICOLON
     DOT TRIGGERS_SYNTAX triggers SEMICOLON
+    (DOT PREFIX_ROOM room_name SEMICOLON)?
     DOT ARGUMENTS arguments SEMICOLON
     DOT PRECONDS preconds SEMICOLON
     DOT POSTCONDS postconds SEMICOLON
@@ -133,12 +133,13 @@ new_room:
 
 
 genericframe_name : STRING;
-map_entry : ALPHANUMERIC EQUALS (DECIMAL|STRING|STRINGLIST|NUMBERLIST|BOOLEAN);
+map_entry : ALPHANUMERIC EQUALS STRING;
+map_entries:  map_entry (COMMA map_entry)*;
 new_genericframe :
     GENERICFRAME
     LCURLY
     genericframe_name SEMICOLON
-    LSQUARE (map_entry (COMMA map_entry)*)? RSQUARE SEMICOLON
+    LSQUARE map_entries? RSQUARE SEMICOLON
     RCURLY;
 
 
@@ -146,7 +147,7 @@ new_genericframe :
 knowledge_update : SINGLE_STRING;
 knowledge_updates : LSQUARE (knowledge_update (COMMA knowledge_update)*)? RSQUARE;
 
-global_item : item_id | STRING;
+global_item : item_ref | STRING;
 global_items : global_item (COMMA global_item)*?;
 inheritance : LSQUARE global_items RSQUARE INHERITS STRING;
 knowledge:
@@ -210,6 +211,7 @@ ITEM_KNOWLEDGE : 'item_knowledge';
 GENERIC_INHERITANCE : 'generic_inheritance';
 ADD_TRIGGER : 'add_trigger';
 TRIGGER_SELECTOR : DASH INTEGER;
+PREFIX_ROOM : 'prefix_room';
 
 
 SINGLE_STRING     : SINGLE_QUOTE ["a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* SINGLE_QUOTE;

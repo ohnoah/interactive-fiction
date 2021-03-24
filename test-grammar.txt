@@ -6,7 +6,7 @@ start{
 room{
 	.room_name "first room";
 	.actions #(putActionOne), #(examineTwo);
-	.items "banana", #(apple);
+	.items "banana", #(apple), "apple";
 }
 
 item{
@@ -35,8 +35,8 @@ postcond{
 
 action{
 	(putActionOne);
-	.room "first room";
 	.action_triggers [put-0, put-1, take];
+	.prefix_room "first room";
 	.args ["banana", "apple"];
 	.preconds [#(appleMass), 'first_room.apple::isContainer' ("The apple is not a container")];
 	.postconds [#(appleNewMass), 'first_room.apple::isContainer := true'];
@@ -52,11 +52,11 @@ add_trigger{
 
 generic_frame{
 	"fruit";
-	[fruitiness<-4.0, elasticity<-"high"];
+	[fruitiness<-"4.0", elasticity<-"high"];
 }
 
 knowledge{
-	.generic_inheritance [(apple), "first_room.banana"] inherits "fruit", [(apple)] inherits "container";
+	.generic_inheritance [#(apple), "first_room.banana"] inherits "fruit", [#(apple)] inherits "container";
 	.initial ['first_room.banana::mass := 1000', 'first_room.apple::name := "apple"'];
 }
 

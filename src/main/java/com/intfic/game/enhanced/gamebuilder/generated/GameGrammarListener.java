@@ -438,6 +438,16 @@ public interface GameGrammarListener extends ParseTreeListener {
 	 */
 	void exitMap_entry(GameGrammarParser.Map_entryContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#map_entries}.
+	 * @param ctx the parse tree
+	 */
+	void enterMap_entries(GameGrammarParser.Map_entriesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#map_entries}.
+	 * @param ctx the parse tree
+	 */
+	void exitMap_entries(GameGrammarParser.Map_entriesContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GameGrammarParser#new_genericframe}.
 	 * @param ctx the parse tree
 	 */

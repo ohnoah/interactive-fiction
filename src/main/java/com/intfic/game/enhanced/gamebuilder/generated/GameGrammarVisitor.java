@@ -269,6 +269,12 @@ public interface GameGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMap_entry(GameGrammarParser.Map_entryContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#map_entries}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMap_entries(GameGrammarParser.Map_entriesContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GameGrammarParser#new_genericframe}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

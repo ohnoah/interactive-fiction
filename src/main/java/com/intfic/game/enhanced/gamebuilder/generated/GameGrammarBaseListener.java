@@ -532,6 +532,18 @@ public class GameGrammarBaseListener implements GameGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMap_entries(GameGrammarParser.Map_entriesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMap_entries(GameGrammarParser.Map_entriesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNew_genericframe(GameGrammarParser.New_genericframeContext ctx) { }
 	/**
 	 * {@inheritDoc}
