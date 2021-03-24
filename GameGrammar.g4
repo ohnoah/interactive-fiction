@@ -165,8 +165,10 @@ start : START
  STRING SEMICOLON
  RCURLY;
 
+block : new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond|add_trigger;
+
 game
- : start (new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond|add_trigger)* new_genericframe* (knowledge*)? EOF
+ : start block* new_genericframe* knowledge* EOF
  ;
 
 // Parsing should go something like ACTIONFORMAT -> ITEMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS -> add_trigger -> ROOMS -> START -> NEW_GENERICFRAME -> KNOWLEDGE

@@ -55,6 +55,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       actionEffects = new HashMap<>();
       actionTriggers = new HashMap<>();
       actionArguments = new HashMap<>();
+      items = new HashMap<>();
       gameEngine = new EnhancedGameEngine();
    }
 
@@ -349,7 +350,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       List<Room> rooms = gameEngine.findRoom(roomName);
       Room room;
       if (rooms.size() != 1) {
-         throw new RuntimeException(String.format("Invalid room name %s", roomName));
+         throw new RuntimeException(String.format("Invalid room name %s. Found only %d rooms.", roomName, rooms.size()));
       }
       room = rooms.get(0);
       return room;
@@ -415,13 +416,16 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       if (verb.length() == 0 || verb.matches(".*\\d.*") || verb.contains(" ")) {
          throw new RuntimeException("Invalid trigger word. It must be a word with no numbers, spaces and non-zero length e.g. \"put\". You said :" + verb);
       }
+      ActionFormat af;
       if (ctx.STRING() != null) {
          String regex = asString(ctx.STRING());
-         return new ActionFormat(verb, regex);
+         af = new ActionFormat(verb, regex);
       }
       else {
-         return new ActionFormat(verb);
+         af = new ActionFormat(verb);
       }
+      gameEngine.addActionFormat(af);
+      return af;
    }
 
    @Override
@@ -509,7 +513,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
 
    @Override
    public String visitItem_synonym(GameGrammarParser.Item_synonymContext ctx) {
-      if (ctx.getText().matches(".*[\\d\\p{Punct}]+.*")) {
+      if (asString(ctx.STRING()).matches(".*[\\d\\p{Punct}]+.*")) {
          throw new RuntimeException("Synonyms should only have letters and spaces in them");
       }
       return asString(ctx.STRING());
@@ -699,12 +703,46 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       return null;
    }
 
+   @Override
+   public Object visitBlock(GameGrammarParser.BlockContext ctx) {
+      if(ctx.actionformat() != null){
+         visitActionformat(ctx.actionformat());
+      }
+      else if(ctx.new_item() != null){
+         visitNew_item(ctx.new_item());
+      }
+      else if(ctx.new_message() != null){
+         visitNew_message(ctx.new_message());
+      }
+      else if(ctx.new_precond() != null){
+         visitNew_precond(ctx.new_precond());
+      }
+      else if(ctx.new_postcond() != null){
+         visitNew_postcond(ctx.new_postcond());
+      }
+      else if(ctx.add_trigger() != null){
+         visitAdd_trigger(ctx.add_trigger());
+      }
+      else if(ctx.new_room() != null){
+         visitNew_room(ctx.new_room());
+      }
+      else if(ctx.new_action() != null){
+         visitNew_action(ctx.new_action());
+      }
+      else{
+         throw new RuntimeException("invalid block type " + ctx.getText());
+      }
+      return null;
+   }
+
    // Parsing should go something like ACTIONFORMAT -> ITEMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS -> add_trigger -> ROOMS -> START -> NEW_GENERICFRAME -> KNOWLEDGE
    @Override
-   public Object visitGame(GameGrammarParser.GameContext ctx) {
-      for(GameGrammarParser.ActionformatContext afCtx : ctx.actionformat()) {
-         ActionFormat af = visitActionformat(afCtx);
-         gameEngine.addActionFormat(af);
+   public EnhancedGameEngine visitGame(GameGrammarParser.GameContext ctx) {
+      for(GameGrammarParser.BlockContext blockContext : ctx.block()){
+         visitBlock(blockContext);
+      }
+/*      for(GameGrammarParser.ActionformatContext afCtx : ctx.actionformat()) {
+         visitActionformat(afCtx);
       }
 
       for(GameGrammarParser.New_itemContext itemCtx : ctx.new_item()) {
@@ -731,5 +769,19 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
          visitAdd_trigger(addTriggerContext);
       }
 
+      for(GameGrammarParser.New_roomContext roomCtx : ctx.new_room()) {
+         visitNew_room(roomCtx);
+      }*/
+
+      visitStart(ctx.start());
+
+      for(GameGrammarParser.New_genericframeContext newGfContext : ctx.new_genericframe()) {
+         visitNew_genericframe(newGfContext);
+      }
+
+      for(GameGrammarParser.KnowledgeContext knowledgeContext : ctx.knowledge()) {
+         visitKnowledge(knowledgeContext);
+      }
+      return this.gameEngine;
    }
 }

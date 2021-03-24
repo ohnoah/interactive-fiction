@@ -99,7 +99,7 @@ public abstract class GameEngine implements Serializable {
       ActionFormat remove = new ActionFormat("remove", "remove ([\\w\\s]+) from ([\\w\\s]+)$");
       ActionFormat transfer = new ActionFormat("transfer", "transfer ([\\w\\s]+) from ([\\w\\s]+) (?:to|into) ([\\w\\s]+)$");*/
 
-      this.possibleActionFormats = ImplementedActionLogic.defaultActionFormats;
+      this.possibleActionFormats = new ArrayList<>(ImplementedActionLogic.defaultActionFormats);
 /*      this.possibleActionFormats = List.of(examine, push, take, pull, drop, turnOn, turnOff, open, feel, putIn,
           putOn, eat, climb, drink, wave, *//*fill,*//* wear, smell, listenTo, breakIt, burn, enter, search, unlockWith, remove, transfer);*/
    }

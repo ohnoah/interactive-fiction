@@ -538,6 +538,16 @@ public interface GameGrammarListener extends ParseTreeListener {
 	 */
 	void exitStart(GameGrammarParser.StartContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GameGrammarParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(GameGrammarParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GameGrammarParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(GameGrammarParser.BlockContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GameGrammarParser#game}.
 	 * @param ctx the parse tree
 	 */
