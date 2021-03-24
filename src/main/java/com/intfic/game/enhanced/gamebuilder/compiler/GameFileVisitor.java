@@ -13,6 +13,7 @@ import com.intfic.game.enhanced.reasoning.visitors.ConditionEvaluationVisitor;
 import com.intfic.game.enhanced.reasoning.visitors.TypeConvertVisitor;
 import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.shared.ActionFormat;
+import com.intfic.game.shared.GameEngine;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
@@ -348,7 +349,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       List<Room> rooms = gameEngine.findRoom(roomName);
       Room room;
       if (rooms.size() != 1) {
-         throw new RuntimeException(String.format("Invalid room name %s when creating action \n %s", roomName, ctx.getText()));
+         throw new RuntimeException(String.format("Invalid room name %s", roomName));
       }
       room = rooms.get(0);
       return room;
@@ -404,7 +405,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
          addActionsToGameEngine(room, designAction, triggers, items);
          return designAction;
       }
-      throw new RuntimeException("Invalid actionId mentioned in add trigger : " + actionId)
+      throw new RuntimeException("Invalid actionId mentioned in add trigger : " + actionId);
 
    }
 
@@ -553,6 +554,11 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    public Room visitNew_room(GameGrammarParser.New_roomContext ctx) {
       String roomName = visitRoom_name(ctx.room_name());
       List<Item> items = visitItems(ctx.items());
+      for (Item i : items) {
+         if (i.getParentRoom().equals(GameEngine.unassignedItemRoom)) {
+            throw new RuntimeException("Item " + i + "is already assigned to another room. Error. " + ctx.getText());
+         }
+      }
       Room room = new Room(roomName);
       room.setItems(items);
 
@@ -600,7 +606,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       String id = visitGenericframe_name(ctx.genericframe_name());
       List<Pair<String, Object>> slotsFillers = visitMap_entries(ctx.map_entries());
       GenericFrame gf = new GenericFrame(id);
-      for(Pair<String, Object> pair : slotsFillers){
+      for (Pair<String, Object> pair : slotsFillers) {
          gf.addSlot(pair.first, pair.second);
       }
       KnowledgeBase kb = gameEngine.getKnowledgeBase();
@@ -629,46 +635,101 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
 
    @Override
    public Item visitGlobal_item(GameGrammarParser.Global_itemContext ctx) {
-      if(ctx.STRING() != null){
+      if (ctx.STRING() != null) {
          String id = asString(ctx.STRING());
          Map<String, Item> globalItems = gameEngine.globalItems();
-         if(!globalItems.containsKey(id)){
+         if (!globalItems.containsKey(id)) {
             throw new RuntimeException("Invalid global item ID: " + id);
          }
          return globalItems.get(id);
       }
-      else if(ctx.item_id() != null){
-         String editorId = visitItem_id(ctx.item_id());
-         return items.get();
-
+      else if (ctx.item_ref() != null) {
+         return visitItem_ref(ctx.item_ref());
       }
-      else{
+      else {
          throw new RuntimeException("Invalid type of global item " + ctx.getText());
       }
    }
 
    @Override
-   public Object visitGlobal_items(GameGrammarParser.Global_itemsContext ctx) {
-      return super.visitGlobal_items(ctx);
+   public List<Item> visitGlobal_items(GameGrammarParser.Global_itemsContext ctx) {
+      List<Item> items = new ArrayList<>();
+      for (GameGrammarParser.Global_itemContext globalItemContext : ctx.global_item()) {
+         items.add(visitGlobal_item(globalItemContext));
+      }
+      return items;
    }
 
    @Override
    public Object visitInheritance(GameGrammarParser.InheritanceContext ctx) {
-      return super.visitInheritance(ctx);
+      List<Item> inheritingItems = visitGlobal_items(ctx.global_items());
+      String parentId = asString(ctx.STRING());
+      for (Item i : inheritingItems) {
+         gameEngine.addParent(i.getID(), parentId);
+      }
+      return null;
+   }
+
+   @Override
+   public Object visitInheritances(GameGrammarParser.InheritancesContext ctx) {
+      for (GameGrammarParser.InheritanceContext inheritanceContext : ctx.inheritance()) {
+         visitInheritance(inheritanceContext);
+      }
+      return null;
    }
 
    @Override
    public Object visitKnowledge(GameGrammarParser.KnowledgeContext ctx) {
-      return super.visitKnowledge(ctx);
+      visitInheritances(ctx.inheritances());
+      List<KnowledgeUpdate> knowledgeUpdates = visitKnowledge_updates(ctx.knowledge_updates());
+      for (KnowledgeUpdate ku : knowledgeUpdates) {
+         gameEngine.updateKnowledgeBase(ku);
+      }
+      return null;
    }
 
    @Override
    public Object visitStart(GameGrammarParser.StartContext ctx) {
-      return super.visitStart(ctx);
+      String startRoomName = visitRoom_name(ctx.room_name());
+      Room room = findRoom(startRoomName);
+      gameEngine.setCurrentRoom(room);
+
+      String startMessage = asString(ctx.STRING());
+      gameEngine.setStartMessage(startMessage);
+      return null;
    }
 
+   // Parsing should go something like ACTIONFORMAT -> ITEMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS -> add_trigger -> ROOMS -> START -> NEW_GENERICFRAME -> KNOWLEDGE
    @Override
    public Object visitGame(GameGrammarParser.GameContext ctx) {
-      return super.visitGame(ctx);
+      for(GameGrammarParser.ActionformatContext afCtx : ctx.actionformat()) {
+         ActionFormat af = visitActionformat(afCtx);
+         gameEngine.addActionFormat(af);
+      }
+
+      for(GameGrammarParser.New_itemContext itemCtx : ctx.new_item()) {
+         visitNew_item(itemCtx);
+      }
+
+      for(GameGrammarParser.New_messageContext newMessageContext : ctx.new_message()) {
+         visitNew_message(newMessageContext);
+      }
+
+      for(GameGrammarParser.New_precondContext precondContext : ctx.new_precond()) {
+         visitNew_precond(precondContext);
+      }
+
+      for(GameGrammarParser.New_postcondContext postcondContext : ctx.new_postcond()) {
+         visitNew_postcond(postcondContext);
+      }
+
+      for(GameGrammarParser.New_actionContext newActionContext : ctx.new_action()) {
+         visitNew_action(newActionContext);
+      }
+
+      for(GameGrammarParser.Add_triggerContext addTriggerContext : ctx.add_trigger()) {
+         visitAdd_trigger(addTriggerContext);
+      }
+
    }
 }

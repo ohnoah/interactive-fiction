@@ -616,6 +616,18 @@ public class GameGrammarBaseListener implements GameGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterInheritances(GameGrammarParser.InheritancesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInheritances(GameGrammarParser.InheritancesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterKnowledge(GameGrammarParser.KnowledgeContext ctx) { }
 	/**
 	 * {@inheritDoc}

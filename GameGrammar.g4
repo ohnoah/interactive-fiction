@@ -150,10 +150,11 @@ knowledge_updates : LSQUARE (knowledge_update (COMMA knowledge_update)*)? RSQUAR
 global_item : item_ref | STRING;
 global_items : global_item (COMMA global_item)*?;
 inheritance : LSQUARE global_items RSQUARE INHERITS STRING;
+inheritances : inheritance (COMMA inheritance);
 knowledge:
     KNOWLEDGE
     LCURLY
-    DOT GENERIC_INHERITANCE inheritance (COMMA inheritance) SEMICOLON
+    DOT GENERIC_INHERITANCE inheritances SEMICOLON
     DOT INITIAL knowledge_updates? SEMICOLON
     RCURLY
 ;
@@ -165,10 +166,10 @@ start : START
  RCURLY;
 
 game
- : start (new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond|add_trigger)* new_genericframe* knowledge? EOF
+ : start (new_message|new_action|new_item|new_room|actionformat|new_postcond|new_precond|add_trigger)* new_genericframe* (knowledge*)? EOF
  ;
 
-// Parsing should go something like ITEMS -> ROOMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS ->
+// Parsing should go something like ACTIONFORMAT -> ITEMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS -> add_trigger -> ROOMS -> START -> NEW_GENERICFRAME -> KNOWLEDGE
 // NEED ERROR if same item is given to multiple rooms
 
 LCURLY     : '{' ;

@@ -311,6 +311,12 @@ public interface GameGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInheritance(GameGrammarParser.InheritanceContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GameGrammarParser#inheritances}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInheritances(GameGrammarParser.InheritancesContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GameGrammarParser#knowledge}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
