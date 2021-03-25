@@ -57,7 +57,7 @@ triggers
 
 postconds: LSQUARE (postcond (COMMA postcond)*)? RSQUARE;
 
-argument : item_ref | STRING;
+argument : item_ref;
 arguments : LSQUARE (argument (COMMA argument)*)? RSQUARE;
 
 new_action
@@ -65,7 +65,6 @@ new_action
     LCURLY
     action_id SEMICOLON
     DOT TRIGGERS_SYNTAX triggers SEMICOLON
-    (DOT PREFIX_ROOM room_name SEMICOLON)?
     DOT ARGUMENTS arguments SEMICOLON
     DOT PRECONDS preconds SEMICOLON
     DOT POSTCONDS postconds SEMICOLON

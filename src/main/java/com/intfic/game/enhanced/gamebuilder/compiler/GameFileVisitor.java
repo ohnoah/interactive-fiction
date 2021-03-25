@@ -5,6 +5,7 @@ import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarBaseVisitor;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarParser;
 import com.intfic.game.enhanced.reasoning.KnowledgeBase;
+import com.intfic.game.enhanced.reasoning.KnowledgeRegex;
 import com.intfic.game.enhanced.reasoning.VisitorHelper;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
@@ -18,12 +19,19 @@ import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
 import edu.stanford.nlp.util.Pair;
+import gherkin.lexer.Kn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jetbrains.annotations.NotNull;
 
@@ -157,13 +165,23 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       if (potentialActions.size() == 0) {
          throw new RuntimeException("Reference to invalid trigger word : " + verb);
       }
-      int index = visitTrigger_selector(ctx.trigger_selector());
-      if (index >= 0 && index < potentialActions.size()) {
-         return potentialActions.get(index);
+      if (ctx.trigger_selector() != null) {
+         int index = visitTrigger_selector(ctx.trigger_selector());
+         if (index >= 0 && index < potentialActions.size()) {
+            return potentialActions.get(index);
+         }
+         else {
+            throw new RuntimeException(String.format("Number is outside the range of the size of the actions with that trigger." +
+                " Size of action formats with trigger %s is %d but you specified %d", verb, potentialActions.size(), index));
+         }
       }
       else {
-         throw new RuntimeException(String.format("Number is outside the range of the size of the actions with that trigger." +
-             " Size of action formats with trigger %s is %d but you specified %d", verb, potentialActions.size(), index));
+         if (potentialActions.size() == 1) {
+            return potentialActions.get(0);
+         }
+         else {
+            throw new RuntimeException("No selector was specified with a \"-\" symbol and an integer and there are multiple actions with the verb " + verb + ". " + ctx.getText());
+         }
       }
    }
 
@@ -296,12 +314,9 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public String visitArgument(GameGrammarParser.ArgumentContext ctx) { // returns stub of item id or item ID
+   public Item visitArgument(GameGrammarParser.ArgumentContext ctx) { // returns stub of item id or item ID
       if (ctx.item_ref() != null) {
-         return visitItem_ref(ctx.item_ref()).getID();
-      }
-      else if (ctx.STRING() != null) {
-         return asString(ctx.STRING());
+         return visitItem_ref(ctx.item_ref());
       }
       else {
          throw new RuntimeException("Invalid argument type " + ctx.getText());
@@ -309,15 +324,15 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public List<String> visitArguments(GameGrammarParser.ArgumentsContext ctx) {
-      List<String> argumentIds = new ArrayList<>();
+   public List<Item> visitArguments(GameGrammarParser.ArgumentsContext ctx) {
+      List<Item> argumentIds = new ArrayList<>();
       for (GameGrammarParser.ArgumentContext argumentContext : ctx.argument()) {
          argumentIds.add(visitArgument(argumentContext));
       }
       return argumentIds;
    }
 
-   private String prependRoomPrefix(@NotNull String rawArgument, String roomPrefix){
+   private String prependRoomPrefix(@NotNull String rawArgument, String roomPrefix) {
       String formatted;
 
       if (roomPrefix != null) {
@@ -355,11 +370,22 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       }
    }
 
-   private Room findRoom(String roomName) {
+   private Room findRoom(@NotNull String roomName) {
+      return findRoom(roomName, null);
+   }
+
+   private Room findRoom(@NotNull String roomName, ParserRuleContext ctx) {
       List<Room> rooms = gameEngine.findRoom(roomName);
       Room room;
       if (rooms.size() != 1) {
-         throw new RuntimeException(String.format("Invalid room name %s. Found only %d rooms.", roomName, rooms.size()));
+         String errorMsg = "";
+         if (ctx == null) {
+            errorMsg = String.format("Invalid room name %s. Found %d rooms when searching for it.", roomName, rooms.size());
+         }
+         else {
+            errorMsg = String.format("Invalid room name %s. Found %d rooms when searching for it. When searching : %s ", roomName, rooms.size(), ctx.getText());
+         }
+         throw new RuntimeException(errorMsg);
       }
       room = rooms.get(0);
       return room;
@@ -370,12 +396,12 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       EnhancedGameDesignAction designAction = new EnhancedGameDesignAction();
 
       String actionId = visitAction_id(ctx.action_id());
-      String roomName = null;
-      if (ctx.room_name() != null) {
-         roomName = visitRoom_name(ctx.room_name());
-      }
+/*      String roomName = null;
+      if (ctx.STRING() != null) {
+         roomName = asString(ctx.STRING());
+      }*/
       List<ActionFormat> actionFormats = visitTriggers(ctx.triggers());
-      List<String> argumentIds = visitArguments(ctx.arguments());
+      List<Item> items = visitArguments(ctx.arguments());
 
       List<Condition> preconds = visitPreconds(ctx.preconds());
       List<KnowledgeUpdate> postconds = visitPostconds(ctx.postconds());
@@ -386,13 +412,11 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       designAction.setUpdateState(postconds);
 
 
-      Room room;
-      String roomPrefix = null;
+/*      String roomPrefix = null;
       if (roomName != null) {
-         room = findRoom(roomName);
-         roomPrefix = Item.roomId(room.getName());
-      }
-      List<Item> items = getItemsByIds(argumentIds, roomPrefix);
+         roomPrefix = Item.roomId(roomName);
+      }*/
+/*      List<Item> items = getItemsByIds(argumentIds, null);*/
       /*      addActionsToGameEngine(room, designAction, actionFormats, items);*/
 
       // Add action ID to map
@@ -404,15 +428,16 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    public EnhancedGameDesignAction visitAdd_trigger(GameGrammarParser.Add_triggerContext ctx) {
       String actionId = visitAction_ref(ctx.action_ref());
       String roomName = visitRoom_name(ctx.room_name());
-      Room room = findRoom(roomName);
+      Room room = findRoom(roomName, ctx);
       String roomPrefix = Item.roomId(room.getName());
       List<ActionFormat> triggers = visitTriggers(ctx.triggers());
-      List<String> itemIds = visitArguments(ctx.arguments());
-      List<Item> items = getItemsByIds(itemIds, roomPrefix);
+      List<Item> arguments = visitArguments(ctx.arguments());
+/*      List<Item> items = getItemsByIds(itemIds, roomPrefix);*/
 
       if (actionEffects.containsKey(actionId)) {
          EnhancedGameDesignAction designAction = actionEffects.get(actionId);
-         addActionsToGameEngine(room, designAction, triggers, items);
+         EnhancedGameDesignAction newDesignAction = roomifyDesignAction(designAction, roomPrefix);
+         addActionsToGameEngine(room, newDesignAction, triggers, arguments);
          return designAction;
       }
       throw new RuntimeException("Invalid actionId mentioned in add trigger : " + actionId);
@@ -488,7 +513,6 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
          return visitItem_ref(ctx.item_ref());
       }
       else if (ctx.item_name() != null) {
-         // WE HAVE to ensure we add parent room here
          String itemName = visitItem_name(ctx.item_name());
          return new Item(itemName);
       }
@@ -563,6 +587,33 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       return asString(ctx.STRING());
    }
 
+   private KnowledgeUpdate addRoomToKnowledgeUpdate(KnowledgeUpdate ku, String roomPrefix) {
+      KnowledgeUpdate newKu = new KnowledgeUpdate(ku);
+      String currentFrame = newKu.getFrameToUpdate();
+
+      String idWithoutRoom = currentFrame.split("\\.")[1];
+      String newId = prependRoomPrefix(idWithoutRoom, roomPrefix);
+      newKu.setFrameToUpdate(newId);
+
+      System.out.println(currentFrame);
+      System.out.println(idWithoutRoom);
+      System.out.println(newId);
+
+      return newKu;
+   }
+
+   private Condition newConditionWithRoom(Condition c, String roomPrefix) {
+      Pattern p = Pattern.compile(KnowledgeRegex.KNOWLEDGE_EXPR);
+      Matcher m = p.matcher(c.getBooleanExpr());
+      boolean doesMatch = m.matches();
+      if(!m.matches()){
+         throw new RuntimeException("Encountered a condition with a boolean expression that doesn't contain any knowledge strings. This is an error. " + c.getBooleanExpr());
+      }
+      AtomicInteger filler = new AtomicInteger();
+      String newBooleanExpr = m.replaceAll(match -> prependRoomPrefix(m.group(filler.getAndIncrement()), roomPrefix));
+      return new Condition(newBooleanExpr, c.getFailureMessage());
+   }
+
    @Override
    public Room visitNew_room(GameGrammarParser.New_roomContext ctx) {
       String roomName = visitRoom_name(ctx.room_name());
@@ -575,19 +626,13 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       Room room = new Room(roomName);
       room.setItems(items);
 
-      // Perform knowledgeupdates here
+      // Perform knowledgeupdates here that were mentioned in item block
       String roomPrefix = Item.roomId(room.getName());
-      for(Item i : items){
+      for (Item i : items) {
          List<KnowledgeUpdate> kus = itemUpdates.getOrDefault(i, new ArrayList<>());
-         for(KnowledgeUpdate ku : kus) {
-            String currentFrame = ku.getFrameToUpdate();
-            System.out.println(currentFrame);
-            String idWithoutRoom = currentFrame.split("\\.")[1];
-            System.out.println(idWithoutRoom);
-            String newId = prependRoomPrefix(idWithoutRoom, roomPrefix);
-            System.out.println(newId);
-            ku.setFrameToUpdate(newId);
-            gameEngine.updateKnowledgeBase(ku);
+         for (KnowledgeUpdate ku : kus) {
+            KnowledgeUpdate roomKu = addRoomToKnowledgeUpdate(ku, roomPrefix);
+            gameEngine.updateKnowledgeBase(roomKu);
          }
       }
 
@@ -599,13 +644,26 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
             throw new RuntimeException("Invalid actionId referenced when making new room: " + actionId);
          }
          EnhancedGameDesignAction designAction = actionEffects.get(actionId);
+         // TODO: Append room prefix to KU and Condition
+         EnhancedGameDesignAction newDesignAction = roomifyDesignAction(designAction, roomPrefix);
+
          List<ActionFormat> triggers = actionTriggers.get(actionId);
          List<Item> arguments = actionArguments.get(actionId);
-         addActionsToGameEngine(room, designAction, triggers, arguments);
+         addActionsToGameEngine(room, newDesignAction, triggers, arguments);
       }
 
       gameEngine.addRoom(room);
       return room;
+   }
+
+   private EnhancedGameDesignAction roomifyDesignAction(@NotNull EnhancedGameDesignAction designAction, @NotNull String roomPrefix){
+      List<Condition> newConditions = designAction.getPreconditions()
+          .stream().map(c -> newConditionWithRoom(c, roomPrefix)).collect(Collectors.toList());
+      designAction.setPreconditions(newConditions);
+      List<KnowledgeUpdate> newKus = designAction.getUpdateState().stream().
+          map(ku -> addRoomToKnowledgeUpdate(ku, roomPrefix)).collect(Collectors.toList());
+
+      return new EnhancedGameDesignAction(newConditions, designAction.getMessage(), newKus);
    }
 
 
@@ -723,7 +781,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public Object visitStart(GameGrammarParser.StartContext ctx) {
       String startRoomName = visitRoom_name(ctx.room_name());
-      Room room = findRoom(startRoomName);
+      Room room = findRoom(startRoomName, ctx);
       gameEngine.setCurrentRoom(room);
 
       String startMessage = asString(ctx.STRING());
@@ -733,31 +791,31 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
 
    @Override
    public Object visitBlock(GameGrammarParser.BlockContext ctx) {
-      if(ctx.actionformat() != null){
+      if (ctx.actionformat() != null) {
          visitActionformat(ctx.actionformat());
       }
-      else if(ctx.new_item() != null){
+      else if (ctx.new_item() != null) {
          visitNew_item(ctx.new_item());
       }
-      else if(ctx.new_message() != null){
+      else if (ctx.new_message() != null) {
          visitNew_message(ctx.new_message());
       }
-      else if(ctx.new_precond() != null){
+      else if (ctx.new_precond() != null) {
          visitNew_precond(ctx.new_precond());
       }
-      else if(ctx.new_postcond() != null){
+      else if (ctx.new_postcond() != null) {
          visitNew_postcond(ctx.new_postcond());
       }
-      else if(ctx.add_trigger() != null){
+      else if (ctx.add_trigger() != null) {
          visitAdd_trigger(ctx.add_trigger());
       }
-      else if(ctx.new_room() != null){
+      else if (ctx.new_room() != null) {
          visitNew_room(ctx.new_room());
       }
-      else if(ctx.new_action() != null){
+      else if (ctx.new_action() != null) {
          visitNew_action(ctx.new_action());
       }
-      else{
+      else {
          throw new RuntimeException("invalid block type " + ctx.getText());
       }
       return null;
@@ -766,7 +824,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    // Parsing should go something like ACTIONFORMAT -> ITEMS -> MESSAGES -> PRECONDS -> POSTCONDS -> ACTIONS -> add_trigger -> ROOMS -> START -> NEW_GENERICFRAME -> KNOWLEDGE
    @Override
    public EnhancedGameEngine visitGame(GameGrammarParser.GameContext ctx) {
-      for(GameGrammarParser.BlockContext blockContext : ctx.block()){
+      for (GameGrammarParser.BlockContext blockContext : ctx.block()) {
          visitBlock(blockContext);
       }
 /*      for(GameGrammarParser.ActionformatContext afCtx : ctx.actionformat()) {
@@ -803,11 +861,11 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
 
       visitStart(ctx.start());
 
-      for(GameGrammarParser.New_genericframeContext newGfContext : ctx.new_genericframe()) {
+      for (GameGrammarParser.New_genericframeContext newGfContext : ctx.new_genericframe()) {
          visitNew_genericframe(newGfContext);
       }
 
-      for(GameGrammarParser.KnowledgeContext knowledgeContext : ctx.knowledge()) {
+      for (GameGrammarParser.KnowledgeContext knowledgeContext : ctx.knowledge()) {
          visitKnowledge(knowledgeContext);
       }
       return this.gameEngine;

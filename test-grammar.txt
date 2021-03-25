@@ -11,15 +11,12 @@ item{
 	.item_knowledge ['apple::randomTrait9 := "happy"', 'first_room.apple::preliminary := 4.0'];
 }
 
-room{
-	.room_name "first room";
-	.actions #(putActionOne), #(examineTwo);
-	.items "banana", #(apple), "apple";
-}
-
-
-custom_trigger{
-	move;
+item{
+	(banana);
+	.item_name "banana";
+	.adjectives [];
+	.synonyms ["plantain"];
+	.item_knowledge ['banana::randomTrait9 := "happy"'];
 }
 
 precond{
@@ -33,23 +30,38 @@ postcond{
 }
 
 
-
 action{
 	(putActionOne);
 	.action_triggers [put-0, put-1, take];
-	.prefix_room "first room";
-	.args ["banana", "apple"];
-	.preconds [#(appleMass), 'first_room.apple::isContainer' ("The apple is not a container")];
-	.postconds [#(appleNewMass), 'first_room.apple::isContainer := true'];
+	.args [#(banana), #(apple)];
+	.preconds [#(appleMass), 'apple::isContainer' ("The apple is not a container")];
+	.postconds [#(appleNewMass), 'apple::isContainer := true'];
 	.success_msg "You succeeded";
+}
+
+
+room{
+	.room_name "first room";
+	.actions #(putActionOne), #(examineTwo);
+	.items "orange", #(apple), "apple";
 }
 
 add_trigger{
 	#(putActionOne);
 	.room "first room";
 	.action_triggers [eat, open];
-	.args ["banana"];
+	.args [#(banana)];
 }
+
+
+custom_trigger{
+	move;
+}
+
+
+
+
+
 
 generic_frame{
 	"fruit";

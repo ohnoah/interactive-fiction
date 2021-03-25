@@ -19,6 +19,7 @@ public class KnowledgeRegex implements Serializable {
    public static String LONE_FRAME_NAME_EXPR;
 
    static {
+      // TODO: These need to be changed to only allow DOT In middle
       FRAME_NAME_EXPR = "!?([a-zA-Z0-9_.]+)";
       LONE_FRAME_NAME_EXPR = "!([a-zA-Z0-9_.]+)(?!::)";
       KNOWLEDGE_EXPR = "!?([a-zA-Z0-9_.]+)::([a-zA-Z0-9]+)";
