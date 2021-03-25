@@ -12,13 +12,16 @@ import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
 import com.intfic.game.shared.Item;
 import com.intfic.game.shared.Room;
+import com.intfic.nlp.FailedParseException;
 import gherkin.lexer.Kn;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class GameCompilerTest {
 
@@ -124,5 +127,67 @@ public class GameCompilerTest {
       System.out.println(txtEngine);
       assertTrue(txtEngine.globalItems().containsKey("first_room.apple"));
       assertEquals(codeEngine, txtEngine);
+   }
+
+   @Rule
+   public ExpectedException exceptionRule = ExpectedException.none();
+
+   @Test
+   public void testErrorStartRoom() {
+      exceptionRule.expect(RuntimeException.class);
+      exceptionRule.expectMessage("Invalid room name first room. Found 0 rooms when searching for it. When searching : start{\"first room\";\"Welcome to the first room\";}");
+      String gameFile = "start{\n" +
+          "\t\"first room\";\n" +
+          "\t\"Welcome to the first room\";\n" +
+          "}";
+      EnhancedGameEngine txtEngine = GameCompiler.compile(gameFile);
+   }
+
+   @Test
+   public void testErrorWrongItemId() {
+      exceptionRule.expect(RuntimeException.class);
+      exceptionRule.expectMessage("Reference to invalid item id: (banana)");
+      String gameFile = "start{\n" +
+          "\t\"first room\";\n" +
+          "\t\"Welcome to the first room\";\n" +
+          "}\n" +
+          "\n" +
+          "item{\n" +
+          "\t(apple123);\n" +
+          "\t.item_name \"apple\";\n" +
+          "\t.adjectives [];\n" +
+          "\t.synonyms [];\n" +
+          "\t.item_knowledge [];\n" +
+          "}" +
+          "room{\n" +
+          "\t.room_name \"first room\";\n" +
+          "\t.actions ;\n" +
+          "\t.items \"orange\", #(banana);\n" +
+          "}";
+      EnhancedGameEngine txtEngine = GameCompiler.compile(gameFile);
+   }
+
+   @Test
+   public void testErrorMissingAction() {
+      exceptionRule.expect(RuntimeException.class);
+      exceptionRule.expectMessage("Invalid actionId referenced when making new room: (putBanana)");
+      String gameFile = "start{\n" +
+          "\t\"first room\";\n" +
+          "\t\"Welcome to the first room\";\n" +
+          "}\n" +
+          "\n" +
+          "item{\n" +
+          "\t(apple123);\n" +
+          "\t.item_name \"apple\";\n" +
+          "\t.adjectives [];\n" +
+          "\t.synonyms [];\n" +
+          "\t.item_knowledge [];\n" +
+          "}" +
+          "room{\n" +
+          "\t.room_name \"first room\";\n" +
+          "\t.actions #(putBanana);\n" +
+          "\t.items \"orange\", #(apple123);\n" +
+          "}";
+      EnhancedGameEngine txtEngine = GameCompiler.compile(gameFile);
    }
 }
