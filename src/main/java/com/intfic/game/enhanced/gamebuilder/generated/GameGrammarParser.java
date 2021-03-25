@@ -2696,7 +2696,7 @@ public class GameGrammarParser extends Parser {
 	public static class Map_entryContext extends ParserRuleContext {
 		public TerminalNode ALPHANUMERIC() { return getToken(GameGrammarParser.ALPHANUMERIC, 0); }
 		public TerminalNode EQUALS() { return getToken(GameGrammarParser.EQUALS, 0); }
-		public TerminalNode STRING() { return getToken(GameGrammarParser.STRING, 0); }
+		public TerminalNode SINGLE_STRING() { return getToken(GameGrammarParser.SINGLE_STRING, 0); }
 		public Map_entryContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2727,7 +2727,7 @@ public class GameGrammarParser extends Parser {
 			setState(391);
 			match(EQUALS);
 			setState(392);
-			match(STRING);
+			match(SINGLE_STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3768,7 +3768,7 @@ public class GameGrammarParser extends Parser {
 		"\2\2\u017e\u017f\5:\36\2\u017f\u0180\7/\2\2\u0180\u0181\7\60\2\2\u0181"+
 		"\u0182\7\32\2\2\u0182\u0183\5D#\2\u0183\u0184\7/\2\2\u0184\u0185\7\5\2"+
 		"\2\u0185S\3\2\2\2\u0186\u0187\7)\2\2\u0187U\3\2\2\2\u0188\u0189\7*\2\2"+
-		"\u0189\u018a\7\61\2\2\u018a\u018b\7)\2\2\u018bW\3\2\2\2\u018c\u0191\5"+
+		"\u0189\u018a\7\61\2\2\u018a\u018b\7(\2\2\u018bW\3\2\2\2\u018c\u0191\5"+
 		"V,\2\u018d\u018e\7\30\2\2\u018e\u0190\5V,\2\u018f\u018d\3\2\2\2\u0190"+
 		"\u0193\3\2\2\2\u0191\u018f\3\2\2\2\u0191\u0192\3\2\2\2\u0192Y\3\2\2\2"+
 		"\u0193\u0191\3\2\2\2\u0194\u0195\7\21\2\2\u0195\u0196\7\4\2\2\u0196\u0197"+

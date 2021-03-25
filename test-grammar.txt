@@ -21,29 +21,49 @@ item{
 
 precond{
 	(appleMass);
-	'first_room.apple::mass > 4.0' ("The mass is not right");
+	'apple::mass > 4.0' ("The mass is not right. It is apple::mass");
+}
+
+
+precond{
+	(itemsCond);
+	'world::items IS []' ("The inventory is nto right. It is world::items");
 }
 
 postcond{
 	(appleNewMass);
-	'first_room.apple::mass := 5.0';
+	'world::applesCollected := 5.0';
 }
+
+postcond{
+	(appleNewVolume);
+	'apple::mass := 3.0';
+}
+
 
 
 action{
 	(putActionOne);
-	.action_triggers [put-0, put-1, take];
+	.action_triggers [put-0, put-1];
 	.args [#(banana), #(apple)];
-	.preconds [#(appleMass), 'apple::isContainer' ("The apple is not a container")];
-	.postconds [#(appleNewMass), 'apple::isContainer := true'];
-	.success_msg "You succeeded";
+	.preconds [#(appleMass), #(itemsCond), 'apple::isContainer' ("The apple is not a container. It is apple:isContainer"), 'world::inventory IS []' ("The inventory is not empty")];
+	.postconds [#(appleNewMass),#(appleNewVolume), 'apple::isContainer := true', 'world::randomState := 4.0'];
+	.success_msg "You succeeded. world::randomState is random state";
 }
 
+action{
+	(examineTwo);
+	.action_triggers [examine];
+	.args [#(banana)];
+	.preconds [#(appleMass)];
+	.postconds [];
+	.success_msg "The apple is green and juicy. It is banana::randomTrait9";
+}
 
 room{
 	.room_name "first room";
 	.actions #(putActionOne), #(examineTwo);
-	.items "orange", #(apple), "apple";
+	.items "orange", #(apple), "apple", #(banana);
 }
 
 add_trigger{
@@ -65,7 +85,7 @@ custom_trigger{
 
 generic_frame{
 	"fruit";
-	[fruitiness<-"4.0", elasticity<-"high"];
+	[fruitiness<-'4.0', elasticity<-'"high"'];
 }
 
 knowledge{

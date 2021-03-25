@@ -132,7 +132,7 @@ new_room:
 
 
 genericframe_name : STRING;
-map_entry : ALPHANUMERIC EQUALS STRING;
+map_entry : ALPHANUMERIC EQUALS SINGLE_STRING;
 map_entries:  map_entry (COMMA map_entry)*;
 new_genericframe :
     GENERICFRAME
