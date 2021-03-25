@@ -112,7 +112,7 @@ new_item :
     ITEM
     LCURLY
     item_id SEMICOLON
-    DOT ROOM room_name SEMICOLON
+//    DOT ROOM room_name SEMICOLON
     DOT ITEM_NAME item_name SEMICOLON
     DOT ITEM_ADJECTIVES LSQUARE item_adjectives? RSQUARE SEMICOLON
     DOT ITEM_SYNONYMS LSQUARE item_synonyms? RSQUARE SEMICOLON

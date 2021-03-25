@@ -5,11 +5,10 @@ start{
 
 item{
 	(apple);
-	.room "first room";
 	.item_name "apple";
 	.adjectives [sour, green];
 	.synonyms ["green fruit"];
-	.item_knowledge ['first_room.apple::randomTrait9 := "happy"', 'first_room.apple::preliminary := 4.0'];
+	.item_knowledge ['apple::randomTrait9 := "happy"', 'first_room.apple::preliminary := 4.0'];
 }
 
 room{

@@ -38,6 +38,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    private Map<String, Item> items;
+   private Map<Item, List<KnowledgeUpdate>> itemUpdates;
    private Map<String, String> messages;
    private Map<String, Condition> preconds;
    private Map<String, KnowledgeUpdate> knowledgeUpdates;
@@ -56,6 +57,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       actionTriggers = new HashMap<>();
       actionArguments = new HashMap<>();
       items = new HashMap<>();
+      itemUpdates = new HashMap<>();
       gameEngine = new EnhancedGameEngine();
    }
 
@@ -76,11 +78,12 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       actionArguments.put(id, arguments);
    }
 
-   private void addItem(@NotNull String id, @NotNull Item i) {
+   private void addItem(@NotNull String id, @NotNull Item i, @NotNull List<KnowledgeUpdate> knowledgeUpdates) {
       if (items.containsKey(id)) {
          throw new RuntimeException(String.format("Duplicate ID %s encountered for items", id));
       }
       items.put(id, i);
+      itemUpdates.put(i, knowledgeUpdates);
    }
 
    private void addMessage(@NotNull String id, @NotNull String content) {
@@ -314,20 +317,26 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       return argumentIds;
    }
 
+   private String prependRoomPrefix(@NotNull String rawArgument, String roomPrefix){
+      String formatted;
+
+      if (roomPrefix != null) {
+         formatted = !(rawArgument.contains(".")) ? roomPrefix + "." + rawArgument : rawArgument;
+      }
+      else {
+         if (!rawArgument.contains(".")) {
+            throw new RuntimeException("You must include a full item ID including a . symbol" +
+                " when not specifying room prefix in new action but you gave : " + rawArgument);
+         }
+         formatted = rawArgument;
+      }
+      return formatted;
+   }
+
    private List<Item> getItemsByIds(List<String> argumentIds, String roomPrefix) {
       List<Item> items = new ArrayList<>();
       for (String rawArgument : argumentIds) { // we are forcing each trigger to have same number of arguments here
-         String formatted = null;
-         if (roomPrefix != null) {
-            formatted = !(rawArgument.contains(".")) ? roomPrefix + "." + rawArgument : rawArgument;
-         }
-         else {
-            if (!rawArgument.contains(".")) {
-               throw new RuntimeException("You must include a full item ID including a . symbol" +
-                   " when not specifying room prefix in new action but you gave : " + rawArgument);
-            }
-            formatted = rawArgument;
-         }
+         String formatted = prependRoomPrefix(rawArgument, roomPrefix);
          if (gameEngine.globalItems().containsKey(formatted)) {
             items.add(gameEngine.globalItems().get(formatted));
          }
@@ -531,21 +540,21 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public Item visitNew_item(GameGrammarParser.New_itemContext ctx) {
       String itemId = visitItem_id(ctx.item_id());
-      String roomName = visitRoom_name(ctx.room_name());
+      //String roomName = visitRoom_name(ctx.room_name());
       String itemName = visitItem_name(ctx.item_name());
       List<String> synonyms = visitItem_synonyms(ctx.item_synonyms());
       List<String> adjectives = visitItem_adjectives(ctx.item_adjectives());
 
       Item item = new Item(itemName, new HashSet<>(adjectives), new HashSet<>(synonyms));
-      addItem(itemId, item);
-      Room parentRoom = findRoom(roomName);
-      // We must remember to set items as well to get this in the room item map
-      item.setParentRoom(parentRoom, new ArrayList<>(parentRoom.getItems().values()));
-
       List<KnowledgeUpdate> knowledgeUpdates = visitKnowledge_updates(ctx.knowledge_updates());
-      for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
+      addItem(itemId, item, knowledgeUpdates);
+      //Room parentRoom = findRoom(roomName);
+      // We must remember to set items as well to get this in the room item map
+      //item.setParentRoom(parentRoom, new ArrayList<>(parentRoom.getItems().values()));
+
+/*      for (KnowledgeUpdate knowledgeUpdate : knowledgeUpdates) {
          gameEngine.updateKnowledgeBase(knowledgeUpdate);
-      }
+      }*/
       return item;
    }
 
@@ -559,12 +568,28 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       String roomName = visitRoom_name(ctx.room_name());
       List<Item> items = visitItems(ctx.items());
       for (Item i : items) {
-         if (i.getParentRoom().equals(GameEngine.unassignedItemRoom)) {
-            throw new RuntimeException("Item " + i + "is already assigned to another room. Error. " + ctx.getText());
+         if (!i.getParentRoom().equals(GameEngine.unassignedItemRoom)) {
+            throw new RuntimeException("Item " + i + " is already assigned to another room. Error. " + ctx.getText());
          }
       }
       Room room = new Room(roomName);
       room.setItems(items);
+
+      // Perform knowledgeupdates here
+      String roomPrefix = Item.roomId(room.getName());
+      for(Item i : items){
+         List<KnowledgeUpdate> kus = itemUpdates.getOrDefault(i, new ArrayList<>());
+         for(KnowledgeUpdate ku : kus) {
+            String currentFrame = ku.getFrameToUpdate();
+            System.out.println(currentFrame);
+            String idWithoutRoom = currentFrame.split("\\.")[1];
+            System.out.println(idWithoutRoom);
+            String newId = prependRoomPrefix(idWithoutRoom, roomPrefix);
+            System.out.println(newId);
+            ku.setFrameToUpdate(newId);
+            gameEngine.updateKnowledgeBase(ku);
+         }
+      }
 
 
       List<String> actionIdsInRoom = visitActions(ctx.actions());
@@ -621,7 +646,10 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public KnowledgeUpdate visitKnowledge_update(GameGrammarParser.Knowledge_updateContext ctx) {
       try {
-         return new KnowledgeUpdate(asString(ctx.SINGLE_STRING()));
+         String kuString = asString(ctx.SINGLE_STRING());
+         // This is done so that item knowledge updates pass as valid KUs. They are later updated.
+         String kuStringWorld = prependRoomPrefix(kuString, "world");
+         return new KnowledgeUpdate(kuStringWorld);
       }
       catch (KnowledgeException e) {
          throw new RuntimeException("Error when visiting knowledge update: " + ctx.SINGLE_STRING() + "." + e.getMessage());
