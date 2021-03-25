@@ -89,5 +89,15 @@ public class InstantiatedGameAction implements Serializable {
       return Objects.hash(abstractActionFormat, actualArguments);
    }
 
-// Some form of enum with different possibilities and showing the slots it needs
+   @Override
+   public String toString() {
+      return "InstantiatedGameAction{" +
+          "abstractActionFormat=" + abstractActionFormat +
+          ", potentialArguments=" + potentialArguments +
+          ", actualArguments=" + actualArguments +
+          ", it=" + it +
+          '}';
+   }
+
+   // Some form of enum with different possibilities and showing the slots it needs
 }

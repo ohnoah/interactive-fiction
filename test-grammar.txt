@@ -46,7 +46,7 @@ action{
 	(putActionOne);
 	.action_triggers [put-0, put-1];
 	.args [#(banana), #(apple)];
-	.preconds [#(appleMass), #(itemsCond), 'apple::isContainer' ("The apple is not a container. It is apple:isContainer"), 'world::inventory IS []' ("The inventory is not empty")];
+	.preconds [#(appleMass), #(itemsCond), 'apple::isContainer' ("The apple is not a container. It is apple::isContainer"), 'world::inventory IS []' ("The inventory is not empty")];
 	.postconds [#(appleNewMass),#(appleNewVolume), 'apple::isContainer := true', 'world::randomState := 4.0'];
 	.success_msg "You succeeded. world::randomState is random state";
 }

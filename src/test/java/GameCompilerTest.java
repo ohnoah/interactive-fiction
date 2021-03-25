@@ -54,7 +54,7 @@ public class GameCompilerTest {
       enhancedGameEngine.addActionFormat(new ActionFormat("swim", "swim (([\\w\\s]+)) in ([\\w\\s]+)$"));
 
       Condition appleMass = new Condition("first_room.apple::mass > 4.0",
-          "The mass is not right. It is apple::mass");
+          "The mass is not right. It is first_room.apple::mass");
       Condition itemsCond = new Condition("world::items IS []",
           "The inventory is nto right. It is world::items");
       KnowledgeUpdate appleNewMass = new KnowledgeUpdate("world::applesCollected := 5.0");
@@ -66,7 +66,7 @@ public class GameCompilerTest {
                   "The apple is not a container. It is first_room.apple::isContainer"),
               new Condition("world::inventory IS []",
                   "The inventory is not empty")),
-          "You succeeded. world::randomState is random state.",
+          "You succeeded. world::randomState is random state",
           List.of(appleNewMass, appleNewVolume, new KnowledgeUpdate("first_room.apple::isContainer := true"),
               new KnowledgeUpdate("world::randomState := 4.0"))
       );
@@ -90,8 +90,17 @@ public class GameCompilerTest {
       InstantiatedGameAction iExamine = new InstantiatedGameAction(examine, argumentsExamine, true);
       enhancedGameEngine.addAction(room, iExamine, examineTwo);
 
+      List<Item> argumentsOpenEat = List.of(banana);
+      ActionFormat eat = enhancedGameEngine.findAction("eat").get(0);
+      ActionFormat open = enhancedGameEngine.findAction("open").get(0);
+
+      InstantiatedGameAction iEat = new InstantiatedGameAction(eat, argumentsOpenEat, true);
+      InstantiatedGameAction iOpen = new InstantiatedGameAction(open, argumentsOpenEat, true);
+      enhancedGameEngine.addAction(room, iEat, putActionOne);
+      enhancedGameEngine.addAction(room, iOpen, putActionOne);
+
       GenericFrame gf = new GenericFrame("fruit");
-      gf.addSlot("fruitiness", "4.0");
+      gf.addSlot("fruitiness", 4.0);
       gf.addSlot("elasticity", "high");
       enhancedGameEngine.getKnowledgeBase().addGenericFrame(gf);
       enhancedGameEngine.addParent("first_room.apple", "fruit");

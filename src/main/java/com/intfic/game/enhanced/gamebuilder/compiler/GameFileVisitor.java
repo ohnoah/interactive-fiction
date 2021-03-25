@@ -45,8 +45,8 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       return tn.getText();
    }
 
-   private Map<String, Item> items;
-   private Map<Item, List<KnowledgeUpdate>> itemUpdates;
+   private Map<String, Pair<Item, List<KnowledgeUpdate>>> items;
+   /*   private Map<Item, List<KnowledgeUpdate>> itemUpdates;*/
    private Map<String, String> messages;
    private Map<String, Condition> preconds;
    private Map<String, KnowledgeUpdate> knowledgeUpdates;
@@ -69,7 +69,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       actionTriggers = new HashMap<>();
       actionArguments = new HashMap<>();
       items = new HashMap<>();
-      itemUpdates = new HashMap<>();
+      /*itemUpdates = new HashMap<>();*/
       gameEngine = new EnhancedGameEngine();
    }
 
@@ -94,8 +94,8 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       if (items.containsKey(id)) {
          throw new RuntimeException(String.format("Duplicate ID %s encountered for items", id));
       }
-      items.put(id, i);
-      itemUpdates.put(i, knowledgeUpdates);
+      items.put(id, new Pair<>(i, knowledgeUpdates));
+      /*      itemUpdates.put(i, knowledgeUpdates);*/
    }
 
    private void addMessage(@NotNull String id, @NotNull String content) {
@@ -320,7 +320,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    @Override
    public Item visitArgument(GameGrammarParser.ArgumentContext ctx) { // returns stub of item id or item ID
       if (ctx.item_ref() != null) {
-         return visitItem_ref(ctx.item_ref());
+         return visitItem_ref(ctx.item_ref()).first;
       }
       else {
          throw new RuntimeException("Invalid argument type " + ctx.getText());
@@ -500,7 +500,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public Item visitItem_ref(GameGrammarParser.Item_refContext ctx) {
+   public Pair<Item, List<KnowledgeUpdate>> visitItem_ref(GameGrammarParser.Item_refContext ctx) {
       String id = visitItem_id(ctx.item_id());
       if (items.containsKey(id)) {
          return items.get(id);
@@ -514,13 +514,13 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public Item visitItem(GameGrammarParser.ItemContext ctx) {
+   public Pair<Item, List<KnowledgeUpdate>> visitItem(GameGrammarParser.ItemContext ctx) {
       if (ctx.item_ref() != null) {
          return visitItem_ref(ctx.item_ref());
       }
       else if (ctx.item_name() != null) {
          String itemName = visitItem_name(ctx.item_name());
-         return new Item(itemName);
+         return new Pair<>(new Item(itemName), new ArrayList<>());
       }
       else {
          throw new RuntimeException("Invalid item type : " + ctx.getText());
@@ -528,8 +528,8 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public List<Item> visitItems(GameGrammarParser.ItemsContext ctx) {
-      List<Item> items = new ArrayList<>();
+   public List<Pair<Item, List<KnowledgeUpdate>>> visitItems(GameGrammarParser.ItemsContext ctx) {
+      List<Pair<Item, List<KnowledgeUpdate>>> items = new ArrayList<>();
       for (GameGrammarParser.ItemContext itemContext : ctx.item()) {
          items.add(visitItem(itemContext));
       }
@@ -601,12 +601,12 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       KnowledgeUpdate newKu = new KnowledgeUpdate(ku);
       String currentFrame = newKu.getFrameToUpdate();
 
-      if (currentFrame.startsWith(PLACEHOLDER_FRAME_NAME)) {
-         String idWithoutRoom = currentFrame.split("\\.")[1];
-         String newId = prependRoomPrefix(idWithoutRoom, roomPrefix);
+      if(!currentFrame.startsWith("world") && !currentFrame.startsWith("arg") && !currentFrame.contains(".")){
+    /*  if (currentFrame.startsWith(PLACEHOLDER_FRAME_NAME)) {*/
+         /*String idWithoutRoom = currentFrame.split("\\.")[1];*/
+         String newId = prependRoomPrefix(currentFrame, roomPrefix);
          newKu.setFrameToUpdate(newId);
          System.out.println(currentFrame);
-         System.out.println(idWithoutRoom);
          System.out.println(newId);
       }
       else {
@@ -633,13 +633,14 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       String newBooleanExpr = prependRoomToAllKnowledge(c.getBooleanExpr(), roomPrefix);
       String newFailureMessage = prependRoomToAllKnowledge(c.getFailureMessage(), roomPrefix);
       System.out.println(newBooleanExpr);
-      return new Condition(newBooleanExpr, c.getFailureMessage());
+      return new Condition(newBooleanExpr, newFailureMessage);
    }
 
    @Override
    public Room visitNew_room(GameGrammarParser.New_roomContext ctx) {
       String roomName = visitRoom_name(ctx.room_name());
-      List<Item> items = visitItems(ctx.items());
+      List<Pair<Item, List<KnowledgeUpdate>>> itemsAndUpdates = visitItems(ctx.items());
+      List<Item> items = itemsAndUpdates.stream().map(Pair::first).collect(Collectors.toList());
       for (Item i : items) {
          if (!i.getParentRoom().equals(GameEngine.unassignedItemRoom)) {
             throw new RuntimeException("Item " + i + " is already assigned to another room. Error. " + ctx.getText());
@@ -653,9 +654,10 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
 
       // Perform knowledgeupdates here that were mentioned in item block
       String roomPrefix = Item.roomId(room.getName());
-      System.out.println(itemUpdates);
-      for (Item i : items) {
-         System.out.println("I: " + i.getName());
+      for (int index = 0; index<itemsAndUpdates.size(); index++) {
+         Item item = itemsAndUpdates.get(index).first;
+         List<KnowledgeUpdate> updates = itemsAndUpdates.get(index).second;
+/*         System.out.println("I: " + i.getName());
          System.out.println(i.hashCode());
          for (Item j : itemUpdates.keySet()) {
             System.out.println("J: " + j.getName());
@@ -665,9 +667,8 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
                System.out.println(itemUpdates.get(i));
                System.out.println(itemUpdates.get(j));
             }
-         }
-         List<KnowledgeUpdate> kus = itemUpdates.getOrDefault(i, new ArrayList<>());
-         for (KnowledgeUpdate ku : kus) {
+         }*/
+         for (KnowledgeUpdate ku : updates) {
             KnowledgeUpdate roomKu = addRoomToKnowledgeUpdate(ku, roomPrefix);
             gameEngine.updateKnowledgeBase(roomKu);
          }
@@ -748,8 +749,8 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       try {
          String kuString = asString(ctx.SINGLE_STRING());
          // This is done so that item knowledge updates pass as valid KUs. They are later updated.
-         String kuStringWorld = prependRoomPrefix(kuString, PLACEHOLDER_FRAME_NAME);
-         return new KnowledgeUpdate(kuStringWorld);
+         /*String kuStringWorld = prependRoomPrefix(kuString, PLACEHOLDER_FRAME_NAME);*/
+         return new KnowledgeUpdate(kuString);
       }
       catch (KnowledgeException e) {
          throw new RuntimeException("Error when visiting knowledge update: " + ctx.SINGLE_STRING() + "." + e.getMessage());
@@ -777,7 +778,7 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
          return globalItems.get(id);
       }
       else if (ctx.item_ref() != null) {
-         return visitItem_ref(ctx.item_ref());
+         return visitItem_ref(ctx.item_ref()).first;
       }
       else {
          throw new RuntimeException("Invalid type of global item " + ctx.getText());

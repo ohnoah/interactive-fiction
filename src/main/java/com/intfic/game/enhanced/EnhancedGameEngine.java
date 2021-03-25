@@ -59,7 +59,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    private String notDesignedImplementedFollow(String message) {
-      if (message.contains("You pull") ) {
+      if (message.contains("You pull")) {
          return message.substring(0, message.length() - 1) + " slightly but nothing interesting happens so you pull it back.";
       }
       else if (message.contains("You push")) {
@@ -334,7 +334,10 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
          return false;
       }
       EnhancedGameEngine that = (EnhancedGameEngine) o;
-      return designerActions.equals(that.designerActions) && knowledgeBase.equals(that.knowledgeBase) && inventoryItems.equals(that.inventoryItems);
+      boolean actionsEqual = designerActions.equals(that.designerActions);
+      boolean kbEqual = knowledgeBase.equals(that.knowledgeBase);
+      boolean inventoryEqual = inventoryItems.equals(that.inventoryItems);
+      return actionsEqual && kbEqual && inventoryEqual;
    }
 
    @Override

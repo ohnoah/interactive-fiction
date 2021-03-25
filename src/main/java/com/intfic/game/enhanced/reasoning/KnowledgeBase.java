@@ -344,7 +344,7 @@ public class KnowledgeBase implements Serializable {
    public String toString() {
       return "KnowledgeBase{ \n " +
           "genericFrames=" + String.join(",\n", genericFrames.values().stream().map(GenericFrame::toString).collect(Collectors.toList())) +
-          ",\n specificFrames=" + String.join(",\n", specificFrames.values().stream().map(SpecificFrame::toString).collect(Collectors.toList()) ) +
+          ",\n specificFrames=" + String.join(",\n", specificFrames.values().stream().map(SpecificFrame::toString).collect(Collectors.toList())) +
           '}';
    }
 
@@ -360,7 +360,6 @@ public class KnowledgeBase implements Serializable {
              ", slot: %s - %s (%s) - to Boolean", frame, slot, queryResult.toString(), queryResult.getClass().getName()));
       }
    }
-
 
 
    public List<Double> queryDoubleList(String frame, String slot) throws KnowledgeException, MissingKnowledgeException {
@@ -426,7 +425,9 @@ public class KnowledgeBase implements Serializable {
          return false;
       }
       KnowledgeBase that = (KnowledgeBase) o;
-      return genericFrames.equals(that.genericFrames) && specificFrames.equals(that.specificFrames);
+      boolean gfEquals = genericFrames.equals(that.genericFrames);
+      boolean sfEquals = specificFrames.equals(that.specificFrames);
+      return gfEquals && sfEquals;
    }
 
    @Override
