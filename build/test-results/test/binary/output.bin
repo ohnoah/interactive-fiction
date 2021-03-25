@@ -1,3 +1,41 @@
+°{[] banana from room: first room=[KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='place_holder_frame_that_make_ku_valid.banana', slotToUpdate='randomTrait9', foreignFrame='null', foreignSlot='null', updateConstant=happy}], [green,sour] apple from room: first room=[KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='place_holder_frame_that_make_ku_valid.apple', slotToUpdate='randomTrait9', foreignFrame='null', foreignSlot='null', updateConstant=happy}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='first_room.apple', slotToUpdate='preliminary', foreignFrame='null', foreignSlot='null', updateConstant=4.0}]}
+
+I: orange
+
+937399159
+
+J: banana
+-2086581522
+	J: apple
+-2140393433
+	I: apple
+-2140393433
+
+J: banana
+-2086581522
+	J: apple
+-2140393433
+true
+null
+null
+	I: apple
+-1012247133
+
+J: banana
+-2086581522
+	J: apple
+-2140393433
+
+I: banana
+-2086581522
+
+J: banana
+-2086581522
+true
+null
+null
+	J: apple
+-2140393433
 apple::mass > 4.0
 first_room.apple::mass > 4.0
 world::items IS []
@@ -6,14 +44,16 @@
 first_room.apple::isContainer
 world::inventory IS []
 world::inventory IS []
-ÚALREADY VALID KU com.interactivefiction.game.enhanced.reasoning.updates.KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='applesCollected', foreignFrame='null', foreignSlot='null', updateConstant=5.0}
-ÁALREADY VALID KU com.interactivefiction.game.enhanced.reasoning.updates.KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='mass', foreignFrame='null', foreignSlot='null', updateConstant=3.0}
-ÔALREADY VALID KU com.interactivefiction.game.enhanced.reasoning.updates.KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='isContainer', foreignFrame='null', foreignSlot='null', updateConstant=true}
-ÓALREADY VALID KU com.interactivefiction.game.enhanced.reasoning.updates.KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='randomState', foreignFrame='null', foreignSlot='null', updateConstant=4.0}
+ªALREADY VALID KU KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='applesCollected', foreignFrame='null', foreignSlot='null', updateConstant=5.0}
+∞ALREADY VALID KU KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='mass', foreignFrame='null', foreignSlot='null', updateConstant=3.0}
+∏ALREADY VALID KU KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='isContainer', foreignFrame='null', foreignSlot='null', updateConstant=true}
+∑ALREADY VALID KU KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='randomState', foreignFrame='null', foreignSlot='null', updateConstant=4.0}
+apple::mass > 4.0
+first_room.apple::mass > 4.0
 ’{first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.apple_2=[] apple from room: first room, first_room.orange=[] orange from room: first room}
-¯EnhancedGameEngine{designerActions={Room{name='first room', items={first_room.apple_2=[] apple from room: first room, first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.orange=[] orange from room: first room}}={com.intfic.game.shared.InstantiatedGameAction@47657ef7=com.intfic.game.enhanced.EnhancedGameDesignAction@7d9e1701, com.intfic.game.shared.InstantiatedGameAction@7f66664e=com.intfic.game.enhanced.EnhancedGameDesignAction@dae110ca, com.intfic.game.shared.InstantiatedGameAction@895ed485=com.intfic.game.enhanced.EnhancedGameDesignAction@7d9e1701, com.intfic.game.shared.InstantiatedGameAction@d627a3db=com.intfic.game.enhanced.EnhancedGameDesignAction@7d9e1701, com.intfic.game.shared.InstantiatedGameAction@215a5d95=com.intfic.game.enhanced.EnhancedGameDesignAction@7d9e1701}}, knowledgeBase=KnowledgeBase{ 
+˚,EnhancedGameEngine{designerActions={Room{name='first room', items={first_room.apple_2=[] apple from room: first room, first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.orange=[] orange from room: first room}}={com.intfic.game.shared.InstantiatedGameAction@47657ef7=EnhancedGameDesignAction{preconditions=[Condition{booleanExpr='first_room.apple::mass > 4.0', failureMessage='The mass is not right. It is apple::mass'}, Condition{booleanExpr='world::items IS []', failureMessage='The inventory is nto right. It is world::items'}, Condition{booleanExpr='first_room.apple::isContainer', failureMessage='The apple is not a container. It is apple:isContainer'}, Condition{booleanExpr='world::inventory IS []', failureMessage='The inventory is not empty'}], message='You succeeded. world::randomState is random state', updateState=[KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='applesCollected', foreignFrame='null', foreignSlot='null', updateConstant=5.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='mass', foreignFrame='null', foreignSlot='null', updateConstant=3.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='isContainer', foreignFrame='null', foreignSlot='null', updateConstant=true}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='randomState', foreignFrame='null', foreignSlot='null', updateConstant=4.0}]}, com.intfic.game.shared.InstantiatedGameAction@7f66664e=EnhancedGameDesignAction{preconditions=[Condition{booleanExpr='first_room.apple::mass > 4.0', failureMessage='The mass is not right. It is apple::mass'}], message='The apple is green and juicy. It is first_room.banana::randomTrait9', updateState=[]}, com.intfic.game.shared.InstantiatedGameAction@895ed485=EnhancedGameDesignAction{preconditions=[Condition{booleanExpr='first_room.apple::mass > 4.0', failureMessage='The mass is not right. It is apple::mass'}, Condition{booleanExpr='world::items IS []', failureMessage='The inventory is nto right. It is world::items'}, Condition{booleanExpr='first_room.apple::isContainer', failureMessage='The apple is not a container. It is apple:isContainer'}, Condition{booleanExpr='world::inventory IS []', failureMessage='The inventory is not empty'}], message='You succeeded. world::randomState is random state', updateState=[KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='applesCollected', foreignFrame='null', foreignSlot='null', updateConstant=5.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='mass', foreignFrame='null', foreignSlot='null', updateConstant=3.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='isContainer', foreignFrame='null', foreignSlot='null', updateConstant=true}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='randomState', foreignFrame='null', foreignSlot='null', updateConstant=4.0}]}, com.intfic.game.shared.InstantiatedGameAction@d627a3db=EnhancedGameDesignAction{preconditions=[Condition{booleanExpr='first_room.apple::mass > 4.0', failureMessage='The mass is not right. It is apple::mass'}, Condition{booleanExpr='world::items IS []', failureMessage='The inventory is nto right. It is world::items'}, Condition{booleanExpr='first_room.apple::isContainer', failureMessage='The apple is not a container. It is apple:isContainer'}, Condition{booleanExpr='world::inventory IS []', failureMessage='The inventory is not empty'}], message='You succeeded. world::randomState is random state', updateState=[KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='applesCollected', foreignFrame='null', foreignSlot='null', updateConstant=5.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='mass', foreignFrame='null', foreignSlot='null', updateConstant=3.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='isContainer', foreignFrame='null', foreignSlot='null', updateConstant=true}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='randomState', foreignFrame='null', foreignSlot='null', updateConstant=4.0}]}, com.intfic.game.shared.InstantiatedGameAction@215a5d95=EnhancedGameDesignAction{preconditions=[Condition{booleanExpr='first_room.apple::mass > 4.0', failureMessage='The mass is not right. It is apple::mass'}, Condition{booleanExpr='world::items IS []', failureMessage='The inventory is nto right. It is world::items'}, Condition{booleanExpr='first_room.apple::isContainer', failureMessage='The apple is not a container. It is apple:isContainer'}, Condition{booleanExpr='world::inventory IS []', failureMessage='The inventory is not empty'}], message='You succeeded. world::randomState is random state', updateState=[KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='applesCollected', foreignFrame='null', foreignSlot='null', updateConstant=5.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='mass', foreignFrame='null', foreignSlot='null', updateConstant=3.0}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='apple', slotToUpdate='isContainer', foreignFrame='null', foreignSlot='null', updateConstant=true}, KnowledgeUpdate{updateType=SET, settingType=CONSTANT, frameToUpdate='world', slotToUpdate='randomState', foreignFrame='null', foreignSlot='null', updateConstant=4.0}]}}}, knowledgeBase=KnowledgeBase{ 
 1 genericFrames=GenericFrame{ id='nonContainer' ,
-r slots={isEdible=false, isTakeable=false, isContained=false, isContainer=false, state=solid, isDrinkable=false}},
+r slots={isEdible=false, isTakeable=false, isContained=false, isContainer=false, isDrinkable=false, state=solid}},
 GenericFrame{ id='container' ,
 ^ slots={volume=50.0, contains=[], isContained=false, isContainer=true, internalVolume=50.0}},
 GenericFrame{ id='massive' ,
@@ -31,10 +71,10 @@
 + specificFrames=SpecificFrame{ id='world',
 r slots={liftingPower=100.0, errorMessage=You can't do that right now., inventory=[], items=[], room=first room}},
 &SpecificFrame{ id='first_room.apple',
-ÿ slots={isEdible=false, isTakeable=false, elasticity=high, mass=50.0, isContainer=true, internalVolume=50.0, fruitiness=4.0, volume=50.0, contains=[], isContained=false, name=apple, state=solid, isDrinkable=false}},
+ÿ slots={isEdible=false, isTakeable=false, elasticity=high, mass=50.0, isContainer=true, internalVolume=50.0, fruitiness=4.0, volume=50.0, contains=[], isContained=false, name=apple, isDrinkable=false, state=solid}},
 'SpecificFrame{ id='first_room.banana',
-† slots={isEdible=false, isTakeable=false, elasticity=high, isContained=false, mass=1000.0, isContainer=false, state=solid, isDrinkable=false, fruitiness=4.0}},
+† slots={isEdible=false, isTakeable=false, elasticity=high, isContained=false, mass=1000.0, isContainer=false, isDrinkable=false, state=solid, fruitiness=4.0}},
 (SpecificFrame{ id='first_room.apple_2',
-} slots={isEdible=false, isTakeable=false, isContained=false, mass=50.0, isContainer=false, state=solid, isDrinkable=false}},
+} slots={isEdible=false, isTakeable=false, isContained=false, mass=50.0, isContainer=false, isDrinkable=false, state=solid}},
 'SpecificFrame{ id='first_room.orange',
-Å slots={isEdible=false, isTakeable=false, isContained=false, mass=50.0, isContainer=false, state=solid, isDrinkable=false}}}, worldRooms=[Room{name='first room', items={first_room.apple_2=[] apple from room: first room, first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.orange=[] orange from room: first room}}], currentRoom=Room{name='first room', items={first_room.apple_2=[] apple from room: first room, first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.orange=[] orange from room: first room}}}
+Å slots={isEdible=false, isTakeable=false, isContained=false, mass=50.0, isContainer=false, isDrinkable=false, state=solid}}}, worldRooms=[Room{name='first room', items={first_room.apple_2=[] apple from room: first room, first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.orange=[] orange from room: first room}}], currentRoom=Room{name='first room', items={first_room.apple_2=[] apple from room: first room, first_room.apple=[green,sour] apple from room: first room, first_room.banana=[] banana from room: first room, first_room.orange=[] orange from room: first room}}}

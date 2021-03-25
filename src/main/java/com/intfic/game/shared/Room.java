@@ -36,7 +36,7 @@ public class Room implements Serializable {
 
    public void setItems(@NotNull List<Item> items) {
       List<Item> itemsSoFar = new ArrayList<>();
-      for(Item i : items){
+      for (Item i : items) {
          // This will trigger update of IDs that can be used in the map
          itemsSoFar.add(i);
          i.setParentRoom(this, itemsSoFar);
@@ -65,12 +65,12 @@ public class Room implements Serializable {
          return false;
       }
       Room room = (Room) o;
-      return getName().toLowerCase().equals(room.getName().toLowerCase());
+      return getName().equalsIgnoreCase(room.getName());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(getName());
+      return Objects.hash(getName().toLowerCase());
    }
 
    public String getName() {
@@ -82,8 +82,8 @@ public class Room implements Serializable {
    }
 
    public boolean isValidItemIdentifierList(List<String> items) {
-      for(String s : items){
-         if(!this.items.containsKey(s)){
+      for (String s : items) {
+         if (!this.items.containsKey(s)) {
             return false;
          }
       }

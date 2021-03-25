@@ -201,7 +201,7 @@ public class KnowledgeUpdate implements Serializable {
 
    @Override
    public String toString() {
-      return "com.interactivefiction.game.enhanced.reasoning.updates.KnowledgeUpdate{" +
+      return "KnowledgeUpdate{" +
           "updateType=" + updateType +
           ", settingType=" + settingType +
           ", frameToUpdate='" + frameToUpdate + '\'' +

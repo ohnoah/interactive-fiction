@@ -24,43 +24,55 @@ public class GameCompilerTest {
 
    private static EnhancedGameEngine makeTestGrammarEngine() throws KnowledgeException {
       EnhancedGameEngine enhancedGameEngine = new EnhancedGameEngine();
+      Room room = new Room("first room");
+
+
       Item apple = new Item("apple", Set.of("sour", "green"), Set.of("green fruit"));
       Item apple2 = new Item("apple");
-      Item banana = new Item("apple", Set.of(), Set.of("plantain"));
+      Item banana = new Item("banana", Set.of(), Set.of("plantain"));
+      Item orange = new Item("orange");
 
-      Room room = new Room("first room");
-      room.setItems(List.of(apple, apple2, banana));
+      room.setItems(List.of(apple, apple2, banana, orange));
+
+      enhancedGameEngine.addRoom(room);
+      enhancedGameEngine.setCurrentRoom(room);
+      enhancedGameEngine.setStartMessage("Welcome to the first room");
+
 
       // initial item knowledge
       // apple knowledge
       enhancedGameEngine.updateKnowledgeBaseMultiple(
-          new KnowledgeUpdate("apple::randomTrait9 := \"happy\""),
+          new KnowledgeUpdate("first_room.apple::randomTrait9 := \"happy\""),
           new KnowledgeUpdate("first_room.apple::preliminary := 4.0")
       );
       // banana knowledge
       enhancedGameEngine.updateKnowledgeBaseMultiple(
-          new KnowledgeUpdate("banana::randomTrait9 := \"happy\"")
+          new KnowledgeUpdate("first_room.banana::randomTrait9 := \"happy\"")
       );
 
+      enhancedGameEngine.addActionFormat(new ActionFormat("move"));
+      enhancedGameEngine.addActionFormat(new ActionFormat("swim", "swim (([\\w\\s]+)) in ([\\w\\s]+)$"));
 
-      Condition appleMass = new Condition("apple::mass > 4.0", "The mass is not right. It is apple::mass");
-      Condition itemsCond = new Condition("world::items IS []", "The inventory is nto right. It is world::items");
+      Condition appleMass = new Condition("first_room.apple::mass > 4.0",
+          "The mass is not right. It is apple::mass");
+      Condition itemsCond = new Condition("world::items IS []",
+          "The inventory is nto right. It is world::items");
       KnowledgeUpdate appleNewMass = new KnowledgeUpdate("world::applesCollected := 5.0");
-      KnowledgeUpdate appleNewVolume = new KnowledgeUpdate("apple::mass := 3.0");
+      KnowledgeUpdate appleNewVolume = new KnowledgeUpdate("first_room.apple::mass := 3.0");
 
       EnhancedGameDesignAction putActionOne = new EnhancedGameDesignAction(
           List.of(appleMass, itemsCond,
-              new Condition("apple::isContainer",
-                  "The apple is not a container. It is apple::isContainer"),
+              new Condition("first_room.apple::isContainer",
+                  "The apple is not a container. It is first_room.apple::isContainer"),
               new Condition("world::inventory IS []",
                   "The inventory is not empty")),
           "You succeeded. world::randomState is random state.",
-          List.of(appleNewMass, appleNewVolume, new KnowledgeUpdate("apple::isContainer := true"),
+          List.of(appleNewMass, appleNewVolume, new KnowledgeUpdate("first_room.apple::isContainer := true"),
               new KnowledgeUpdate("world::randomState := 4.0"))
       );
       EnhancedGameDesignAction examineTwo = new EnhancedGameDesignAction(
           List.of(appleMass),
-          "The apple is green and juicy. It is banana::randomTrait9",
+          "The apple is green and juicy. It is first_room.banana::randomTrait9",
           List.of()
       );
 
@@ -81,16 +93,27 @@ public class GameCompilerTest {
       GenericFrame gf = new GenericFrame("fruit");
       gf.addSlot("fruitiness", "4.0");
       gf.addSlot("elasticity", "high");
+      enhancedGameEngine.getKnowledgeBase().addGenericFrame(gf);
       enhancedGameEngine.addParent("first_room.apple", "fruit");
       enhancedGameEngine.addParent("first_room.apple", "container");
       enhancedGameEngine.addParent("first_room.banana", "fruit");
 
+
+      enhancedGameEngine.updateKnowledgeBaseMultiple(
+          new KnowledgeUpdate("first_room.banana::mass := 1000"),
+          new KnowledgeUpdate("first_room.apple::name := \"apple\"")
+      );
+
+      return enhancedGameEngine;
+
    }
 
    @Test
-   public void compileTestGrammar() throws IOException {
-      EnhancedGameEngine enhancedGameEngine = GameCompiler.compile(Path.of("test-grammar.txt"));
-      System.out.println(enhancedGameEngine);
-      assertTrue(enhancedGameEngine.globalItems().containsKey("first_room.apple"));
+   public void compileTestGrammar() throws IOException, KnowledgeException {
+      EnhancedGameEngine txtEngine = GameCompiler.compile(Path.of("test-grammar.txt"));
+      EnhancedGameEngine codeEngine = makeTestGrammarEngine();
+      System.out.println(txtEngine);
+      assertTrue(txtEngine.globalItems().containsKey("first_room.apple"));
+      assertEquals(codeEngine, txtEngine);
    }
 }

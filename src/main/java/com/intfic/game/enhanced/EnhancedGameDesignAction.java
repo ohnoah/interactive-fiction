@@ -73,4 +73,12 @@ public class EnhancedGameDesignAction implements Serializable {
       return Objects.hash(getPreconditions(), getMessage(), getUpdateState());
    }
 
+   @Override
+   public String toString() {
+      return "EnhancedGameDesignAction{" +
+          "preconditions=" + preconditions +
+          ", message='" + message + '\'' +
+          ", updateState=" + updateState +
+          '}';
+   }
 }

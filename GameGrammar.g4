@@ -217,7 +217,7 @@ PREFIX_ROOM : 'prefix_room';
 
 
 SINGLE_STRING     : SINGLE_QUOTE ["a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* SINGLE_QUOTE;
-STRING     : QUOTE ['a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* QUOTE;
+STRING     : QUOTE ['a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_`{|}~\r\t\n\u000C \\]* QUOTE;
 ALPHANUMERIC : [a-zA-Z0-9]+;
 INTEGER    : [0-9]+;
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;

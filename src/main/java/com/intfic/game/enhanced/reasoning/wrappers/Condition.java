@@ -50,6 +50,14 @@ public class Condition implements Serializable {
    }
 
    @Override
+   public String toString() {
+      return "Condition{" +
+          "booleanExpr='" + booleanExpr + '\'' +
+          ", failureMessage='" + failureMessage + '\'' +
+          '}';
+   }
+
+   @Override
    public int hashCode() {
       return Objects.hash(getBooleanExpr(), getFailureMessage());
    }

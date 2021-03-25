@@ -4,8 +4,9 @@ import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarLexer;
 import com.intfic.game.enhanced.gamebuilder.generated.GameGrammarParser;
 import com.intfic.game.enhanced.reasoning.error.ThrowingErrorListener;
-import com.intfic.game.shared.GameEngine;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.antlr.v4.runtime.CharStreams;
@@ -26,7 +27,14 @@ public class GameCompiler {
 
    public static EnhancedGameEngine compile(Path gameFile) throws IOException {
       String fileContents = Files.readString(gameFile);
-      return compile(fileContents);
+      EnhancedGameEngine gameEngine =  compile(fileContents);
+      FileOutputStream fileOut =
+          new FileOutputStream(gameFile.toString().replace(".txt", ".ser"));
+      ObjectOutputStream out = new ObjectOutputStream(fileOut);
+      out.writeObject(gameEngine);
+      out.close();
+      fileOut.close();
+      return gameEngine;
    }
 
 }

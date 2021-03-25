@@ -79,6 +79,11 @@ custom_trigger{
 }
 
 
+custom_trigger{
+	swim;
+	"swim (([\w\s]+)) in ([\w\s]+)$";
+}
+
 
 
 

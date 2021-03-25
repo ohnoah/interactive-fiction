@@ -82,7 +82,7 @@ public class Item implements Serializable {
          return false;
       }
       Item item = (Item) o;
-      return getName().equals(item.getName()) &&
+      return getName().equalsIgnoreCase(item.getName()) &&
           getAdjectives().equals(item.getAdjectives()) &&
           getOriginalRoom().equals(item.getOriginalRoom());
    }

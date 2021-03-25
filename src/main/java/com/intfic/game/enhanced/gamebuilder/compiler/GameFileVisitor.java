@@ -648,9 +648,24 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
       Room room = new Room(roomName);
       room.setItems(items);
 
+      // need to add the room here so that it exists in gameengine map. this also creates frames
+      gameEngine.addRoom(room);
+
       // Perform knowledgeupdates here that were mentioned in item block
       String roomPrefix = Item.roomId(room.getName());
+      System.out.println(itemUpdates);
       for (Item i : items) {
+         System.out.println("I: " + i.getName());
+         System.out.println(i.hashCode());
+         for (Item j : itemUpdates.keySet()) {
+            System.out.println("J: " + j.getName());
+            System.out.println(j.hashCode());
+            if(j.hashCode() == i.hashCode()){
+               System.out.println(i.equals(j));
+               System.out.println(itemUpdates.get(i));
+               System.out.println(itemUpdates.get(j));
+            }
+         }
          List<KnowledgeUpdate> kus = itemUpdates.getOrDefault(i, new ArrayList<>());
          for (KnowledgeUpdate ku : kus) {
             KnowledgeUpdate roomKu = addRoomToKnowledgeUpdate(ku, roomPrefix);
@@ -658,9 +673,6 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
          }
       }
 
-
-      // need to add the room here so that it exists in gameengine map
-      gameEngine.addRoom(room);
 
       List<String> actionIdsInRoom = visitActions(ctx.actions());
 
