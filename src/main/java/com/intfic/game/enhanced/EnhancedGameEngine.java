@@ -469,7 +469,8 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
    }
 
    public boolean addParent(String child, String parent) {
-      Map<String, SpecificFrame> specificFrameMap = this.knowledgeBase.getSpecificFrames();
+      return this.getKnowledgeBase().addParent(child, parent);
+/*      Map<String, SpecificFrame> specificFrameMap = this.knowledgeBase.getSpecificFrames();
       Map<String, GenericFrame> genericFrameMap = this.knowledgeBase.getGenericFrames();
       if (specificFrameMap.containsKey(child)) {
          if (genericFrameMap.containsKey(parent)) {
@@ -477,7 +478,7 @@ public class EnhancedGameEngine extends GameEngine implements Serializable {
             return true;
          }
       }
-      return false;
+      return false;*/
    }
 
    public void addToInventory(Item itemInRoom) {

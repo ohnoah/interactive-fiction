@@ -87,6 +87,13 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code inheritBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code notBooleanType}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree

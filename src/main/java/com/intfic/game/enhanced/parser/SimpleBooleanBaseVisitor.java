@@ -101,6 +101,13 @@ public class SimpleBooleanBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

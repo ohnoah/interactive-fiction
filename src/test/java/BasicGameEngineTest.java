@@ -7,6 +7,7 @@ import com.intfic.game.basic.BasicGameDesignAction;
 import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
+import com.intfic.game.enhanced.reasoning.wrappers.Condition;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
@@ -166,6 +167,15 @@ public class BasicGameEngineTest {
 
       assertFalse(justEnter.isAccepted());
       assertEquals("RANDOMINA FAIL", justEnter.getReasoning());
+   }
+
+
+   @Test
+   public void basicGameConditionEquals() {
+      BasicCondition c1 = new BasicCondition("banana", "true", "False");
+      BasicCondition c2 = new BasicCondition("banana", "true", "False");
+      assertEquals(c1, c2);
+      assertEquals(c1, c1);
    }
 
 

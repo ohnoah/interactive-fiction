@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import com.intfic.game.enhanced.reasoning.KnowledgeBase;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
+import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
 import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Rule;
@@ -350,6 +351,50 @@ public class ConditionEvaluationVisitorTest {
       Boolean result = produceBooleanResult(kb, expression);
    }
 
+
+   @Test
+   public void slashGenericFrameSuccess() throws KnowledgeException, MissingKnowledgeException {
+      String expression1 = "\"Test_932\" / \"parent1\"";
+      String expression2 = "\"Test_932\" / \"parent2\"";
+      String expression3 = "\"Test92\" / \"parent1\"";
+      String expression4 = "\"Test92\" / \"parent2\"";
+      KnowledgeBase kb = new KnowledgeBase();
+
+      GenericFrame g1 = new GenericFrame("parent1");
+      g1.addSlot("banana", "apple");
+
+      GenericFrame g2 = new GenericFrame("parent2");
+      g2.addSlot("fruit", "notfruit");
+
+      kb.addGenericFrame(g1);
+      kb.addGenericFrame(g2);
+
+      SpecificFrame s = new SpecificFrame("Test_932");
+      s.updateFiller("Ural1234", "hello");
+
+
+
+
+      SpecificFrame s2 = new SpecificFrame("Test92");
+      s2.updateFiller("Ural123", 4.5);
+
+      kb.addSpecificFrame(s);
+      kb.addSpecificFrame(s2);
+
+
+      kb.addParent(s.getId(), g1.getId());
+      kb.addParent(s.getId(), g2.getId());
+      kb.addParent(s2.getId(), g2.getId());
+
+      Boolean result1 = produceBooleanResult(kb, expression1);
+      Boolean result2 = produceBooleanResult(kb, expression2);
+      Boolean result3 = produceBooleanResult(kb, expression3);
+      Boolean result4 = produceBooleanResult(kb, expression4);
+      assertTrue(result1);
+      assertTrue(result2);
+      assertFalse(result3);
+      assertTrue(result4);
+   }
 
    @Test
    public void identifierStringExpressionSuccess() throws KnowledgeException, MissingKnowledgeException {

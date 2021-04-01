@@ -136,6 +136,18 @@ public interface SimpleBooleanListener extends ParseTreeListener {
 	 */
 	void exitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code inheritBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void enterInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code inheritBooleantype}
+	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
+	 * @param ctx the parse tree
+	 */
+	void exitInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code notBooleanType}
 	 * labeled alternative in {@link SimpleBooleanParser#booleantype}.
 	 * @param ctx the parse tree

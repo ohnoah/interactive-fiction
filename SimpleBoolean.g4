@@ -49,6 +49,7 @@ booleantype
  | left=list IS right=list #listComparatorBooleantype
  | stringtype IN list #stringInBooleantype
  | numbertype IN list #numberInBooleantype
+ | stringtype SLASH stringtype #inheritBooleantype
  | bool #boolBooleantype
  | IDENTIFIER #identifierBooleantype
  ;
@@ -87,6 +88,7 @@ EQ         : '=' ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 QUOTE      : '"' ;
+SLASH      : '/' ;
 STRING     : ["] [a-zA-Z0-9'!#$%&()*+,-./:;<=>?@[\]^_`{|}~\r\t\n\u000C ]* ["];
 DECIMAL    : '-'? [0-9]+ ( '.' [0-9]+ )? ;
 IDENTIFIER : [!]? ([a-zA-Z0-9_.]+) [:] [:] [a-zA-Z0-9]+;

@@ -18,8 +18,8 @@ public class SimpleBooleanParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		IS=1, IN=2, AND=3, OR=4, NOT=5, TRUE=6, FALSE=7, GT=8, GE=9, LT=10, LE=11, 
-		EQ=12, LPAREN=13, RPAREN=14, QUOTE=15, STRING=16, DECIMAL=17, IDENTIFIER=18, 
-		BEGL=19, ENDL=20, SEP=21, WS=22;
+		EQ=12, LPAREN=13, RPAREN=14, QUOTE=15, SLASH=16, STRING=17, DECIMAL=18, 
+		IDENTIFIER=19, BEGL=20, ENDL=21, SEP=22, WS=23;
 	public static final int
 		RULE_parse = 0, RULE_list = 1, RULE_stringlist = 2, RULE_numberlist = 3, 
 		RULE_stringelems = 4, RULE_numberelems = 5, RULE_numbertype = 6, RULE_stringtype = 7, 
@@ -37,16 +37,16 @@ public class SimpleBooleanParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'IS'", "'IN'", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'", 
-			"'>'", "'>='", "'<'", "'<='", "'='", "'('", "')'", "'\"'", null, null, 
-			null, "'['", "']'", "','"
+			"'>'", "'>='", "'<'", "'<='", "'='", "'('", "')'", "'\"'", "'/'", null, 
+			null, null, "'['", "']'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "IS", "IN", "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", 
-			"LE", "EQ", "LPAREN", "RPAREN", "QUOTE", "STRING", "DECIMAL", "IDENTIFIER", 
-			"BEGL", "ENDL", "SEP", "WS"
+			"LE", "EQ", "LPAREN", "RPAREN", "QUOTE", "SLASH", "STRING", "DECIMAL", 
+			"IDENTIFIER", "BEGL", "ENDL", "SEP", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -679,6 +679,29 @@ public class SimpleBooleanParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class InheritBooleantypeContext extends BooleantypeContext {
+		public List<StringtypeContext> stringtype() {
+			return getRuleContexts(StringtypeContext.class);
+		}
+		public StringtypeContext stringtype(int i) {
+			return getRuleContext(StringtypeContext.class,i);
+		}
+		public TerminalNode SLASH() { return getToken(SimpleBooleanParser.SLASH, 0); }
+		public InheritBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterInheritBooleantype(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitInheritBooleantype(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitInheritBooleantype(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class NotBooleanTypeContext extends BooleantypeContext {
 		public TerminalNode NOT() { return getToken(SimpleBooleanParser.NOT, 0); }
 		public BooleantypeContext booleantype() {
@@ -858,7 +881,7 @@ public class SimpleBooleanParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(99);
+			setState(103);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
@@ -883,7 +906,7 @@ public class SimpleBooleanParser extends Parser {
 				setState(71);
 				match(NOT);
 				setState(72);
-				booleantype(10);
+				booleantype(11);
 				}
 				break;
 			case 3:
@@ -966,25 +989,38 @@ public class SimpleBooleanParser extends Parser {
 				break;
 			case 9:
 				{
-				_localctx = new BoolBooleantypeContext(_localctx);
+				_localctx = new InheritBooleantypeContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(97);
-				bool();
+				stringtype();
+				setState(98);
+				match(SLASH);
+				setState(99);
+				stringtype();
 				}
 				break;
 			case 10:
 				{
+				_localctx = new BoolBooleantypeContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(101);
+				bool();
+				}
+				break;
+			case 11:
+				{
 				_localctx = new IdentifierBooleantypeContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(98);
+				setState(102);
 				match(IDENTIFIER);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(107);
+			setState(111);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -996,16 +1032,16 @@ public class SimpleBooleanParser extends Parser {
 					_localctx = new BinaryBooleantypeContext(new BooleantypeContext(_parentctx, _parentState));
 					((BinaryBooleantypeContext)_localctx).left = _prevctx;
 					pushNewRecursionContext(_localctx, _startState, RULE_booleantype);
-					setState(101);
-					if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-					setState(102);
+					setState(105);
+					if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
+					setState(106);
 					((BinaryBooleantypeContext)_localctx).op = binary();
-					setState(103);
-					((BinaryBooleantypeContext)_localctx).right = booleantype(9);
+					setState(107);
+					((BinaryBooleantypeContext)_localctx).right = booleantype(10);
 					}
 					} 
 				}
-				setState(109);
+				setState(113);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
@@ -1060,7 +1096,7 @@ public class SimpleBooleanParser extends Parser {
 			_localctx = new BooleantypeExpressionContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(110);
+			setState(114);
 			booleantype(0);
 			}
 		}
@@ -1107,7 +1143,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(112);
+			setState(116);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -1159,7 +1195,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(114);
+			setState(118);
 			_la = _input.LA(1);
 			if ( !(_la==AND || _la==OR) ) {
 			_errHandler.recoverInline(this);
@@ -1211,7 +1247,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(116);
+			setState(120);
 			_la = _input.LA(1);
 			if ( !(_la==TRUE || _la==FALSE) ) {
 			_errHandler.recoverInline(this);
@@ -1244,42 +1280,43 @@ public class SimpleBooleanParser extends Parser {
 	private boolean booleantype_sempred(BooleantypeContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 8);
+			return precpred(_ctx, 9);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\30y\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31}\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
 		"\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\2\3\3\3\3\3\3\5\3#\n\3\3\4\3\4\5\4"+
 		"\'\n\4\3\4\3\4\3\5\3\5\5\5-\n\5\3\5\3\5\3\6\3\6\3\6\7\6\64\n\6\f\6\16"+
 		"\6\67\13\6\3\7\3\7\3\7\7\7<\n\7\f\7\16\7?\13\7\3\b\3\b\3\t\3\t\3\n\3\n"+
 		"\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3"+
-		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\nf\n\n\3\n\3"+
-		"\n\3\n\3\n\7\nl\n\n\f\n\16\no\13\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16"+
-		"\3\16\2\3\22\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\7\3\2\23\24\4\2\22"+
-		"\22\24\24\3\2\n\16\3\2\5\6\3\2\b\t\2{\2\34\3\2\2\2\4\"\3\2\2\2\6$\3\2"+
-		"\2\2\b*\3\2\2\2\n\60\3\2\2\2\f8\3\2\2\2\16@\3\2\2\2\20B\3\2\2\2\22e\3"+
-		"\2\2\2\24p\3\2\2\2\26r\3\2\2\2\30t\3\2\2\2\32v\3\2\2\2\34\35\5\24\13\2"+
-		"\35\36\7\2\2\3\36\3\3\2\2\2\37#\7\24\2\2 #\5\6\4\2!#\5\b\5\2\"\37\3\2"+
-		"\2\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$&\7\25\2\2%\'\5\n\6\2&%\3\2\2\2"+
-		"&\'\3\2\2\2\'(\3\2\2\2()\7\26\2\2)\7\3\2\2\2*,\7\25\2\2+-\5\f\7\2,+\3"+
-		"\2\2\2,-\3\2\2\2-.\3\2\2\2./\7\26\2\2/\t\3\2\2\2\60\65\5\20\t\2\61\62"+
-		"\7\27\2\2\62\64\5\20\t\2\63\61\3\2\2\2\64\67\3\2\2\2\65\63\3\2\2\2\65"+
-		"\66\3\2\2\2\66\13\3\2\2\2\67\65\3\2\2\28=\5\16\b\29:\7\27\2\2:<\5\16\b"+
-		"\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\r\3\2\2\2?=\3\2\2\2@A\t\2"+
-		"\2\2A\17\3\2\2\2BC\t\3\2\2C\21\3\2\2\2DE\b\n\1\2EF\7\17\2\2FG\5\22\n\2"+
-		"GH\7\20\2\2Hf\3\2\2\2IJ\7\7\2\2Jf\5\22\n\fKL\7\24\2\2LM\5\26\f\2MN\7\24"+
-		"\2\2Nf\3\2\2\2OP\5\20\t\2PQ\5\26\f\2QR\5\20\t\2Rf\3\2\2\2ST\5\16\b\2T"+
-		"U\5\26\f\2UV\5\16\b\2Vf\3\2\2\2WX\5\4\3\2XY\7\3\2\2YZ\5\4\3\2Zf\3\2\2"+
-		"\2[\\\5\20\t\2\\]\7\4\2\2]^\5\4\3\2^f\3\2\2\2_`\5\16\b\2`a\7\4\2\2ab\5"+
-		"\4\3\2bf\3\2\2\2cf\5\32\16\2df\7\24\2\2eD\3\2\2\2eI\3\2\2\2eK\3\2\2\2"+
-		"eO\3\2\2\2eS\3\2\2\2eW\3\2\2\2e[\3\2\2\2e_\3\2\2\2ec\3\2\2\2ed\3\2\2\2"+
-		"fm\3\2\2\2gh\f\n\2\2hi\5\30\r\2ij\5\22\n\13jl\3\2\2\2kg\3\2\2\2lo\3\2"+
-		"\2\2mk\3\2\2\2mn\3\2\2\2n\23\3\2\2\2om\3\2\2\2pq\5\22\n\2q\25\3\2\2\2"+
-		"rs\t\4\2\2s\27\3\2\2\2tu\t\5\2\2u\31\3\2\2\2vw\t\6\2\2w\33\3\2\2\2\t\""+
-		"&,\65=em";
+		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n"+
+		"\5\nj\n\n\3\n\3\n\3\n\3\n\7\np\n\n\f\n\16\ns\13\n\3\13\3\13\3\f\3\f\3"+
+		"\r\3\r\3\16\3\16\3\16\2\3\22\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\7\3"+
+		"\2\24\25\4\2\23\23\25\25\3\2\n\16\3\2\5\6\3\2\b\t\2\u0080\2\34\3\2\2\2"+
+		"\4\"\3\2\2\2\6$\3\2\2\2\b*\3\2\2\2\n\60\3\2\2\2\f8\3\2\2\2\16@\3\2\2\2"+
+		"\20B\3\2\2\2\22i\3\2\2\2\24t\3\2\2\2\26v\3\2\2\2\30x\3\2\2\2\32z\3\2\2"+
+		"\2\34\35\5\24\13\2\35\36\7\2\2\3\36\3\3\2\2\2\37#\7\25\2\2 #\5\6\4\2!"+
+		"#\5\b\5\2\"\37\3\2\2\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$&\7\26\2\2%\'"+
+		"\5\n\6\2&%\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2()\7\27\2\2)\7\3\2\2\2*,\7\26"+
+		"\2\2+-\5\f\7\2,+\3\2\2\2,-\3\2\2\2-.\3\2\2\2./\7\27\2\2/\t\3\2\2\2\60"+
+		"\65\5\20\t\2\61\62\7\30\2\2\62\64\5\20\t\2\63\61\3\2\2\2\64\67\3\2\2\2"+
+		"\65\63\3\2\2\2\65\66\3\2\2\2\66\13\3\2\2\2\67\65\3\2\2\28=\5\16\b\29:"+
+		"\7\30\2\2:<\5\16\b\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\r\3\2\2"+
+		"\2?=\3\2\2\2@A\t\2\2\2A\17\3\2\2\2BC\t\3\2\2C\21\3\2\2\2DE\b\n\1\2EF\7"+
+		"\17\2\2FG\5\22\n\2GH\7\20\2\2Hj\3\2\2\2IJ\7\7\2\2Jj\5\22\n\rKL\7\25\2"+
+		"\2LM\5\26\f\2MN\7\25\2\2Nj\3\2\2\2OP\5\20\t\2PQ\5\26\f\2QR\5\20\t\2Rj"+
+		"\3\2\2\2ST\5\16\b\2TU\5\26\f\2UV\5\16\b\2Vj\3\2\2\2WX\5\4\3\2XY\7\3\2"+
+		"\2YZ\5\4\3\2Zj\3\2\2\2[\\\5\20\t\2\\]\7\4\2\2]^\5\4\3\2^j\3\2\2\2_`\5"+
+		"\16\b\2`a\7\4\2\2ab\5\4\3\2bj\3\2\2\2cd\5\20\t\2de\7\22\2\2ef\5\20\t\2"+
+		"fj\3\2\2\2gj\5\32\16\2hj\7\25\2\2iD\3\2\2\2iI\3\2\2\2iK\3\2\2\2iO\3\2"+
+		"\2\2iS\3\2\2\2iW\3\2\2\2i[\3\2\2\2i_\3\2\2\2ic\3\2\2\2ig\3\2\2\2ih\3\2"+
+		"\2\2jq\3\2\2\2kl\f\13\2\2lm\5\30\r\2mn\5\22\n\fnp\3\2\2\2ok\3\2\2\2ps"+
+		"\3\2\2\2qo\3\2\2\2qr\3\2\2\2r\23\3\2\2\2sq\3\2\2\2tu\5\22\n\2u\25\3\2"+
+		"\2\2vw\t\4\2\2w\27\3\2\2\2xy\t\5\2\2y\31\3\2\2\2z{\t\6\2\2{\33\3\2\2\2"+
+		"\t\"&,\65=iq";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

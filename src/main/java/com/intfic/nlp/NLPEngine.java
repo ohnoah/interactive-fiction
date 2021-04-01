@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class NLPEngine {
+
    /*public abstract InstantiatedGameAction parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException;*/
    //TODO: with wordnet synonyms
    // TODO: Throw FailedParseException if item not in this room is given
@@ -22,8 +23,11 @@ public abstract class NLPEngine {
       List<Item> currentItemsWithFreq = new ArrayList<>();
       boolean nounMatch = false;
       // First, look through the names and look for a match here
-      nounLoop:
       for (int i = 0; i < nouns.size(); i++) {
+         // Used for spell-checking
+         int bestDist = Integer.MAX_VALUE;
+         List<Item> bestSpellCheckMatch = new ArrayList<>();
+
          String noun = nouns.get(i);
          int numGivenAdjectives = adjectives.get(i).size();
          for (Item item : possibleItems) {
@@ -36,6 +40,17 @@ public abstract class NLPEngine {
                   currentItemsWithFreq.add(item);
                   /*matchingGameItems.add(item);*/
                   /*continue nounLoop;*/
+               }
+            }
+            else {
+               int dist = Util.damerauLevenstein(noun, itemName);
+               if(dist < bestDist){
+                  bestDist = dist;
+                  bestSpellCheckMatch = new ArrayList<>();
+                  bestSpellCheckMatch.add(item);
+               }
+               else if(dist == bestDist){
+                  bestSpellCheckMatch.add(item);
                }
             }
          }
@@ -57,6 +72,18 @@ public abstract class NLPEngine {
             }
          }
          if (currentItemsWithFreq.size() != 0) {
+            matchingGameItems.add(currentItemsWithFreq);
+            currentItemsWithFreq = new ArrayList<>();
+            continue;
+         }
+
+         if(bestDist <= 2){
+            for(Item spellCheck : bestSpellCheckMatch) {
+               long adjectiveMatch = adjectivesMatch(adjectives.get(i), spellCheck.getAdjectives());
+               if (adjectiveMatch == numGivenAdjectives) {
+                  currentItemsWithFreq.add(spellCheck);
+               }
+            }
             matchingGameItems.add(currentItemsWithFreq);
             currentItemsWithFreq = new ArrayList<>();
             continue;

@@ -399,6 +399,18 @@ public class KnowledgeBase implements Serializable {
       return i.getID();
    }
 
+   public boolean addParent(String child, String parent) {
+      Map<String, SpecificFrame> specificFrameMap = this.getSpecificFrames();
+      Map<String, GenericFrame> genericFrameMap = this.getGenericFrames();
+      if (specificFrameMap.containsKey(child)) {
+         if (genericFrameMap.containsKey(parent)) {
+            specificFrameMap.get(child).addParent(genericFrameMap.get(parent));
+            return true;
+         }
+      }
+      return false;
+   }
+
    public boolean createSpecificFrame(String i, String... gs) {
       SpecificFrame specificFrame = new SpecificFrame(replaceSpaces(i));
       for (String g : gs) {

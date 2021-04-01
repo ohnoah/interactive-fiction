@@ -3,13 +3,17 @@ package com.intfic.game.enhanced.reasoning.visitors;
 import com.intfic.game.enhanced.reasoning.KnowledgeBase;
 import com.intfic.game.enhanced.reasoning.KnowledgeRegex;
 import com.intfic.game.enhanced.reasoning.error.*;
+import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
+import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import com.intfic.game.enhanced.parser.SimpleBooleanParser;
 import com.intfic.game.enhanced.parser.SimpleBooleanBaseVisitor;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,9 +56,11 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
          try {
             return knowledgeBase.queryList(frameAndSlot.get(0), frameAndSlot.get(1));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage(), e);
-         } catch (MissingKnowledgeException e) {
+         }
+         catch (MissingKnowledgeException e) {
             throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
@@ -106,9 +112,11 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          try {
             List<String> frameAndSlot = frameAndSlot(identifier.getText());
             return knowledgeBase.queryDouble(frameAndSlot.get(0), frameAndSlot.get(1));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage(), e);
-         } catch (MissingKnowledgeException e) {
+         }
+         catch (MissingKnowledgeException e) {
             throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
@@ -125,9 +133,11 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          try {
             List<String> frameAndSlot = frameAndSlot(identifier.getText());
             return knowledgeBase.queryString(frameAndSlot.get(0), frameAndSlot.get(1));
-         } catch (KnowledgeException e) {
+         }
+         catch (KnowledgeException e) {
             throw new RuntimeKnowledgeException(e.getMessage(), e);
-         } catch (MissingKnowledgeException e) {
+         }
+         catch (MissingKnowledgeException e) {
             throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
          }
       }
@@ -165,9 +175,11 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       try {
          List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
          return knowledgeBase.queryBoolean(frameAndSlot.get(0), frameAndSlot.get(1));
-      } catch (KnowledgeException e) {
+      }
+      catch (KnowledgeException e) {
          throw new RuntimeKnowledgeException(e.getMessage(), e);
-      } catch (MissingKnowledgeException e) {
+      }
+      catch (MissingKnowledgeException e) {
          throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
       }
    }
@@ -197,9 +209,11 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
             throw new RuntimeKnowledgeException("The left argument " + ctx.left.getText() + "was neither String or Number " +
                 "but the comparator " + ctx.op.getText() + " is only for String and Number types.");
          }
-      } catch (KnowledgeException e) {
+      }
+      catch (KnowledgeException e) {
          throw new RuntimeKnowledgeException(e.getMessage(), e);
-      } catch (MissingKnowledgeException e) {
+      }
+      catch (MissingKnowledgeException e) {
          throw new RuntimeMissingException(e.getMessage(), e, e.getMissingString());
       }
    }
@@ -303,11 +317,27 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Object visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) {
+   public Boolean visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) {
       return !((Boolean) this.visit(ctx.booleantype()));
    }
 
+   @Override
+   public Boolean visitInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx) {
+      List<String> frameNames = ctx.stringtype().stream().map(this::visitStringtype).collect(Collectors.toList());
+      Map<String, SpecificFrame> specificFrameMap = knowledgeBase.getSpecificFrames();
+      Map<String, GenericFrame> genericFrameMap = knowledgeBase.getGenericFrames();
+      if (specificFrameMap.containsKey(frameNames.get(0)) && genericFrameMap.containsKey(frameNames.get(1))) {
+         SpecificFrame s1 = specificFrameMap.get(frameNames.get(0));
+         GenericFrame s2 = genericFrameMap.get(frameNames.get(1));
+         return s1.getSlots().keySet().containsAll(s2.getSlots().keySet());
+      }
+      else {
+         throw new RuntimeKnowledgeException(String.format("Couldn't check for inheritance for specific" +
+             " frame: %s and generic frame %s when running query %s because one of those frames" +
+             " is not in the KB", frameNames.get(0), frameNames.get(1), ctx.getText()));
+      }
 
+   }
    /// SDSDSDS
 
 
@@ -380,6 +410,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    private String asString(SimpleBooleanParser.StringtypeContext ctx) {
       return (String) visit(ctx);
    }
+
 
    private List<?> asList(SimpleBooleanParser.ListContext ctx) {
       return (List<?>) visit(ctx);

@@ -160,6 +160,18 @@ public class SimpleBooleanBaseListener implements SimpleBooleanListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}

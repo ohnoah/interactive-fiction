@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
 
 public final class Util {
 
@@ -168,5 +169,32 @@ public final class Util {
       Collections.sort(first);
       Collections.sort(second);
       return first.equals(second);
+   }
+
+   public static int damerauLevenstein(@NotNull String s1, @NotNull String s2) {
+      int s1Len = s1.length();
+      int s2Len = s2.length();
+      if (s1Len == 0) return s2Len;
+      if (s2Len == 0) return s1Len;
+      int[][] memoTable = new int[s1Len + 1][s2Len + 1];
+      for (int i = 0; i < s1Len + 1; i++) {
+         memoTable[i][0] = i;
+      }
+      for (int j = 0; j < s2Len + 1; j++) {
+         memoTable[0][j] = j;
+      }
+      for (int i = 1; i < s1Len + 1; i++) {
+         for (int j = 1; j < s2Len + 1; j++) {
+            int c = s1.charAt(i - 1) == s2.charAt(j - 1) ? 0 : 1;
+            memoTable[i][j] = Math.min(Math.min(memoTable[i - 1][j] + 1, memoTable[i][j - 1] + 1), memoTable[i - 1][j - 1] + c);
+            if (i > 1 &&
+                j > 1 &&
+                s1.charAt(i - 1) == s2.charAt(j - 2) &&
+                s1.charAt(i - 2) == s2.charAt(j - 1)) {
+               memoTable[i][j] = Math.min(memoTable[i][j], memoTable[i - 2][j - 2] + c);
+            }
+         }
+      }
+      return memoTable[s1Len][s2Len];
    }
 }
