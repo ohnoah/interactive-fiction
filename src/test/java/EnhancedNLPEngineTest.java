@@ -13,10 +13,12 @@ import com.intfic.game.shared.Item;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.util.Pair;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -557,7 +559,6 @@ public class EnhancedNLPEngineTest {
    }
 
 
-
    @Test
    public void findMatchingGameItemOneEditDistanceMultiple() throws FailedParseException {
       List<String> nouns = List.of("bea", "pande", "bearo");
@@ -569,9 +570,9 @@ public class EnhancedNLPEngineTest {
           bear, panda, bear2
       );
       List<List<Item>> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
-      assertEquals(List.of(bear, bear2),foundItemNames.get(0));
-      assertEquals(List.of(panda),foundItemNames.get(1));
-      assertEquals(List.of(bear, bear2),foundItemNames.get(2));
+      assertEquals(List.of(bear, bear2), foundItemNames.get(0));
+      assertEquals(List.of(panda), foundItemNames.get(1));
+      assertEquals(List.of(bear, bear2), foundItemNames.get(2));
 
    }
 
@@ -586,9 +587,9 @@ public class EnhancedNLPEngineTest {
           bear, panda, pear
       );
       List<List<Item>> foundItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, gameItems);
-      assertEquals(List.of(bear, pear),foundItemNames.get(0));
-      assertEquals(List.of(panda),foundItemNames.get(1));
-      assertEquals(List.of(bear, pear),foundItemNames.get(2));
+      assertEquals(List.of(bear, pear), foundItemNames.get(0).stream().sorted(Comparator.comparing(Item::getName)).collect(Collectors.toList()));
+      assertEquals(List.of(panda), foundItemNames.get(1));
+      assertEquals(List.of(bear, pear), foundItemNames.get(2).stream().sorted(Comparator.comparing(Item::getName)).collect(Collectors.toList()));
 
    }
 
@@ -607,7 +608,7 @@ public class EnhancedNLPEngineTest {
 
    }
 
-      @Test
+   @Test
    public void findMatchingGameItemNamesNoSynonyms() throws FailedParseException {
       List<String> nouns = List.of("bear", "panda", "owl");
       List<Set<String>> adjectives = List.of(Set.of("furry", "kind"), Set.of(), Set.of("funny"));

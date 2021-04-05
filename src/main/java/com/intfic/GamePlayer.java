@@ -1,295 +1,239 @@
 package com.intfic;
 
-import com.intfic.game.enhanced.EnhancedGameEditState;
+
+import com.intfic.game.enhanced.EnhancedGameEngine;
 import com.intfic.game.shared.GameEngine;
+import com.intfic.game.enhanced.FileErrorHandler;
+import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.Util;
-import java.awt.BorderLayout;
+import com.intfic.nlp.BasicNLPEngine;
+import com.intfic.nlp.EnhancedNLPEngine;
+import com.intfic.nlp.FailedParseException;
+import com.intfic.game.shared.ActionFormat;
+import com.intfic.game.shared.InstantiatedGameAction;
+import com.intfic.game.shared.Item;
+import edu.stanford.nlp.util.Pair;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
+import javax.swing.plaf.ActionMapUIResource;
 
-/**
- * com.interactivefiction.BasicGamePlayer
- *
- * @author Stefan Wagner, Noah Ohrner
- * @date Mi 25. Apr 17:27:19 CEST 2012, 17 Nov 2020
- * (c) GPLv3
- */
+public class GamePlayer extends AbstractGamePlayer implements Serializable {
 
-public abstract class GamePlayer extends JFrame implements Serializable {
-   List<String> questionBreakpoints;
-   int currentQuestionBreakPoint = 0;
 
-   boolean breakpointHit(GameEngine gameEngine) {
-      if (questionBreakpoints != null) {
-         if (currentQuestionBreakPoint < questionBreakpoints.size()) {
-            String booleanKeyWorld = questionBreakpoints.get(currentQuestionBreakPoint);
-            boolean accepted = gameEngine.getWorldBoolean(booleanKeyWorld);
-            if (accepted) {
-               currentQuestionBreakPoint++;
-            }
-            return accepted;
+   private static final String progname = "IF Game Player";
+   private GameEngine gameEngine = null;
+   private Pair<Set<String>, String> it;
+   private boolean isAskingQuestion = false;
+   private String lastResult;
+   private boolean isClarifying;
+   private List<Item> clarifiedArguments;
+   private InstantiatedGameAction clarifyingAction;
+   private boolean enhanced;
+
+
+   private void attemptToLoadGameEngine(String cmd, String sofar) {
+      writeToTerminal("Trying to load game file. Please wait", sofar);
+      try {
+         FileInputStream fileIn = new FileInputStream(cmd);
+         ObjectInputStream in = new ObjectInputStream(fileIn);
+         gameEngine = (GameEngine) in.readObject();
+         if(gameEngine instanceof EnhancedGameEngine){
+            this.enhanced = true;
          }
+         else{
+            this.enhanced = false;
+         }
+         in.close();
+         fileIn.close();
+         String startMessage = gameEngine.getStartMessage() != null ? gameEngine.getStartMessage() : "";
+         String questionMessage = (questions == null ? "WARNING: No questionarre questions loaded. Check that you have a questions.txt file in this folder" :
+             "Expect to answer about " + questions.size() + " questions as you play today.") + "\n" + "--------------------" + "\n";
+         history.setText(questionMessage + startMessage + "\n" + "> ");
+         input.setText("");
+         FileErrorHandler.firstError = true;
+      }
+      catch (IOException i) {
+         writeToTerminal(cmd, sofar, "Something went wrong when opening the file. Try again.");
+         i.printStackTrace();
+      }
+      catch (ClassNotFoundException c) {
+         writeToTerminal(cmd, sofar, "Couldn't find the GameEngine class.");
+         c.printStackTrace();
+      }
+   }
+
+   private void askQuestion() {
+      if (questionsAsked < questionsInRow) {
+         String question = getNextQuestion();
+         if (question != null) {
+            questionsAsked++;
+            writeToTerminal("--------User study survey question interruption--------" + "\n" + question + "\n"/* + answerOptions*/, history.getText());
+            isAskingQuestion = true;
+            addToQuestionTranscript(question);
+            /*addToQuestionTranscript(answerOptions);*/
+         }
+         else {
+            isAskingQuestion = false;
+            if (questionsAsked != 0) {
+               writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
+            }
+            questionsAsked = 0;
+            incrementField("numCommands");
+            incrementField("acceptedCommands");
+         }
+      }
+      else {
+         isAskingQuestion = false;
+         if (questionsAsked != 0) {
+            writeToTerminal("\n Resuming game. \n" + "--------------", history.getText());
+         }
+         questionsAsked = 0;
+         incrementField("numCommands");
+         incrementField("acceptedCommands");
+      }
+   }
+
+   private boolean validateQuestionAnswer(String answer) {
+      answer = answer.trim();
+      try {
+         int intResponse = Integer.parseInt(answer);
+         if (intResponse >= 0 && intResponse <= 10) {
+            return true;
+         }
+      }
+      catch (NumberFormatException ignored) {
       }
       return false;
    }
 
-
-   /* private GameEngine gameEngine = null;*/
-   /*private Pair<Set<String>, String> it;*/
-
-
-   Map<String, String> stringStatistics;
-   Map<String, Integer> integerStatistics;
-   JTextField input;
-   JTextArea history;
-   List<String> commands = new ArrayList<>();
-   List<String> transcript = new ArrayList<>();
-   List<String> questionTranscript = new ArrayList<>();
-   final String QUESTION_FILE_NAME = "questions.txt";
-   final String QUESTION_BREAKPOINT_FILE_NAME = "question-breakpoints.txt";
-   List<String> questions;
-   int currentQuestionIndex = 0;
-   int currentCommandIndex = 1;
-   int questionFreq = 5;
-   int questionsInRow = 2;
-   int questionsAsked = 0;
-   LocalDateTime startTime;
-   DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-HH-mm-ss");
-
-   String getNextQuestion() {
-      return currentQuestionIndex < questions.size() ? questions.get(currentQuestionIndex++) : null;
-   }
-
-   void writeStatisticsAndTranscriptToFile() {
+   private void saveGame(){
+      if(getIntStatistics("numCommands") < 10){
+         return;
+      }
+      String fileName = (String.format("latest-save-%s.ser", startTime.format(dateTimeFormatter)));
       try {
-         File fullTranscript = new File(String.format("game-transcript-%s.txt", startTime.format(dateTimeFormatter)));
-         File questions = new File(String.format("question-transcript-%s.txt", startTime.format(dateTimeFormatter)));
-         fullTranscript.createNewFile();
-         questions.createNewFile();
-         Files.write(fullTranscript.toPath(), transcript, StandardOpenOption.APPEND);
-/*         for (String line : transcript) {
-            Files.write(file.toPath(), line.getBytes(), StandardOpenOption.APPEND);
-         }*/
-
-         Files.write(questions.toPath(), questionTranscript, StandardOpenOption.APPEND);
-         transcript.clear();
-         questionTranscript.clear();
-         Files.write(fullTranscript.toPath(), ("STRING-STATISTICS:" + stringStatistics.toString() + "\n").getBytes(), StandardOpenOption.APPEND);
-         Files.write(fullTranscript.toPath(), ("INTEGER-STATISTICS:" + integerStatistics.toString() + "\n").getBytes(), StandardOpenOption.APPEND);
+         FileOutputStream fileOut =
+             new FileOutputStream(fileName);
+         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+         out.writeObject(gameEngine);
+         out.close();
+         fileOut.close();
       }
       catch (IOException e) {
          e.printStackTrace();
       }
    }
 
-   public void addToTranscript(String s) {
-      transcript.add(s);
-   }
-
-   public void addToQuestionTranscript(String s) {
-      questionTranscript.add(s);
-   }
-
-   public String getStringStatistic(String key) {
-      return stringStatistics.get(key);
-   }
-
-   public int getIntStatistics(String key) {
-      return integerStatistics.getOrDefault(key, 0);
-   }
-
-   void incrementField(String key) {
-      this.integerStatistics.put(key, 1 + this.integerStatistics.getOrDefault(key, 0));
-   }
-
-   void updateStatistics(String cmd) {
-      String numCommands = "numCommands";
-      incrementField(numCommands);
-      commands.add(cmd);
-   }
-
-   void addTimeToTranscript() {
-      Duration between = Duration.between(startTime, LocalDateTime.now());
-      addToTranscript("-!-!- " + Util.formatDuration(between));
-   }
-
-
-
-   void initializeJFrame(ActionMap actionMap) {
-
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-      InputMap keyMap = input.getInputMap();
-      input.getActionMap().put("enter", actionMap.get("enter"));
-      /* InputMap keyMap = new ComponentInputMap(input);*/
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-      /*  keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backspace");*/
-      input.getActionMap().put("up", new AbstractAction() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            if (commands == null || commands.size() == 0) {
-               return;
-            }
-            currentCommandIndex = Math.min(commands.size(), currentCommandIndex + 1);
-            input.setText(commands.get(commands.size() - (currentCommandIndex)));
-         }
-      });
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
-      input.getActionMap().put("down", new AbstractAction() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            if (commands == null || commands.size() == 0) {
-               return;
-            }
-            currentCommandIndex = Math.max(1, currentCommandIndex - 1);
-            input.setText(commands.get(commands.size() - (currentCommandIndex)));
-         }
-      });
-      keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
-
-
-      /*SwingUtilities.replaceUIActionMap(input, actionMap);*/
-      /*   SwingUtilities.replaceUIInputMap(input, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);*/
-      input.setEditable(true);
-      history.setText("Please enter the file-name of the game you wish to play. It may take up to 2 minutes to load the game. \n>");
-
-      setSize(620, 620);
-      setLocation(100, 100);
-      setVisible(true);
-      center();
-   }
-
-   void prepareSwing() {
-      JPanel mainPanel = new JPanel();
-      mainPanel.setLayout(new BorderLayout());
-      this.getContentPane().add(mainPanel);
-
-      input = new JTextField(80);
-      System.out.println(this.input.getCaret());
-      history = new JTextArea();
-      history.setEditable(false);
-      history.setLineWrap(true);
-      history.setWrapStyleWord(true);
-      history.setTabSize(46);
-      history.setFont(new Font("monospaced", Font.PLAIN, history.getFont().getSize()));
-
-      // TODO: Replace with IntelliJ Implementation
-      JScrollPane areaScrollPane = new JScrollPane(history);
-      areaScrollPane.setVerticalScrollBarPolicy(
-          JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-      areaScrollPane.setPreferredSize(new Dimension(250, 250));
-
-      mainPanel.add(areaScrollPane, BorderLayout.CENTER);
-      mainPanel.add(input, BorderLayout.SOUTH);
-   }
-
-   public GamePlayer(String progName) {
-      super(progName);
-      integerStatistics = new HashMap<>();
-      stringStatistics = new HashMap<>();
-      integerStatistics.put("numCommands", 0);
-      startTime = LocalDateTime.now();
-      try {
-         String qs = Files.readString(Paths.get(QUESTION_FILE_NAME));
-         questions = new ArrayList<>(Arrays.asList(qs.split("(?m)^\\s*\\^$")));
-         if (questions.size() > 0 && Pattern.matches("\\s*", questions.get(questions.size() - 1))) {
-            questions.remove(questions.size() - 1);
-         }
-         /*questions = Files.readAllLines(Paths.get(QUESTION_FILE_NAME));*/
-         questionBreakpoints = Files.readAllLines(Paths.get(QUESTION_BREAKPOINT_FILE_NAME));
-         int minQuestionsInRow = (int) Math.ceil(((double) questions.size()) / ((double) questionBreakpoints.size()));
-         questionsInRow = Math.max(minQuestionsInRow, questionsInRow);
-         try {
-            int freq = Math.abs(Integer.parseInt(questions.get(0)));
-            questions.remove(0);
-            questionFreq = Math.max(2, freq);
-         }
-         catch (NumberFormatException ignored) {
-         }
-      }
-      catch (IOException e) {
-         questions = null;
-         questionBreakpoints = null;
-         e.printStackTrace();
-      }
-
+   public GamePlayer() {
+      super(progname);
       prepareSwing();
 
+      ActionMap actionMap = new ActionMapUIResource();
 
-/*      ActionMap actionMap = new ActionMapUIResource();
+      addWindowListener(new java.awt.event.WindowAdapter() {
+         public void windowClosed(java.awt.event.WindowEvent evt) {
+            writeStatisticsAndTranscriptToFile();
+            saveGame();
+         }
+      });
+
       actionMap.put("enter", new AbstractAction() {
          @Override
          public void actionPerformed(ActionEvent e) {
             String cmd = input.getText().trim();
-            String sofar = history.getText();
             if (gameEngine != null) {
-               writeToTerminal(cmd, sofar, processCmd(cmd));
-            }
-            else {
-               if (isReadableFile(cmd)) {
-                  try {
-                     FileInputStream fileIn = new FileInputStream(cmd);
-                     ObjectInputStream in = new ObjectInputStream(fileIn);
-                     gameEngine = (GameEngine) in.readObject();
-                     in.close();
-                     fileIn.close();
-                     String startMessage = gameEngine.getStartMessage() != null ? gameEngine.getStartMessage() : "";
-                     history.setText(startMessage + "\n" + "> ");
-                     input.setText("");
-                     FileErrorHandler.firstError = true;
+               if (!isAskingQuestion) {
+                  lastResult = processCmd(cmd);
+                  writeToTerminal(cmd, history.getText(), lastResult);
+                  boolean timeToAskQuestion;
+                  if(questionBreakpoints != null){
+                     timeToAskQuestion = breakpointHit(gameEngine);
                   }
-                  catch (IOException i) {
-                     writeToTerminal(cmd, sofar, "Something went wrong when opening the file. Try again.");
-                     i.printStackTrace();
+                  else{
+                     timeToAskQuestion = getIntStatistics("acceptedCommands") % questionFreq == (questionFreq - 1);
                   }
-                  catch (ClassNotFoundException c) {
-                     writeToTerminal(cmd, sofar, "Couldn't find the GameEngine class.");
-                     c.printStackTrace();
+                  if (timeToAskQuestion) {
+                     askQuestion();
                   }
                }
                else {
-                  writeToTerminal(cmd, sofar, "That isn't a valid readable file in your file system. Try again.");
+                  // TODO: Implement questions
+                  writeToTerminal(cmd, history.getText());
+                  if (validateQuestionAnswer(cmd)) {
+                     answerQuestion(cmd);
+                     askQuestion();
+                  }
+                  else {
+                     writeToTerminal(cmd, history.getText(), "Invalid response. Write a number in the range 0 to 10 inclusive.");
+                  }
+               }
+               if (getIntStatistics("numCommands") % 5 == 1) {
+                  writeStatisticsAndTranscriptToFile();
+               }
+
+            }
+            else {
+               if (isReadableFile(cmd)) {
+                  attemptToLoadGameEngine(cmd, history.getText());
+                  if (gameEngine != null) {
+                     try {
+                        if(enhanced) {
+                           EnhancedNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
+                        }
+                     }
+                     catch (FailedParseException ignored) {
+                     }
+                  }
+               }
+               else {
+                  writeToTerminal(cmd, history.getText(), "That isn't a valid readable file in your file system. Try again.");
                }
             }
          }
       });
 
       initializeJFrame(actionMap);
-      */
-
 
    }
 
+
+   private boolean isReadableFile(String cmd) {
+      Path path = Paths.get(cmd);
+      return Files.exists(path) && Files.isReadable(path);
+   }
+
+
+   private void writeToTerminal(String cmd, String sofar, String result) {
+      addTimeToTranscript();
+      addToTranscript(cmd);
+      addToTranscript(result);
+      history.setText(sofar + cmd + "\n" + result + "\n> ");
+      input.setText("");
+   }
+
+   private void writeToTerminal(String string, String sofar) {
+      addTimeToTranscript();
+      addToTranscript(string);
+      history.setText(sofar + string + "\n> ");
+      input.setText("");
+   }
 
    private void center() {
       Toolkit tk = Toolkit.getDefaultToolkit();
@@ -299,47 +243,154 @@ public abstract class GamePlayer extends JFrame implements Serializable {
    }
 
 
-   void answerQuestion(String cmd) {
-      addToQuestionTranscript("ANSWER:" + cmd);
+   private void updateStatistics(Justification justification) {
+      String acceptedCommands = "acceptedCommands";
+      String deniedCommands = "deniedCommands";
+      if (justification.isAccepted()) {
+         incrementField(acceptedCommands);
+      }
+      else {
+         incrementField(deniedCommands);
+      }
    }
 
-   public abstract String processCmd(String cmd);
-/*   private String processCmd(String cmd) {
+
+   @Override
+   public String processCmd(String cmd) {
       if (cmd.equals("quit")) {
+         if (currentQuestionIndex != questions.size()) {
+            stringStatistics.put("errorCode", "You haven't answered all questions. Contact the administrator to ask what to do with the remaining questions");
+         }
+         writeStatisticsAndTranscriptToFile();
          System.exit(0);
       }
+      if (cmd.trim().equals("")) {
+         return "";
+      }
+      if (cmd.equals("help")) {
+         return (gameEngine.getPossibleActionFormats().stream().map(ActionFormat::toString).collect(Collectors.joining(",")));
+      }
+/*      try {
+         int i = Integer.parseInt(cmd);
+         history.setTabSize(i);
+         return "okay";
+      }
+      catch(NumberFormatException ignored){
+
+      }*/
+      updateStatistics(cmd);
+      if (isClarifying) {
+         return clarify(cmd);
+      }
+
       List<ActionFormat> possibleGameActions = gameEngine.getPossibleActionFormats();
       Set<Item> possibleItems = gameEngine.possibleItems();
       List<InstantiatedGameAction> gameActions = null;
 
       try {
-         gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
-         it = gameActions.get(0).getIt();
+         if(enhanced) {
+            gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         }
+         else{
+            gameActions = BasicNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         }
+         if (gameActions.size() > 0) {
+            it = gameActions.get(0).getIt();
+         }
       }
       catch (FailedParseException e) {
          return e.getMessage();
       }
+      Justification justification = null;
       String gameMessage;
-      if(gameActions.size() == 1) {
+      if (gameActions.size() == 1) {
          InstantiatedGameAction gameAction = gameActions.get(0);
-         Justification justification = gameEngine.progressStory(gameAction);
+         if (!Util.isFlat(gameAction.getPotentialArguments())) {
+            return needClarification(gameAction, "");
+         }
+         justification = gameEngine.progressStory(gameAction);
          gameMessage = justification.getReasoning();
       }
-      else{
+      else if (gameActions.size() == 0) {
+         return "Error. No valid game verb specified.";
+      }
+      else {
          StringBuilder gameMessageBuilder = new StringBuilder();
-         for(InstantiatedGameAction gameAction : gameActions){
-            Justification justification = gameEngine.progressStory(gameAction);
+         for (InstantiatedGameAction gameAction : gameActions) {
+            if (!Util.isFlat(gameAction.getPotentialArguments())) {
+               return needClarification(gameAction, gameMessageBuilder.toString());
+            }
+            justification = gameEngine.progressStory(gameAction);
             gameMessageBuilder.append(justification.getReasoning());
+            if (!justification.isAccepted()) {
+               break;
+            }
          }
          gameMessage = gameMessageBuilder.toString();
       }
+      updateStatistics(justification);
       return gameMessage;
 
-   }*/
+   }
 
-/*   public static void main(final String[] args) {
+   private String clarify(String cmd) {
+      int nextClarify = clarifiedArguments.size();
+      List<List<Item>> potentialArgs = clarifyingAction.getPotentialArguments();
+      while (nextClarify < potentialArgs.size() && potentialArgs.get(nextClarify).size() == 1) {
+         clarifiedArguments.add(potentialArgs.get(nextClarify).get(0));
+         nextClarify++;
+      }
+      try {
+         int i = Integer.parseInt(cmd);
+         if (!(i >= 0 && i < potentialArgs.get(nextClarify).size())) {
+            return "Input a number in the right range displayed above.";
+         }
+         clarifiedArguments.add(potentialArgs.get(nextClarify).get(i));
+         nextClarify++;
+      }
+      catch (NumberFormatException e) {
+         return "Input a valid number";
+      }
+
+      while (nextClarify < potentialArgs.size() && potentialArgs.get(nextClarify).size() == 1) {
+         clarifiedArguments.add(potentialArgs.get(nextClarify).get(0));
+         nextClarify++;
+      }
+      if (nextClarify == potentialArgs.size()) {
+         clarifyingAction.setActualArguments(clarifiedArguments);
+         String message = gameEngine.progressStory(clarifyingAction).getReasoning();
+         clarifyingAction = null;
+         clarifiedArguments.clear();
+         isClarifying = false;
+         return message;
+      }
+      else {
+         return String.format("Couldn't uniquely identify argument number %d when taking action %s. Choose the one you meant by writing a number from the list below.\n%s"
+             , nextClarify + 1, clarifyingAction.getAbstractActionFormat(), Util.selectionList(potentialArgs.get(nextClarify)));
+      }
+
+   }
+
+   private String needClarification(InstantiatedGameAction gameAction, String message) {
+      this.isClarifying = true;
+      this.clarifiedArguments = new ArrayList<>();
+      this.clarifyingAction = gameAction;
+      try {
+         List<Item> first = gameAction.getPotentialArguments().stream().filter(l -> l.size() != 1).findFirst().
+             orElseThrow(() -> new FailedParseException("Internal error when clarifying. Contact game admin."));
+         return String.format(message + "Couldn't uniquely identify the below argument when taking action %s. Choose the one you meant by writing a number from the list below." +
+                 " Write only a number e.g. \"0\" or \"3\" to clarify what you meant and perform the right action." +
+                 " \n %s"
+             , gameAction.getAbstractActionFormat(), Util.selectionList(first));
+      }
+      catch (FailedParseException e) {
+         return e.getMessage();
+      }
+   }
+
+   public static void main(final String[] args) {
       Runnable runner = GamePlayer::new;
       EventQueue.invokeLater(runner);
-   }*/
+   }
 
 }

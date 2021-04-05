@@ -4,16 +4,16 @@ plugins {
     id 'antlr'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'edu.sc.seis.launch4j' version '2.4.9'
+//    id 'edu.sc.seis.launch4j' version '2.4.9'
 }
 
 shadowJar {
     archiveBaseName.set('gameplayer')
     archiveClassifier.set('')
     archiveVersion.set('')
-    mainClassName="com.intfic.EnhancedGamePlayer"
+    mainClassName="com.intfic.GamePlayer"
 }
-mainClassName="com.intfic.EnhancedGamePlayer"
+mainClassName="com.intfic.GamePlayer"
 
 version '1.0-SNAPSHOT'
 
@@ -60,5 +60,4 @@ test{
     //useJUnit()
     maxHeapSize = "2048m"
 }
-mainClassName = "com.intfic.EnhancedGamePlayer"
 
