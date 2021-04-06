@@ -169,11 +169,11 @@ public class EnhancedNLPEngine {
             int start = vpStartEnd.first;
             int end = vpStartEnd.second;
             String verb = findVerb(sentence, start, end);
-            List<ActionFormat> actionFormats = findMatchingGameVerb(verb, possibleActionFormats);
+            List<ActionFormat> potentialAfs = findMatchingGameVerb(verb, possibleActionFormats);
 
             String message = "Identified verb: " + verb + " but none of the formats matched what you entered.";
             boolean oneSuccessfulAction = false;
-            for(ActionFormat actionFormat : actionFormats) {
+            for(ActionFormat actionFormat : potentialAfs) {
                List<String> nouns = new ArrayList<>();
                List<Set<String>> adjectives = new ArrayList<>();
                List<Pair<Integer, Integer>> npsInVP = nps.stream().filter(np -> start <= np.first && np.second <= end).collect(Collectors.toList());
@@ -191,7 +191,7 @@ public class EnhancedNLPEngine {
                   oneSuccessfulAction = true;
                }
                else{
-                  if(actionFormats.size() == 1){
+                  if(potentialAfs.size() == 1){
                      message = justification.getReasoning();
                   }
                }
