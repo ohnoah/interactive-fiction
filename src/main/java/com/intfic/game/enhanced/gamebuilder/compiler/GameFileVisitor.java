@@ -767,13 +767,19 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public Item visitGlobal_item(GameGrammarParser.Global_itemContext ctx) {
+   public Object visitFrame(GameGrammarParser.FrameContext ctx) {
       if (ctx.STRING() != null) {
          String id = asString(ctx.STRING());
          Map<String, Item> globalItems = gameEngine.globalItems();
          System.out.println(globalItems);
          if (!globalItems.containsKey(id)) {
-            throw new RuntimeException("Invalid global item ID: " + id);
+            Map<String, GenericFrame> gfs = gameEngine.getKnowledgeBase().getGenericFrames();
+            if(gfs.containsKey(id)) {
+               return gfs.get(id);
+            }
+            else{
+               throw new RuntimeException("Invalid frame ID for specific/generic frame: " + id);
+            }
          }
          return globalItems.get(id);
       }
@@ -786,20 +792,25 @@ public class GameFileVisitor extends GameGrammarBaseVisitor<Object> implements S
    }
 
    @Override
-   public List<Item> visitGlobal_items(GameGrammarParser.Global_itemsContext ctx) {
-      List<Item> items = new ArrayList<>();
-      for (GameGrammarParser.Global_itemContext globalItemContext : ctx.global_item()) {
-         items.add(visitGlobal_item(globalItemContext));
+   public List<Object> visitFrames(GameGrammarParser.FramesContext ctx) {
+      List<Object> items = new ArrayList<>();
+      for (GameGrammarParser.FrameContext globalItemContext : ctx.frame()) {
+         items.add(visitFrame(globalItemContext));
       }
       return items;
    }
 
    @Override
    public Object visitInheritance(GameGrammarParser.InheritanceContext ctx) {
-      List<Item> inheritingItems = visitGlobal_items(ctx.global_items());
+      List<Object> inheritingItems = visitFrames(ctx.frames());
       String parentId = asString(ctx.STRING());
-      for (Item i : inheritingItems) {
-         gameEngine.addParent(i.getID(), parentId);
+      for (Object i : inheritingItems) {
+         if(i instanceof Item) {
+            gameEngine.addParent(((Item) i).getID(), parentId);
+         }
+         else if(i instanceof GenericFrame){
+            gameEngine.addParent(((GenericFrame) i).getId(), parentId);
+         }
       }
       return null;
    }

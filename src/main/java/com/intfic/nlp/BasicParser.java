@@ -12,18 +12,16 @@ import edu.stanford.nlp.util.Pair;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.dictionary.Dictionary;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
 
 
-public class BasicNLPEngine {
+public class BasicParser {
 
    public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems, Pair<Set<String>, String> it) throws FailedParseException {
-      return BasicNLPEngine.parse(rawCommand, possibleActionFormats, possibleItems);
+      return BasicParser.parse(rawCommand, possibleActionFormats, possibleItems);
    }
 
    public static List<InstantiatedGameAction> parse(String rawCommand, List<ActionFormat> possibleActionFormats, Set<Item> possibleItems) throws FailedParseException {
@@ -47,7 +45,7 @@ public class BasicNLPEngine {
          try {
             Justification justification = findNounsAndAdjectives(rawCommand, actionFormat, nouns, adjectives, Util.allItemNamesAndSynonyms(possibleItems));
             if (justification.isAccepted()) {
-               List<List<Item>> gameItemNames = BasicNLPEngine.findMatchingGameItems(nouns, adjectives, possibleItems);
+               List<List<Item>> gameItemNames = BasicParser.findMatchingGameItems(nouns, adjectives, possibleItems);
 
                InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames); // Changed from nouns to gameItemNames
                return Collections.singletonList(command);
@@ -189,7 +187,7 @@ public class BasicNLPEngine {
 
 
 
-/*      com.interactivefiction.BasicNLPEngine basicNLPEngine = new com.interactivefiction.BasicNLPEngine();
+/*      com.interactivefiction.BasicParser basicNLPEngine = new com.interactivefiction.BasicParser();
       com.interactivefiction.game.shared.InstantiatedGameAction command = basicNLPEngine.parse("put it in the box",null);*/
    }
 

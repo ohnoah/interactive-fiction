@@ -1,8 +1,6 @@
 package com.intfic.game.enhanced.reasoning;
 
 import com.intfic.game.enhanced.FileErrorHandler;
-import com.intfic.game.enhanced.parser.SimpleBooleanLexer;
-import com.intfic.game.enhanced.parser.SimpleBooleanParser;
 import com.intfic.game.enhanced.reasoning.error.KnowledgeException;
 import com.intfic.game.enhanced.reasoning.error.MissingKnowledgeException;
 import com.intfic.game.enhanced.reasoning.frames.GenericFrame;
@@ -402,9 +400,13 @@ public class KnowledgeBase implements Serializable {
    public boolean addParent(String child, String parent) {
       Map<String, SpecificFrame> specificFrameMap = this.getSpecificFrames();
       Map<String, GenericFrame> genericFrameMap = this.getGenericFrames();
-      if (specificFrameMap.containsKey(child)) {
-         if (genericFrameMap.containsKey(parent)) {
+      if (genericFrameMap.containsKey(parent)) {
+         if (specificFrameMap.containsKey(child)) {
             specificFrameMap.get(child).addParent(genericFrameMap.get(parent));
+            return true;
+         }
+         else if(genericFrameMap.containsKey(child)){
+            genericFrameMap.get(child).addParent(genericFrameMap.get(parent));
             return true;
          }
       }

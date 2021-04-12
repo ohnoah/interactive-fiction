@@ -6,8 +6,8 @@ import com.intfic.game.shared.GameEngine;
 import com.intfic.game.enhanced.FileErrorHandler;
 import com.intfic.game.enhanced.reasoning.wrappers.Justification;
 import com.intfic.game.shared.Util;
-import com.intfic.nlp.BasicNLPEngine;
-import com.intfic.nlp.EnhancedNLPEngine;
+import com.intfic.nlp.BasicParser;
+import com.intfic.nlp.EnhancedParser;
 import com.intfic.nlp.FailedParseException;
 import com.intfic.game.shared.ActionFormat;
 import com.intfic.game.shared.InstantiatedGameAction;
@@ -195,7 +195,7 @@ public class GamePlayer extends AbstractGamePlayer implements Serializable {
                   if (gameEngine != null) {
                      try {
                         if(enhanced) {
-                           EnhancedNLPEngine.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
+                           EnhancedParser.parse("eat apple", gameEngine.getPossibleActionFormats(), gameEngine.possibleItems());
                         }
                      }
                      catch (FailedParseException ignored) {
@@ -289,10 +289,10 @@ public class GamePlayer extends AbstractGamePlayer implements Serializable {
 
       try {
          if(enhanced) {
-            gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+            gameActions = EnhancedParser.parse(cmd, possibleGameActions, possibleItems, it);
          }
          else{
-            gameActions = BasicNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+            gameActions = BasicParser.parse(cmd, possibleGameActions, possibleItems, it);
          }
          if (gameActions.size() > 0) {
             it = gameActions.get(0).getIt();

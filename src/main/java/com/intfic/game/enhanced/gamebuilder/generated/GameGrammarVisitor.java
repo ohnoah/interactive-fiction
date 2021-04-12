@@ -293,17 +293,17 @@ public interface GameGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitKnowledge_updates(GameGrammarParser.Knowledge_updatesContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GameGrammarParser#global_item}.
+	 * Visit a parse tree produced by {@link GameGrammarParser#frame}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlobal_item(GameGrammarParser.Global_itemContext ctx);
+	T visitFrame(GameGrammarParser.FrameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GameGrammarParser#global_items}.
+	 * Visit a parse tree produced by {@link GameGrammarParser#frames}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlobal_items(GameGrammarParser.Global_itemsContext ctx);
+	T visitFrames(GameGrammarParser.FramesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GameGrammarParser#inheritance}.
 	 * @param ctx the parse tree

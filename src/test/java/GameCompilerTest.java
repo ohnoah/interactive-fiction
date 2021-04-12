@@ -109,6 +109,7 @@ public class GameCompilerTest {
       enhancedGameEngine.addParent("first_room.apple", "fruit");
       enhancedGameEngine.addParent("first_room.apple", "container");
       enhancedGameEngine.addParent("first_room.banana", "fruit");
+      enhancedGameEngine.addParent("fruit", "massive");
 
 
       enhancedGameEngine.updateKnowledgeBaseMultiple(

@@ -1,8 +1,8 @@
 package com.intfic.game.enhanced.reasoning;
 
 import com.intfic.game.enhanced.reasoning.error.*;
-import com.intfic.game.enhanced.parser.SimpleBooleanLexer;
-import com.intfic.game.enhanced.parser.SimpleBooleanParser;
+import com.intfic.game.enhanced.parser.BooleanLexer;
+import com.intfic.game.enhanced.parser.BooleanParser;
 import com.intfic.game.enhanced.reasoning.visitors.ConditionEvaluationVisitor;
 import com.intfic.game.enhanced.reasoning.visitors.TypeConvertVisitor;
 import com.intfic.game.enhanced.typeconverter.ConstantsLexer;
@@ -22,10 +22,10 @@ public class VisitorHelper {
    }
 
    public static Boolean evaluateCondition(ConditionEvaluationVisitor conditionEvaluationVisitor, String expression) throws KnowledgeException, MissingKnowledgeException {
-      SimpleBooleanLexer lexer = new SimpleBooleanLexer(CharStreams.fromString(expression));
+      BooleanLexer lexer = new BooleanLexer(CharStreams.fromString(expression));
       lexer.removeErrorListeners();
       lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
-      SimpleBooleanParser parser = new SimpleBooleanParser(new CommonTokenStream(lexer));
+      BooleanParser parser = new BooleanParser(new CommonTokenStream(lexer));
       parser.removeErrorListeners();
       parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 

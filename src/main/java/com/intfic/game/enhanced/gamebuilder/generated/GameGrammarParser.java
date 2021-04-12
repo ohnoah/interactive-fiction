@@ -39,9 +39,9 @@ public class GameGrammarParser extends Parser {
 		RULE_item_adjectives = 35, RULE_item_synonym = 36, RULE_item_synonyms = 37, 
 		RULE_new_item = 38, RULE_room_name = 39, RULE_new_room = 40, RULE_genericframe_name = 41, 
 		RULE_map_entry = 42, RULE_map_entries = 43, RULE_new_genericframe = 44, 
-		RULE_knowledge_update = 45, RULE_knowledge_updates = 46, RULE_global_item = 47, 
-		RULE_global_items = 48, RULE_inheritance = 49, RULE_inheritances = 50, 
-		RULE_knowledge = 51, RULE_start = 52, RULE_block = 53, RULE_game = 54;
+		RULE_knowledge_update = 45, RULE_knowledge_updates = 46, RULE_frame = 47, 
+		RULE_frames = 48, RULE_inheritance = 49, RULE_inheritances = 50, RULE_knowledge = 51, 
+		RULE_start = 52, RULE_block = 53, RULE_game = 54;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"new_message", "message_id", "message_text", "message_ref", "message", 
@@ -53,8 +53,8 @@ public class GameGrammarParser extends Parser {
 			"item", "items", "item_adjective", "item_adjectives", "item_synonym", 
 			"item_synonyms", "new_item", "room_name", "new_room", "genericframe_name", 
 			"map_entry", "map_entries", "new_genericframe", "knowledge_update", "knowledge_updates", 
-			"global_item", "global_items", "inheritance", "inheritances", "knowledge", 
-			"start", "block", "game"
+			"frame", "frames", "inheritance", "inheritances", "knowledge", "start", 
+			"block", "game"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -3014,33 +3014,33 @@ public class GameGrammarParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Global_itemContext extends ParserRuleContext {
+	public static class FrameContext extends ParserRuleContext {
 		public Item_refContext item_ref() {
 			return getRuleContext(Item_refContext.class,0);
 		}
 		public TerminalNode STRING() { return getToken(GameGrammarParser.STRING, 0); }
-		public Global_itemContext(ParserRuleContext parent, int invokingState) {
+		public FrameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_global_item; }
+		@Override public int getRuleIndex() { return RULE_frame; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).enterGlobal_item(this);
+			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).enterFrame(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).exitGlobal_item(this);
+			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).exitFrame(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof GameGrammarVisitor ) return ((GameGrammarVisitor<? extends T>)visitor).visitGlobal_item(this);
+			if ( visitor instanceof GameGrammarVisitor ) return ((GameGrammarVisitor<? extends T>)visitor).visitFrame(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Global_itemContext global_item() throws RecognitionException {
-		Global_itemContext _localctx = new Global_itemContext(_ctx, getState());
-		enterRule(_localctx, 94, RULE_global_item);
+	public final FrameContext frame() throws RecognitionException {
+		FrameContext _localctx = new FrameContext(_ctx, getState());
+		enterRule(_localctx, 94, RULE_frame);
 		try {
 			setState(431);
 			_errHandler.sync(this);
@@ -3074,63 +3074,69 @@ public class GameGrammarParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Global_itemsContext extends ParserRuleContext {
-		public List<Global_itemContext> global_item() {
-			return getRuleContexts(Global_itemContext.class);
+	public static class FramesContext extends ParserRuleContext {
+		public List<FrameContext> frame() {
+			return getRuleContexts(FrameContext.class);
 		}
-		public Global_itemContext global_item(int i) {
-			return getRuleContext(Global_itemContext.class,i);
+		public FrameContext frame(int i) {
+			return getRuleContext(FrameContext.class,i);
 		}
 		public List<TerminalNode> COMMA() { return getTokens(GameGrammarParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(GameGrammarParser.COMMA, i);
 		}
-		public Global_itemsContext(ParserRuleContext parent, int invokingState) {
+		public FramesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_global_items; }
+		@Override public int getRuleIndex() { return RULE_frames; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).enterGlobal_items(this);
+			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).enterFrames(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).exitGlobal_items(this);
+			if ( listener instanceof GameGrammarListener ) ((GameGrammarListener)listener).exitFrames(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof GameGrammarVisitor ) return ((GameGrammarVisitor<? extends T>)visitor).visitGlobal_items(this);
+			if ( visitor instanceof GameGrammarVisitor ) return ((GameGrammarVisitor<? extends T>)visitor).visitFrames(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Global_itemsContext global_items() throws RecognitionException {
-		Global_itemsContext _localctx = new Global_itemsContext(_ctx, getState());
-		enterRule(_localctx, 96, RULE_global_items);
+	public final FramesContext frames() throws RecognitionException {
+		FramesContext _localctx = new FramesContext(_ctx, getState());
+		enterRule(_localctx, 96, RULE_frames);
+		int _la;
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(433);
-			global_item();
-			setState(438);
+			setState(441);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
-			while ( _alt!=1 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1+1 ) {
+			_la = _input.LA(1);
+			if (_la==HASH || _la==STRING) {
+				{
+				setState(433);
+				frame();
+				setState(438);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==COMMA) {
 					{
 					{
 					setState(434);
 					match(COMMA);
 					setState(435);
-					global_item();
+					frame();
 					}
-					} 
+					}
+					setState(440);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
 				}
-				setState(440);
-				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
+				}
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -3146,8 +3152,8 @@ public class GameGrammarParser extends Parser {
 
 	public static class InheritanceContext extends ParserRuleContext {
 		public TerminalNode LSQUARE() { return getToken(GameGrammarParser.LSQUARE, 0); }
-		public Global_itemsContext global_items() {
-			return getRuleContext(Global_itemsContext.class,0);
+		public FramesContext frames() {
+			return getRuleContext(FramesContext.class,0);
 		}
 		public TerminalNode RSQUARE() { return getToken(GameGrammarParser.RSQUARE, 0); }
 		public TerminalNode INHERITS() { return getToken(GameGrammarParser.INHERITS, 0); }
@@ -3177,15 +3183,15 @@ public class GameGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(441);
-			match(LSQUARE);
-			setState(442);
-			global_items();
 			setState(443);
-			match(RSQUARE);
+			match(LSQUARE);
 			setState(444);
-			match(INHERITS);
+			frames();
 			setState(445);
+			match(RSQUARE);
+			setState(446);
+			match(INHERITS);
+			setState(447);
 			match(STRING);
 			}
 		}
@@ -3207,7 +3213,10 @@ public class GameGrammarParser extends Parser {
 		public InheritanceContext inheritance(int i) {
 			return getRuleContext(InheritanceContext.class,i);
 		}
-		public TerminalNode COMMA() { return getToken(GameGrammarParser.COMMA, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(GameGrammarParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(GameGrammarParser.COMMA, i);
+		}
 		public InheritancesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3230,17 +3239,36 @@ public class GameGrammarParser extends Parser {
 	public final InheritancesContext inheritances() throws RecognitionException {
 		InheritancesContext _localctx = new InheritancesContext(_ctx, getState());
 		enterRule(_localctx, 100, RULE_inheritances);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(447);
-			inheritance();
-			{
-			setState(448);
-			match(COMMA);
-			setState(449);
-			inheritance();
+			setState(457);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==LSQUARE) {
+				{
+				setState(449);
+				inheritance();
+				setState(454);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==COMMA) {
+					{
+					{
+					setState(450);
+					match(COMMA);
+					setState(451);
+					inheritance();
+					}
+					}
+					setState(456);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				}
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -3300,35 +3328,35 @@ public class GameGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(451);
+			setState(459);
 			match(KNOWLEDGE);
-			setState(452);
-			match(LCURLY);
-			setState(453);
-			match(DOT);
-			setState(454);
-			match(GENERIC_INHERITANCE);
-			setState(455);
-			inheritances();
-			setState(456);
-			match(SEMICOLON);
-			setState(457);
-			match(DOT);
-			setState(458);
-			match(INITIAL);
 			setState(460);
+			match(LCURLY);
+			setState(461);
+			match(DOT);
+			setState(462);
+			match(GENERIC_INHERITANCE);
+			setState(463);
+			inheritances();
+			setState(464);
+			match(SEMICOLON);
+			setState(465);
+			match(DOT);
+			setState(466);
+			match(INITIAL);
+			setState(468);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LSQUARE) {
 				{
-				setState(459);
+				setState(467);
 				knowledge_updates();
 				}
 			}
 
-			setState(462);
+			setState(470);
 			match(SEMICOLON);
-			setState(463);
+			setState(471);
 			match(RCURLY);
 			}
 		}
@@ -3380,19 +3408,19 @@ public class GameGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(465);
+			setState(473);
 			match(START);
-			setState(466);
+			setState(474);
 			match(LCURLY);
-			setState(467);
+			setState(475);
 			room_name();
-			setState(468);
+			setState(476);
 			match(SEMICOLON);
-			setState(469);
+			setState(477);
 			match(STRING);
-			setState(470);
+			setState(478);
 			match(SEMICOLON);
-			setState(471);
+			setState(479);
 			match(RCURLY);
 			}
 		}
@@ -3455,62 +3483,62 @@ public class GameGrammarParser extends Parser {
 		BlockContext _localctx = new BlockContext(_ctx, getState());
 		enterRule(_localctx, 106, RULE_block);
 		try {
-			setState(481);
+			setState(489);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MESSAGE:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(473);
+				setState(481);
 				new_message();
 				}
 				break;
 			case ACTION:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(474);
+				setState(482);
 				new_action();
 				}
 				break;
 			case ITEM:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(475);
+				setState(483);
 				new_item();
 				}
 				break;
 			case ROOM:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(476);
+				setState(484);
 				new_room();
 				}
 				break;
 			case CUSTOM_TRIGGER:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(477);
+				setState(485);
 				actionformat();
 				}
 				break;
 			case POSTCOND:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(478);
+				setState(486);
 				new_postcond();
 				}
 				break;
 			case PRECOND:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(479);
+				setState(487);
 				new_precond();
 				}
 				break;
 			case ADD_TRIGGER:
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(480);
+				setState(488);
 				add_trigger();
 				}
 				break;
@@ -3578,51 +3606,51 @@ public class GameGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(483);
+			setState(491);
 			start();
-			setState(487);
+			setState(495);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MESSAGE) | (1L << ACTION) | (1L << ROOM) | (1L << ITEM) | (1L << PRECOND) | (1L << POSTCOND) | (1L << CUSTOM_TRIGGER) | (1L << ADD_TRIGGER))) != 0)) {
 				{
 				{
-				setState(484);
+				setState(492);
 				block();
 				}
 				}
-				setState(489);
+				setState(497);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(493);
+			setState(501);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==GENERICFRAME) {
 				{
 				{
-				setState(490);
+				setState(498);
 				new_genericframe();
 				}
 				}
-				setState(495);
+				setState(503);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(499);
+			setState(507);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==KNOWLEDGE) {
 				{
 				{
-				setState(496);
+				setState(504);
 				knowledge();
 				}
 				}
-				setState(501);
+				setState(509);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(502);
+			setState(510);
 			match(EOF);
 			}
 		}
@@ -3638,7 +3666,7 @@ public class GameGrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\62\u01fb\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\62\u0203\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3669,25 +3697,26 @@ public class GameGrammarParser extends Parser {
 		"\13-\3.\3.\3.\3.\3.\3.\5.\u019b\n.\3.\3.\3.\3.\3/\3/\3\60\3\60\3\60\3"+
 		"\60\7\60\u01a7\n\60\f\60\16\60\u01aa\13\60\5\60\u01ac\n\60\3\60\3\60\3"+
 		"\61\3\61\5\61\u01b2\n\61\3\62\3\62\3\62\7\62\u01b7\n\62\f\62\16\62\u01ba"+
-		"\13\62\3\63\3\63\3\63\3\63\3\63\3\63\3\64\3\64\3\64\3\64\3\65\3\65\3\65"+
-		"\3\65\3\65\3\65\3\65\3\65\3\65\5\65\u01cf\n\65\3\65\3\65\3\65\3\66\3\66"+
+		"\13\62\5\62\u01bc\n\62\3\63\3\63\3\63\3\63\3\63\3\63\3\64\3\64\3\64\7"+
+		"\64\u01c7\n\64\f\64\16\64\u01ca\13\64\5\64\u01cc\n\64\3\65\3\65\3\65\3"+
+		"\65\3\65\3\65\3\65\3\65\3\65\5\65\u01d7\n\65\3\65\3\65\3\65\3\66\3\66"+
 		"\3\66\3\66\3\66\3\66\3\66\3\66\3\67\3\67\3\67\3\67\3\67\3\67\3\67\3\67"+
-		"\5\67\u01e4\n\67\38\38\78\u01e8\n8\f8\168\u01eb\138\38\78\u01ee\n8\f8"+
-		"\168\u01f1\138\38\78\u01f4\n8\f8\168\u01f7\138\38\38\38\3\u01b8\29\2\4"+
-		"\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNP"+
-		"RTVXZ\\^`bdfhjln\2\2\2\u01e9\2p\3\2\2\2\4x\3\2\2\2\6z\3\2\2\2\b|\3\2\2"+
-		"\2\n\u0081\3\2\2\2\f\u0083\3\2\2\2\16\u0085\3\2\2\2\20\u0089\3\2\2\2\22"+
-		"\u008b\3\2\2\2\24\u008e\3\2\2\2\26\u0096\3\2\2\2\30\u009d\3\2\2\2\32\u009f"+
-		"\3\2\2\2\34\u00a1\3\2\2\2\36\u00a4\3\2\2\2 \u00a6\3\2\2\2\"\u00b0\3\2"+
-		"\2\2$\u00b2\3\2\2\2&\u00bf\3\2\2\2(\u00ca\3\2\2\2*\u00d7\3\2\2\2,\u00d9"+
-		"\3\2\2\2.\u00e6\3\2\2\2\60\u0100\3\2\2\2\62\u0112\3\2\2\2\64\u011c\3\2"+
-		"\2\2\66\u011e\3\2\2\28\u0121\3\2\2\2:\u012b\3\2\2\2<\u012d\3\2\2\2>\u012f"+
+		"\5\67\u01ec\n\67\38\38\78\u01f0\n8\f8\168\u01f3\138\38\78\u01f6\n8\f8"+
+		"\168\u01f9\138\38\78\u01fc\n8\f8\168\u01ff\138\38\38\38\2\29\2\4\6\b\n"+
+		"\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\"+
+		"^`bdfhjln\2\2\2\u01f4\2p\3\2\2\2\4x\3\2\2\2\6z\3\2\2\2\b|\3\2\2\2\n\u0081"+
+		"\3\2\2\2\f\u0083\3\2\2\2\16\u0085\3\2\2\2\20\u0089\3\2\2\2\22\u008b\3"+
+		"\2\2\2\24\u008e\3\2\2\2\26\u0096\3\2\2\2\30\u009d\3\2\2\2\32\u009f\3\2"+
+		"\2\2\34\u00a1\3\2\2\2\36\u00a4\3\2\2\2 \u00a6\3\2\2\2\"\u00b0\3\2\2\2"+
+		"$\u00b2\3\2\2\2&\u00bf\3\2\2\2(\u00ca\3\2\2\2*\u00d7\3\2\2\2,\u00d9\3"+
+		"\2\2\2.\u00e6\3\2\2\2\60\u0100\3\2\2\2\62\u0112\3\2\2\2\64\u011c\3\2\2"+
+		"\2\66\u011e\3\2\2\28\u0121\3\2\2\2:\u012b\3\2\2\2<\u012d\3\2\2\2>\u012f"+
 		"\3\2\2\2@\u0132\3\2\2\2B\u0136\3\2\2\2D\u0140\3\2\2\2F\u0142\3\2\2\2H"+
 		"\u0144\3\2\2\2J\u014c\3\2\2\2L\u014e\3\2\2\2N\u0156\3\2\2\2P\u0174\3\2"+
 		"\2\2R\u0176\3\2\2\2T\u0186\3\2\2\2V\u0188\3\2\2\2X\u018c\3\2\2\2Z\u0194"+
-		"\3\2\2\2\\\u01a0\3\2\2\2^\u01a2\3\2\2\2`\u01b1\3\2\2\2b\u01b3\3\2\2\2"+
-		"d\u01bb\3\2\2\2f\u01c1\3\2\2\2h\u01c5\3\2\2\2j\u01d3\3\2\2\2l\u01e3\3"+
-		"\2\2\2n\u01e5\3\2\2\2pq\7\n\2\2qr\7\4\2\2rs\5\4\3\2st\7/\2\2tu\7)\2\2"+
+		"\3\2\2\2\\\u01a0\3\2\2\2^\u01a2\3\2\2\2`\u01b1\3\2\2\2b\u01bb\3\2\2\2"+
+		"d\u01bd\3\2\2\2f\u01cb\3\2\2\2h\u01cd\3\2\2\2j\u01db\3\2\2\2l\u01eb\3"+
+		"\2\2\2n\u01ed\3\2\2\2pq\7\n\2\2qr\7\4\2\2rs\5\4\3\2st\7/\2\2tu\7)\2\2"+
 		"uv\7/\2\2vw\7\5\2\2w\3\3\2\2\2xy\7\3\2\2y\5\3\2\2\2z{\7)\2\2{\7\3\2\2"+
 		"\2|}\7\b\2\2}~\5\4\3\2~\t\3\2\2\2\177\u0082\5\b\5\2\u0080\u0082\5\6\4"+
 		"\2\u0081\177\3\2\2\2\u0081\u0080\3\2\2\2\u0082\13\3\2\2\2\u0083\u0084"+
@@ -3782,31 +3811,34 @@ public class GameGrammarParser extends Parser {
 		"\u01ae\7\7\2\2\u01ae_\3\2\2\2\u01af\u01b2\5> \2\u01b0\u01b2\7)\2\2\u01b1"+
 		"\u01af\3\2\2\2\u01b1\u01b0\3\2\2\2\u01b2a\3\2\2\2\u01b3\u01b8\5`\61\2"+
 		"\u01b4\u01b5\7\30\2\2\u01b5\u01b7\5`\61\2\u01b6\u01b4\3\2\2\2\u01b7\u01ba"+
-		"\3\2\2\2\u01b8\u01b9\3\2\2\2\u01b8\u01b6\3\2\2\2\u01b9c\3\2\2\2\u01ba"+
-		"\u01b8\3\2\2\2\u01bb\u01bc\7\6\2\2\u01bc\u01bd\5b\62\2\u01bd\u01be\7\7"+
-		"\2\2\u01be\u01bf\7 \2\2\u01bf\u01c0\7)\2\2\u01c0e\3\2\2\2\u01c1\u01c2"+
-		"\5d\63\2\u01c2\u01c3\7\30\2\2\u01c3\u01c4\5d\63\2\u01c4g\3\2\2\2\u01c5"+
-		"\u01c6\7\16\2\2\u01c6\u01c7\7\4\2\2\u01c7\u01c8\7\60\2\2\u01c8\u01c9\7"+
-		"$\2\2\u01c9\u01ca\5f\64\2\u01ca\u01cb\7/\2\2\u01cb\u01cc\7\60\2\2\u01cc"+
-		"\u01ce\7\23\2\2\u01cd\u01cf\5^\60\2\u01ce\u01cd\3\2\2\2\u01ce\u01cf\3"+
-		"\2\2\2\u01cf\u01d0\3\2\2\2\u01d0\u01d1\7/\2\2\u01d1\u01d2\7\5\2\2\u01d2"+
-		"i\3\2\2\2\u01d3\u01d4\7\t\2\2\u01d4\u01d5\7\4\2\2\u01d5\u01d6\5P)\2\u01d6"+
-		"\u01d7\7/\2\2\u01d7\u01d8\7)\2\2\u01d8\u01d9\7/\2\2\u01d9\u01da\7\5\2"+
-		"\2\u01dak\3\2\2\2\u01db\u01e4\5\2\2\2\u01dc\u01e4\5.\30\2\u01dd\u01e4"+
-		"\5N(\2\u01de\u01e4\5R*\2\u01df\u01e4\5\62\32\2\u01e0\u01e4\5 \21\2\u01e1"+
-		"\u01e4\5\24\13\2\u01e2\u01e4\5\60\31\2\u01e3\u01db\3\2\2\2\u01e3\u01dc"+
-		"\3\2\2\2\u01e3\u01dd\3\2\2\2\u01e3\u01de\3\2\2\2\u01e3\u01df\3\2\2\2\u01e3"+
-		"\u01e0\3\2\2\2\u01e3\u01e1\3\2\2\2\u01e3\u01e2\3\2\2\2\u01e4m\3\2\2\2"+
-		"\u01e5\u01e9\5j\66\2\u01e6\u01e8\5l\67\2\u01e7\u01e6\3\2\2\2\u01e8\u01eb"+
-		"\3\2\2\2\u01e9\u01e7\3\2\2\2\u01e9\u01ea\3\2\2\2\u01ea\u01ef\3\2\2\2\u01eb"+
-		"\u01e9\3\2\2\2\u01ec\u01ee\5Z.\2\u01ed\u01ec\3\2\2\2\u01ee\u01f1\3\2\2"+
-		"\2\u01ef\u01ed\3\2\2\2\u01ef\u01f0\3\2\2\2\u01f0\u01f5\3\2\2\2\u01f1\u01ef"+
-		"\3\2\2\2\u01f2\u01f4\5h\65\2\u01f3\u01f2\3\2\2\2\u01f4\u01f7\3\2\2\2\u01f5"+
-		"\u01f3\3\2\2\2\u01f5\u01f6\3\2\2\2\u01f6\u01f8\3\2\2\2\u01f7\u01f5\3\2"+
-		"\2\2\u01f8\u01f9\7\2\2\3\u01f9o\3\2\2\2\"\u0081\u0087\u009d\u00b0\u00b8"+
+		"\3\2\2\2\u01b8\u01b6\3\2\2\2\u01b8\u01b9\3\2\2\2\u01b9\u01bc\3\2\2\2\u01ba"+
+		"\u01b8\3\2\2\2\u01bb\u01b3\3\2\2\2\u01bb\u01bc\3\2\2\2\u01bcc\3\2\2\2"+
+		"\u01bd\u01be\7\6\2\2\u01be\u01bf\5b\62\2\u01bf\u01c0\7\7\2\2\u01c0\u01c1"+
+		"\7 \2\2\u01c1\u01c2\7)\2\2\u01c2e\3\2\2\2\u01c3\u01c8\5d\63\2\u01c4\u01c5"+
+		"\7\30\2\2\u01c5\u01c7\5d\63\2\u01c6\u01c4\3\2\2\2\u01c7\u01ca\3\2\2\2"+
+		"\u01c8\u01c6\3\2\2\2\u01c8\u01c9\3\2\2\2\u01c9\u01cc\3\2\2\2\u01ca\u01c8"+
+		"\3\2\2\2\u01cb\u01c3\3\2\2\2\u01cb\u01cc\3\2\2\2\u01ccg\3\2\2\2\u01cd"+
+		"\u01ce\7\16\2\2\u01ce\u01cf\7\4\2\2\u01cf\u01d0\7\60\2\2\u01d0\u01d1\7"+
+		"$\2\2\u01d1\u01d2\5f\64\2\u01d2\u01d3\7/\2\2\u01d3\u01d4\7\60\2\2\u01d4"+
+		"\u01d6\7\23\2\2\u01d5\u01d7\5^\60\2\u01d6\u01d5\3\2\2\2\u01d6\u01d7\3"+
+		"\2\2\2\u01d7\u01d8\3\2\2\2\u01d8\u01d9\7/\2\2\u01d9\u01da\7\5\2\2\u01da"+
+		"i\3\2\2\2\u01db\u01dc\7\t\2\2\u01dc\u01dd\7\4\2\2\u01dd\u01de\5P)\2\u01de"+
+		"\u01df\7/\2\2\u01df\u01e0\7)\2\2\u01e0\u01e1\7/\2\2\u01e1\u01e2\7\5\2"+
+		"\2\u01e2k\3\2\2\2\u01e3\u01ec\5\2\2\2\u01e4\u01ec\5.\30\2\u01e5\u01ec"+
+		"\5N(\2\u01e6\u01ec\5R*\2\u01e7\u01ec\5\62\32\2\u01e8\u01ec\5 \21\2\u01e9"+
+		"\u01ec\5\24\13\2\u01ea\u01ec\5\60\31\2\u01eb\u01e3\3\2\2\2\u01eb\u01e4"+
+		"\3\2\2\2\u01eb\u01e5\3\2\2\2\u01eb\u01e6\3\2\2\2\u01eb\u01e7\3\2\2\2\u01eb"+
+		"\u01e8\3\2\2\2\u01eb\u01e9\3\2\2\2\u01eb\u01ea\3\2\2\2\u01ecm\3\2\2\2"+
+		"\u01ed\u01f1\5j\66\2\u01ee\u01f0\5l\67\2\u01ef\u01ee\3\2\2\2\u01f0\u01f3"+
+		"\3\2\2\2\u01f1\u01ef\3\2\2\2\u01f1\u01f2\3\2\2\2\u01f2\u01f7\3\2\2\2\u01f3"+
+		"\u01f1\3\2\2\2\u01f4\u01f6\5Z.\2\u01f5\u01f4\3\2\2\2\u01f6\u01f9\3\2\2"+
+		"\2\u01f7\u01f5\3\2\2\2\u01f7\u01f8\3\2\2\2\u01f8\u01fd\3\2\2\2\u01f9\u01f7"+
+		"\3\2\2\2\u01fa\u01fc\5h\65\2\u01fb\u01fa\3\2\2\2\u01fc\u01ff\3\2\2\2\u01fd"+
+		"\u01fb\3\2\2\2\u01fd\u01fe\3\2\2\2\u01fe\u0200\3\2\2\2\u01ff\u01fd\3\2"+
+		"\2\2\u0200\u0201\7\2\2\3\u0201o\3\2\2\2%\u0081\u0087\u009d\u00b0\u00b8"+
 		"\u00bb\u00c5\u00d0\u00d3\u00df\u00e2\u0118\u0128\u012b\u0136\u013d\u0140"+
-		"\u0149\u0153\u0162\u016a\u0191\u019a\u01a8\u01ab\u01b1\u01b8\u01ce\u01e3"+
-		"\u01e9\u01ef\u01f5";
+		"\u0149\u0153\u0162\u016a\u0191\u019a\u01a8\u01ab\u01b1\u01b8\u01bb\u01c8"+
+		"\u01cb\u01d6\u01eb\u01f1\u01f7\u01fd";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

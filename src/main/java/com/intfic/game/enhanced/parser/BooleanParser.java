@@ -1,4 +1,4 @@
-// Generated from /Users/noahohrner/OneDrive - University of Cambridge/Dissertation/Code/interactive-fiction/SimpleBoolean.g4 by ANTLR 4.9.1
+// Generated from /Users/noahohrner/OneDrive - University of Cambridge/Dissertation/Code/interactive-fiction/Boolean.g4 by ANTLR 4.9.1
 package com.intfic.game.enhanced.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,15 +10,15 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class SimpleBooleanParser extends Parser {
+public class BooleanParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.9.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		IS=1, IN=2, AND=3, OR=4, NOT=5, TRUE=6, FALSE=7, GT=8, GE=9, LT=10, LE=11, 
-		EQ=12, LPAREN=13, RPAREN=14, QUOTE=15, SLASH=16, STRING=17, DECIMAL=18, 
+		IS=1, IN=2, AND=3, OR=4, NOT=5, TRUE=6, FALSE=7, LT=8, LE=9, EQ=10, GT=11, 
+		GE=12, LPAREN=13, RPAREN=14, QUOTE=15, SLASH=16, STRING=17, DECIMAL=18, 
 		IDENTIFIER=19, BEGL=20, ENDL=21, SEP=22, WS=23;
 	public static final int
 		RULE_parse = 0, RULE_list = 1, RULE_stringlist = 2, RULE_numberlist = 3, 
@@ -37,15 +37,15 @@ public class SimpleBooleanParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'IS'", "'IN'", "'AND'", "'OR'", "'NOT'", "'TRUE'", "'FALSE'", 
-			"'>'", "'>='", "'<'", "'<='", "'='", "'('", "')'", "'\"'", "'/'", null, 
+			"'<'", "'<='", "'='", "'>'", "'>='", "'('", "')'", "'\"'", "'/'", null, 
 			null, null, "'['", "']'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "IS", "IN", "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", 
-			"LE", "EQ", "LPAREN", "RPAREN", "QUOTE", "SLASH", "STRING", "DECIMAL", 
+			null, "IS", "IN", "AND", "OR", "NOT", "TRUE", "FALSE", "LT", "LE", "EQ", 
+			"GT", "GE", "LPAREN", "RPAREN", "QUOTE", "SLASH", "STRING", "DECIMAL", 
 			"IDENTIFIER", "BEGL", "ENDL", "SEP", "WS"
 		};
 	}
@@ -84,7 +84,7 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "SimpleBoolean.g4"; }
+	public String getGrammarFileName() { return "Boolean.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -95,7 +95,7 @@ public class SimpleBooleanParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public SimpleBooleanParser(TokenStream input) {
+	public BooleanParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -104,22 +104,22 @@ public class SimpleBooleanParser extends Parser {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode EOF() { return getToken(SimpleBooleanParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(BooleanParser.EOF, 0); }
 		public ParseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parse; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterParse(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterParse(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitParse(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitParse(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitParse(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitParse(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -148,7 +148,7 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class ListContext extends ParserRuleContext {
-		public TerminalNode IDENTIFIER() { return getToken(SimpleBooleanParser.IDENTIFIER, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(BooleanParser.IDENTIFIER, 0); }
 		public StringlistContext stringlist() {
 			return getRuleContext(StringlistContext.class,0);
 		}
@@ -161,15 +161,15 @@ public class SimpleBooleanParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_list; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterList(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitList(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitList(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitList(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -216,8 +216,8 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class StringlistContext extends ParserRuleContext {
-		public TerminalNode BEGL() { return getToken(SimpleBooleanParser.BEGL, 0); }
-		public TerminalNode ENDL() { return getToken(SimpleBooleanParser.ENDL, 0); }
+		public TerminalNode BEGL() { return getToken(BooleanParser.BEGL, 0); }
+		public TerminalNode ENDL() { return getToken(BooleanParser.ENDL, 0); }
 		public StringelemsContext stringelems() {
 			return getRuleContext(StringelemsContext.class,0);
 		}
@@ -227,15 +227,15 @@ public class SimpleBooleanParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_stringlist; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterStringlist(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterStringlist(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitStringlist(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitStringlist(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitStringlist(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitStringlist(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -275,8 +275,8 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class NumberlistContext extends ParserRuleContext {
-		public TerminalNode BEGL() { return getToken(SimpleBooleanParser.BEGL, 0); }
-		public TerminalNode ENDL() { return getToken(SimpleBooleanParser.ENDL, 0); }
+		public TerminalNode BEGL() { return getToken(BooleanParser.BEGL, 0); }
+		public TerminalNode ENDL() { return getToken(BooleanParser.ENDL, 0); }
 		public NumberelemsContext numberelems() {
 			return getRuleContext(NumberelemsContext.class,0);
 		}
@@ -286,15 +286,15 @@ public class SimpleBooleanParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_numberlist; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNumberlist(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNumberlist(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNumberlist(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNumberlist(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNumberlist(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNumberlist(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -340,9 +340,9 @@ public class SimpleBooleanParser extends Parser {
 		public StringtypeContext stringtype(int i) {
 			return getRuleContext(StringtypeContext.class,i);
 		}
-		public List<TerminalNode> SEP() { return getTokens(SimpleBooleanParser.SEP); }
+		public List<TerminalNode> SEP() { return getTokens(BooleanParser.SEP); }
 		public TerminalNode SEP(int i) {
-			return getToken(SimpleBooleanParser.SEP, i);
+			return getToken(BooleanParser.SEP, i);
 		}
 		public StringelemsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -350,15 +350,15 @@ public class SimpleBooleanParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_stringelems; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterStringelems(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterStringelems(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitStringelems(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitStringelems(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitStringelems(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitStringelems(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -408,9 +408,9 @@ public class SimpleBooleanParser extends Parser {
 		public NumbertypeContext numbertype(int i) {
 			return getRuleContext(NumbertypeContext.class,i);
 		}
-		public List<TerminalNode> SEP() { return getTokens(SimpleBooleanParser.SEP); }
+		public List<TerminalNode> SEP() { return getTokens(BooleanParser.SEP); }
 		public TerminalNode SEP(int i) {
-			return getToken(SimpleBooleanParser.SEP, i);
+			return getToken(BooleanParser.SEP, i);
 		}
 		public NumberelemsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -418,15 +418,15 @@ public class SimpleBooleanParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_numberelems; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNumberelems(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNumberelems(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNumberelems(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNumberelems(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNumberelems(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNumberelems(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -470,23 +470,23 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class NumbertypeContext extends ParserRuleContext {
-		public TerminalNode DECIMAL() { return getToken(SimpleBooleanParser.DECIMAL, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(SimpleBooleanParser.IDENTIFIER, 0); }
+		public TerminalNode DECIMAL() { return getToken(BooleanParser.DECIMAL, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(BooleanParser.IDENTIFIER, 0); }
 		public NumbertypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_numbertype; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNumbertype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNumbertype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNumbertype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNumbertype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNumbertype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNumbertype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -522,23 +522,23 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class StringtypeContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(SimpleBooleanParser.STRING, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(SimpleBooleanParser.IDENTIFIER, 0); }
+		public TerminalNode STRING() { return getToken(BooleanParser.STRING, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(BooleanParser.IDENTIFIER, 0); }
 		public StringtypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_stringtype; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterStringtype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterStringtype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitStringtype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitStringtype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitStringtype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitStringtype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -588,43 +588,43 @@ public class SimpleBooleanParser extends Parser {
 		public StringtypeContext stringtype() {
 			return getRuleContext(StringtypeContext.class,0);
 		}
-		public TerminalNode IN() { return getToken(SimpleBooleanParser.IN, 0); }
+		public TerminalNode IN() { return getToken(BooleanParser.IN, 0); }
 		public ListContext list() {
 			return getRuleContext(ListContext.class,0);
 		}
 		public StringInBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterStringInBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterStringInBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitStringInBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitStringInBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitStringInBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitStringInBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ParenBooleanTypeContext extends BooleantypeContext {
-		public TerminalNode LPAREN() { return getToken(SimpleBooleanParser.LPAREN, 0); }
+		public TerminalNode LPAREN() { return getToken(BooleanParser.LPAREN, 0); }
 		public BooleantypeContext booleantype() {
 			return getRuleContext(BooleantypeContext.class,0);
 		}
-		public TerminalNode RPAREN() { return getToken(SimpleBooleanParser.RPAREN, 0); }
+		public TerminalNode RPAREN() { return getToken(BooleanParser.RPAREN, 0); }
 		public ParenBooleanTypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterParenBooleanType(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterParenBooleanType(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitParenBooleanType(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitParenBooleanType(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitParenBooleanType(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitParenBooleanType(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -644,15 +644,15 @@ public class SimpleBooleanParser extends Parser {
 		public BinaryBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBinaryBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterBinaryBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBinaryBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitBinaryBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBinaryBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitBinaryBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -660,22 +660,22 @@ public class SimpleBooleanParser extends Parser {
 		public NumbertypeContext numbertype() {
 			return getRuleContext(NumbertypeContext.class,0);
 		}
-		public TerminalNode IN() { return getToken(SimpleBooleanParser.IN, 0); }
+		public TerminalNode IN() { return getToken(BooleanParser.IN, 0); }
 		public ListContext list() {
 			return getRuleContext(ListContext.class,0);
 		}
 		public NumberInBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNumberInBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNumberInBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNumberInBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNumberInBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNumberInBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNumberInBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -686,56 +686,56 @@ public class SimpleBooleanParser extends Parser {
 		public StringtypeContext stringtype(int i) {
 			return getRuleContext(StringtypeContext.class,i);
 		}
-		public TerminalNode SLASH() { return getToken(SimpleBooleanParser.SLASH, 0); }
+		public TerminalNode SLASH() { return getToken(BooleanParser.SLASH, 0); }
 		public InheritBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterInheritBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterInheritBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitInheritBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitInheritBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitInheritBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitInheritBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class NotBooleanTypeContext extends BooleantypeContext {
-		public TerminalNode NOT() { return getToken(SimpleBooleanParser.NOT, 0); }
+		public TerminalNode NOT() { return getToken(BooleanParser.NOT, 0); }
 		public BooleantypeContext booleantype() {
 			return getRuleContext(BooleantypeContext.class,0);
 		}
 		public NotBooleanTypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNotBooleanType(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNotBooleanType(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNotBooleanType(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNotBooleanType(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNotBooleanType(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNotBooleanType(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class IdentifierBooleantypeContext extends BooleantypeContext {
-		public TerminalNode IDENTIFIER() { return getToken(SimpleBooleanParser.IDENTIFIER, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(BooleanParser.IDENTIFIER, 0); }
 		public IdentifierBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterIdentifierBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterIdentifierBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitIdentifierBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitIdentifierBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitIdentifierBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitIdentifierBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -746,15 +746,15 @@ public class SimpleBooleanParser extends Parser {
 		public BoolBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBoolBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterBoolBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBoolBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitBoolBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBoolBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitBoolBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -762,9 +762,9 @@ public class SimpleBooleanParser extends Parser {
 		public Token left;
 		public NonboolcomparatorContext op;
 		public Token right;
-		public List<TerminalNode> IDENTIFIER() { return getTokens(SimpleBooleanParser.IDENTIFIER); }
+		public List<TerminalNode> IDENTIFIER() { return getTokens(BooleanParser.IDENTIFIER); }
 		public TerminalNode IDENTIFIER(int i) {
-			return getToken(SimpleBooleanParser.IDENTIFIER, i);
+			return getToken(BooleanParser.IDENTIFIER, i);
 		}
 		public NonboolcomparatorContext nonboolcomparator() {
 			return getRuleContext(NonboolcomparatorContext.class,0);
@@ -772,22 +772,22 @@ public class SimpleBooleanParser extends Parser {
 		public IdentifierComparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterIdentifierComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterIdentifierComparatorBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitIdentifierComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitIdentifierComparatorBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitIdentifierComparatorBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitIdentifierComparatorBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ListComparatorBooleantypeContext extends BooleantypeContext {
 		public ListContext left;
 		public ListContext right;
-		public TerminalNode IS() { return getToken(SimpleBooleanParser.IS, 0); }
+		public TerminalNode IS() { return getToken(BooleanParser.IS, 0); }
 		public List<ListContext> list() {
 			return getRuleContexts(ListContext.class);
 		}
@@ -797,15 +797,15 @@ public class SimpleBooleanParser extends Parser {
 		public ListComparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterListComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterListComparatorBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitListComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitListComparatorBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitListComparatorBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitListComparatorBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -825,15 +825,15 @@ public class SimpleBooleanParser extends Parser {
 		public StringComparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterStringComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterStringComparatorBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitStringComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitStringComparatorBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitStringComparatorBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitStringComparatorBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -853,15 +853,15 @@ public class SimpleBooleanParser extends Parser {
 		public NumberComparatorBooleantypeContext(BooleantypeContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNumberComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNumberComparatorBooleantype(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNumberComparatorBooleantype(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNumberComparatorBooleantype(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNumberComparatorBooleantype(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNumberComparatorBooleantype(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1073,18 +1073,19 @@ public class SimpleBooleanParser extends Parser {
 		public BooleantypeContext booleantype() {
 			return getRuleContext(BooleantypeContext.class,0);
 		}
+		public TerminalNode EOF() { return getToken(BooleanParser.EOF, 0); }
 		public BooleantypeExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBooleantypeExpression(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterBooleantypeExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBooleantypeExpression(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitBooleantypeExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBooleantypeExpression(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitBooleantypeExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1098,6 +1099,8 @@ public class SimpleBooleanParser extends Parser {
 			{
 			setState(114);
 			booleantype(0);
+			setState(115);
+			match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1112,26 +1115,26 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class NonboolcomparatorContext extends ParserRuleContext {
-		public TerminalNode GT() { return getToken(SimpleBooleanParser.GT, 0); }
-		public TerminalNode GE() { return getToken(SimpleBooleanParser.GE, 0); }
-		public TerminalNode LT() { return getToken(SimpleBooleanParser.LT, 0); }
-		public TerminalNode LE() { return getToken(SimpleBooleanParser.LE, 0); }
-		public TerminalNode EQ() { return getToken(SimpleBooleanParser.EQ, 0); }
+		public TerminalNode GT() { return getToken(BooleanParser.GT, 0); }
+		public TerminalNode GE() { return getToken(BooleanParser.GE, 0); }
+		public TerminalNode LT() { return getToken(BooleanParser.LT, 0); }
+		public TerminalNode LE() { return getToken(BooleanParser.LE, 0); }
+		public TerminalNode EQ() { return getToken(BooleanParser.EQ, 0); }
 		public NonboolcomparatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_nonboolcomparator; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterNonboolcomparator(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterNonboolcomparator(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitNonboolcomparator(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitNonboolcomparator(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitNonboolcomparator(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitNonboolcomparator(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1143,9 +1146,9 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(116);
+			setState(117);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LT) | (1L << LE) | (1L << EQ) | (1L << GT) | (1L << GE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1167,23 +1170,23 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class BinaryContext extends ParserRuleContext {
-		public TerminalNode AND() { return getToken(SimpleBooleanParser.AND, 0); }
-		public TerminalNode OR() { return getToken(SimpleBooleanParser.OR, 0); }
+		public TerminalNode AND() { return getToken(BooleanParser.AND, 0); }
+		public TerminalNode OR() { return getToken(BooleanParser.OR, 0); }
 		public BinaryContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_binary; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBinary(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterBinary(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBinary(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitBinary(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBinary(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitBinary(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1195,7 +1198,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(118);
+			setState(119);
 			_la = _input.LA(1);
 			if ( !(_la==AND || _la==OR) ) {
 			_errHandler.recoverInline(this);
@@ -1219,23 +1222,23 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static class BoolContext extends ParserRuleContext {
-		public TerminalNode TRUE() { return getToken(SimpleBooleanParser.TRUE, 0); }
-		public TerminalNode FALSE() { return getToken(SimpleBooleanParser.FALSE, 0); }
+		public TerminalNode TRUE() { return getToken(BooleanParser.TRUE, 0); }
+		public TerminalNode FALSE() { return getToken(BooleanParser.FALSE, 0); }
 		public BoolContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_bool; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).enterBool(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).enterBool(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SimpleBooleanListener ) ((SimpleBooleanListener)listener).exitBool(this);
+			if ( listener instanceof BooleanListener ) ((BooleanListener)listener).exitBool(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitBool(this);
+			if ( visitor instanceof BooleanVisitor ) return ((BooleanVisitor<? extends T>)visitor).visitBool(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1247,7 +1250,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120);
+			setState(121);
 			_la = _input.LA(1);
 			if ( !(_la==TRUE || _la==FALSE) ) {
 			_errHandler.recoverInline(this);
@@ -1286,37 +1289,37 @@ public class SimpleBooleanParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31}\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31~\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
 		"\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\2\3\3\3\3\3\3\5\3#\n\3\3\4\3\4\5\4"+
 		"\'\n\4\3\4\3\4\3\5\3\5\5\5-\n\5\3\5\3\5\3\6\3\6\3\6\7\6\64\n\6\f\6\16"+
 		"\6\67\13\6\3\7\3\7\3\7\7\7<\n\7\f\7\16\7?\13\7\3\b\3\b\3\t\3\t\3\n\3\n"+
 		"\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3"+
 		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n"+
-		"\5\nj\n\n\3\n\3\n\3\n\3\n\7\np\n\n\f\n\16\ns\13\n\3\13\3\13\3\f\3\f\3"+
-		"\r\3\r\3\16\3\16\3\16\2\3\22\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\7\3"+
-		"\2\24\25\4\2\23\23\25\25\3\2\n\16\3\2\5\6\3\2\b\t\2\u0080\2\34\3\2\2\2"+
-		"\4\"\3\2\2\2\6$\3\2\2\2\b*\3\2\2\2\n\60\3\2\2\2\f8\3\2\2\2\16@\3\2\2\2"+
-		"\20B\3\2\2\2\22i\3\2\2\2\24t\3\2\2\2\26v\3\2\2\2\30x\3\2\2\2\32z\3\2\2"+
-		"\2\34\35\5\24\13\2\35\36\7\2\2\3\36\3\3\2\2\2\37#\7\25\2\2 #\5\6\4\2!"+
-		"#\5\b\5\2\"\37\3\2\2\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$&\7\26\2\2%\'"+
-		"\5\n\6\2&%\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2()\7\27\2\2)\7\3\2\2\2*,\7\26"+
-		"\2\2+-\5\f\7\2,+\3\2\2\2,-\3\2\2\2-.\3\2\2\2./\7\27\2\2/\t\3\2\2\2\60"+
-		"\65\5\20\t\2\61\62\7\30\2\2\62\64\5\20\t\2\63\61\3\2\2\2\64\67\3\2\2\2"+
-		"\65\63\3\2\2\2\65\66\3\2\2\2\66\13\3\2\2\2\67\65\3\2\2\28=\5\16\b\29:"+
-		"\7\30\2\2:<\5\16\b\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\r\3\2\2"+
-		"\2?=\3\2\2\2@A\t\2\2\2A\17\3\2\2\2BC\t\3\2\2C\21\3\2\2\2DE\b\n\1\2EF\7"+
-		"\17\2\2FG\5\22\n\2GH\7\20\2\2Hj\3\2\2\2IJ\7\7\2\2Jj\5\22\n\rKL\7\25\2"+
-		"\2LM\5\26\f\2MN\7\25\2\2Nj\3\2\2\2OP\5\20\t\2PQ\5\26\f\2QR\5\20\t\2Rj"+
-		"\3\2\2\2ST\5\16\b\2TU\5\26\f\2UV\5\16\b\2Vj\3\2\2\2WX\5\4\3\2XY\7\3\2"+
-		"\2YZ\5\4\3\2Zj\3\2\2\2[\\\5\20\t\2\\]\7\4\2\2]^\5\4\3\2^j\3\2\2\2_`\5"+
-		"\16\b\2`a\7\4\2\2ab\5\4\3\2bj\3\2\2\2cd\5\20\t\2de\7\22\2\2ef\5\20\t\2"+
-		"fj\3\2\2\2gj\5\32\16\2hj\7\25\2\2iD\3\2\2\2iI\3\2\2\2iK\3\2\2\2iO\3\2"+
-		"\2\2iS\3\2\2\2iW\3\2\2\2i[\3\2\2\2i_\3\2\2\2ic\3\2\2\2ig\3\2\2\2ih\3\2"+
-		"\2\2jq\3\2\2\2kl\f\13\2\2lm\5\30\r\2mn\5\22\n\fnp\3\2\2\2ok\3\2\2\2ps"+
-		"\3\2\2\2qo\3\2\2\2qr\3\2\2\2r\23\3\2\2\2sq\3\2\2\2tu\5\22\n\2u\25\3\2"+
-		"\2\2vw\t\4\2\2w\27\3\2\2\2xy\t\5\2\2y\31\3\2\2\2z{\t\6\2\2{\33\3\2\2\2"+
-		"\t\"&,\65=iq";
+		"\5\nj\n\n\3\n\3\n\3\n\3\n\7\np\n\n\f\n\16\ns\13\n\3\13\3\13\3\13\3\f\3"+
+		"\f\3\r\3\r\3\16\3\16\3\16\2\3\22\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2"+
+		"\7\3\2\24\25\4\2\23\23\25\25\3\2\n\16\3\2\5\6\3\2\b\t\2\u0081\2\34\3\2"+
+		"\2\2\4\"\3\2\2\2\6$\3\2\2\2\b*\3\2\2\2\n\60\3\2\2\2\f8\3\2\2\2\16@\3\2"+
+		"\2\2\20B\3\2\2\2\22i\3\2\2\2\24t\3\2\2\2\26w\3\2\2\2\30y\3\2\2\2\32{\3"+
+		"\2\2\2\34\35\5\24\13\2\35\36\7\2\2\3\36\3\3\2\2\2\37#\7\25\2\2 #\5\6\4"+
+		"\2!#\5\b\5\2\"\37\3\2\2\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$&\7\26\2\2"+
+		"%\'\5\n\6\2&%\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2()\7\27\2\2)\7\3\2\2\2*,\7"+
+		"\26\2\2+-\5\f\7\2,+\3\2\2\2,-\3\2\2\2-.\3\2\2\2./\7\27\2\2/\t\3\2\2\2"+
+		"\60\65\5\20\t\2\61\62\7\30\2\2\62\64\5\20\t\2\63\61\3\2\2\2\64\67\3\2"+
+		"\2\2\65\63\3\2\2\2\65\66\3\2\2\2\66\13\3\2\2\2\67\65\3\2\2\28=\5\16\b"+
+		"\29:\7\30\2\2:<\5\16\b\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\r\3"+
+		"\2\2\2?=\3\2\2\2@A\t\2\2\2A\17\3\2\2\2BC\t\3\2\2C\21\3\2\2\2DE\b\n\1\2"+
+		"EF\7\17\2\2FG\5\22\n\2GH\7\20\2\2Hj\3\2\2\2IJ\7\7\2\2Jj\5\22\n\rKL\7\25"+
+		"\2\2LM\5\26\f\2MN\7\25\2\2Nj\3\2\2\2OP\5\20\t\2PQ\5\26\f\2QR\5\20\t\2"+
+		"Rj\3\2\2\2ST\5\16\b\2TU\5\26\f\2UV\5\16\b\2Vj\3\2\2\2WX\5\4\3\2XY\7\3"+
+		"\2\2YZ\5\4\3\2Zj\3\2\2\2[\\\5\20\t\2\\]\7\4\2\2]^\5\4\3\2^j\3\2\2\2_`"+
+		"\5\16\b\2`a\7\4\2\2ab\5\4\3\2bj\3\2\2\2cd\5\20\t\2de\7\22\2\2ef\5\20\t"+
+		"\2fj\3\2\2\2gj\5\32\16\2hj\7\25\2\2iD\3\2\2\2iI\3\2\2\2iK\3\2\2\2iO\3"+
+		"\2\2\2iS\3\2\2\2iW\3\2\2\2i[\3\2\2\2i_\3\2\2\2ic\3\2\2\2ig\3\2\2\2ih\3"+
+		"\2\2\2jq\3\2\2\2kl\f\13\2\2lm\5\30\r\2mn\5\22\n\fnp\3\2\2\2ok\3\2\2\2"+
+		"ps\3\2\2\2qo\3\2\2\2qr\3\2\2\2r\23\3\2\2\2sq\3\2\2\2tu\5\22\n\2uv\7\2"+
+		"\2\3v\25\3\2\2\2wx\t\4\2\2x\27\3\2\2\2yz\t\5\2\2z\31\3\2\2\2{|\t\6\2\2"+
+		"|\33\3\2\2\2\t\"&,\65=iq";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

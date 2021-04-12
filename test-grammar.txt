@@ -94,7 +94,7 @@ generic_frame{
 }
 
 knowledge{
-	.generic_inheritance [#(apple), "first_room.banana"] inherits "fruit", [#(apple)] inherits "container";
+	.generic_inheritance [#(apple), "first_room.banana"] inherits "fruit", [#(apple)] inherits "container", ["fruit"] inherits "massive";
 	.initial ['first_room.banana::mass := 1000', 'first_room.apple::name := "apple"'];
 }
 

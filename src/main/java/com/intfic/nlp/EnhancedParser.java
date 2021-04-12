@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
-public class EnhancedNLPEngine {
+public class EnhancedParser {
 
    private static StanfordCoreNLP pipeline;
 
@@ -181,7 +181,7 @@ public class EnhancedNLPEngine {
                Justification justification = findNounsAndAdjectives(sentence, start, end, npsInVP, actionFormat, nouns, adjectives, corefCache, corefRepresentative, itToSet);
                if(justification.isAccepted()) {
                   //TODO: do the wordnet stuff here for nouns
-                  List<List<Item>> gameItemNames = EnhancedNLPEngine.findMatchingGameItemNames(nouns, adjectives, possibleItems);
+                  List<List<Item>> gameItemNames = EnhancedParser.findMatchingGameItemNames(nouns, adjectives, possibleItems);
                   InstantiatedGameAction command = new InstantiatedGameAction(actionFormat, gameItemNames);
                   if (firstCommand) {
                      command.setIt(itToSet);
@@ -378,9 +378,9 @@ public class EnhancedNLPEngine {
 
    public static void main(String[] args) {
       try {
-         System.out.println(EnhancedNLPEngine.parse("eat the back of the living room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("apple juice"))));
-         System.out.println(EnhancedNLPEngine.parse("eat the onepiece", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
-         System.out.println(EnhancedNLPEngine.parse("go to the back of the room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
+         System.out.println(EnhancedParser.parse("eat the back of the living room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("apple juice"))));
+         System.out.println(EnhancedParser.parse("eat the onepiece", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
+         System.out.println(EnhancedParser.parse("go to the back of the room", ImplementedActionLogic.defaultActionFormats, Collections.singleton(new Item("onepiece"))));
       }
       catch (FailedParseException e) {
          e.printStackTrace();
@@ -432,16 +432,16 @@ public class EnhancedNLPEngine {
       }
       */
 /*      try {
-         InstantiatedGameAction command = EnhancedNLPEngine
+         InstantiatedGameAction command = EnhancedParser
              .parse("put the key in the box",
                  new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box"))).get(0);
-         InstantiatedGameAction command2 = EnhancedNLPEngine
+         InstantiatedGameAction command2 = EnhancedParser
              .parse("put the box in the key and eat the key",
                  new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("box"))).get(0);
-         InstantiatedGameAction command3 = EnhancedNLPEngine
+         InstantiatedGameAction command3 = EnhancedParser
              .parse("put the donkey in the box and eat it. eat box.",
                  new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box"))).get(0);
-         InstantiatedGameAction command4 = EnhancedNLPEngine
+         InstantiatedGameAction command4 = EnhancedParser
              .parse("put the donkey in the box and drink it from the box. eat box.",
                  new BasicGameEngine().getPossibleActionFormats(), Set.of(new Item("key"), new Item("donkey"), new Item("box"))).get(0);
       }

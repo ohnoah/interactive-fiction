@@ -478,25 +478,25 @@ public interface GameGrammarListener extends ParseTreeListener {
 	 */
 	void exitKnowledge_updates(GameGrammarParser.Knowledge_updatesContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GameGrammarParser#global_item}.
+	 * Enter a parse tree produced by {@link GameGrammarParser#frame}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlobal_item(GameGrammarParser.Global_itemContext ctx);
+	void enterFrame(GameGrammarParser.FrameContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GameGrammarParser#global_item}.
+	 * Exit a parse tree produced by {@link GameGrammarParser#frame}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlobal_item(GameGrammarParser.Global_itemContext ctx);
+	void exitFrame(GameGrammarParser.FrameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GameGrammarParser#global_items}.
+	 * Enter a parse tree produced by {@link GameGrammarParser#frames}.
 	 * @param ctx the parse tree
 	 */
-	void enterGlobal_items(GameGrammarParser.Global_itemsContext ctx);
+	void enterFrames(GameGrammarParser.FramesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GameGrammarParser#global_items}.
+	 * Exit a parse tree produced by {@link GameGrammarParser#frames}.
 	 * @param ctx the parse tree
 	 */
-	void exitGlobal_items(GameGrammarParser.Global_itemsContext ctx);
+	void exitFrames(GameGrammarParser.FramesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GameGrammarParser#inheritance}.
 	 * @param ctx the parse tree

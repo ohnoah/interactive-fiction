@@ -313,7 +313,7 @@ public abstract class AbstractGamePlayer extends JFrame implements Serializable 
       List<InstantiatedGameAction> gameActions = null;
 
       try {
-         gameActions = EnhancedNLPEngine.parse(cmd, possibleGameActions, possibleItems, it);
+         gameActions = EnhancedParser.parse(cmd, possibleGameActions, possibleItems, it);
          it = gameActions.get(0).getIt();
       }
       catch (FailedParseException e) {

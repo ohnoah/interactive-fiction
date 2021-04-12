@@ -434,7 +434,7 @@ public class EnhancedGameEditor extends JFrame {
                   }
                   else {
                      roomToAdd = new Room(cmd);
-                     output = String.format("Adding room %s. What items do you want to add? " +
+                     output = String.format("Adding room \"%s\". What items do you want to add? " +
                          "Enter this as a comma-separated list with adjectives space-separated in square brackets" +
                          " i.e. \"bear [furry big brown], bread [fluffy], pizza\".", cmd);
                      enhancedGameEditState = EnhancedGameEditState.ROOM_ITEMS;
@@ -710,12 +710,12 @@ public class EnhancedGameEditor extends JFrame {
                   break;
                case EDIT_KNOWLEDGE:
                   if (cmd.equals("fillers")) {
-                     output = "Update the fillers of the current SpecificFrames ";
+                     output = "Update the fillers of the current SpecificFrames: ";
                      if(firstFiller) {
                         output += knowledgeBase.getSpecificFrames().values().stream().map(SpecificFrame::getId).collect(Collectors.joining(",\n"));
                         firstFiller = false;
                      }
-                     output += " with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
+                     output += " \n with a comma-separated list of Knowledge Update strings in the form \"frame::slot OP VAL\"";
                      enhancedGameEditState = EnhancedGameEditState.FILLERS;
                   }
                   else if (cmd.equals("parents")) {

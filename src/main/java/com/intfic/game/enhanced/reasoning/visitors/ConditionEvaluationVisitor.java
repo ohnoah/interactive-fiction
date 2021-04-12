@@ -8,8 +8,8 @@ import com.intfic.game.enhanced.reasoning.frames.SpecificFrame;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import com.intfic.game.enhanced.parser.SimpleBooleanParser;
-import com.intfic.game.enhanced.parser.SimpleBooleanBaseVisitor;
+import com.intfic.game.enhanced.parser.BooleanParser;
+import com.intfic.game.enhanced.parser.BooleanBaseVisitor;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +18,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jetbrains.annotations.NotNull;
 
 
-public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object> implements Serializable {
+public class ConditionEvaluationVisitor extends BooleanBaseVisitor<Object> implements Serializable {
 
    private static final long serialVersionUID = -4122568509603815191L;
    private KnowledgeBase knowledgeBase;
@@ -28,7 +28,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitParse(SimpleBooleanParser.ParseContext ctx) {
+   public Boolean visitParse(BooleanParser.ParseContext ctx) {
       return (Boolean) super.visit(ctx.expression());
    }
 
@@ -51,7 +51,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
 
    @Override
-   public List<?> visitList(SimpleBooleanParser.ListContext ctx) {
+   public List<?> visitList(BooleanParser.ListContext ctx) {
       if (ctx.IDENTIFIER() != null) {
          List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
          try {
@@ -74,35 +74,35 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public List<String> visitStringlist(SimpleBooleanParser.StringlistContext ctx) {
+   public List<String> visitStringlist(BooleanParser.StringlistContext ctx) {
       return ctx.stringelems() == null ? new ArrayList<>() : this.visitStringelems(ctx.stringelems());
    }
 
    @Override
-   public List<Double> visitNumberlist(SimpleBooleanParser.NumberlistContext ctx) {
+   public List<Double> visitNumberlist(BooleanParser.NumberlistContext ctx) {
       return ctx.numberelems() == null ? new ArrayList<>() : this.visitNumberelems(ctx.numberelems());
    }
 
    @Override
-   public List<String> visitStringelems(SimpleBooleanParser.StringelemsContext ctx) {
+   public List<String> visitStringelems(BooleanParser.StringelemsContext ctx) {
       List<String> stringList = new ArrayList<>();
-      for (SimpleBooleanParser.StringtypeContext elemContext : ctx.stringtype()) {
+      for (BooleanParser.StringtypeContext elemContext : ctx.stringtype()) {
          stringList.add(this.visitStringtype(elemContext));
       }
       return stringList;
    }
 
    @Override
-   public List<Double> visitNumberelems(SimpleBooleanParser.NumberelemsContext ctx) {
+   public List<Double> visitNumberelems(BooleanParser.NumberelemsContext ctx) {
       List<Double> doubleList = new ArrayList<>();
-      for (SimpleBooleanParser.NumbertypeContext elemContext : ctx.numbertype()) {
+      for (BooleanParser.NumbertypeContext elemContext : ctx.numbertype()) {
          doubleList.add(this.visitNumbertype(elemContext));
       }
       return doubleList;
    }
 
    @Override
-   public Double visitNumbertype(SimpleBooleanParser.NumbertypeContext ctx) {
+   public Double visitNumbertype(BooleanParser.NumbertypeContext ctx) {
       TerminalNode decimal = ctx.DECIMAL();
       TerminalNode identifier = ctx.IDENTIFIER();
       if (decimal != null) {
@@ -123,7 +123,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public String visitStringtype(SimpleBooleanParser.StringtypeContext ctx) {
+   public String visitStringtype(BooleanParser.StringtypeContext ctx) {
       TerminalNode string = ctx.STRING();
       TerminalNode identifier = ctx.IDENTIFIER();
       if (string != null) {
@@ -144,14 +144,14 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitStringInBooleantype(SimpleBooleanParser.StringInBooleantypeContext ctx) {
+   public Boolean visitStringInBooleantype(BooleanParser.StringInBooleantypeContext ctx) {
       List<?> list = this.visitList(ctx.list());
       String s = this.visitStringtype(ctx.stringtype());
       return list.contains(s);
    }
 
    @Override
-   public Boolean visitNumberInBooleantype(SimpleBooleanParser.NumberInBooleantypeContext ctx) {
+   public Boolean visitNumberInBooleantype(BooleanParser.NumberInBooleantypeContext ctx) {
       List<?> list = this.visitList(ctx.list());
       Double s = this.visitNumbertype(ctx.numbertype());
       return list.contains(s);
@@ -159,7 +159,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
 
    @Override
-   public Boolean visitBinaryBooleantype(SimpleBooleanParser.BinaryBooleantypeContext ctx) {
+   public Boolean visitBinaryBooleantype(BooleanParser.BinaryBooleantypeContext ctx) {
       if (ctx.op.AND() != null) {
          return asBoolean(ctx.left) && asBoolean(ctx.right);
       }
@@ -171,7 +171,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
 
    @Override
-   public Boolean visitIdentifierBooleantype(SimpleBooleanParser.IdentifierBooleantypeContext ctx) {
+   public Boolean visitIdentifierBooleantype(BooleanParser.IdentifierBooleantypeContext ctx) {
       try {
          List<String> frameAndSlot = frameAndSlot(ctx.IDENTIFIER().getText());
          return knowledgeBase.queryBoolean(frameAndSlot.get(0), frameAndSlot.get(1));
@@ -185,12 +185,12 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitBoolBooleantype(SimpleBooleanParser.BoolBooleantypeContext ctx) {
+   public Boolean visitBoolBooleantype(BooleanParser.BoolBooleantypeContext ctx) {
       return Boolean.valueOf(ctx.getText());
    }
 
    @Override
-   public Boolean visitIdentifierComparatorBooleantype(SimpleBooleanParser.IdentifierComparatorBooleantypeContext ctx) {
+   public Boolean visitIdentifierComparatorBooleantype(BooleanParser.IdentifierComparatorBooleantypeContext ctx) {
       // TODO: Change this to a helper function that does query and slot in one go
       List<String> leftFrameAndSlot = frameAndSlot(ctx.left.getText());
       List<String> rightFrameAndSlot = frameAndSlot(ctx.right.getText());
@@ -219,11 +219,11 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitListComparatorBooleantype(SimpleBooleanParser.ListComparatorBooleantypeContext ctx) {
+   public Boolean visitListComparatorBooleantype(BooleanParser.ListComparatorBooleantypeContext ctx) {
       return this.visitList(ctx.left).equals(this.visitList(ctx.right));
    }
 
-   private Boolean stringComparatorBooleanType(SimpleBooleanParser.NonboolcomparatorContext op, String left, String right) {
+   private Boolean stringComparatorBooleanType(BooleanParser.NonboolcomparatorContext op, String left, String right) {
       if (op.EQ() != null) {
          return left.equals(right);
       }
@@ -243,7 +243,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitStringComparatorBooleantype(SimpleBooleanParser.StringComparatorBooleantypeContext ctx) {
+   public Boolean visitStringComparatorBooleantype(BooleanParser.StringComparatorBooleantypeContext ctx) {
       return stringComparatorBooleanType(ctx.op, asString(ctx.left), asString(ctx.right));
 /*      if (ctx.op.EQ() != null) {
          String left = asString(ctx.left);
@@ -265,7 +265,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       throw new RuntimeException("not implemented: comparator operator " + ctx.op.getText());*/
    }
 
-   private Boolean numberComparatorBooleanType(SimpleBooleanParser.NonboolcomparatorContext op, double left, double right) {
+   private Boolean numberComparatorBooleanType(BooleanParser.NonboolcomparatorContext op, double left, double right) {
       if (op.EQ() != null) {
          return left == (right);
       }
@@ -285,7 +285,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitNumberComparatorBooleantype(SimpleBooleanParser.NumberComparatorBooleantypeContext ctx) {
+   public Boolean visitNumberComparatorBooleantype(BooleanParser.NumberComparatorBooleantypeContext ctx) {
       return numberComparatorBooleanType(ctx.op, asDouble(ctx.left), asDouble(ctx.right));
 /*      if (ctx.op.EQ() != null) {
          return asDouble(ctx.left) == (asDouble(ctx.right));
@@ -306,23 +306,23 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
    }
 
    @Override
-   public Boolean visitBooleantypeExpression(SimpleBooleanParser.BooleantypeExpressionContext ctx) {
+   public Boolean visitBooleantypeExpression(BooleanParser.BooleantypeExpressionContext ctx) {
       return (Boolean) this.visit(ctx.booleantype());
    }
 
 
    @Override
-   public Object visitParenBooleanType(SimpleBooleanParser.ParenBooleanTypeContext ctx) {
+   public Object visitParenBooleanType(BooleanParser.ParenBooleanTypeContext ctx) {
       return this.visit(ctx.booleantype());
    }
 
    @Override
-   public Boolean visitNotBooleanType(SimpleBooleanParser.NotBooleanTypeContext ctx) {
+   public Boolean visitNotBooleanType(BooleanParser.NotBooleanTypeContext ctx) {
       return !((Boolean) this.visit(ctx.booleantype()));
    }
 
    @Override
-   public Boolean visitInheritBooleantype(SimpleBooleanParser.InheritBooleantypeContext ctx) {
+   public Boolean visitInheritBooleantype(BooleanParser.InheritBooleantypeContext ctx) {
       List<String> frameNames = ctx.stringtype().stream().map(this::visitStringtype).collect(Collectors.toList());
       Map<String, SpecificFrame> specificFrameMap = knowledgeBase.getSpecificFrames();
       Map<String, GenericFrame> genericFrameMap = knowledgeBase.getGenericFrames();
@@ -342,30 +342,30 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
 
 
 /*      @Override
-      public Object visitDecimalExpression(SimpleBooleanParser.DecimalExpressionContext ctx) {
+      public Object visitDecimalExpression(BooleanParser.DecimalExpressionContext ctx) {
          return Double.valueOf(ctx.DECIMAL().getText());
       }
 
 
       @Override
-      public Object visitStringExpression(SimpleBooleanParser.StringExpressionContext ctx){
+      public Object visitStringExpression(BooleanParser.StringExpressionContext ctx){
          return ctx.STRING().getText();
       }
 
 
       @Override
-      public Object visitIdentifierExpression(SimpleBooleanParser.IdentifierExpressionContext ctx) {
+      public Object visitIdentifierExpression(BooleanParser.IdentifierExpressionContext ctx) {
          return replaceIdentifier(ctx.IDENTIFIER().getText());
       }
 
 
       @Override
-      public Object visitParenExpression(SimpleBooleanParser.ParenExpressionContext ctx) {
+      public Object visitParenExpression(BooleanParser.ParenExpressionContext ctx) {
          return super.visit(ctx.expression());
       }
 
       @Override
-      public Object visitComparatorExpression(SimpleBooleanParser.ComparatorExpressionContext ctx) {
+      public Object visitComparatorExpression(BooleanParser.ComparatorExpressionContext ctx) {
          if (ctx.op.EQ() != null) {
             return this.visit(ctx.left).equals(this.visit(ctx.right));
          }
@@ -385,7 +385,7 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
       }
 
       @Override
-      public Object visitBinaryExpression(SimpleBooleanParser.BinaryExpressionContext ctx) {
+      public Object visitBinaryExpression(BooleanParser.BinaryExpressionContext ctx) {
          if (ctx.op.AND() != null) {
             return asBoolean(ctx.left) && asBoolean(ctx.right);
          }
@@ -395,29 +395,26 @@ public class ConditionEvaluationVisitor extends SimpleBooleanBaseVisitor<Object>
          throw new RuntimeException("not implemented: binary operator " + ctx.op.getText());
       }
       @Override
-      public Object visitBoolExpression(SimpleBooleanParser.BoolExpressionContext ctx) {
+      public Object visitBoolExpression(BooleanParser.BoolExpressionContext ctx) {
          return Boolean.valueOf(ctx.getText());
       }*/
 
-   private boolean asBoolean(SimpleBooleanParser.BooleantypeContext ctx) {
+   private boolean asBoolean(BooleanParser.BooleantypeContext ctx) {
       return (boolean) visit(ctx);
    }
 
-   private double asDouble(SimpleBooleanParser.NumbertypeContext ctx) {
+   private double asDouble(BooleanParser.NumbertypeContext ctx) {
       return (double) visit(ctx);
    }
 
-   private String asString(SimpleBooleanParser.StringtypeContext ctx) {
+   private String asString(BooleanParser.StringtypeContext ctx) {
       return (String) visit(ctx);
    }
 
 
-   private List<?> asList(SimpleBooleanParser.ListContext ctx) {
+   private List<?> asList(BooleanParser.ListContext ctx) {
       return (List<?>) visit(ctx);
    }
 
-   public static void main(String[] args) {
-
-   }
 
 }

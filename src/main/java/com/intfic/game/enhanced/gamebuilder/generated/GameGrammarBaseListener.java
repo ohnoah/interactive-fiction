@@ -580,25 +580,25 @@ public class GameGrammarBaseListener implements GameGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlobal_item(GameGrammarParser.Global_itemContext ctx) { }
+	@Override public void enterFrame(GameGrammarParser.FrameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlobal_item(GameGrammarParser.Global_itemContext ctx) { }
+	@Override public void exitFrame(GameGrammarParser.FrameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGlobal_items(GameGrammarParser.Global_itemsContext ctx) { }
+	@Override public void enterFrames(GameGrammarParser.FramesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGlobal_items(GameGrammarParser.Global_itemsContext ctx) { }
+	@Override public void exitFrames(GameGrammarParser.FramesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

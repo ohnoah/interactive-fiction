@@ -146,10 +146,10 @@ new_genericframe :
 knowledge_update : SINGLE_STRING;
 knowledge_updates : LSQUARE (knowledge_update (COMMA knowledge_update)*)? RSQUARE;
 
-global_item : item_ref | STRING;
-global_items : global_item (COMMA global_item)*?;
-inheritance : LSQUARE global_items RSQUARE INHERITS STRING;
-inheritances : inheritance (COMMA inheritance);
+frame : item_ref | STRING;
+frames : (frame (COMMA frame)*)?;
+inheritance : LSQUARE frames RSQUARE INHERITS STRING;
+inheritances : (inheritance (COMMA inheritance)*)?;
 knowledge:
     KNOWLEDGE
     LCURLY

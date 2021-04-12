@@ -1,4 +1,4 @@
-grammar SimpleBoolean;
+grammar Boolean;
 
 
 parse
@@ -55,7 +55,7 @@ booleantype
  ;
 
 expression
- : booleantype                                  #booleantypeExpression
+ : booleantype EOF    #booleantypeExpression
  ;
 
 
@@ -80,11 +80,11 @@ OR         : 'OR' ;
 NOT        : 'NOT';
 TRUE       : 'TRUE' ;
 FALSE      : 'FALSE' ;
-GT         : '>' ;
-GE         : '>=' ;
 LT         : '<' ;
 LE         : '<=' ;
 EQ         : '=' ;
+GT         : '>' ;
+GE         : '>=' ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 QUOTE      : '"' ;
